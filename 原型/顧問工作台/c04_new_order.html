@@ -485,13 +485,16 @@ html,body{overflow-x:hidden;}
                 <label><input type="checkbox" id="addonRegFee" onchange="onAddonChange()"> 加購註冊費（NT$500）</label>
               </div>
               <div class="field" style="margin-top:12px;">
-                <label>折扣（選填）</label>
-                <select id="discountSelect" onchange="tliRecalc()">
-                  <option value="0">無折扣</option>
-                  <option value="0.05">早鳥優惠　95 折</option>
-                  <option value="0.10">內部員工眷屬　9 折</option>
-                  <option value="0.03">折扣碼 SPRING2026　97 折</option>
+                <label>折扣</label>
+                <div class="hint" id="autoDiscountHint" style="margin-bottom:8px;"></div>
+                <label style="font-size:12px;color:var(--gray-500);display:block;margin-bottom:4px;">可用折扣碼</label>
+                <select id="promoCodeSelect" onchange="onPromoCodeSelectChange()">
+                  <option value="">不使用折扣碼</option>
                 </select>
+                <div class="grid2" style="margin-top:8px;">
+                  <div class="field"><label>或手動輸入折扣碼</label><input id="promoCodeInput" placeholder="輸入折扣碼" oninput="onPromoCodeInput(this.value)"></div>
+                </div>
+                <div class="note" id="promoCodeNote" style="display:none;margin-top:8px;"></div>
               </div>
             </div>
           </div>
@@ -684,6 +687,20 @@ var PLANS=[
     courses:[{name:'依合約條列，顧問於送出前確認明細',qty:1,taxable:false}],
     price:{B:0,G:0},quotable:true}
 ];
+// 方案折扣規則：依會員分類自動帶入，建訂單時不需手動輸入（對應管理後台銷售方案設定的「方案折扣規則」）
+var AUTO_DISCOUNTS={
+  p_flex:{B:{rate:0.05,label:'企業會員方案折扣'},G:{rate:0.05,label:'機構會員方案折扣'}},
+  p_spring:{C:{rate:0.05,label:'新生開學方案折扣'},BIP:{rate:0.05,label:'新生開學方案折扣'}},
+  p_1v1_30:{C:{rate:0.03,label:'長期學員方案折扣'},BIP:{rate:0.03,label:'長期學員方案折扣'}}
+};
+// 折扣碼：依會員分類與期間篩選出可用清單（對應管理後台銷售方案設定的「折扣碼」）
+var PROMO_CODES=[
+  {code:'OPENFALL',rate:0.05,audience:['B','G','C','BIP'],periodStart:'2026-09-01',periodEnd:'2027-01-31',label:'開學優惠 95 折（全分類）'},
+  {code:'SPRING2026',rate:0.03,audience:['C','BIP'],periodStart:'2026-01-01',periodEnd:'2026-12-31',label:'一般學員限定 97 折'},
+  {code:'VIP9',rate:0.10,audience:['B','G'],periodStart:'2026-01-01',periodEnd:'2026-12-31',label:'企業／機構會員 9 折'}
+];
+var __appliedPromoCode=null; // {code, rate, label} 或 null
+var __promoCodeError='';
 // 付款方式：統一清單，所有會員分類共用，不隨分類切換
 var PAYMENT_MODES=[
   {v:'full',t:'一次付清',d:'訂單成立後一次收取全部金額'},
@@ -760,6 +777,80 @@ function currentStudent(){return STUDENTS.find(function(s){return s.id===sel.val
 function currentPlan(){return PLANS.find(function(p){return p.id===__selectedPlanId;});}
 function classBadge(c){return 'badge '+c.toLowerCase();}
 
+// ---- 折扣：依會員分類自動帶入方案折扣＋可用折扣碼 ----
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function currentAutoDiscount(){
+  var s=currentStudent();
+  if(!s||!__selectedPlanId)return null;
+  var map=AUTO_DISCOUNTS[__selectedPlanId];
+  if(!map)return null;
+  return map[s.cls]||null;
+}
+function availablePromoCodes(cls){
+  var today=todayStr();
+  return PROMO_CODES.filter(function(pc){
+    return pc.audience.indexOf(cls)>-1 && (!pc.periodStart||pc.periodStart<=today) && (!pc.periodEnd||pc.periodEnd>=today);
+  });
+}
+function renderDiscountArea(){
+  var hintEl=document.getElementById('autoDiscountHint');
+  var selEl=document.getElementById('promoCodeSelect');
+  var inputEl=document.getElementById('promoCodeInput');
+  if(!hintEl||!selEl)return;
+  var s=currentStudent();
+  var auto=currentAutoDiscount();
+  if(auto){
+    hintEl.innerHTML='依會員分類（'+s.cls+' 類）自動帶入：<b>'+auto.label+'　'+Math.round((1-auto.rate)*100)+' 折</b>';
+  }else{
+    hintEl.textContent=s?('此方案依會員分類（'+s.cls+' 類）暫無自動帶入折扣。'):'請先選擇會員與方案。';
+  }
+  var codes=s?availablePromoCodes(s.cls):[];
+  selEl.innerHTML='<option value="">不使用折扣碼</option>'+codes.map(function(pc){
+    return '<option value="'+pc.code+'">'+pc.code+'　'+pc.label+'</option>';
+  }).join('');
+  selEl.value=__appliedPromoCode?__appliedPromoCode.code:'';
+  if(inputEl)inputEl.value='';
+  updatePromoCodeNote();
+}
+function onPromoCodeSelectChange(){
+  var v=document.getElementById('promoCodeSelect').value;
+  var s=currentStudent();
+  if(!v){__appliedPromoCode=null;__promoCodeError='';}
+  else{
+    var pc=PROMO_CODES.find(function(x){return x.code===v;});
+    if(pc&&s&&pc.audience.indexOf(s.cls)>-1){__appliedPromoCode=pc;__promoCodeError='';}
+    else{__appliedPromoCode=null;__promoCodeError='此碼不適用於此會員分類';}
+  }
+  updatePromoCodeNote();
+  tliRecalc();
+}
+function onPromoCodeInput(val){
+  val=(val||'').trim().toUpperCase();
+  if(!val)return;
+  var s=currentStudent();
+  var pc=PROMO_CODES.find(function(x){return x.code===val;});
+  if(!pc){__appliedPromoCode=null;__promoCodeError='查無此折扣碼';}
+  else if(!s||pc.audience.indexOf(s.cls)===-1){__appliedPromoCode=null;__promoCodeError='此碼不適用於此會員分類';}
+  else{
+    var today=todayStr();
+    if((pc.periodStart&&pc.periodStart>today)||(pc.periodEnd&&pc.periodEnd<today)){__appliedPromoCode=null;__promoCodeError='此折扣碼已過期或尚未生效';}
+    else{__appliedPromoCode=pc;__promoCodeError='';document.getElementById('promoCodeSelect').value=pc.code;}
+  }
+  updatePromoCodeNote();
+  tliRecalc();
+}
+function updatePromoCodeNote(){
+  var note=document.getElementById('promoCodeNote');
+  if(!note)return;
+  if(__promoCodeError){
+    note.style.display='block';note.style.color='#C0392B';note.textContent=__promoCodeError;
+  }else if(__appliedPromoCode){
+    note.style.display='block';note.style.color='';note.textContent='已套用折扣碼「'+__appliedPromoCode.code+'」：'+__appliedPromoCode.label;
+  }else{
+    note.style.display='none';note.textContent='';
+  }
+}
+
 function markSectionDone(n,done){
   var badge=document.getElementById('badge'+n);
   if(!badge)return;
@@ -835,6 +926,7 @@ function onPlanSelected(){
   renderCourseTable();
   renderInvoiceEntity();
   markSectionDone(3,true);
+  renderDiscountArea();
   tliRecalc();
 }
 
@@ -886,6 +978,7 @@ function tliOnStudentChange(){
   document.getElementById('taxId').value=s.taxId||'';
   document.getElementById('taxTitle').value=s.taxTitle||'';
   markSectionDone(1,true);
+  __appliedPromoCode=null;__promoCodeError='';
   renderPlanCards();
   onPlanSelected();
   __channelState=null;
@@ -1051,7 +1144,10 @@ function tliRecalc(){
   renderCourseTable();
   var rows=computeCourseRows();
   var priceSum=rows.reduce(function(sum,r){return sum+r.subtotal;},0);
-  var discRate=parseFloat(document.getElementById('discountSelect').value);
+  var auto=currentAutoDiscount();
+  var autoRate=auto?auto.rate:0;
+  var promoRate=__appliedPromoCode?__appliedPromoCode.rate:0;
+  var discRate=autoRate+promoRate;
   var discAmt=Math.round(priceSum*discRate);
   var total=priceSum-discAmt;
   document.getElementById('sumPrice').textContent=fmt(priceSum);

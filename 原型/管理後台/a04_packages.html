@@ -269,6 +269,7 @@ html,body{overflow-x:hidden;}
 
 </div>
 </div>
+<div class="modal-mask" id="drawerMask" onclick="if(event.target===this)closeDrawer()"><div class="modal" style="width:560px" id="drawerModal"></div></div>
 <script>
 
 var SKUS = [
@@ -302,7 +303,12 @@ var PACKAGES = [
  {id:'pk1', name:'中文一對一線上課 20 堂方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'skuC01',qty:20}],
   audiences:['C','BIP'], prices:{C:20000,BIP:19000}, consultantQuote:{},
-  discountPct:0, promoCode:'',
+  discountRules:[
+    {id:'dr_pk1_1', name:'新生首購折扣', kind:'pct', value:5, audiences:['C','BIP'], valuesByAud:{C:8,BIP:5}, periodStart:'2026-09-01', periodEnd:'2026-10-31', stackable:false, status:'上架'}
+  ],
+  promoCodes:[
+    {id:'pc_pk1_1', code:'WELCOME10', kind:'pct', value:10, audiences:['C'], scope:'all', periodStart:'2026-09-01', periodEnd:'2026-12-31', maxTotalUses:100, maxPerUser:1, maxDiscountAmount:2000, minSpend:0, status:'上架', usageCount:12, lastUsed:'2026-08-15'}
+  ],
   channel:['公開網站','顧問建訂單'], periodStart:'2026-09-01', periodEnd:'2027-02-28',
   schedule:null,
   creditRule:{type:'once', totalQty:20, monthlyQty:0, resetDay:1, carryOver:false},
@@ -310,7 +316,12 @@ var PACKAGES = [
  {id:'pk2', name:'中文彈性團體直播班 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'skuC03',qty:1}],
   audiences:['B','G','C','BIP'], prices:{B:9800,G:9500,C:10800,BIP:10200}, consultantQuote:{B:true,G:false},
-  discountPct:5, promoCode:'OPENFALL',
+  discountRules:[
+    {id:'dr_pk2_1', name:'開學早鳥優惠', kind:'pct', value:5, audiences:['B','G','C','BIP'], valuesByAud:{}, periodStart:'2026-09-01', periodEnd:'2026-09-30', stackable:true, status:'上架'}
+  ],
+  promoCodes:[
+    {id:'pc_pk2_1', code:'OPENFALL', kind:'pct', value:5, audiences:['B','G','C','BIP'], scope:'this', periodStart:'2026-09-01', periodEnd:'2027-01-31', maxTotalUses:200, maxPerUser:1, maxDiscountAmount:0, minSpend:0, status:'上架', usageCount:36, lastUsed:'2026-08-20'}
+  ],
   channel:['公開網站','顧問建訂單','企業專案'], periodStart:'2026-09-01', periodEnd:'2027-01-31',
   schedule:{weekdays:['二','四'], time:'19:30', weeks:8, capacity:15},
   creditRule:{type:'monthly_reset', monthlyQty:8, resetDay:1, carryOver:false},
@@ -318,7 +329,7 @@ var PACKAGES = [
  {id:'pk3', name:'自學影音課程包（中文基礎）方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'skuC05',qty:1}],
   audiences:['C','BIP'], prices:{C:2400,BIP:2200}, consultantQuote:{},
-  discountPct:0, promoCode:'',
+  discountRules:[], promoCodes:[],
   channel:['公開網站'], periodStart:'', periodEnd:'',
   schedule:null,
   creditRule:{type:'once', totalQty:1, monthlyQty:0, resetDay:1, carryOver:false},
@@ -326,7 +337,7 @@ var PACKAGES = [
  {id:'pk4', name:'企業華語線上培訓方案（企業專案）', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'skuC07',qty:1}],
   audiences:['B','G'], prices:{}, consultantQuote:{B:true,G:true},
-  discountPct:0, promoCode:'',
+  discountRules:[], promoCodes:[],
   channel:['企業專案'], periodStart:'', periodEnd:'',
   schedule:{weekdays:['六'], time:'09:00', weeks:8, capacity:20},
   creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
@@ -334,7 +345,7 @@ var PACKAGES = [
  {id:'pk5', name:'中文一對一 30 堂＋教材＋註冊費', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'sku01',qty:30},{sku:'sku03',qty:1},{sku:'sku04',qty:1}],
   audiences:['C','BIP'], prices:{C:32000,BIP:30500}, consultantQuote:{},
-  discountPct:0, promoCode:'',
+  discountRules:[], promoCodes:[],
   channel:['公開網站','顧問建訂單'], periodStart:'2026-09-01', periodEnd:'2027-02-28',
   schedule:null,
   creditRule:{type:'once', totalQty:30, monthlyQty:0, resetDay:1, carryOver:false},
@@ -342,15 +353,20 @@ var PACKAGES = [
  {id:'pk6', name:'學期班 Lv.5–8 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   items:[{sku:'sku02',qty:1},{sku:'sku03',qty:1},{sku:'sku04',qty:1}],
   audiences:['B','G','C','BIP'], prices:{B:34000,G:33500,C:36000,BIP:35000}, consultantQuote:{B:true,G:false},
-  discountPct:5, promoCode:'OPENFALL',
+  discountRules:[
+    {id:'dr_pk6_1', name:'開學早鳥優惠', kind:'pct', value:5, audiences:['B','G','C','BIP'], valuesByAud:{B:5,G:8,C:5,BIP:5}, periodStart:'2026-09-01', periodEnd:'2026-09-30', stackable:true, status:'上架'}
+  ],
+  promoCodes:[
+    {id:'pc_pk6_1', code:'OPENFALL', kind:'pct', value:5, audiences:['B','G','C','BIP'], scope:'this', periodStart:'2026-09-01', periodEnd:'2027-01-31', maxTotalUses:200, maxPerUser:1, maxDiscountAmount:0, minSpend:0, status:'上架', usageCount:36, lastUsed:'2026-08-20'}
+  ],
   channel:['公開網站','顧問建訂單','企業專案'], periodStart:'2026-09-01', periodEnd:'2027-01-31',
   schedule:null,
   creditRule:{type:'once', totalQty:32, monthlyQty:0, resetDay:1, carryOver:false},
   status:'上架'}
 ];
 var BUNDLES = [
- {id:'bd1', name:'新生開學組合', type:'bundle', packages:['pk1','pk2'], discountPct:10, audiences:['C','BIP'], channel:['公開網站'], periodStart:'2026-09-01', periodEnd:'2027-02-28', status:'上架'},
- {id:'bd2', name:'企業培訓組合（不顯示於前台）', type:'bundle', packages:['pk4','pk2'], discountPct:15, audiences:['B','G'], channel:['企業專案'], periodStart:'', periodEnd:'', status:'上架'}
+ {id:'bd1', name:'新生開學組合', type:'bundle', packages:['pk1','pk2'], discountPct:10, discountValuesByAud:{}, audiences:['C','BIP'], channel:['公開網站'], periodStart:'2026-09-01', periodEnd:'2027-02-28', status:'上架'},
+ {id:'bd2', name:'企業培訓組合（不顯示於前台）', type:'bundle', packages:['pk4','pk2'], discountPct:15, discountValuesByAud:{B:20,G:15}, audiences:['B','G'], channel:['企業專案'], periodStart:'', periodEnd:'', status:'上架'}
 ];
 
 function skuById(id){ return SKUS.find(function(s){return s.id===id;}); }
@@ -745,15 +761,249 @@ function onAudToggle(pid, el){
   renderPkgPriceAudPanel(p);
 }
 
-function renderPkgDiscountPanel(p){
-  document.getElementById('pkgpanel-discount').innerHTML =
-    '<div class="card">' +
-    '<div class="formrow" style="max-width:220px"><label>折扣百分比（%）</label><input type="number" value="'+p.discountPct+'" oninput="onDiscountInput(\''+p.id+'\',this)"></div>' +
-    '<div class="formrow" style="max-width:280px"><label>折扣碼（選填）</label><input type="text" value="'+p.promoCode+'" placeholder="例：OPENFALL" oninput="onPromoInput(\''+p.id+'\',this)"></div>' +
-    '<div class="hint">折扣套用在此方案的定價之上；折扣碼由前台或顧問建訂單時輸入核銷。</div></div>';
+function discKindLabel(k){ return k==='pct'?'％':(k==='fixed'?'固定金額':'每堂減價'); }
+function discValueUnit(k){ return k==='pct'?'%':'NT$'; }
+function discValueSummary(r){
+  var keys = Object.keys(r.valuesByAud||{});
+  if (keys.length){
+    return r.audiences.map(function(a){
+      var v = (r.valuesByAud[a]!=null) ? r.valuesByAud[a] : r.value;
+      return a+'：'+v+discValueUnit(r.kind);
+    }).join('　');
+  }
+  return r.value + discValueUnit(r.kind);
 }
-function onDiscountInput(pid, el){ pkgById(pid).discountPct = Number(el.value)||0; }
-function onPromoInput(pid, el){ pkgById(pid).promoCode = el.value; }
+function audPillList(list){
+  return (list||[]).map(function(a){ return '<span class="badge blue" style="margin-right:3px">'+a+'</span>'; }).join('') || '<span class="small">未設定</span>';
+}
+function renderPkgDiscountPanel(p){
+  p.discountRules = p.discountRules || [];
+  p.promoCodes = p.promoCodes || [];
+  var ruleRows = p.discountRules.map(function(r){
+    return '<tr class="rowlink" onclick="openDiscountRuleDrawer(\''+p.id+'\',\''+r.id+'\')">' +
+      '<td>'+r.name+'</td>' +
+      '<td>'+discKindLabel(r.kind)+'</td>' +
+      '<td>'+discValueSummary(r)+'</td>' +
+      '<td>'+audPillList(r.audiences)+'</td>' +
+      '<td class="small">'+(r.periodStart&&r.periodEnd?(r.periodStart+' ～ '+r.periodEnd):'不限')+'</td>' +
+      '<td>'+(r.stackable?'<span class="badge grey">可疊加折扣碼</span>':'<span class="badge grey">不可疊加</span>')+'</td>' +
+      '<td>'+statusBadge(r.status)+'</td></tr>';
+  }).join('');
+  var ruleTable = '<div class="tablewrap"><table>' +
+    '<tr><th>名稱</th><th>折扣類型</th><th>折扣值</th><th>適用分類</th><th>期間</th><th>疊加</th><th>狀態</th></tr>' +
+    (p.discountRules.length ? ruleRows : '<tr><td colspan="7" class="small" style="white-space:normal;padding:16px 12px">尚未設定折扣規則，點右上角「＋ 新增折扣規則」開始設定。</td></tr>') +
+    '</table></div>';
+
+  var codeRows = p.promoCodes.map(function(c){
+    return '<tr class="rowlink" onclick="openPromoCodeDrawer(\''+p.id+'\',\''+c.id+'\')">' +
+      '<td><b>'+c.code+'</b></td>' +
+      '<td>'+discKindLabel(c.kind)+' '+c.value+discValueUnit(c.kind)+'</td>' +
+      '<td>'+audPillList(c.audiences)+'</td>' +
+      '<td>'+(c.scope==='all'?'<span class="badge grey">全部方案</span>':'<span class="badge blue">本方案</span>')+'</td>' +
+      '<td class="small">'+(c.periodStart&&c.periodEnd?(c.periodStart+' ～ '+c.periodEnd):'不限')+'</td>' +
+      '<td class="small">'+(c.usageCount||0)+' 次'+(c.maxTotalUses?(' / 上限 '+c.maxTotalUses+' 次'):'')+(c.lastUsed?'　最近：'+c.lastUsed:'')+'</td>' +
+      '<td>'+statusBadge(c.status)+'</td></tr>';
+  }).join('');
+  var codeTable = '<div class="tablewrap"><table>' +
+    '<tr><th>代碼</th><th>折扣</th><th>適用分類</th><th>適用方案</th><th>期間</th><th>使用狀況</th><th>狀態</th></tr>' +
+    (p.promoCodes.length ? codeRows : '<tr><td colspan="7" class="small" style="white-space:normal;padding:16px 12px">尚未設定折扣碼，點右上角「＋ 新增折扣碼」開始設定。</td></tr>') +
+    '</table></div>';
+
+  document.getElementById('pkgpanel-discount').innerHTML =
+    '<div class="hint" style="margin-bottom:12px">折扣依會員分類生效；學生端只看到自己分類適用的折扣，顧問建訂單時系統自動帶入。</div>' +
+    '<div class="card">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">方案折扣規則</h3><button class="btn ghost" onclick="openDiscountRuleDrawer(\''+p.id+'\',null)">＋ 新增折扣規則</button></div>' +
+    ruleTable + '</div>' +
+    '<div class="card">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">折扣碼</h3><button class="btn ghost" onclick="openPromoCodeDrawer(\''+p.id+'\',null)">＋ 新增折扣碼</button></div>' +
+    codeTable + '</div>';
+}
+
+/* ---- 折扣規則抽屜 ---- */
+function openDiscountRuleDrawer(pid, ruleId){
+  var p = pkgById(pid);
+  var editing = ruleId ? p.discountRules.find(function(r){return r.id===ruleId;}) : null;
+  var r = editing ? JSON.parse(JSON.stringify(editing)) :
+    {id:'dr'+Date.now(), name:'', kind:'pct', value:0, audiences:[], valuesByAud:{}, periodStart:'', periodEnd:'', stackable:true, status:'草稿'};
+  window.__editingDiscountRule = {pid:pid, ruleId:ruleId, data:r};
+  renderDiscountRuleDrawer();
+  document.getElementById('drawerMask').classList.add('open');
+}
+function renderDiscountRuleDrawer(){
+  var ctx = window.__editingDiscountRule;
+  var r = ctx.data;
+  var audChips = AUD_ALL.map(function(a){
+    var checked = r.audiences.indexOf(a) > -1;
+    return '<label style="display:inline-flex;align-items:center;gap:4px;margin:0 10px 8px 0;font-size:13px;padding:4px 10px;border:1px solid var(--g200);border-radius:16px;'+(checked?'background:#E7EEF8;border-color:var(--navy)':'')+'"><input type="checkbox" class="chk" style="transform:scale(1)" value="'+a+'" '+(checked?'checked':'')+' onchange="onDrawerRuleAudToggle(this)"> '+a+' 類</label>';
+  }).join('');
+  var valueRows = '';
+  if (r.audiences.length){
+    valueRows = '<div class="formrow"><label>各分類折扣值（留空則套用上方通用折扣值）</label>' +
+      r.audiences.map(function(a){
+        var v = (r.valuesByAud[a]!=null) ? r.valuesByAud[a] : '';
+        return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge blue" style="width:44px;text-align:center">'+a+'</span><input type="number" style="width:120px" value="'+v+'" placeholder="'+r.value+'" onchange="onDrawerRuleAudValue(\''+a+'\',this.value)"><span class="small">'+discValueUnit(r.kind)+'</span></div>';
+      }).join('') + '</div>';
+  }
+  var body =
+    '<h3>'+(ctx.ruleId?'編輯折扣規則':'新增折扣規則')+'</h3>' +
+    '<div class="formrow"><label>名稱</label><input type="text" value="'+r.name+'" oninput="onDrawerRuleField(\'name\',this.value)"></div>' +
+    '<div class="formrow"><label>折扣類型</label><select onchange="onDrawerRuleField(\'kind\',this.value)">' +
+      ['pct','fixed','per_unit'].map(function(k){ return '<option value="'+k+'"'+(r.kind===k?' selected':'')+'>'+discKindLabel(k)+'</option>'; }).join('') +
+    '</select></div>' +
+    '<div class="formrow" style="max-width:220px"><label>折扣值（通用，'+discValueUnit(r.kind)+'）</label><input type="number" value="'+r.value+'" oninput="onDrawerRuleField(\'value\',Number(this.value)||0)"></div>' +
+    '<div class="formrow"><label>適用會員分類（可全選）</label>'+audChips+'</div>' +
+    valueRows +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>起始日</label><input type="date" value="'+(r.periodStart||'')+'" onchange="onDrawerRuleField(\'periodStart\',this.value)"></div>' +
+    '<div class="formrow"><label>結束日</label><input type="date" value="'+(r.periodEnd||'')+'" onchange="onDrawerRuleField(\'periodEnd\',this.value)"></div>' +
+    '</div>' +
+    '<div class="formrow"><label><input type="checkbox" class="chk" style="transform:scale(1)" '+(r.stackable?'checked':'')+' onchange="onDrawerRuleField(\'stackable\',this.checked)"> 可與折扣碼並用（疊加）</label></div>' +
+    '<div class="formrow"><label>狀態</label><select onchange="onDrawerRuleField(\'status\',this.value)">' +
+      ['上架','草稿','下架'].map(function(s){ return '<option'+(r.status===s?' selected':'')+'>'+s+'</option>'; }).join('') +
+    '</select></div>' +
+    '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">' +
+    (ctx.ruleId?'<button class="btn ghost" onclick="deleteDiscountRule()">刪除</button>':'') +
+    '<button class="btn ghost" onclick="closeDrawer()">取消</button>' +
+    '<button class="btn" onclick="saveDiscountRule()">儲存</button>' +
+    '</div>';
+  document.getElementById('drawerModal').innerHTML = body;
+}
+function onDrawerRuleField(field, val){
+  window.__editingDiscountRule.data[field] = val;
+  if (field === 'kind') renderDiscountRuleDrawer();
+}
+function onDrawerRuleAudToggle(el){
+  var r = window.__editingDiscountRule.data;
+  var a = el.value;
+  if (el.checked){ if (r.audiences.indexOf(a)===-1) r.audiences.push(a); }
+  else { r.audiences = r.audiences.filter(function(x){return x!==a;}); delete r.valuesByAud[a]; }
+  renderDiscountRuleDrawer();
+}
+function onDrawerRuleAudValue(a, val){
+  var r = window.__editingDiscountRule.data;
+  r.valuesByAud = r.valuesByAud || {};
+  if (val === '') delete r.valuesByAud[a];
+  else r.valuesByAud[a] = Number(val)||0;
+}
+function saveDiscountRule(){
+  var ctx = window.__editingDiscountRule;
+  var p = pkgById(ctx.pid);
+  if (!ctx.data.name){ toast('請先輸入折扣規則名稱'); return; }
+  if (!ctx.data.audiences.length){ toast('請至少勾選一個適用會員分類'); return; }
+  if (ctx.ruleId){
+    var idx = p.discountRules.findIndex(function(r){return r.id===ctx.ruleId;});
+    p.discountRules[idx] = ctx.data;
+  } else {
+    p.discountRules.push(ctx.data);
+  }
+  closeDrawer();
+  renderPkgDiscountPanel(p);
+  toast('已儲存折扣規則「'+ctx.data.name+'」');
+}
+function deleteDiscountRule(){
+  var ctx = window.__editingDiscountRule;
+  var p = pkgById(ctx.pid);
+  p.discountRules = p.discountRules.filter(function(r){return r.id!==ctx.ruleId;});
+  closeDrawer();
+  renderPkgDiscountPanel(p);
+  toast('已刪除折扣規則');
+}
+
+/* ---- 折扣碼抽屜 ---- */
+function openPromoCodeDrawer(pid, codeId){
+  var p = pkgById(pid);
+  var editing = codeId ? p.promoCodes.find(function(c){return c.id===codeId;}) : null;
+  var c = editing ? JSON.parse(JSON.stringify(editing)) :
+    {id:'pc'+Date.now(), code:'', kind:'pct', value:0, audiences:[], scope:'this', periodStart:'', periodEnd:'', maxTotalUses:0, maxPerUser:1, maxDiscountAmount:0, minSpend:0, status:'草稿', usageCount:0, lastUsed:''};
+  window.__editingPromoCode = {pid:pid, codeId:codeId, data:c};
+  renderPromoCodeDrawer();
+  document.getElementById('drawerMask').classList.add('open');
+}
+function genPromoCode(){
+  window.__editingPromoCode.data.code = 'TLI' + Math.random().toString(36).slice(2,7).toUpperCase();
+  renderPromoCodeDrawer();
+}
+function renderPromoCodeDrawer(){
+  var ctx = window.__editingPromoCode;
+  var c = ctx.data;
+  var audChips = AUD_ALL.map(function(a){
+    var checked = c.audiences.indexOf(a) > -1;
+    return '<label style="display:inline-flex;align-items:center;gap:4px;margin:0 10px 8px 0;font-size:13px;padding:4px 10px;border:1px solid var(--g200);border-radius:16px;'+(checked?'background:#E7EEF8;border-color:var(--navy)':'')+'"><input type="checkbox" class="chk" style="transform:scale(1)" value="'+a+'" '+(checked?'checked':'')+' onchange="onDrawerCodeAudToggle(this)"> '+a+' 類</label>';
+  }).join('');
+  var body =
+    '<h3>'+(ctx.codeId?'編輯折扣碼':'新增折扣碼')+'</h3>' +
+    '<div class="formrow"><label>代碼</label><div style="display:flex;gap:8px"><input type="text" style="flex:1" value="'+c.code+'" oninput="onDrawerCodeField(\'code\',this.value.toUpperCase())"><button type="button" class="btn ghost" onclick="genPromoCode()">自動產生</button></div></div>' +
+    '<div class="formrow"><label>折扣類型</label><select onchange="onDrawerCodeField(\'kind\',this.value)">' +
+      ['pct','fixed','per_unit'].map(function(k){ return '<option value="'+k+'"'+(c.kind===k?' selected':'')+'>'+discKindLabel(k)+'</option>'; }).join('') +
+    '</select></div>' +
+    '<div class="formrow" style="max-width:220px"><label>折扣值（'+discValueUnit(c.kind)+'）</label><input type="number" value="'+c.value+'" oninput="onDrawerCodeField(\'value\',Number(this.value)||0)"></div>' +
+    '<div class="formrow"><label>適用會員分類（可全選）</label>'+audChips+'</div>' +
+    '<div class="formrow"><label>適用方案</label><select onchange="onDrawerCodeField(\'scope\',this.value)">' +
+      '<option value="this"'+(c.scope==='this'?' selected':'')+'>僅本方案</option>' +
+      '<option value="all"'+(c.scope==='all'?' selected':'')+'>全部方案</option>' +
+    '</select></div>' +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>起始日</label><input type="date" value="'+(c.periodStart||'')+'" onchange="onDrawerCodeField(\'periodStart\',this.value)"></div>' +
+    '<div class="formrow"><label>結束日</label><input type="date" value="'+(c.periodEnd||'')+'" onchange="onDrawerCodeField(\'periodEnd\',this.value)"></div>' +
+    '</div>' +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>總使用次數上限（0＝不限）</label><input type="number" min="0" value="'+c.maxTotalUses+'" onchange="onDrawerCodeField(\'maxTotalUses\',Number(this.value)||0)"></div>' +
+    '<div class="formrow"><label>每人使用次數上限</label><input type="number" min="1" value="'+c.maxPerUser+'" onchange="onDrawerCodeField(\'maxPerUser\',Number(this.value)||1)"></div>' +
+    '</div>' +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>單筆最高折抵（0＝不限，NT$）</label><input type="number" min="0" value="'+c.maxDiscountAmount+'" onchange="onDrawerCodeField(\'maxDiscountAmount\',Number(this.value)||0)"></div>' +
+    '<div class="formrow"><label>最低消費（NT$）</label><input type="number" min="0" value="'+c.minSpend+'" onchange="onDrawerCodeField(\'minSpend\',Number(this.value)||0)"></div>' +
+    '</div>' +
+    '<div class="formrow"><label>狀態</label><select onchange="onDrawerCodeField(\'status\',this.value)">' +
+      ['上架','草稿','下架'].map(function(s){ return '<option'+(c.status===s?' selected':'')+'>'+s+'</option>'; }).join('') +
+    '</select></div>' +
+    (ctx.codeId ? '<div class="kv"><span>使用紀錄</span><span>'+(c.usageCount||0)+' 次'+(c.lastUsed?'　最近使用：'+c.lastUsed:'')+'</span></div>' : '') +
+    '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">' +
+    (ctx.codeId?'<button class="btn ghost" onclick="deletePromoCode()">刪除</button>':'') +
+    '<button class="btn ghost" onclick="closeDrawer()">取消</button>' +
+    '<button class="btn" onclick="savePromoCode()">儲存</button>' +
+    '</div>';
+  document.getElementById('drawerModal').innerHTML = body;
+}
+function onDrawerCodeField(field, val){
+  window.__editingPromoCode.data[field] = val;
+  if (field === 'kind') renderPromoCodeDrawer();
+}
+function onDrawerCodeAudToggle(el){
+  var c = window.__editingPromoCode.data;
+  var a = el.value;
+  if (el.checked){ if (c.audiences.indexOf(a)===-1) c.audiences.push(a); }
+  else { c.audiences = c.audiences.filter(function(x){return x!==a;}); }
+  renderPromoCodeDrawer();
+}
+function savePromoCode(){
+  var ctx = window.__editingPromoCode;
+  var p = pkgById(ctx.pid);
+  if (!ctx.data.code){ toast('請先輸入或產生折扣碼'); return; }
+  if (!ctx.data.audiences.length){ toast('請至少勾選一個適用會員分類'); return; }
+  if (ctx.codeId){
+    var idx = p.promoCodes.findIndex(function(c){return c.id===ctx.codeId;});
+    p.promoCodes[idx] = ctx.data;
+  } else {
+    p.promoCodes.push(ctx.data);
+  }
+  closeDrawer();
+  renderPkgDiscountPanel(p);
+  toast('已儲存折扣碼「'+ctx.data.code+'」');
+}
+function deletePromoCode(){
+  var ctx = window.__editingPromoCode;
+  var p = pkgById(ctx.pid);
+  p.promoCodes = p.promoCodes.filter(function(c){return c.id!==ctx.codeId;});
+  closeDrawer();
+  renderPkgDiscountPanel(p);
+  toast('已刪除折扣碼');
+}
+function closeDrawer(){
+  document.getElementById('drawerMask').classList.remove('open');
+  window.__editingDiscountRule = null;
+  window.__editingPromoCode = null;
+}
 
 function renderPkgPeriodPanel(p){
   var chBoxes = CHANNEL_ALL.map(function(c){
@@ -905,15 +1155,41 @@ function renderBundleSummary(b){
   el.textContent = '已選 '+b.packages.length+' 個方案：'+ b.packages.map(function(id){ return pkgById(id).name; }).join('、');
 }
 function renderBdlDiscountPanel(b){
+  b.discountValuesByAud = b.discountValuesByAud || {};
+  var chips = AUD_ALL.map(function(a){
+    var checked = b.discountValuesByAud[a] != null;
+    return '<label style="display:inline-flex;align-items:center;gap:4px;margin:0 10px 8px 0;font-size:13px;padding:4px 10px;border:1px solid var(--g200);border-radius:16px;'+(checked?'background:#E7EEF8;border-color:var(--navy)':'')+'"><input type="checkbox" class="chk" style="transform:scale(1)" value="'+a+'" '+(checked?'checked':'')+' onchange="onBundleDiscAudToggle(\''+b.id+'\',this)"> '+a+' 類</label>';
+  }).join('');
+  var overrideRows = Object.keys(b.discountValuesByAud).length ?
+    '<div class="formrow"><label>已勾選分類的個別折扣值（%，取代上方通用折扣）</label>' +
+    Object.keys(b.discountValuesByAud).map(function(a){
+      return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge blue" style="width:44px;text-align:center">'+a+'</span><input type="number" style="width:120px" value="'+b.discountValuesByAud[a]+'" onchange="onBundleDiscAudValue(\''+b.id+'\',\''+a+'\',this.value)"><span class="small">%</span></div>';
+    }).join('') + '</div>' : '';
   document.getElementById('bdlpanel-discount').innerHTML =
     '<div class="card">' +
-    '<div class="formrow" style="max-width:220px"><label>折扣百分比（%）</label><input type="number" value="'+b.discountPct+'" oninput="onBundleDiscountInput(\''+b.id+'\',this)"></div>' +
+    '<div class="formrow" style="max-width:220px"><label>折扣百分比（%，通用）</label><input type="number" value="'+b.discountPct+'" oninput="onBundleDiscountInput(\''+b.id+'\',this)"></div>' +
+    '<div class="formrow"><label>適用會員分類（可全選；勾選後可個別設定折扣值，未勾選則套用上方通用折扣）</label>'+chips+'</div>' +
+    overrideRows +
     '<div class="kv"><span>折扣後估算金額</span><span id="bundlePriceOut-'+b.id+'"><b>'+bundlePriceLabel(b)+'</b></span></div>' +
     '<div class="hint">估算以第一個勾選的適用對象定價試算，實際成交價依前台或顧問建訂單時登入者的分類套用。</div></div>';
 }
 function onBundleDiscountInput(bid, el){
   var b = bundleById(bid);
   b.discountPct = Number(el.value) || 0;
+  var out = document.getElementById('bundlePriceOut-'+bid);
+  if (out) out.innerHTML = '<b>'+bundlePriceLabel(b)+'</b>';
+}
+function onBundleDiscAudToggle(bid, el){
+  var b = bundleById(bid);
+  b.discountValuesByAud = b.discountValuesByAud || {};
+  var a = el.value;
+  if (el.checked){ if (b.discountValuesByAud[a] == null) b.discountValuesByAud[a] = b.discountPct; }
+  else { delete b.discountValuesByAud[a]; }
+  renderBdlDiscountPanel(b);
+}
+function onBundleDiscAudValue(bid, a, val){
+  var b = bundleById(bid);
+  b.discountValuesByAud[a] = Number(val) || 0;
   var out = document.getElementById('bundlePriceOut-'+bid);
   if (out) out.innerHTML = '<b>'+bundlePriceLabel(b)+'</b>';
 }
@@ -983,7 +1259,7 @@ function createNewPackage(){
   var id = 'pkNew' + Date.now();
   var p = {id:id, name:'新方案（未命名）', type:'pkg', nameEn:'', nameJa:'', desc:'',
     items:[], audiences:[], prices:{}, consultantQuote:{},
-    discountPct:0, promoCode:'',
+    discountRules:[], promoCodes:[],
     channel:[], periodStart:'', periodEnd:'',
     schedule:null,
     creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
@@ -994,7 +1270,7 @@ function createNewPackage(){
 }
 function createNewBundle(){
   var id = 'bdNew' + Date.now();
-  var b = {id:id, name:'新組合包（未命名）', type:'bundle', packages:[], discountPct:0, audiences:[], channel:[], periodStart:'', periodEnd:'', status:'草稿'};
+  var b = {id:id, name:'新組合包（未命名）', type:'bundle', packages:[], discountPct:0, discountValuesByAud:{}, audiences:[], channel:[], periodStart:'', periodEnd:'', status:'草稿'};
   BUNDLES.push(b);
   openBundleDetail(id);
   toast('已建立新組合包草稿，請依序完成各分頁設定後儲存並上架');
