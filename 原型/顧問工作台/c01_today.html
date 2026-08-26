@@ -401,6 +401,22 @@ html,body{overflow-x:hidden;}
         </table>
       </div>
 
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h2 style="margin-bottom:2px;">新進諮詢 <span class="cnt">5 件</span></h2>
+          <div style="font-size:12px;color:var(--gray-500);">來自官網表單／AI 諮詢助手／線上諮詢面板／活動報名／LINE，尚未由顧問聯繫，SLA 1 個工作日內須回覆</div>
+        </div>
+        <a class="btn primary" href="c08_inquiries.html?status=新進">前往諮詢與試聽預約</a>
+      </div>
+
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h2 style="margin-bottom:2px;">待安排試聽 <span class="cnt">4 件</span></h2>
+          <div style="font-size:12px;color:var(--gray-500);">已聯繫但尚未安排試聽老師與時段的試聽申請</div>
+        </div>
+        <a class="btn primary" href="c08_inquiries.html?view=pending_trial">前往諮詢與試聽預約</a>
+      </div>
+
       <div class="card">
         <h2>待續費 <span class="cnt">2 筆</span></h2>
         <table>
@@ -433,29 +449,48 @@ html,body{overflow-x:hidden;}
       </div>
 
       <div class="card">
-        <h2>待排課學生 <span class="cnt">4 筆</span></h2>
+        <h2>待排課學生（線上） <span class="cnt">4 筆</span></h2>
         <table>
           <thead><tr><th>學生</th><th>語言／班型</th><th>偏好時段</th><th>狀態</th><th></th></tr></thead>
           <tbody>
-            <tr class="clickable" onclick="location.href='c07_scheduling.html?student=std1'">
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=online&student=std1'">
               <td>Emma Chen</td><td>中文・一對一</td><td>週二三晚上 19:00–21:00</td>
               <td><span class="badge warn">新單待排</span></td>
-              <td><a class="btn sm primary" href="c07_scheduling.html?student=std1">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=online&student=std1">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
             </tr>
-            <tr class="clickable" onclick="location.href='c07_scheduling.html?student=std4'">
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=online&student=std4'">
               <td>陳建宏</td><td>中文・一對一</td><td>週五晚上 20:00–21:00</td>
               <td><span class="badge danger">請假順延，優先安排</span></td>
-              <td><a class="btn sm primary" href="c07_scheduling.html?student=std4">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=online&student=std4">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
             </tr>
-            <tr class="clickable" onclick="location.href='c07_scheduling.html?student=std2'">
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=online&student=std2'">
               <td>王小明</td><td>中文・小組班</td><td>週一四下午 14:00–16:00</td>
               <td><span class="badge warn">新單待排</span></td>
-              <td><a class="btn sm primary" href="c07_scheduling.html?student=std2">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=online&student=std2">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
             </tr>
-            <tr class="clickable" onclick="location.href='c07_scheduling.html?student=std3'">
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=online&student=std3'">
               <td>Sophie Lin</td><td>日文・一對一</td><td>週三五晚上 18:00–20:00</td>
               <td><span class="badge warn">新單待排</span></td>
-              <td><a class="btn sm primary" href="c07_scheduling.html?student=std3">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=online&student=std3">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>待排課學生（實體） <span class="cnt">2 筆</span></h2>
+        <table>
+          <thead><tr><th>學生</th><th>語言／班型</th><th>校區・偏好時段</th><th>狀態</th><th></th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=onsite&student=std5'">
+              <td>黃冠霖</td><td>中文・一對一</td><td>士林校・週二四晚上 19:00–20:00</td>
+              <td><span class="badge warn">新單待排</span></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=onsite&student=std5">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
+            </tr>
+            <tr class="clickable" onclick="location.href='c07_scheduling.html?mode=onsite&student=std6'">
+              <td>李文彬</td><td>中文・一對一</td><td>羅斯福校・週一下午 14:00–15:00</td>
+              <td><span class="badge warn">新單待排</span></td>
+              <td><a class="btn sm primary" href="c07_scheduling.html?mode=onsite&student=std6">前往排課</a><div class="row-actions"><button class="btn sm" onclick="event.stopPropagation();tliRowDone(this)" title="標示已處理"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="5 13 10 18 19 7"/></svg> 已處理</button><button class="btn sm" onclick="event.stopPropagation();tliRowDefer(this)" title="延後至明天"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.5 12 12 15.5 14"/></svg> 延後</button></div></td>
             </tr>
           </tbody>
         </table>

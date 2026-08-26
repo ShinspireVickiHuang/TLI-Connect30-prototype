@@ -101,6 +101,18 @@ h1.page-title{font-size:20px;margin:0 0 4px;}
 .mode-tabs button.active{color:var(--primary);border-color:var(--primary);font-weight:700;}
 .mode-panel{display:none;}
 .mode-panel.active{display:block;}
+.top-mode-pills{display:inline-flex;gap:4px;background:var(--gray-100);border-radius:999px;padding:3px;margin-bottom:14px;}
+.top-mode-pills button{border:none;background:none;padding:8px 18px;border-radius:999px;font-size:13px;font-family:inherit;cursor:pointer;color:var(--gray-600);display:inline-flex;align-items:center;gap:7px;}
+.top-mode-pills button.active{background:#fff;color:var(--primary);font-weight:700;box-shadow:0 1px 3px rgba(16,24,40,.12);}
+.stage-tag{font-size:10px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--gray-100);color:var(--gray-500);}
+.stage-tag.s1{background:var(--primary-light);color:var(--primary);}
+.stage-tag.s2{background:var(--accent-light);color:#93440f;}
+.top-mode-panel{display:none;}
+.top-mode-panel.active{display:block;}
+.campus-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.campus-chips button{padding:6px 14px;border-radius:999px;border:1px solid var(--gray-200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--gray-600);}
+.campus-chips button.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700;}
+.room-th-cap{display:block;font-size:9.5px;color:var(--gray-400);font-weight:400;}
 .queueToolbar{margin-bottom:12px;}
 .queueToolbar input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;box-sizing:border-box;}
 .queueToolbar select{margin-top:8px;width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;box-sizing:border-box;}
@@ -398,6 +410,13 @@ html,body{overflow-x:hidden;}
       <div class="kicker">管理後台・顧問作業</div>
       <h1 class="page-title">排課</h1>
       <p class="page-sub">選待排課學生 → 系統依配對排序給建議 → 選建議預填週曆 → 確認排課。</p>
+
+      <div class="top-mode-pills" id="topModePills">
+        <button type="button" class="active" data-topmode="online" onclick="tliSwitchTopMode('online')">線上課 <span class="stage-tag s1">一階段</span></button>
+        <button type="button" data-topmode="onsite" onclick="tliSwitchTopMode('onsite')">實體課 <span class="stage-tag s2">二階段（整併 TLI Park）</span></button>
+      </div>
+
+      <div class="top-mode-panel active" id="onlinePanelWrap">
       <div class="banner" id="leaveBanner">本週因老師請假需順延 <b>1 堂</b>：陳建宏（原授課李老師 2026-08-27 請假），系統已將其列為左側清單優先項目，並自動預填該老師開放時間當週與次週作為可補課時段，待審核安排補課或代課。</div>
 
       <div class="mode-tabs" id="schedModeTabs">
@@ -480,6 +499,61 @@ html,body{overflow-x:hidden;}
           <div class="legend" id="flexLegend"></div>
         </div>
       </div><!-- /flexPanel -->
+      </div><!-- /onlinePanelWrap -->
+
+      <div class="top-mode-panel" id="onsitePanelWrap">
+        <div class="campus-chips" id="campusChips">
+          <button type="button" class="active" data-campus="羅斯福" onclick="tliSelectOnsiteCampus('羅斯福')">羅斯福</button>
+          <button type="button" data-campus="士林" onclick="tliSelectOnsiteCampus('士林')">士林</button>
+          <button type="button" data-campus="台中" onclick="tliSelectOnsiteCampus('台中')">台中</button>
+          <button type="button" data-campus="高雄" onclick="tliSelectOnsiteCampus('高雄')">高雄</button>
+        </div>
+        <div class="sched-layout">
+          <div>
+            <div class="card">
+              <h2>待排課學生（實體） <span class="cnt" id="onsiteQueueCount"></span></h2>
+              <div class="queueToolbar">
+                <input type="text" id="onsiteQueueSearch" placeholder="搜尋姓名／語言／等級" oninput="renderOnsiteQueue()">
+                <select id="onsiteQueueSort" onchange="renderOnsiteQueue()">
+                  <option value="roomAvail">排序：教室可用優先</option>
+                  <option value="waitDesc">排序：等待天數多→少</option>
+                  <option value="expiryAsc">排序：課時到期近→遠</option>
+                  <option value="priority">排序：優先級</option>
+                </select>
+              </div>
+              <div id="onsiteQueue"></div>
+            </div>
+            <div class="card" id="onsiteSuggestCard" style="display:none;">
+              <h2>建議老師／教室與時段</h2>
+              <div id="onsiteSuggestList"></div>
+              <div class="hint" style="font-size:11px;color:var(--gray-500);">排序：教室可用 &gt; 時間重合度 &gt; 老師等級 &gt; 年資 &gt; 姓名</div>
+            </div>
+            <div class="card">
+              <h2>校區老師</h2>
+              <div id="onsiteTeacherList"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="cal-head">
+                <h2 style="margin:0;">教室日曆<span class="cnt" id="onsiteCampusLabel"></span></h2>
+                <select id="onsiteRoomSelect" onchange="renderOnsiteRoomCal()"></select>
+              </div>
+              <div class="cal-wrap" id="onsiteRoomCalWrap"></div>
+              <div class="legend">
+                <span><span class="legend-box avail"></span>空堂</span>
+                <span><span class="legend-box booked"></span>已排課</span>
+                <span><span class="legend-box pending"></span>預排（待確認）</span>
+              </div>
+              <button class="btn primary" id="onsiteConfirmBtn" style="display:none;margin-top:14px;width:100%;justify-content:center;" onclick="tliConfirmOnsiteSchedule()">確認排課</button>
+            </div>
+            <div class="card">
+              <h2>實體班型 <span class="cnt" id="onsiteClassCount"></span></h2>
+              <div style="overflow-x:auto;"><table class="flex-table" id="onsiteClassTable"></table></div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /onsitePanelWrap -->
     </main>
   </div>
 
@@ -533,22 +607,26 @@ var TEACHERS=[
   {id:'t2',name:'林老師',level:5,years:3,campus:'羅斯福',lang:'中文'},
   {id:'t3',name:'黃老師',level:6,years:4,campus:'士林',lang:'中文'},
   {id:'t4',name:'Kelly 老師',level:7,years:5,campus:'台中',lang:'日文'},
-  {id:'t5',name:'陳老師',level:4,years:2,campus:'羅斯福',lang:'中文'}
+  {id:'t5',name:'陳老師',level:4,years:2,campus:'羅斯福',lang:'中文'},
+  {id:'t6',name:'許老師',level:6,years:4,campus:'高雄',lang:'中文'}
 ];
 // 老師開放時段（週曆式，僅存下週；day: 0=週一…6=週日）
 var TEACHER_OPEN={
   t1:[{day:1,hour:19},{day:2,hour:19},{day:3,hour:19}],
-  t2:[{day:0,hour:14},{day:1,hour:19}],
+  t2:[{day:0,hour:14},{day:1,hour:19},{day:3,hour:19}],
   t3:[{day:2,hour:19},{day:4,hour:19},{day:4,hour:20}],
   t4:[{day:2,hour:18},{day:4,hour:18}],
-  t5:[{day:0,hour:14},{day:3,hour:14},{day:4,hour:20}]
+  t5:[{day:0,hour:14},{day:3,hour:14},{day:4,hour:20}],
+  t6:[{day:1,hour:18},{day:3,hour:18}]
 };
 var ROOMS=[
-  {id:'r1',name:'士林A教室',campus:'士林'},
-  {id:'r2',name:'士林B教室',campus:'士林'},
-  {id:'r3',name:'羅斯福A教室',campus:'羅斯福'},
-  {id:'r4',name:'台中A教室',campus:'台中'}
+  {id:'r1',name:'士林A教室',campus:'士林',capacity:8},
+  {id:'r2',name:'士林B教室',campus:'士林',capacity:6},
+  {id:'r3',name:'羅斯福A教室',campus:'羅斯福',capacity:10},
+  {id:'r4',name:'台中A教室',campus:'台中',capacity:8},
+  {id:'r5',name:'高雄A教室',campus:'高雄',capacity:8}
 ];
+function roomById(id){return ROOMS.find(function(r){return r.id===id;});}
 // 已排課（會隨「確認排課」增加）
 var BOOKINGS=[
   {teacher:'t1',room:'r1',day:1,hour:19,label:'李老師・張小華（中文一對一）'},
@@ -558,16 +636,30 @@ var BOOKINGS=[
 ];
 
 var ALL_STUDENTS=[
-  {id:'std1',name:'Emma Chen',lang:'中文',classType:'一對一',level:'Lv.4',campus:'士林',prefer:[{day:1,hour:19},{day:2,hour:19}],preferLabel:'週二三晚上 19:00–20:00',waitDays:4,expiryDate:'2026-09-15',priority:2},
-  {id:'std2',name:'王小明',lang:'中文',classType:'小組班',level:'Lv.2',campus:'羅斯福',prefer:[{day:0,hour:14},{day:3,hour:14}],preferLabel:'週一四下午 14:00–15:00',waitDays:6,expiryDate:'2026-10-02',priority:3},
-  {id:'std3',name:'Sophie Lin',lang:'日文',classType:'一對一',level:'N3',campus:'台中',prefer:[{day:2,hour:18},{day:4,hour:18}],preferLabel:'週三五晚上 18:00–19:00',waitDays:2,expiryDate:'2026-08-29',priority:2},
-  {id:'std4',name:'陳建宏',lang:'中文',classType:'一對一',level:'Lv.6',campus:'羅斯福',prefer:[{day:4,hour:20}],preferLabel:'週五晚上 20:00–21:00',note:'原課程因李老師請假順延，需優先安排',waitDays:1,expiryDate:'2026-09-05',priority:1}
+  {id:'std1',name:'Emma Chen',lang:'中文',classType:'一對一',level:'Lv.4',campus:'士林',mode:'online',prefer:[{day:1,hour:19},{day:2,hour:19}],preferLabel:'週二三晚上 19:00–20:00',waitDays:4,expiryDate:'2026-09-15',priority:2},
+  {id:'std2',name:'王小明',lang:'中文',classType:'小組班',level:'Lv.2',campus:'羅斯福',mode:'online',prefer:[{day:0,hour:14},{day:3,hour:14}],preferLabel:'週一四下午 14:00–15:00',waitDays:6,expiryDate:'2026-10-02',priority:3},
+  {id:'std3',name:'Sophie Lin',lang:'日文',classType:'一對一',level:'N3',campus:'台中',mode:'online',prefer:[{day:2,hour:18},{day:4,hour:18}],preferLabel:'週三五晚上 18:00–19:00',waitDays:2,expiryDate:'2026-08-29',priority:2},
+  {id:'std4',name:'陳建宏',lang:'中文',classType:'一對一',level:'Lv.6',campus:'羅斯福',mode:'online',prefer:[{day:4,hour:20}],preferLabel:'週五晚上 20:00–21:00',note:'原課程因李老師請假順延，需優先安排',waitDays:1,expiryDate:'2026-09-05',priority:1},
+  {id:'std5',name:'黃冠霖',lang:'中文',classType:'一對一',level:'Lv.3',campus:'士林',mode:'onsite',prefer:[{day:1,hour:19},{day:3,hour:19}],preferLabel:'週二四晚上 19:00–20:00',waitDays:3,expiryDate:'2026-09-20',priority:2},
+  {id:'std6',name:'李文彬',lang:'中文',classType:'一對一',level:'Lv.5',campus:'羅斯福',mode:'onsite',prefer:[{day:0,hour:14}],preferLabel:'週一下午 14:00–15:00',waitDays:5,expiryDate:'2026-09-10',priority:2}
 ];
 var PRIORITY_LABEL={1:'高',2:'中',3:'低'};
 var queueChipOverdue=false;
-var queueIds=ALL_STUDENTS.map(function(s){return s.id;});
+var queueIds=ALL_STUDENTS.filter(function(s){return s.mode==='online';}).map(function(s){return s.id;});
 var selectedStudentId=null;
 var pendingList=[]; // {studentId, teacherId, day, hour}
+
+// ================= 實體課（校區／教室資源維度，二階段） =================
+var PHYSICAL_CLASSES=[
+  {id:'px1',name:'士林實體團體班・生活會話（初級）',lang:'中文',day:1,hour:19,dur:1,teacher:'t1',campus:'士林',room:'r1',capacity:8,roster:['王小明','林佳穎','Kevin Wu','張雅婷','李文彬']},
+  {id:'px2',name:'羅斯福實體團體班・商用會話（中高級）',lang:'中文',day:3,hour:19,dur:1,teacher:'t2',campus:'羅斯福',room:'r3',capacity:10,roster:['王大同','陳建宏','黃冠霖']},
+  {id:'px3',name:'台中實體團體班・日文 N3',lang:'日文',day:2,hour:18,dur:1,teacher:'t4',campus:'台中',room:'r4',capacity:8,roster:['Sophie Lin','林思妤']}
+];
+function physicalById(id){return PHYSICAL_CLASSES.find(function(c){return c.id===id;});}
+var onsiteCampus='羅斯福';
+var onsiteQueueIds=ALL_STUDENTS.filter(function(s){return s.mode==='onsite';}).map(function(s){return s.id;});
+var onsiteSelectedStudentId=null;
+var onsitePendingList=[]; // {studentId, teacherId, day, hour}
 
 // 直播制（彈性團體直播）：開班班表 + 固定色塊週曆
 var FLEX_CLASSES=[
@@ -814,6 +906,198 @@ function tliRenderCalendar(){
   document.getElementById('calendarWrap').innerHTML=html;
 }
 
+// ================= 實體課 render／互動 =================
+function tliSwitchTopMode(mode){
+  document.querySelectorAll('#topModePills button').forEach(function(b){b.classList.toggle('active', b.dataset.topmode===mode);});
+  document.getElementById('onlinePanelWrap').classList.toggle('active', mode==='online');
+  document.getElementById('onsitePanelWrap').classList.toggle('active', mode==='onsite');
+  try{localStorage.setItem('tliC07TopMode',mode);}catch(e){}
+  if(mode==='onsite'){ renderOnsitePanel(); }
+}
+function tliSelectOnsiteCampus(campus){
+  onsiteCampus=campus;
+  document.querySelectorAll('#campusChips button').forEach(function(b){b.classList.toggle('active', b.dataset.campus===campus);});
+  onsiteSelectedStudentId=null;
+  document.getElementById('onsiteSuggestCard').style.display='none';
+  renderOnsitePanel();
+}
+function onsiteStudentsOfCampus(){
+  return ALL_STUDENTS.filter(function(s){return s.mode==='onsite' && onsiteQueueIds.indexOf(s.id)>-1 && s.campus===onsiteCampus;});
+}
+function renderOnsiteQueue(){
+  var q=onsiteStudentsOfCampus();
+  var kwEl=document.getElementById('onsiteQueueSearch');
+  var kw=(kwEl?kwEl.value:'').trim().toLowerCase();
+  if(kw){ q=q.filter(function(s){return (s.name+' '+s.lang+' '+s.level).toLowerCase().indexOf(kw)>-1;}); }
+  var sortEl=document.getElementById('onsiteQueueSort');
+  var sortBy=sortEl?sortEl.value:'roomAvail';
+  q=q.slice().sort(function(a,b){
+    if(sortBy==='roomAvail'){
+      var av=function(s){return s.prefer.filter(function(slot){return !isRoomFullForCampus(s.campus,slot);}).length;};
+      return av(b)-av(a);
+    }
+    if(sortBy==='waitDesc') return (b.waitDays||0)-(a.waitDays||0);
+    if(sortBy==='expiryAsc') return (a.expiryDate||'').localeCompare(b.expiryDate||'');
+    if(sortBy==='priority') return (a.priority||9)-(b.priority||9);
+    return 0;
+  });
+  document.getElementById('onsiteQueueCount').textContent=q.length+' 筆';
+  var box=document.getElementById('onsiteQueue');
+  if(!q.length){box.innerHTML='<div class="queueEmpty">此校區目前沒有待排課的實體學生。</div>';return;}
+  box.innerHTML=q.map(function(s){
+    var roomOk=s.prefer.some(function(slot){return !isRoomFullForCampus(s.campus,slot);});
+    return '<div class="queue-item'+(s.id===onsiteSelectedStudentId?' selected':'')+'" onclick="tliSelectOnsiteStudent(\''+s.id+'\')">'+
+      '<div class="name">'+s.name+'</div>'+
+      '<div class="meta">'+s.lang+'・'+s.classType+'・'+s.level+'／'+s.campus+'校（實體）<br>偏好：'+s.preferLabel+'</div>'+
+      '<div class="waitmeta"><span>等待 <b>'+s.waitDays+'</b> 天</span><span>課時到期 <b>'+s.expiryDate+'</b></span><span>教室 <b style="color:'+(roomOk?'var(--secondary)':'var(--danger)')+'">'+(roomOk?'可用':'目前已滿')+'</b></span></div>'+
+    '</div>';
+  }).join('');
+}
+function tliSelectOnsiteStudent(id){
+  onsiteSelectedStudentId=id;
+  renderOnsiteQueue();
+  renderOnsiteSuggestions(studentById(id));
+}
+function renderOnsiteSuggestions(student){
+  var card=document.getElementById('onsiteSuggestCard');
+  var list=document.getElementById('onsiteSuggestList');
+  var cands=TEACHERS.filter(function(t){return t.lang===student.lang && t.campus===student.campus;}).map(function(t){
+    var overlap=student.prefer.filter(function(slot){return (TEACHER_OPEN[t.id]||[]).some(function(o){return o.day===slot.day&&o.hour===slot.hour;});});
+    if(!overlap.length)return null;
+    var scored=overlap.map(function(slot){
+      var teacherBusy=isBooked(t.id,slot);
+      var roomFull=isRoomFullForCampus(t.campus,slot);
+      var room=pickRoom(t.campus,slot);
+      return {slot:slot,teacherBusy:teacherBusy,roomFull:roomFull,room:room,conflict:teacherBusy||roomFull};
+    });
+    var avail=scored.filter(function(s){return !s.conflict;});
+    var chosen=avail[0]||scored[0];
+    return {teacher:t,overlapCount:overlap.length,chosen:chosen};
+  }).filter(function(c){return !!c;});
+  cands.sort(function(a,b){
+    var ra=a.chosen.conflict?0:1, rb=b.chosen.conflict?0:1;
+    if(ra!==rb)return rb-ra;
+    if(a.overlapCount!==b.overlapCount)return b.overlapCount-a.overlapCount;
+    if(a.teacher.level!==b.teacher.level)return b.teacher.level-a.teacher.level;
+    return a.teacher.name.localeCompare(b.teacher.name,'zh-Hant');
+  });
+  cands=cands.slice(0,3);
+  if(!cands.length){
+    card.style.display='';
+    list.innerHTML='<div class="empty">此校區找不到同語言、時段吻合的老師，建議調整偏好時段或改為顧問手動指派。</div>';
+    return;
+  }
+  card.style.display='';
+  list.innerHTML=cands.map(function(c){
+    var t=c.teacher, conflict=c.chosen.conflict, room=c.chosen.room?roomById(c.chosen.room):null;
+    return '<div class="sugg-card'+(conflict?' conflict':'')+'">'+
+      '<div class="sugg-head"><b>'+t.name+'</b><span class="badge muted">T'+t.level+'／'+t.years+'年／'+t.campus+'</span></div>'+
+      '<div class="sugg-time">'+slotLabel(c.chosen.slot)+'</div>'+
+      '<div class="sugg-reason">時段重合 '+c.overlapCount+'／'+student.prefer.length+'・教室'+(conflict?'（該時段已滿）':'可用：'+(room?room.name:'－'))+'</div>'+
+      (conflict?'<div class="sugg-conflict"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M12 3.5 22 20.5H2z"/><line x1="12" y1="9.5" x2="12" y2="14"/><line x1="12" y1="16.7" x2="12" y2="16.9"/></svg> 此時段教室或老師已被排定，建議改選其他時段</div>':'')+
+      '<button class="btn sm '+(conflict?'':'primary')+'" '+(conflict?'disabled':'')+' onclick="tliChooseOnsiteCandidate(\''+student.id+'\',\''+t.id+'\','+c.chosen.slot.day+','+c.chosen.slot.hour+')">'+(conflict?'教室已滿，請改選':'加入教室日曆（預排）')+'</button>'+
+    '</div>';
+  }).join('');
+}
+function tliChooseOnsiteCandidate(studentId,teacherId,day,hour){
+  var exists=onsitePendingList.some(function(p){return p.teacherId===teacherId&&p.day===day&&p.hour===hour;});
+  if(!exists)onsitePendingList.push({studentId:studentId,teacherId:teacherId,day:day,hour:hour});
+  renderOnsiteRoomCal();
+  var btn=document.getElementById('onsiteConfirmBtn');
+  btn.style.display='';
+  btn.textContent='確認排課（'+onsitePendingList.length+' 堂）';
+  tliToast('已加入教室日曆預排：'+studentById(studentId).name+' → '+teacherById(teacherId).name+' '+slotLabel({day:day,hour:hour})+'（尚未送出，請確認後按「確認排課」）');
+}
+function tliConfirmOnsiteSchedule(){
+  if(!onsitePendingList.length)return;
+  var summaries=onsitePendingList.map(function(p){
+    var t=teacherById(p.teacherId);
+    var roomId=pickRoom(t.campus,{day:p.day,hour:p.hour});
+    BOOKINGS.push({teacher:p.teacherId,room:roomId,day:p.day,hour:p.hour,label:t.name+'・'+studentById(p.studentId).name+'（實體）'});
+    return studentById(p.studentId).name+' → '+t.name+' '+(roomById(roomId)?roomById(roomId).name:'')+' '+slotLabel({day:p.day,hour:p.hour});
+  });
+  var doneIds=onsitePendingList.map(function(p){return p.studentId;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+  onsiteQueueIds=onsiteQueueIds.filter(function(id){return doneIds.indexOf(id)===-1;});
+  onsitePendingList=[];
+  onsiteSelectedStudentId=null;
+  document.getElementById('onsiteSuggestCard').style.display='none';
+  document.getElementById('onsiteConfirmBtn').style.display='none';
+  renderOnsiteQueue();
+  renderOnsiteRoomCal();
+  tliToast('已確認排課，已通知學生與老師：\n'+summaries.join('\n'));
+}
+function renderOnsiteRoomOptions(){
+  var sel=document.getElementById('onsiteRoomSelect');
+  var keep=sel.value;
+  var rooms=roomsOfCampus(onsiteCampus);
+  sel.innerHTML=rooms.map(function(r){return '<option value="'+r.id+'">'+r.name+'（容納 '+r.capacity+' 人）</option>';}).join('');
+  var opts=Array.prototype.map.call(sel.options,function(o){return o.value;});
+  sel.value = opts.indexOf(keep)>-1 ? keep : (rooms[0]?rooms[0].id:'');
+}
+function renderOnsiteRoomCal(){
+  document.getElementById('onsiteCampusLabel').textContent=' '+onsiteCampus+'校';
+  var sel=document.getElementById('onsiteRoomSelect');
+  var roomId=sel.value;
+  if(!roomId){document.getElementById('onsiteRoomCalWrap').innerHTML='<div class="empty">此校區尚未設定教室。</div>';return;}
+  var html='<table class="cal"><thead><tr><th></th>'+WEEK_DAYS.map(function(d){return '<th>'+d.label+'</th>';}).join('')+'</tr></thead><tbody>';
+  HOURS.forEach(function(h){
+    html+='<tr><th>'+h+':00</th>';
+    WEEK_DAYS.forEach(function(d){
+      var cls='cell',text='空堂';
+      var pend=onsitePendingList.find(function(p){
+        var t=teacherById(p.teacherId);
+        return p.day===d.i && p.hour===h && pickRoom(t.campus,{day:p.day,hour:p.hour})===roomId;
+      });
+      var booking=BOOKINGS.find(function(b){return b.room===roomId&&b.day===d.i&&b.hour===h;});
+      if(pend){cls+=' pending';text='預排：'+studentById(pend.studentId).name;}
+      else if(booking){cls+=' booked';text=booking.label;}
+      else{cls+=' avail';}
+      html+='<td class="'+cls+'">'+text+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById('onsiteRoomCalWrap').innerHTML=html;
+}
+function renderOnsiteTeachers(){
+  var list=TEACHERS.filter(function(t){return t.campus===onsiteCampus;});
+  var box=document.getElementById('onsiteTeacherList');
+  if(!list.length){box.innerHTML='<div class="empty">此校區暫無登記可到校授課老師。</div>';return;}
+  box.innerHTML=list.map(function(t){
+    return '<div class="queue-item" style="cursor:default;"><div class="name">'+t.name+'</div><div class="meta">'+t.lang+'・等級 T'+t.level+'・年資 '+t.years+' 年</div></div>';
+  }).join('');
+}
+function renderOnsiteClasses(){
+  var list=PHYSICAL_CLASSES.filter(function(c){return c.campus===onsiteCampus;});
+  document.getElementById('onsiteClassCount').textContent=list.length+' 班';
+  if(!list.length){
+    document.getElementById('onsiteClassTable').innerHTML='<thead><tr><th>班級</th><th>上課時段</th><th>授課老師</th><th>教室</th><th>名額</th><th></th></tr></thead><tbody><tr><td colspan="6" class="queueEmpty">此校區目前沒有實體班型。</td></tr></tbody>';
+    return;
+  }
+  var rows=list.map(function(c){
+    var t=c.teacher?teacherById(c.teacher):null;
+    var r=roomById(c.room);
+    var full=c.roster.length>=c.capacity;
+    var pct=Math.round(c.roster.length/c.capacity*100);
+    return '<tr>'+
+      '<td>'+c.name+'</td>'+
+      '<td>'+slotLabel({day:c.day,hour:c.hour})+'</td>'+
+      '<td>'+(t?t.name:'未指派')+'</td>'+
+      '<td>'+(r?r.name:'－')+'</td>'+
+      '<td><span class="cap-bar'+(full?' full':'')+'"><i style="width:'+pct+'%"></i></span>'+c.roster.length+'／'+c.capacity+'</td>'+
+      '<td><button class="btn sm" onclick="tliOpenRoster(\''+c.id+'\')">入班名單</button></td>'+
+    '</tr>';
+  }).join('');
+  document.getElementById('onsiteClassTable').innerHTML='<thead><tr><th>班級</th><th>上課時段</th><th>授課老師</th><th>教室</th><th>名額</th><th></th></tr></thead><tbody>'+rows+'</tbody>';
+}
+function renderOnsitePanel(){
+  renderOnsiteQueue();
+  renderOnsiteRoomOptions();
+  renderOnsiteRoomCal();
+  renderOnsiteTeachers();
+  renderOnsiteClasses();
+}
+
 // 深連結：從今日待辦點「待排課學生」或「老師請假待處理」進來
 (function deepLink(){
   var student=qs('student'), teacher=qs('teacher');
@@ -822,14 +1106,30 @@ function tliRenderCalendar(){
     renderViewTargetOptions();
     document.getElementById('viewTarget').value=teacher;
   }
-  if(student && queueIds.indexOf(student)>-1){
-    setTimeout(function(){tliSelectStudent(student);},0);
+  if(student){
+    if(queueIds.indexOf(student)>-1){
+      setTimeout(function(){tliSelectStudent(student);},0);
+    }else if(onsiteQueueIds.indexOf(student)>-1){
+      var os=studentById(student);
+      setTimeout(function(){
+        tliSwitchTopMode('onsite');
+        tliSelectOnsiteCampus(os.campus);
+        tliSelectOnsiteStudent(student);
+      },0);
+    }
   }
 })();
 
 renderQueue();
 renderViewTargetOptions();
 tliRenderCalendar();
+
+(function initTopMode(){
+  var saved=null; try{ saved=localStorage.getItem('tliC07TopMode'); }catch(e){}
+  var qsMode=qs('mode');
+  var mode = (qsMode==='onsite'||qsMode==='online') ? qsMode : (saved||'online');
+  tliSwitchTopMode(mode);
+})();
 
 // ================= 直播制（彈性團體直播） =================
 function tliSwitchSchedMode(mode){
@@ -918,10 +1218,11 @@ function tliAssignFlexTeacher(classId,teacherId){
   renderFlexCal();
 }
 function tliOpenRoster(classId){
-  var c=flexById(classId);
+  var c=flexById(classId)||physicalById(classId);
   document.getElementById('rosterTitle').textContent=c.name;
   var t=c.teacher?teacherById(c.teacher).name+'（'+teacherById(c.teacher).campus+'）':'尚未指派';
-  document.getElementById('rosterMeta').textContent=slotLabel({day:c.day,hour:c.hour})+'　｜　授課老師：'+t+'　｜　'+c.roster.length+'／'+c.capacity+' 人';
+  var roomTxt=c.room?('　｜　教室：'+(roomById(c.room)?roomById(c.room).name:c.room)):'';
+  document.getElementById('rosterMeta').textContent=slotLabel({day:c.day,hour:c.hour})+'　｜　授課老師：'+t+roomTxt+'　｜　'+c.roster.length+'／'+c.capacity+' 人';
   document.getElementById('rosterBody').innerHTML=c.roster.map(function(name){
     return '<div class="roster-row"><span>'+name+'</span><button class="btn sm" onclick="tliToast(\'已將 '+name+' 移出名單\')">移除</button></div>';
   }).join('')+'<button class="btn sm" style="margin-top:12px;width:100%;justify-content:center;" onclick="tliToast(\'已開啟加入候補名單\')">＋ 加入候補學生</button>';
