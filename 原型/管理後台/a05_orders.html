@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>訂單｜TLI Connect 3.0 管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);padding:18px 0;
+border-right:1px solid var(--g200);display:flex;flex-direction:column;transition:width .15s;
+position:sticky;top:0;height:100vh;align-self:flex-start;}
+.sidebar .brand{padding:0 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;}
+.sidebar .brand-logo{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:0;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;}
+.sidebar nav a,.sidebar nav span.disabled{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;
+color:var(--g900);text-decoration:none;position:relative;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar .sec-label{padding:16px 20px 4px;font-size:10.5px;color:var(--g500);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.danger{background:#C0392B;}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:100;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+/* ---- 訂單列表專用 ---- */
+.toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.searchbox{flex:1;min-width:220px;max-width:360px;position:relative;}
+.searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;
+font-size:13px;font-family:inherit;box-sizing:border-box;}
+.searchbox .sicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--g500);font-size:13px;}
+.toolbtns{display:flex;gap:8px;flex-wrap:wrap;}
+.chipbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:12px;
+background:var(--g50);border:1px solid var(--g200);border-radius:8px;}
+.chipgroup{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.chipgroup .glabel{font-size:11.5px;color:var(--g500);margin-right:2px;}
+.fchip{padding:5px 12px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;
+cursor:pointer;font-family:inherit;color:var(--g900);}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.daterange{display:flex;align-items:center;gap:6px;}
+.daterange input{padding:5px 7px;border:1px solid var(--g200);border-radius:6px;font-size:12px;font-family:inherit;}
+.clearlink{font-size:12px;color:var(--navy);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit;padding:0;}
+.sortable{cursor:pointer;user-select:none;}
+.sortable .sarrow{font-size:10px;color:var(--g200);margin-left:3px;}
+.sortable.sorted .sarrow{color:var(--navy);}
+.batchbar{display:none;align-items:center;gap:10px;background:#EEF3FA;border:1px solid #c7d3e6;
+border-radius:8px;padding:9px 14px;margin-bottom:10px;font-size:13px;flex-wrap:wrap;}
+.batchbar.show{display:flex;}
+.batchbar .bcount{font-weight:600;color:var(--navy);}
+.pagerbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;
+color:var(--g500);flex-wrap:wrap;gap:10px;}
+.pagerbtns{display:flex;gap:6px;align-items:center;}
+.pagerbtns button{padding:5px 10px;border:1px solid var(--g200);background:#fff;border-radius:6px;
+font-size:12.5px;cursor:pointer;font-family:inherit;}
+.pagerbtns button:disabled{color:var(--g200);cursor:not-allowed;}
+.pagerbtns select{padding:5px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+/* ---- 右側訂單詳情抽屜（較寬，容納分頁表格） ---- */
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:680px;max-width:94vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 24px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 24px 40px;}
+/* ---- 批次匯入訂單精靈 ---- */
+.wizsteps{display:flex;gap:6px;margin-bottom:18px;}
+.wizsteps span{flex:1;text-align:center;padding:6px 4px;font-size:11.5px;border-bottom:3px solid var(--g200);color:var(--g500);}
+.wizsteps span.active{border-color:var(--navy);color:var(--navy);font-weight:600;}
+.wizsteps span.done{border-color:var(--teal);color:var(--teal);}
+.dropzone{border:2px dashed var(--g200);border-radius:8px;padding:34px 16px;text-align:center;cursor:pointer;color:var(--g500);font-size:13px;}
+.dropzone:hover{border-color:var(--navy);color:var(--navy);}
+.dropzone.filled{border-color:var(--teal);color:var(--teal);background:#F5FBF9;}
+.maprow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;}
+.maprow .mlbl{width:120px;flex-shrink:0;color:var(--g500);}
+.maprow select{flex:1;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+.previewrow-err{background:#FBE7E7;}
+.wizfoot{display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--g200);}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;text-align:center;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.pickrow{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--g200);font-size:13px;cursor:pointer;}
+.pickrow:hover{background:var(--g50);}
+.pickrow.selected{background:#EEF3FA;}
+.pickrow .pname{font-weight:600;}
+.pickrow .pmeta{color:var(--g500);font-size:12px;}
+.planbox{border:1px solid var(--g200);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;}
+.planbox.selected{border-color:var(--navy);background:#EEF3FA;}
+.planbox .pn{font-weight:600;font-size:13.5px;}
+.planbox .pd{font-size:12px;color:var(--g500);margin-top:2px;}
+/* ---- 共用：頂欄與側欄使用者卡 ---- */
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;position:relative;}
+.su-clickarea{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-info{flex:1;min-width:0;}
+.su-name,.su-unit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.5;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-roletag{font-size:10.5px;background:#E6EEF8;color:var(--navy);padding:0 6px;border-radius:8px;display:inline-block;width:fit-content;white-space:nowrap;}
+.sidebar-user .su-unit{font-size:11px;color:var(--g500);}
+.su-menu{top:auto;bottom:64px;left:14px;right:14px;position:absolute;background:#fff;border:1px solid var(--g200);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;display:none;}
+.su-menu.open{display:block;}
+.su-roleswitch,.su-campusswitch{margin:8px 0 0;font-size:11px;color:var(--g500);}
+.su-roleswitch select,.su-campusswitch select{width:100%;margin-top:3px;padding:5px 7px;border:1px solid var(--g200);
+border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+/* ---- RWD ---- */
+@media (max-width:1279px) and (min-width:1024px){
+  .sidebar{width:72px;}
+  .sidebar .navtext{position:absolute;left:100%;top:50%;transform:translateY(-50%);background:#fff;
+    border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:nowrap;
+    box-shadow:0 4px 12px rgba(16,24,40,.12);opacity:0;pointer-events:none;transition:opacity .12s;margin-left:6px;color:var(--g900);}
+  .sidebar nav a:hover .navtext{opacity:1;}
+  .sidebar .brand{align-items:center;overflow:hidden;}
+  .sidebar .brand-logo{max-width:100%;width:32px;height:28px;object-fit:cover;object-position:left center;flex-shrink:0;}
+  .sidebar .brand-text{display:none;}
+  .sidebar .brand small{display:none;}
+  .sidebar-user{justify-content:center;}
+  .sidebar-user .navtext{display:none;}
+}
+@media (max-width:1023px){
+  .hamburger{display:inline-flex;}
+  .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;transition:left .2s;}
+  .sidebar.open{left:0;}
+  .sidebar-backdrop.open{display:block;}
+  .app{width:100%;}
+  .main{padding:16px 16px 40px;}
+  .topbar{padding:0 16px;margin:-16px -16px 18px;}
+  .tb-search{display:none;}
+  .drawer{width:100%;max-width:100%;}
+}
+</style>
+<style>
+/* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
+#sidebar{padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#sidebar .brand{padding:16px 20px 14px;}
+#sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;}
+#sidebar .brand small{margin-top:12px;font-size:12px;color:var(--g500);text-transform:none;letter-spacing:0;font-weight:400;}
+#sidebar .brand-text{display:none;}
+#sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;scrollbar-width:thin;}
+#sidebar nav::-webkit-scrollbar{width:6px;}
+#sidebar nav::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+#sidebar nav a,#sidebar nav span.disabled{align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;font-size:14px;}
+#sidebar .navgroup .sec-label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 12px;margin:20px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+#sidebar .navgroup:first-child .sec-label{margin-top:8px;}
+#sidebar .sec-toggle{background:none;border:none;padding:2px;margin:0;cursor:pointer;color:var(--g500);display:flex;align-items:center;line-height:1;flex-shrink:0;}
+#sidebar .sec-toggle svg{transition:transform .15s;display:block;}
+#sidebar .navgroup.collapsed .sec-toggle svg{transform:rotate(-90deg);}
+#sidebar .navgroup-items{overflow:hidden;}
+#sidebar .navgroup.collapsed .navgroup-items{display:none;}
+#sidebar .sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+#sidebar .su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+#sidebar .su-row .su-avatar{flex-shrink:0;width:36px;height:36px;}
+#sidebar .su-row .su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+#sidebar .su-row .su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#sidebar .su-row .su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+#sidebar .su-row .su-chevron{color:var(--g500);flex-shrink:0;}
+#sidebar .su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+#sidebar .su-menu .su-roleswitch,#sidebar .su-menu .su-campusswitch{margin:6px 4px 2px;font-size:11px;color:var(--g500);}
+#sidebar .su-menu .su-roleswitch select,#sidebar .su-menu .su-campusswitch select{width:100%;margin-top:3px;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--g900);}
+@media (max-width:1279px) and (min-width:1024px){
+  #sidebar{width:72px;}
+  #sidebar .navgroup .sec-label{display:none;}
+  #sidebar .su-row{justify-content:center;}
+  #sidebar .su-menu{left:64px;right:auto;bottom:10px;width:210px;}
+}
+@media (max-width:1023px){
+  #sidebar{width:260px;}
+}
+
+/* ==== 20260826v 容器寬度統一（對齊 a01 基準，覆寫舊版殘留樣式，防止寬內容撐開頁面）==== */
+html,body{overflow-x:hidden;}
+.app{display:flex;min-height:100vh;width:100%;max-width:none;background:#fff;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{padding:0 32px;}
+.pagehead{padding:0;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
+@media (max-width:1023px){
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" class="active" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">訂單</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<div class="pagehead">
+<div><h1>訂單</h1><div class="desc">每筆訂單的付款方式各自獨立選擇，與會員分類無關。「來源」區分 Connect 線上自助下單（付款完成自動成立）與顧問建訂單（校區現場或線上諮詢後由顧問建立並發付款連結）。點列進入訂單詳情，可看收款紀錄、發票、課時與權益入帳、異動歷程。</div></div>
+<div class="toolbtns" style="display:flex;align-items:center;gap:10px">
+<button class="btn ghost" onclick="openOrderImportWizard()">批次匯入</button>
+<a class="btn" href="../顧問工作台/c04_new_order.html?from=orders">＋ 新增訂單</a>
+<span class="small" style="color:var(--g500)">顧問建訂單流程</span>
+</div>
+</div>
+
+<div class="card">
+<div class="toolrow">
+<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="searchInput" placeholder="搜尋訂單編號／學生姓名" oninput="onSearchInput(this)"></div>
+</div>
+
+<div class="chipbar">
+<div class="chipgroup" id="chipStatus"><span class="glabel">狀態：</span></div>
+<div class="chipgroup" id="chipCampus"><span class="glabel">校區：</span></div>
+<div class="chipgroup" id="chipPaymode"><span class="glabel">付款方式：</span></div>
+<div class="chipgroup" id="chipSource"><span class="glabel">來源：</span></div>
+<div class="chipgroup daterange"><span class="glabel">建立日期：</span><input type="date" id="dateFrom" onchange="onDateChange()"> <span class="small">～</span> <input type="date" id="dateTo" onchange="onDateChange()"></div>
+<button class="clearlink" onclick="clearAllFilters()">清除全部篩選</button>
+</div>
+
+<div class="batchbar" id="batchBar">
+<span class="bcount" id="batchCount">已選 0 筆</span>
+<button class="btn ghost" onclick="batchExport()">匯出</button>
+<button class="btn ghost" onclick="openBatchRemind()">發送收款提醒</button>
+</div>
+
+<div class="tablewrap"><table id="orderTable"></table></div>
+
+<div class="pagerbar">
+<span id="pagerLabel"></span>
+<div class="pagerbtns">
+<span class="small">每頁</span>
+<select id="pageSizeSel" onchange="onPageSizeChange(this)"><option value="50">50</option><option value="100">100</option></select>
+<span class="small">筆</span>
+<button onclick="gotoPage(1)" id="btnFirst">« 第一頁</button>
+<button onclick="gotoPage(currentPage-1)" id="btnPrev">‹ 上一頁</button>
+<span id="pageIndicator" class="small"></span>
+<button onclick="gotoPage(currentPage+1)" id="btnNext">下一頁 ›</button>
+<button onclick="gotoPage(totalPagesNow())" id="btnLast">最後一頁 »</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- 訂單詳情抽屜 -->
+<div class="drawer-mask" id="odDrawerMask" onclick="closeOrderDrawer()"></div>
+<div class="drawer" id="odDrawer">
+<div class="drawer-head">
+<div><h2 id="od_title">訂單詳情</h2><div class="small" id="od_sub"></div></div>
+<button class="drawer-close" onclick="closeOrderDrawer()"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4.5" y1="4.5" x2="15.5" y2="15.5"/><line x1="15.5" y1="4.5" x2="4.5" y2="15.5"/></svg></button>
+</div>
+<div class="drawer-body">
+<div id="od_statusrow" style="margin-bottom:12px"></div>
+<div class="tabs" id="od_tabs">
+<button class="active" onclick="odTab(this,'items')">明細</button>
+<button onclick="odTab(this,'pay')">收款紀錄</button>
+<button onclick="odTab(this,'invoice')">發票</button>
+<button onclick="odTab(this,'benefit')">課時與權益入帳</button>
+<button onclick="odTab(this,'history')">異動歷程</button>
+</div>
+<div class="tabpanel active" id="odpanel-items"></div>
+<div class="tabpanel" id="odpanel-pay"></div>
+<div class="tabpanel" id="odpanel-invoice"></div>
+<div class="tabpanel" id="odpanel-benefit"></div>
+<div class="tabpanel" id="odpanel-history"></div>
+</div>
+</div>
+
+<!-- 登記／編輯收款 modal -->
+<div class="modal-mask" id="payModal"><div class="modal">
+<h3 id="payModalTitle">登記收款</h3>
+<div class="formrow"><label>期別名稱</label><input type="text" id="pm_term" placeholder="例：第 1 期"></div>
+<div class="formrow"><label>應收日期</label><input type="date" id="pm_due"></div>
+<div class="formrow"><label>金額</label><input type="number" id="pm_amount" placeholder="0"></div>
+<div class="formrow"><label>收款渠道</label><select id="pm_channel"><option>藍新金流</option><option>Stripe</option><option>刷卡機（現場）</option><option>匯款／現金</option></select></div>
+<div class="formrow"><label>狀態</label><select id="pm_status"><option>已收款</option><option>待收款</option><option>逾期</option></select></div>
+<div class="formrow"><label>對帳狀態</label><select id="pm_recon"><option>未對帳</option><option>已對帳</option></select></div>
+<div style="text-align:right;margin-top:6px"><button class="btn ghost" onclick="closeModal('payModal')">取消</button> <button class="btn" onclick="savePayment()">儲存</button></div>
+</div></div>
+
+<!-- 發票 modal（開立／修改抬頭／作廢／折讓／補開共用） -->
+<div class="modal-mask" id="invModal"><div class="modal">
+<h3 id="invModalTitle">開立發票</h3>
+<div id="invModalBody"></div>
+<div style="text-align:right;margin-top:6px"><button class="btn ghost" onclick="closeModal('invModal')">取消</button> <button class="btn" id="invModalConfirmBtn" onclick="confirmInvoiceAction()">確認</button></div>
+</div></div>
+
+<!-- 發送收款提醒 modal -->
+<div class="modal-mask" id="remindModal"><div class="modal">
+<h3>發送收款提醒</h3>
+<div class="formrow"><label>通知範本</label><select id="remindTmplSel"><option>付款提醒</option><option>逾期催收</option><option>自訂訊息</option></select></div>
+<div class="hint" id="remindHint" style="margin-bottom:10px"></div>
+<div style="text-align:right"><button class="btn ghost" onclick="closeModal('remindModal')">取消</button> <button class="btn" onclick="doBatchRemind()">送出</button></div>
+</div></div>
+
+<!-- 批次匯入訂單精靈 -->
+<div class="modal-mask" id="importOrderModal"><div class="modal wide">
+<h3>批次匯入訂單</h3>
+<div class="wizsteps" id="oiSteps"></div>
+<div id="oiBody"></div>
+</div></div>
+
+<script>
+
+/* ================= 示範資料：學生與方案（供新增訂單／匯入使用） ================= */
+var DEMO_STUDENTS = [
+  {id:'m1', name:'王小明', campus:'羅斯福', tier:'C'},
+  {id:'m2', name:'陳雅婷', campus:'士林', tier:'C'},
+  {id:'m3', name:'林建宏', campus:'台中', tier:'BIP'},
+  {id:'m4', name:'黃詩涵', campus:'高雄', tier:'B'},
+  {id:'m5', name:'張家瑜', campus:'羅斯福', tier:'G'},
+  {id:'m6', name:'吳柏勳', campus:'士林', tier:'C'},
+  {id:'m7', name:'許雅筑', campus:'台中', tier:'C'},
+  {id:'m8', name:'蕭承恩', campus:'高雄', tier:'BIP'},
+  {id:'m9', name:'潘思妤', campus:'羅斯福', tier:'C'},
+  {id:'m10', name:'羅冠霖', campus:'士林', tier:'G'},
+  {id:'m11', name:'高詩涵', campus:'台中', tier:'C'},
+  {id:'m12', name:'江宗翰', campus:'高雄', tier:'C'}
+];
+var DEMO_PLANS = [
+  {id:'p1', name:'日常會話學期班 Lv.5–8 一期方案', amount:32000, tax:'免稅', mode:'預約制'},
+  {id:'p2', name:'商務會話彈性堂數包（20 堂）', amount:19800, tax:'免稅', mode:'預約制'},
+  {id:'p3', name:'中文一對一 50 分鐘（10 堂）', amount:16500, tax:'免稅', mode:'預約制'},
+  {id:'p4', name:'直播制小組班・日常對話（12 週）', amount:21000, tax:'免稅', mode:'直播制'},
+  {id:'p5', name:'原文教材套組（中級）', amount:3500, tax:'應稅', mode:'實體（舊網站）'},
+  {id:'p6', name:'文化體驗活動－茶道體驗', amount:1800, tax:'應稅', mode:'實體（舊網站）'}
+];
+var CAMPUSES = ['羅斯福','士林','台中','高雄'];
+var STATUSES = ['待收款','分期中','已完成','已取消'];
+var PAYMODES = ['一次付清','訂金＋尾款','分期','月結'];
+var SOURCES = ['Connect 線上自助下單','顧問建訂單'];
+var CHANNELS = ['藍新金流','Stripe','刷卡機（現場）','匯款／現金'];
+var ADVISORS_LIST = ['顧問 A','顧問 B','顧問 C','顧問 D'];
+var CURRENT_STAFF = '王大明';
+
+function seededRand(seed){ var x = Math.sin(seed*9301+49297)*233280; return x - Math.floor(x); }
+function addDays(baseStr, days){ var d = new Date(baseStr+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function padNum(n, len){ var s=String(n); while(s.length<len) s='0'+s; return s; }
+function money(n){ return 'NT$ '+Number(n).toLocaleString(); }
+
+/* ================= 訂單資料生成（示範：2,400 餘筆訂單，代表大量真實資料規模） ================= */
+var TOTAL_SEED = 2437;
+var ORDERS = [];
+function buildPaymentsFor(mode, total, baseDate, status){
+  var pays = [];
+  if (mode === '一次付清'){
+    pays.push({id:'py0', term:'全額', due:baseDate, amount:total, status: status==='待收款'?'待收款':'已收款', channel:CHANNELS[Math.floor(seededRand(total+1)*4)], recon: status==='已收款'?'已對帳':'未對帳'});
+  } else if (mode === '訂金＋尾款'){
+    var dep = Math.round(total*0.3);
+    pays.push({id:'py0', term:'訂金', due:baseDate, amount:dep, status:'已收款', channel:CHANNELS[0], recon:'已對帳'});
+    pays.push({id:'py1', term:'尾款', due:addDays(baseDate,14), amount:total-dep, status: status==='待收款'?'待收款':'已收款', channel:CHANNELS[1], recon: status==='待收款'?'未對帳':'已對帳'});
+  } else if (mode === '分期'){
+    var n = 3, per = Math.round(total/n);
+    for (var i=0;i<n;i++){
+      var st = i===0 ? '已收款' : (status==='待收款' && i===n-1 ? '待收款' : (i===n-1&&status==='分期中'?'逾期':'已收款'));
+      pays.push({id:'py'+i, term:'第 '+(i+1)+' 期', due:addDays(baseDate, i*30), amount: i===n-1 ? total-per*(n-1) : per, status:st, channel:CHANNELS[i%4], recon: st==='已收款'?'已對帳':'未對帳'});
+    }
+  } else { // 月結
+    for (var j=0;j<2;j++){
+      pays.push({id:'py'+j, term: (7+j)+' 月月結', due:addDays(baseDate, j*30), amount:Math.round(total/2), status: j===0?'已收款':(status==='待收款'?'待收款':'已收款'), channel:'匯款／現金', recon: j===0?'已對帳':'未對帳'});
+    }
+  }
+  return pays;
+}
+function buildInvoicesFor(items, amount, status){
+  if (status === '已取消') return [];
+  var free = items.filter(function(i){return i.tax==='免稅';});
+  var taxed = items.filter(function(i){return i.tax==='應稅';});
+  var out = [];
+  if (free.length){ out.push({id:'iv0', no: status==='待收款' ? '（尚未開立）' : 'AB-'+padNum(12300000+Math.floor(amount),8), kind:'免稅', item:free.map(function(i){return i.name;}).join('、'), amount:free.reduce(function(s,i){return s+i.amount;},0), entity:'中華語文（統編70560259）', status: status==='待收款' ? '待收款後開立':'已開立'}); }
+  if (taxed.length){ out.push({id:'iv1', no: status==='待收款' ? '（尚未開立）' : 'AB-'+padNum(12400000+Math.floor(amount),8), kind:'應稅', item:taxed.map(function(i){return i.name;}).join('、'), amount:taxed.reduce(function(s,i){return s+i.amount;},0), entity:'中華語文（統編70560259）', status: status==='待收款' ? '待收款後開立':'已開立'}); }
+  return out;
+}
+function makeOrder(i){
+  var r1=seededRand(i*7+1), r2=seededRand(i*13+2), r3=seededRand(i*31+3), r4=seededRand(i*53+5), r5=seededRand(i*71+7), r6=seededRand(i*97+11);
+  var stu = DEMO_STUDENTS[i % DEMO_STUDENTS.length];
+  var plan = DEMO_PLANS[Math.floor(r2*DEMO_PLANS.length)];
+  var extra = r3 < 0.25 ? [DEMO_PLANS[(Math.floor(r2*DEMO_PLANS.length)+2)%DEMO_PLANS.length]] : [];
+  var items = [plan].concat(extra).map(function(p){ return {name:p.name, amount:p.amount, tax:p.tax}; });
+  var amount = items.reduce(function(s,x){return s+x.amount;},0);
+  var status = r4 < 0.12 ? '待收款' : r4 < 0.30 ? '分期中' : r4 < 0.93 ? '已完成' : '已取消';
+  var payMode = PAYMODES[Math.floor(r5*4)];
+  var source = r6 < 0.62 ? 'Connect 線上自助下單' : '顧問建訂單';
+  var builder = source==='顧問建訂單' ? ADVISORS_LIST[Math.floor(seededRand(i*41+3)*4)] : '（學生自助下單）';
+  var dayOffset = Math.floor(seededRand(i*17+19)*260);
+  var baseDate = addDays('2025-12-01', dayOffset);
+  return {
+    id:'ORD-2026-'+padNum(1000+i,4),
+    student:stu.name, studentId:stu.id, campus:stu.campus, tier:stu.tier,
+    status:status, amount:amount, payMode:payMode, source:source, builder:builder,
+    created:baseDate,
+    items:items,
+    payments: buildPaymentsFor(payMode, amount, baseDate, status),
+    invoices: buildInvoicesFor(items, amount, status),
+    benefits: items.map(function(it,idx){ return {id:'bn'+idx, item:it.name, qty: it.tax==='免稅' ? '依方案堂數' : '1 份', granted: status!=='待收款' && status!=='已取消', grantedAt: status!=='待收款'&&status!=='已取消' ? addDays(baseDate,1) : ''}; }),
+    history:[{t:baseDate+' 10:00', who: source==='顧問建訂單'?builder:'系統', what:'訂單建立（來源：'+source+(source==='顧問建訂單'?'，建訂單人：'+builder:'')+'），付款方式選擇「'+payMode+'」'}],
+    nextPayId: 100, nextInvId: 100
+  };
+}
+for (var gi=0; gi<TOTAL_SEED; gi++){ ORDERS.push(makeOrder(gi)); }
+var nextOrderSeq = TOTAL_SEED + 1;
+
+function statusBadgeOrd(s){
+  if (s === '已完成') return '<span class="badge green">已完成</span>';
+  if (s === '待收款') return '<span class="badge orange">待收款</span>';
+  if (s === '分期中') return '<span class="badge blue">分期中</span>';
+  return '<span class="badge grey">已取消</span>';
+}
+function sourceBadge(s){ return s==='顧問建訂單' ? '<span class="badge blue">顧問建訂單</span>' : '<span class="badge teal" style="background:#E4F5EE;color:var(--teal)">Connect 自助下單</span>'; }
+
+/* ================= 狀態 ================= */
+var searchTerm = '';
+var filters = {status:[], campus:[], payMode:[], source:[]};
+var dateFrom = '', dateTo = '';
+var sortKey = 'created', sortDir = 'desc';
+var pageSize = 50;
+var currentPage = 1;
+var selectedIds = {};
+
+function getFiltered(){
+  var term = searchTerm.trim().toLowerCase();
+  return ORDERS.filter(function(o){
+    if (term && o.id.toLowerCase().indexOf(term)===-1 && o.student.toLowerCase().indexOf(term)===-1) return false;
+    if (filters.status.length && filters.status.indexOf(o.status)===-1) return false;
+    if (filters.campus.length && filters.campus.indexOf(o.campus)===-1) return false;
+    if (filters.payMode.length && filters.payMode.indexOf(o.payMode)===-1) return false;
+    if (filters.source.length && filters.source.indexOf(o.source)===-1) return false;
+    if (dateFrom && o.created < dateFrom) return false;
+    if (dateTo && o.created > dateTo) return false;
+    return true;
+  });
+}
+function getSorted(list){
+  var copy = list.slice();
+  copy.sort(function(a,b){
+    var va=a[sortKey], vb=b[sortKey];
+    if (va<vb) return sortDir==='asc'?-1:1;
+    if (va>vb) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+  return copy;
+}
+function totalPagesNow(){ var total=getFiltered().length; return Math.max(1, Math.ceil(total/pageSize)); }
+function gotoPage(p){ var max=totalPagesNow(); if(p<1)p=1; if(p>max)p=max; currentPage=p; renderTable(); }
+
+function renderChipBars(){
+  document.getElementById('chipStatus').innerHTML = '<span class="glabel">狀態：</span>' + STATUSES.map(function(s){
+    return '<button type="button" class="fchip'+(filters.status.indexOf(s)>-1?' active':'')+'" onclick="toggleFilter(\'status\',\''+s+'\')">'+s+'</button>';
+  }).join('');
+  document.getElementById('chipCampus').innerHTML = '<span class="glabel">校區：</span>' + CAMPUSES.map(function(c){
+    return '<button type="button" class="fchip'+(filters.campus.indexOf(c)>-1?' active':'')+'" onclick="toggleFilter(\'campus\',\''+c+'\')">'+c+'</button>';
+  }).join('');
+  document.getElementById('chipPaymode').innerHTML = '<span class="glabel">付款方式：</span>' + PAYMODES.map(function(p){
+    return '<button type="button" class="fchip'+(filters.payMode.indexOf(p)>-1?' active':'')+'" onclick="toggleFilter(\'payMode\',\''+p+'\')">'+p+'</button>';
+  }).join('');
+  document.getElementById('chipSource').innerHTML = '<span class="glabel">來源：</span>' + SOURCES.map(function(s){
+    return '<button type="button" class="fchip'+(filters.source.indexOf(s)>-1?' active':'')+'" onclick="toggleFilter(\'source\',\''+s+'\')">'+s+'</button>';
+  }).join('');
+  document.getElementById('dateFrom').value = dateFrom;
+  document.getElementById('dateTo').value = dateTo;
+}
+function toggleFilter(kind, val){
+  var arr = filters[kind]; var idx = arr.indexOf(val);
+  if (idx>-1) arr.splice(idx,1); else arr.push(val);
+  currentPage=1; renderChipBars(); renderTable();
+}
+function onDateChange(){ dateFrom=document.getElementById('dateFrom').value; dateTo=document.getElementById('dateTo').value; currentPage=1; renderTable(); }
+function onSearchInput(el){ searchTerm=el.value; currentPage=1; renderTable(); }
+function clearAllFilters(){
+  searchTerm=''; document.getElementById('searchInput').value='';
+  filters={status:[],campus:[],payMode:[],source:[]};
+  dateFrom=''; dateTo='';
+  currentPage=1; renderChipBars(); renderTable();
+}
+function onSortClick(key){
+  if (sortKey===key){ sortDir = sortDir==='asc'?'desc':'asc'; } else { sortKey=key; sortDir='asc'; }
+  renderTable();
+}
+
+var ORD_COLS = [
+  {key:'id', label:'訂單編號', sortable:true},
+  {key:'student', label:'學生姓名', sortable:true},
+  {key:'campus', label:'校區', sortable:true},
+  {key:'items', label:'商品內容', sortable:false},
+  {key:'amount', label:'金額', sortable:true},
+  {key:'payMode', label:'付款方式', sortable:true},
+  {key:'source', label:'來源', sortable:true},
+  {key:'status', label:'狀態', sortable:true}
+];
+function cellHtml(col, o){
+  switch(col.key){
+    case 'id': return o.id;
+    case 'student': return o.student;
+    case 'campus': return o.campus;
+    case 'items': return o.items.map(function(i){return i.name;}).join('、');
+    case 'amount': return money(o.amount);
+    case 'payMode': return o.payMode;
+    case 'source': return sourceBadge(o.source);
+    case 'status': return statusBadgeOrd(o.status);
+  }
+  return '';
+}
+function renderTable(){
+  var filtered = getFiltered();
+  var sorted = getSorted(filtered);
+  var total = sorted.length;
+  var maxPage = Math.max(1, Math.ceil(total/pageSize));
+  if (currentPage>maxPage) currentPage=maxPage;
+  var startIdx = (currentPage-1)*pageSize;
+  var pageRows = sorted.slice(startIdx, startIdx+pageSize);
+
+  var t = document.getElementById('orderTable');
+  var headCells = '<th style="width:34px"><input type="checkbox" id="selectAllChk" onchange="onSelectAllToggle(this)"></th>' +
+    ORD_COLS.map(function(c){
+      if (!c.sortable) return '<th>'+c.label+'</th>';
+      var arrow = sortKey===c.key ? (sortDir==='asc'?'▲':'▼') : '↕';
+      return '<th class="sortable'+(sortKey===c.key?' sorted':'')+'" onclick="onSortClick(\''+c.key+'\')">'+c.label+' <span class="sarrow">'+arrow+'</span></th>';
+    }).join('');
+  t.innerHTML = '<tr>'+headCells+'</tr>';
+
+  pageRows.forEach(function(o){
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.innerHTML = '<td onclick="event.stopPropagation()"><input type="checkbox" class="rowchk" data-id="'+o.id+'" '+(selectedIds[o.id]?'checked':'')+' onchange="onRowCheck(this)"></td>' +
+      ORD_COLS.map(function(c){ return '<td>'+cellHtml(c,o)+'</td>'; }).join('');
+    tr.addEventListener('click', function(){ openOrderDrawer(o.id); });
+    t.appendChild(tr);
+  });
+
+  var selChk = document.getElementById('selectAllChk');
+  var pageIds = pageRows.map(function(o){return o.id;});
+  selChk.checked = pageIds.length>0 && pageIds.every(function(id){return selectedIds[id];});
+
+  var startLabel = total===0 ? 0 : startIdx+1;
+  var endLabel = Math.min(startIdx+pageSize, total);
+  document.getElementById('pagerLabel').textContent = '第 '+startLabel.toLocaleString()+'–'+endLabel.toLocaleString()+' 筆／共 '+total.toLocaleString()+' 筆';
+  document.getElementById('pageIndicator').textContent = '第 '+currentPage+' / '+maxPage+' 頁';
+  document.getElementById('btnFirst').disabled = currentPage<=1;
+  document.getElementById('btnPrev').disabled = currentPage<=1;
+  document.getElementById('btnNext').disabled = currentPage>=maxPage;
+  document.getElementById('btnLast').disabled = currentPage>=maxPage;
+  document.getElementById('pageSizeSel').value = String(pageSize);
+  renderBatchBar();
+}
+function onPageSizeChange(el){ pageSize=Number(el.value); currentPage=1; renderTable(); }
+
+function onRowCheck(el){
+  var id = el.dataset.id;
+  if (el.checked) selectedIds[id]=true; else delete selectedIds[id];
+  renderBatchBar();
+  var selChk = document.getElementById('selectAllChk');
+  var pageIds = Array.from(document.querySelectorAll('.rowchk')).map(function(c){return c.dataset.id;});
+  selChk.checked = pageIds.length>0 && pageIds.every(function(id){return selectedIds[id];});
+}
+function onSelectAllToggle(el){
+  var chks = document.querySelectorAll('.rowchk');
+  chks.forEach(function(c){ c.checked=el.checked; if(el.checked) selectedIds[c.dataset.id]=true; else delete selectedIds[c.dataset.id]; });
+  renderBatchBar();
+}
+function selectedCount(){ return Object.keys(selectedIds).length; }
+function renderBatchBar(){
+  var bar = document.getElementById('batchBar');
+  var n = selectedCount();
+  bar.classList.toggle('show', n>0);
+  document.getElementById('batchCount').textContent = '已選 '+n+' 筆';
+}
+function batchExport(){ toast('已產生匯出檔案，共 '+selectedCount()+' 筆，請至下載中心取得'); }
+function openBatchRemind(){ document.getElementById('remindHint').textContent='將發送給目前已選取的 '+selectedCount()+' 筆訂單的學生。'; document.getElementById('remindModal').classList.add('open'); }
+function doBatchRemind(){
+  var n = selectedCount(); var tmpl = document.getElementById('remindTmplSel').value;
+  closeModal('remindModal');
+  toast('通知「'+tmpl+'」已排入發送佇列，共 '+n+' 筆');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+/* ================= 訂單詳情抽屜 ================= */
+var currentOrderId = null;
+function findOrder(id){ return ORDERS.find(function(x){return x.id===id;}); }
+function openOrderDrawer(id){
+  currentOrderId = id;
+  var o = findOrder(id);
+  document.getElementById('od_title').textContent = o.id + '　' + o.student;
+  document.getElementById('od_sub').textContent = o.campus+'校｜'+o.tier+' 類｜來源：'+o.source+(o.source==='顧問建訂單'?'（建訂單人：'+o.builder+'）':'')+'｜建立於 '+o.created;
+  document.getElementById('od_statusrow').innerHTML = statusBadgeOrd(o.status)+' '+sourceBadge(o.source);
+  document.querySelectorAll('#od_tabs button').forEach(function(b,i){ b.classList.toggle('active', i===0); });
+  document.querySelectorAll('.drawer-body .tabpanel').forEach(function(p,i){ p.classList.toggle('active', p.id==='odpanel-items'); });
+  renderOdItems(o); renderOdPay(o); renderOdInvoice(o); renderOdBenefit(o); renderOdHistory(o);
+  document.getElementById('odDrawerMask').classList.add('open');
+  document.getElementById('odDrawer').classList.add('open');
+}
+function closeOrderDrawer(){
+  document.getElementById('odDrawerMask').classList.remove('open');
+  document.getElementById('odDrawer').classList.remove('open');
+  currentOrderId = null;
+}
+function odTab(btn, name){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.drawer-body .tabpanel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('odpanel-'+name).classList.add('active');
+}
+function refreshOdPanels(){ var o=findOrder(currentOrderId); if(!o) return; renderOdPay(o); renderOdInvoice(o); renderOdBenefit(o); renderOdHistory(o); }
+
+function renderOdItems(o){
+  document.getElementById('odpanel-items').innerHTML =
+    '<div class="tablewrap"><table><tr><th>品項</th><th>金額</th><th>稅別</th></tr>' +
+    o.items.map(function(i){return '<tr><td>'+i.name+'</td><td>'+money(i.amount)+'</td><td>'+(i.tax==='免稅'?'<span class="badge green">免稅</span>':'<span class="badge orange">應稅</span>')+'</td></tr>';}).join('') +
+    '<tr><td><b>合計</b></td><td><b>'+money(o.amount)+'</b></td><td></td></tr></table></div>';
+}
+function renderOdPay(o){
+  var html = '<div style="text-align:right;margin-bottom:10px"><button class="btn sm" onclick="openPayModal(null)">＋ 登記收款</button></div>' +
+    '<div class="tablewrap"><table><tr><th>期別</th><th>到期日</th><th>金額</th><th>渠道</th><th>對帳</th><th>狀態</th><th></th></tr>' +
+    o.payments.map(function(p){
+      var b = p.status==='已收款' ? '<span class="badge green">已收款</span>' : p.status==='逾期' ? '<span class="badge red">逾期</span>' : p.status==='已取消' ? '<span class="badge grey">已取消</span>' : '<span class="badge orange">待收款</span>';
+      var rb = p.recon==='已對帳' ? '<span class="badge blue">已對帳</span>' : '<span class="badge grey">未對帳</span>';
+      return '<tr><td>'+p.term+'</td><td>'+p.due+'</td><td>'+money(p.amount)+'</td><td>'+p.channel+'</td><td>'+rb+'</td><td>'+b+'</td>' +
+        '<td><button class="btn ghost sm" onclick="openPayModal(\''+p.id+'\')">編輯</button> <button class="btn ghost sm" onclick="voidPayment(\''+p.id+'\')">作廢</button></td></tr>';
+    }).join('') + '</table></div><div class="hint">收款排程依付款方式自動產生；逾期會同步進入顧問工作台的續約與到期提醒清單；對帳狀態供財務與藍新／Stripe／刷卡機對帳單勾稽。</div>';
+  document.getElementById('odpanel-pay').innerHTML = html;
+}
+function renderOdInvoice(o){
+  var html = '<div style="text-align:right;margin-bottom:10px"><button class="btn sm" onclick="openInvoiceModal(null,\'issue\')">＋ 開立發票</button></div>';
+  if (!o.invoices.length){
+    html += '<div class="note">尚未開票（訂單已取消或未達開票條件）。</div>';
+  } else {
+    html += '<div style="display:flex;gap:16px;flex-wrap:wrap">' + o.invoices.map(function(inv){
+      var stBadge = inv.status==='已開立' ? '<span class="badge green">已開立</span>' : inv.status==='已作廢' ? '<span class="badge grey">已作廢</span>' : inv.status==='已折讓' ? '<span class="badge orange">已折讓</span>' : '<span class="badge orange">待收款後開立</span>';
+      var actions = '';
+      if (inv.status==='已開立'){
+        actions = '<button class="btn ghost sm" onclick="openInvoiceModal(\''+inv.id+'\',\'edit\')">修改抬頭統編</button> <button class="btn ghost sm" onclick="openInvoiceModal(\''+inv.id+'\',\'credit\')">折讓</button> <button class="btn ghost sm" onclick="openInvoiceModal(\''+inv.id+'\',\'void\')">作廢</button>';
+      } else if (inv.status==='已作廢' || inv.status==='已折讓'){
+        actions = '<button class="btn ghost sm" onclick="openInvoiceModal(\''+inv.id+'\',\'reissue\')">補開</button>';
+      } else {
+        actions = '<button class="btn ghost sm" onclick="openInvoiceModal(\''+inv.id+'\',\'issue\')">開立</button>';
+      }
+      return '<div class="card" style="width:280px"><div class="kv"><span>狀態</span><span>'+stBadge+'</span></div>' +
+        '<div class="kv"><span>發票號碼</span><span>'+inv.no+'</span></div>' +
+        '<div class="kv"><span>稅別</span><span>'+(inv.kind==='免稅'?'<span class="badge green">免稅</span>':'<span class="badge orange">應稅</span>')+'</span></div>' +
+        '<div class="kv"><span>品項</span><span>'+inv.item+'</span></div>' +
+        '<div class="kv"><span>金額（含稅）</span><span>'+money(inv.amount)+'</span></div>' +
+        '<div class="kv"><span>開票主體</span><span>'+inv.entity+'</span></div>' +
+        '<div style="margin-top:8px">'+actions+'</div></div>';
+    }).join('') + '</div><div class="hint" style="margin-top:8px">同一張訂單同時含免稅（學費）與應稅（教材）品項時，系統自動分成兩張發票各自開立。</div>';
+  }
+  document.getElementById('odpanel-invoice').innerHTML = html;
+}
+function renderOdBenefit(o){
+  document.getElementById('odpanel-benefit').innerHTML =
+    '<div class="hint" style="margin-bottom:10px">付款完成後系統把購買內容（課時、效期、教材、自學課程、活動資格）放進學生帳戶，可手動入帳／收回。</div>' +
+    '<div class="tablewrap"><table><tr><th>項目</th><th>數量／效期</th><th>入帳狀態</th><th>入帳時間</th><th></th></tr>' +
+    o.benefits.map(function(b){
+      return '<tr><td>'+b.item+'</td><td>'+b.qty+'</td><td>'+(b.granted?'<span class="badge green">已入帳</span>':'<span class="badge grey">未入帳</span>')+'</td><td>'+(b.grantedAt||'－')+'</td>' +
+        '<td>'+(b.granted ? '<button class="btn ghost sm" onclick="toggleBenefit(\''+b.id+'\',false)">收回</button>' : '<button class="btn ghost sm" onclick="toggleBenefit(\''+b.id+'\',true)">手動入帳</button>')+'</td></tr>';
+    }).join('') + '</table></div>';
+}
+function renderOdHistory(o){
+  document.getElementById('odpanel-history').innerHTML =
+    '<div class="tablewrap"><table><tr><th>時間</th><th>操作人</th><th>內容</th></tr>' +
+    o.history.map(function(h){return '<tr><td>'+h.t+'</td><td>'+h.who+'</td><td>'+h.what+'</td></tr>';}).join('') + '</table></div>';
+}
+function pushHistory(o, what){ o.history.unshift({t:new Date().toISOString().slice(0,16).replace('T',' '), who:CURRENT_STAFF, what:what}); }
+
+/* ---- 收款紀錄 CRUD ---- */
+var payEditId = null;
+function openPayModal(id){
+  payEditId = id;
+  var o = findOrder(currentOrderId);
+  document.getElementById('payModalTitle').textContent = id ? '編輯收款紀錄' : '登記收款';
+  if (id){
+    var p = o.payments.find(function(x){return x.id===id;});
+    document.getElementById('pm_term').value = p.term;
+    document.getElementById('pm_due').value = p.due;
+    document.getElementById('pm_amount').value = p.amount;
+    document.getElementById('pm_channel').value = p.channel;
+    document.getElementById('pm_status').value = p.status==='逾期' ? '待收款' : p.status;
+    document.getElementById('pm_recon').value = p.recon;
+  } else {
+    document.getElementById('pm_term').value = '';
+    document.getElementById('pm_due').value = new Date().toISOString().slice(0,10);
+    document.getElementById('pm_amount').value = '';
+    document.getElementById('pm_channel').value = CHANNELS[0];
+    document.getElementById('pm_status').value = '已收款';
+    document.getElementById('pm_recon').value = '未對帳';
+  }
+  document.getElementById('payModal').classList.add('open');
+}
+function savePayment(){
+  var o = findOrder(currentOrderId);
+  var term = document.getElementById('pm_term').value.trim();
+  if (!term){ toast('請輸入期別名稱'); return; }
+  var data = {
+    term:term, due:document.getElementById('pm_due').value,
+    amount:Number(document.getElementById('pm_amount').value)||0,
+    channel:document.getElementById('pm_channel').value,
+    status:document.getElementById('pm_status').value,
+    recon:document.getElementById('pm_recon').value
+  };
+  if (payEditId){
+    var p = o.payments.find(function(x){return x.id===payEditId;});
+    Object.assign(p, data);
+    pushHistory(o, '收款紀錄「'+term+'」已修改');
+    toast('已儲存收款紀錄');
+  } else {
+    o.nextPayId++;
+    data.id = 'py'+o.nextPayId;
+    o.payments.push(data);
+    pushHistory(o, '新增收款紀錄「'+term+'」'+money(data.amount)+'（渠道：'+data.channel+'）');
+    toast('已登記收款');
+  }
+  closeModal('payModal');
+  refreshOdPanels();
+}
+function voidPayment(id){
+  var o = findOrder(currentOrderId);
+  var p = o.payments.find(function(x){return x.id===id;});
+  if (!p) return;
+  if (!confirm('確定要作廢收款紀錄「'+p.term+'」？')) return;
+  p.status = '已取消';
+  pushHistory(o, '收款紀錄「'+p.term+'」已作廢');
+  refreshOdPanels();
+  toast('已作廢收款紀錄');
+}
+
+/* ---- 發票 CRUD ---- */
+var invEditId = null, invMode = null;
+function openInvoiceModal(id, mode){
+  invEditId = id; invMode = mode;
+  var o = findOrder(currentOrderId);
+  var inv = id ? o.invoices.find(function(x){return x.id===id;}) : null;
+  var titles = {issue:'開立發票', edit:'修改抬頭統編', void:'作廢發票', credit:'開立折讓', reissue:'補開發票'};
+  document.getElementById('invModalTitle').textContent = titles[mode];
+  var body = '';
+  if (mode === 'issue'){
+    body = '<div class="formrow"><label>品項</label><input type="text" id="im_item" value="'+(inv?inv.item:o.items.map(function(i){return i.name;}).join('、'))+'"></div>' +
+      '<div class="formrow"><label>金額（含稅）</label><input type="number" id="im_amount" value="'+(inv?inv.amount:o.amount)+'"></div>' +
+      '<div class="formrow"><label>開票主體</label><select id="im_entity"><option>中華語文（統編70560259）</option><option>TLI 文教基金會（統編22345678）</option></select></div>';
+  } else if (mode === 'edit'){
+    body = '<div class="formrow"><label>發票號碼</label><div class="static">'+inv.no+'</div></div>' +
+      '<div class="formrow"><label>開票主體（抬頭）</label><select id="im_entity"><option'+(inv.entity.indexOf('中華語文')>-1?' selected':'')+'>中華語文（統編70560259）</option><option'+(inv.entity.indexOf('基金會')>-1?' selected':'')+'>TLI 文教基金會（統編22345678）</option></select></div>' +
+      '<div class="hint">修改抬頭統編需在稅局規範時限內辦理，系統會記錄異動紀錄。</div>';
+  } else if (mode === 'void'){
+    body = '<div class="note">作廢後此發票號碼將不可再使用，需要新發票請另行補開。</div><div class="kv"><span>發票號碼</span><span>'+inv.no+'</span></div><div class="kv"><span>金額</span><span>'+money(inv.amount)+'</span></div>';
+  } else if (mode === 'credit'){
+    body = '<div class="formrow"><label>折讓金額</label><input type="number" id="im_creditamt" value="'+inv.amount+'" max="'+inv.amount+'"></div>' +
+      '<div class="formrow"><label>折讓原因</label><input type="text" id="im_creditreason" placeholder="例：課程異動退部分金額"></div>';
+  } else if (mode === 'reissue'){
+    body = '<div class="hint" style="margin-bottom:10px">將以同品項、同金額補開一張新發票。</div><div class="kv"><span>品項</span><span>'+inv.item+'</span></div><div class="kv"><span>金額</span><span>'+money(inv.amount)+'</span></div>';
+  }
+  document.getElementById('invModalBody').innerHTML = body;
+  document.getElementById('invModal').classList.add('open');
+}
+function confirmInvoiceAction(){
+  var o = findOrder(currentOrderId);
+  o.nextInvId = o.nextInvId || 100;
+  if (invMode === 'issue'){
+    var item = document.getElementById('im_item').value.trim();
+    var amount = Number(document.getElementById('im_amount').value)||0;
+    var entity = document.getElementById('im_entity').value;
+    if (invEditId){
+      var inv0 = o.invoices.find(function(x){return x.id===invEditId;});
+      inv0.item=item; inv0.amount=amount; inv0.entity=entity; inv0.status='已開立'; inv0.no='AB-'+padNum(12500000+Math.floor(Math.random()*90000),8);
+    } else {
+      o.nextInvId++;
+      o.invoices.push({id:'iv'+o.nextInvId, no:'AB-'+padNum(12500000+Math.floor(Math.random()*90000),8), kind:'免稅', item:item, amount:amount, entity:entity, status:'已開立'});
+    }
+    pushHistory(o, '發票已開立：'+item+'（'+money(amount)+'）');
+    toast('已開立發票');
+  } else if (invMode === 'edit'){
+    var inv1 = o.invoices.find(function(x){return x.id===invEditId;});
+    inv1.entity = document.getElementById('im_entity').value;
+    pushHistory(o, '發票 '+inv1.no+' 抬頭統編已修改為「'+inv1.entity+'」');
+    toast('已修改抬頭統編');
+  } else if (invMode === 'void'){
+    var inv2 = o.invoices.find(function(x){return x.id===invEditId;});
+    inv2.status = '已作廢';
+    pushHistory(o, '發票 '+inv2.no+' 已作廢');
+    toast('已作廢發票');
+  } else if (invMode === 'credit'){
+    var inv3 = o.invoices.find(function(x){return x.id===invEditId;});
+    var amt = Number(document.getElementById('im_creditamt').value)||0;
+    var reason = document.getElementById('im_creditreason').value.trim() || '（未填原因）';
+    inv3.status = '已折讓';
+    pushHistory(o, '發票 '+inv3.no+' 開立折讓 '+money(amt)+'，原因：'+reason);
+    toast('已開立折讓');
+  } else if (invMode === 'reissue'){
+    var inv4 = o.invoices.find(function(x){return x.id===invEditId;});
+    o.nextInvId++;
+    var newNo = 'AB-'+padNum(12600000+Math.floor(Math.random()*90000),8);
+    o.invoices.push({id:'iv'+o.nextInvId, no:newNo, kind:inv4.kind, item:inv4.item, amount:inv4.amount, entity:inv4.entity, status:'已開立'});
+    pushHistory(o, '補開發票 '+newNo+'（原發票 '+inv4.no+'）');
+    toast('已補開發票');
+  }
+  closeModal('invModal');
+  refreshOdPanels();
+}
+
+/* ---- 課時與權益入帳 ---- */
+function toggleBenefit(id, grant){
+  var o = findOrder(currentOrderId);
+  var b = o.benefits.find(function(x){return x.id===id;});
+  if (!b) return;
+  b.granted = grant;
+  b.grantedAt = grant ? new Date().toISOString().slice(0,10) : '';
+  pushHistory(o, (grant?'手動入帳：':'手動收回：')+b.item);
+  refreshOdPanels();
+  toast(grant ? '已手動入帳' : '已收回權益');
+}
+
+/* ================= 批次匯入訂單精靈 ================= */
+var oiStep=1, oiFile=null, oiMapping={student:'A_學生姓名', plan:'B_方案', amount:'C_金額', paymode:'D_付款方式', campus:'E_校區'}, oiPreview=null, oiResult=null;
+function openOrderImportWizard(){
+  oiStep=1; oiFile=null; oiPreview=null; oiResult=null;
+  document.getElementById('importOrderModal').classList.add('open');
+  renderOiWizard();
+}
+function closeOrderImportWizard(){ document.getElementById('importOrderModal').classList.remove('open'); }
+function renderOiSteps(){
+  var labels=['上傳檔案','欄位對映','驗證預覽','匯入結果'];
+  document.getElementById('oiSteps').innerHTML = labels.map(function(l,i){
+    var n=i+1; var cls=n===oiStep?'active':(n<oiStep?'done':'');
+    return '<span class="'+cls+'">'+n+'. '+l+'</span>';
+  }).join('');
+}
+function renderOiWizard(){
+  renderOiSteps();
+  var body = document.getElementById('oiBody');
+  if (oiStep===1){
+    body.innerHTML = '<div class="dropzone'+(oiFile?' filled':'')+'" onclick="document.getElementById(\'oiFileInput\').click()">' +
+      (oiFile ? '已選擇檔案：'+oiFile+'（點擊可重新選擇）' : '點擊選擇 CSV／Excel 檔案，或將檔案拖放至此') + '</div>' +
+      '<input type="file" id="oiFileInput" accept=".csv,.xlsx" style="display:none" onchange="onOiFileChosen(this)">' +
+      '<div class="hint" style="margin-top:10px">尚未有匯入檔案？<a href="javascript:void(0)" onclick="toast(\'已下載匯入範本檔案\')">下載範本檔案</a></div>' +
+      oiWizFoot(false, true);
+  } else if (oiStep===2){
+    var fields=[{key:'student',label:'學生姓名'},{key:'plan',label:'方案名稱'},{key:'amount',label:'金額'},{key:'paymode',label:'付款方式'},{key:'campus',label:'校區'}];
+    var options=['A_學生姓名','B_方案','C_金額','D_付款方式','E_校區','F_備註'];
+    body.innerHTML = '<div class="desc" style="margin-bottom:8px">系統已自動偵測欄位，請確認對應是否正確：</div>' +
+      fields.map(function(f){
+        return '<div class="maprow"><span class="mlbl">'+f.label+'</span><select onchange="oiMapping[\''+f.key+'\']=this.value">' +
+          options.map(function(o){return '<option'+(o===oiMapping[f.key]?' selected':'')+'>'+o+'</option>';}).join('') + '</select></div>';
+      }).join('') + oiWizFoot(true, true);
+  } else if (oiStep===3){
+    if (!oiPreview) oiPreview = buildOiPreview();
+    var errCount = oiPreview.filter(function(r){return r.err;}).length;
+    body.innerHTML = '<div class="desc" style="margin-bottom:10px">共 '+oiPreview.length+' 筆（預覽），預計成功 '+(oiPreview.length-errCount)+' 筆、錯誤 '+errCount+' 筆：</div>' +
+      '<div class="tablewrap"><table><tr><th>學生</th><th>方案</th><th>金額</th><th>付款方式</th><th>驗證結果</th></tr>' +
+      oiPreview.map(function(r){
+        return '<tr class="'+(r.err?'previewrow-err':'')+'"><td>'+r.student+'</td><td>'+r.plan+'</td><td>'+money(r.amount)+'</td><td>'+r.paymode+'</td><td>'+(r.err?'<span class="badge red">錯誤：'+r.err+'</span>':'<span class="badge green">通過</span>')+'</td></tr>';
+      }).join('') + '</table></div>' + oiWizFoot(true, false, true);
+  } else if (oiStep===4){
+    if (!oiResult) oiResult = doOiImport();
+    body.innerHTML = '<div class="statgrid"><div class="statbox"><div class="num">'+oiResult.total+'</div><div class="lbl">檔案總筆數</div></div>' +
+      '<div class="statbox"><div class="num" style="color:var(--teal)">'+oiResult.success+'</div><div class="lbl">成功匯入</div></div>' +
+      '<div class="statbox"><div class="num" style="color:#C0392B">'+oiResult.fail+'</div><div class="lbl">略過（錯誤）</div></div></div>' +
+      '<div class="hint">耗時約 '+oiResult.seconds+' 秒。成功匯入的訂單來源標記為「顧問建訂單」，已加入訂單列表最前面。</div>' +
+      '<div style="text-align:right;margin-top:16px"><button class="btn" onclick="finishOiWizard()">完成</button></div>';
+  }
+}
+function oiWizFoot(showPrev, showNext, showStart){
+  var html='<div class="wizfoot">';
+  html += showPrev ? '<button class="btn ghost" onclick="oiWizPrev()">上一步</button>' : '<span></span>';
+  if (showStart) html += '<button class="btn orange" onclick="oiWizStart()">開始匯入</button>';
+  else if (showNext) html += '<button class="btn" onclick="oiWizNext()">下一步</button>';
+  html += '</div>';
+  return html;
+}
+function onOiFileChosen(el){ oiFile = el.files && el.files[0] ? el.files[0].name : 'orders_import.csv'; renderOiWizard(); }
+function oiWizNext(){ if (oiStep===1 && !oiFile) oiFile='orders_import.csv'; oiStep++; renderOiWizard(); }
+function oiWizPrev(){ oiStep--; renderOiWizard(); }
+function oiWizStart(){ oiStep=4; renderOiWizard(); }
+function buildOiPreview(){
+  var rows = DEMO_STUDENTS.slice(0,8).map(function(s,i){
+    var plan = DEMO_PLANS[i%DEMO_PLANS.length];
+    var err = null;
+    if (i===2) err='金額格式錯誤';
+    if (i===5) err='付款方式代碼不存在（原始值：X）';
+    return {student:s.name, plan:plan.name, amount: err==='金額格式錯誤' ? 0 : plan.amount, paymode: err && err.indexOf('付款')>-1 ? 'X' : PAYMODES[i%4], err:err};
+  });
+  return rows;
+}
+function doOiImport(){
+  var errCount = oiPreview.filter(function(r){return r.err;}).length;
+  var successCount = oiPreview.length - errCount;
+  var today = new Date().toISOString().slice(0,10);
+  oiPreview.filter(function(r){return !r.err;}).forEach(function(r){
+    nextOrderSeq++;
+    var items=[{name:r.plan, amount:r.amount, tax:'免稅'}];
+    ORDERS.unshift({
+      id:'ORD-2026-'+padNum(nextOrderSeq,4), student:r.student, studentId:'', campus:'羅斯福', tier:'C',
+      status:'待收款', amount:r.amount, payMode:r.paymode, source:'顧問建訂單', builder:'批次匯入', created:today,
+      items:items, payments:buildPaymentsFor(r.paymode, r.amount, today, '待收款'), invoices:buildInvoicesFor(items, r.amount, '待收款'),
+      benefits:[{id:'bn0', item:r.plan, qty:'依方案堂數', granted:false, grantedAt:''}],
+      history:[{t:today+' 00:00', who:'批次匯入', what:'訂單由批次匯入建立（來源：顧問建訂單）'}],
+      nextPayId:100, nextInvId:100
+    });
+  });
+  return {total:oiPreview.length, success:successCount, fail:errCount, seconds:(1.4+errCount*0.3).toFixed(1)};
+}
+function finishOiWizard(){
+  closeOrderImportWizard();
+  currentPage=1; renderTable();
+  toast('匯入完成，已新增 '+oiResult.success+' 筆訂單資料');
+}
+
+/* ================= 側欄／頂欄／RBAC（全站共用） ================= */
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }
+var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','顧問'];
+var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
+var TLI_ROLE_NAV = {
+  '總公司管理者': 'all',
+  '校區主管': ['c01','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16'],
+  '財務': ['a13','a06','a07'],
+  '顧問': ['c01','c02','c04','c06','c07','a01']
+};
+function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
+function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
+function applyRoleVisibility(){
+  var role = tliCurrentRole();
+  var allowed = TLI_ROLE_NAV[role];
+  document.querySelectorAll('.sidebar nav a[data-nav]').forEach(function(a){
+    var key = a.dataset.nav;
+    a.style.display = (allowed==='all' || allowed.indexOf(key)>-1) ? '' : 'none';
+  });
+  var tagEl = document.getElementById('suRoleTag'); if (tagEl) tagEl.textContent = role;
+  var unitEl = document.getElementById('suUnit'); if (unitEl) unitEl.textContent = TLI_ROLE_UNIT[role] || '總公司';
+  var campusWrap = document.getElementById('campusSwitchWrap'); if (campusWrap) campusWrap.style.display = (role==='總公司管理者') ? '' : 'none';
+  var sel = document.getElementById('roleSwitcher'); if (sel) sel.value = role;
+}
+function onRoleSwitch(el){ tliSetRole(el.value); applyRoleVisibility(); toast('已切換角色為「'+el.value+'」，側欄項目已同步更新'); }
+function onCampusSwitch(el){ toast('已切換校區檢視為「'+el.value+'」'); }
+function toggleSuMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); closePanel('avatarMenu'); document.getElementById('suMenu').classList.toggle('open'); }
+document.addEventListener('click', function(){ closePanel('suMenu'); });
+function initRoleSwitcher(){
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.innerHTML = TLI_ROLES.map(function(r){return '<option>'+r+'</option>';}).join('');
+  var csel = document.getElementById('campusSwitcher');
+  if (csel) csel.innerHTML = ['全公司','羅斯福','士林','台中','高雄'].map(function(c){return '<option>'+c+'</option>';}).join('');
+  applyRoleVisibility();
+}
+initRoleSwitcher();
+var NOTIFS = [
+  {t:'訂單 ORD-2026-0102 已逾期 5 天未收款', time:'10 分鐘前', unread:true},
+  {t:'銷售方案「學期班 Lv.5–8 一期方案」即將於 1/31 下架', time:'1 小時前', unread:true},
+  {t:'內容管理：首頁 Hero 文案已由校區主管發佈', time:'今天 09:12', unread:false},
+  {t:'老師黃志遠已切換為留職停薪', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel'); if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot'); if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>' +
+    NOTIFS.map(function(n){return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>';}).join('');
+}
+function markAllRead(ev){ if(ev) ev.stopPropagation(); NOTIFS.forEach(function(n){n.unread=false;}); renderNotifPanel(); }
+function toggleNotif(ev){ ev.stopPropagation(); closePanel('avatarMenu'); var p=document.getElementById('notifPanel'); p.classList.toggle('open'); if(p.classList.contains('open')) renderNotifPanel(); }
+function toggleAvatarMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); document.getElementById('avatarMenu').classList.toggle('open'); }
+function closePanel(id){ var el=document.getElementById(id); if (el) el.classList.remove('open'); }
+document.addEventListener('click', function(){ closePanel('notifPanel'); closePanel('avatarMenu'); });
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){ el=document.createElement('div'); el.id='toastEl'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+renderNotifPanel();
+
+/* ================= 初始化 ================= */
+renderChipBars();
+renderTable();
+
+</script>
+<script>
+function toggleNavGroup(ev, gid){
+  ev.stopPropagation();
+  var g = document.querySelector('#sidebar .navgroup[data-group="'+gid+'"]');
+  if (!g) return;
+  var collapsed = g.classList.toggle('collapsed');
+  try{ localStorage.setItem('tliNavCollapse_'+gid, collapsed ? '1' : '0'); }catch(e){}
+}
+(function initNavGroups(){
+  document.querySelectorAll('#sidebar .navgroup[data-group]').forEach(function(g){
+    var gid = g.dataset.group, saved = null;
+    try{ saved = localStorage.getItem('tliNavCollapse_'+gid); }catch(e){}
+    if (saved === '1') g.classList.add('collapsed');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>產品管理｜TLI Connect 3.0 管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);font-size:14px;}
+a{color:var(--navy);}
+/* ---- 以下為與 a01/a04 對齊後移除的舊版版型殘留（.app max-width／舊 .sidebar／.content-col／舊 .topbar）；
+     實際生效版型見本檔後段第二組樣式（與 a01/a04 逐值相同）與 #sidebar 覆寫區塊 ---- */
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.dm-inline{padding:4px 6px;border:1px solid var(--g200);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);}
+.formrow label .fieldlink{font-weight:400;font-size:11.5px;color:var(--navy);text-decoration:underline;margin-left:6px;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:150;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:620px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select,.formrow textarea{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+.tree{font-size:13px;}
+.tree .all-reset{font-weight:600;color:var(--g900);padding:8px 10px;border-radius:6px;cursor:pointer;margin-bottom:6px;display:block;}
+.tree .all-reset:hover{background:var(--g50);}
+.tree .all-reset.active{background:#E7EEF8;color:var(--navy);}
+.tree .line{margin-bottom:2px;}
+.tree .linerow{display:flex;align-items:center;gap:4px;border-radius:6px;}
+.tree .linerow:hover{background:var(--g50);}
+.tree .linerow.active{background:#E7EEF8;color:var(--navy);}
+.tree .linehead{flex:1;display:flex;align-items:center;gap:6px;padding:7px 4px 7px 8px;cursor:pointer;font-weight:600;color:var(--g900);}
+.tree .linerow.active .linehead{color:var(--navy);}
+.tree .caret{display:inline-block;width:10px;font-size:10px;color:var(--g500);transition:transform .15s;cursor:pointer;}
+.tree .line.open>.linerow .caret{transform:rotate(90deg);}
+.tree .systems{margin-left:16px;display:none;}
+.tree .line.open .systems{display:block;}
+.tree .sysrow{display:flex;align-items:center;gap:4px;border-radius:6px;}
+.tree .sysrow:hover{background:var(--g50);}
+.tree .sysrow.active{background:#E7EEF8;}
+.tree .sysitem{flex:1;display:flex;align-items:center;gap:5px;padding:6px 4px 6px 6px;font-size:12.5px;color:var(--g500);cursor:pointer;}
+.tree .sysrow.active .sysitem{color:var(--navy);font-weight:600;}
+.tree .syschildren{margin-left:18px;display:none;}
+.tree .system.open .syschildren{display:block;}
+.tree .syschild{display:block;padding:5px 6px;font-size:12px;color:var(--g500);cursor:pointer;border-radius:5px;}
+.tree .syschild:hover{background:var(--g50);}
+.tree .syschild.active{background:#E7EEF8;color:var(--navy);font-weight:600;}
+.tree .allsub{display:block;padding:6px 6px;font-size:12.5px;color:var(--g500);cursor:pointer;border-radius:5px;}
+.tree .allsub:hover{background:var(--g50);}
+.tree .allsub.active{background:#E7EEF8;color:var(--navy);font-weight:600;}
+.tree .status-off{opacity:.5;}
+.moremenu-wrap{position:relative;}
+.moredot{background:none;border:none;color:var(--g500);cursor:pointer;font-size:14px;padding:3px 6px;font-family:inherit;line-height:1;}
+.moredot:hover{color:var(--navy);}
+.moremenu{display:none;position:absolute;right:0;top:22px;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);z-index:50;min-width:130px;padding:4px;}
+.moremenu.open{display:block;}
+.moremenu button{display:block;width:100%;text-align:left;background:none;border:none;padding:7px 10px;
+font-size:12.5px;color:var(--g900);cursor:pointer;border-radius:5px;font-family:inherit;}
+.moremenu button:hover{background:var(--g50);}
+.wizard-steps{display:flex;margin-bottom:18px;}
+.wizard-steps .ws{flex:1;text-align:center;font-size:11.5px;color:var(--g500);padding-bottom:8px;border-bottom:3px solid var(--g200);}
+.wizard-steps .ws.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy);}
+.wizard-steps .ws.done{color:var(--teal);border-bottom-color:var(--teal);}
+.wizstep{display:none;}
+.wizstep.active{display:block;}
+.droparea{border:2px dashed var(--g200);border-radius:8px;padding:30px;text-align:center;color:var(--g500);font-size:13px;}
+.maprow{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;padding:6px 0;font-size:13px;}
+.switch{position:relative;display:inline-block;width:38px;height:22px;vertical-align:middle;}
+.switch input{opacity:0;width:0;height:0;position:absolute;}
+.switch .slider{position:absolute;inset:0;background:var(--g200);border-radius:22px;cursor:pointer;transition:.15s;}
+.switch .slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+.switch input:checked+.slider{background:var(--teal);}
+.switch input:checked+.slider:before{transform:translateX(16px);}
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);padding:18px 0;
+border-right:1px solid var(--g200);display:flex;flex-direction:column;transition:width .15s;
+position:sticky;top:0;height:100vh;align-self:flex-start;}
+.sidebar .brand{padding:0 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;}
+.sidebar .brand-logo{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:0;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;}
+.sidebar nav a,.sidebar nav span.disabled{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;
+color:var(--g900);text-decoration:none;position:relative;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar .sec-label{padding:16px 20px 4px;font-size:10.5px;color:var(--g500);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:100;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+/* ---- 右側詳情抽屜 ---- */
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:92vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
+/* ---- 批次匯入精靈 ---- */
+.wizsteps{display:flex;gap:6px;margin-bottom:18px;}
+.wizsteps span{flex:1;text-align:center;padding:6px 4px;font-size:11.5px;border-bottom:3px solid var(--g200);color:var(--g500);}
+.wizsteps span.active{border-color:var(--navy);color:var(--navy);font-weight:600;}
+.wizsteps span.done{border-color:var(--teal);color:var(--teal);}
+.dropzone{border:2px dashed var(--g200);border-radius:8px;padding:34px 16px;text-align:center;cursor:pointer;color:var(--g500);font-size:13px;}
+.dropzone:hover{border-color:var(--navy);color:var(--navy);}
+.dropzone.filled{border-color:var(--teal);color:var(--teal);background:#F5FBF9;}
+.maprow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;}
+.maprow .mlbl{width:120px;flex-shrink:0;color:var(--g500);}
+.maprow select{flex:1;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+.previewrow-err{background:#FBE7E7;}
+.wizfoot{display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--g200);}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;text-align:center;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+/* ---- 共用：頂欄與側欄使用者卡 ---- */
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;display:flex;align-items:center;gap:10px;position:relative;}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.4;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-role{font-size:11px;color:var(--g500);}
+.sidebar .su-logout{display:block;margin:6px 20px 4px;font-size:12px;color:var(--navy);text-decoration:none;}
+.sidebar .su-logout:hover{text-decoration:underline;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-searchicon{font-size:12px;color:var(--g500);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;position:relative;}
+.su-clickarea{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-info{flex:1;min-width:0;}
+.su-name,.su-unit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.5;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-roletag{font-size:10.5px;background:#E6EEF8;color:var(--navy);padding:0 6px;border-radius:8px;display:inline-block;width:fit-content;white-space:nowrap;}
+.sidebar-user .su-unit{font-size:11px;color:var(--g500);}
+.su-menu{top:auto;bottom:64px;left:14px;right:14px;}
+.su-roleswitch,.su-campusswitch{margin:8px 0 0;font-size:11px;color:var(--g500);}
+.su-roleswitch select,.su-campusswitch select{width:100%;margin-top:3px;padding:5px 7px;border:1px solid var(--g200);
+border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
+/* ---- RWD ---- */
+@media (max-width:1279px) and (min-width:1024px){
+  .sidebar{width:72px;}
+  .sidebar .navtext{position:absolute;left:100%;top:50%;transform:translateY(-50%);background:#fff;
+    border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:nowrap;
+    box-shadow:0 4px 12px rgba(16,24,40,.12);opacity:0;pointer-events:none;transition:opacity .12s;margin-left:6px;color:var(--g900);}
+  .sidebar nav a:hover .navtext{opacity:1;}
+  .sidebar .brand{align-items:center;overflow:hidden;}
+  .sidebar .brand-logo{max-width:100%;width:32px;height:28px;object-fit:cover;object-position:left center;flex-shrink:0;}
+  .sidebar .brand-text{display:none;}
+  .sidebar .brand small{display:none;}
+  .sidebar-user{justify-content:center;}
+  .sidebar-user .navtext{display:none;}
+  .sidebar .su-logout{text-align:center;}
+}
+@media (max-width:1023px){
+  .hamburger{display:inline-flex;}
+  .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;transition:left .2s;}
+  .sidebar.open{left:0;}
+  .sidebar-backdrop.open{display:block;}
+  .app{width:100%;}
+  .main{padding:16px 16px 40px;}
+  .topbar{padding:0 16px;margin:-16px -16px 18px;}
+  .tb-search{display:none;}
+  .drawer{width:100%;max-width:100%;}
+}
+
+</style>
+<style>
+/* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
+#sidebar{padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#sidebar .brand{padding:16px 20px 14px;}
+#sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;}
+#sidebar .brand small{margin-top:12px;font-size:12px;color:var(--g500);text-transform:none;letter-spacing:0;font-weight:400;}
+#sidebar .brand-text{display:none;}
+#sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;scrollbar-width:thin;}
+#sidebar nav::-webkit-scrollbar{width:6px;}
+#sidebar nav::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+#sidebar nav a,#sidebar nav span.disabled{align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;font-size:14px;}
+#sidebar .navgroup .sec-label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 12px;margin:20px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+#sidebar .navgroup:first-child .sec-label{margin-top:8px;}
+#sidebar .sec-toggle{background:none;border:none;padding:2px;margin:0;cursor:pointer;color:var(--g500);display:flex;align-items:center;line-height:1;flex-shrink:0;}
+#sidebar .sec-toggle svg{transition:transform .15s;display:block;}
+#sidebar .navgroup.collapsed .sec-toggle svg{transform:rotate(-90deg);}
+#sidebar .navgroup-items{overflow:hidden;}
+#sidebar .navgroup.collapsed .navgroup-items{display:none;}
+#sidebar .sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+#sidebar .su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+#sidebar .su-row .su-avatar{flex-shrink:0;width:36px;height:36px;}
+#sidebar .su-row .su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+#sidebar .su-row .su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#sidebar .su-row .su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+#sidebar .su-row .su-chevron{color:var(--g500);flex-shrink:0;}
+#sidebar .su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+#sidebar .su-menu .su-roleswitch,#sidebar .su-menu .su-campusswitch{margin:6px 4px 2px;font-size:11px;color:var(--g500);}
+#sidebar .su-menu .su-roleswitch select,#sidebar .su-menu .su-campusswitch select{width:100%;margin-top:3px;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--g900);}
+@media (max-width:1279px) and (min-width:1024px){
+  #sidebar{width:72px;}
+  #sidebar .navgroup .sec-label{display:none;}
+  #sidebar .su-row{justify-content:center;}
+  #sidebar .su-menu{left:64px;right:auto;bottom:10px;width:210px;}
+}
+@media (max-width:1023px){
+  #sidebar{width:260px;}
+}
+
+/* ==== 20260826v 容器寬度統一（對齊 a01 基準，覆寫舊版殘留樣式，防止寬內容撐開頁面）==== */
+html,body{overflow-x:hidden;}
+.app{display:flex;min-height:100vh;width:100%;max-width:none;background:#fff;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{padding:0 32px;}
+.pagehead{padding:0;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
+@media (max-width:1023px){
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" class="active" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">產品管理</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+<div class="pagehead">
+<div><h1>產品管理</h1><div class="desc">產品三層主檔：產品線 → 產品系統 → 課程。這裡只管主檔屬性，不放定價、折扣與上下架；售價與適用對象請到「銷售方案設定」。點左側節點可編輯產品線／產品系統設定，或查看該範圍的課程清單。</div></div>
+<div style="display:flex;gap:8px">
+<button class="btn ghost" onclick="openImport()">批次匯入</button>
+<button class="btn" onclick="openNewSku()">＋ 新增課程</button>
+</div>
+</div>
+
+<div style="display:flex;gap:20px;align-items:flex-start;">
+<div class="card" style="width:270px;flex-shrink:0;">
+<h2>產品線 › 產品系統 › 課程</h2>
+<div style="display:flex;gap:12px;margin-bottom:8px">
+<a href="javascript:void(0)" onclick="expandAllTree()" class="small" style="color:var(--navy);text-decoration:underline;cursor:pointer">全部展開</a>
+<a href="javascript:void(0)" onclick="collapseAllTree()" class="small" style="color:var(--navy);text-decoration:underline;cursor:pointer">全部收合</a>
+</div>
+<div id="treeBreadcrumb" class="small" style="margin-bottom:6px;color:var(--g500)"></div>
+<div class="tree" id="tree"></div>
+<div class="hint">點產品線／產品系統名稱可編輯設定；點「課程列表」查看該範圍底下的課程；點「⋯」可新增子節點、排序或停用。</div>
+</div>
+<div class="card" style="flex:1;min-width:0;" id="rightPanel"></div>
+</div>
+
+</div>
+</div>
+
+<div class="modal-mask" id="newSkuModal"><div class="modal">
+<h3>新增課程</h3>
+<div class="formrow"><label>課程名稱</label><input type="text" id="ns_name" placeholder="例：中文一對一 50 分鐘 1 堂"></div>
+<div class="grid2">
+<div class="formrow"><label>所屬產品線</label><select id="ns_line"></select></div>
+<div class="formrow"><label>所屬產品系統</label><select id="ns_system"></select></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>單位 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><input type="text" id="ns_unit" placeholder="堂／期／冊／次"></div>
+<div class="formrow"><label>時長</label><input type="text" id="ns_duration" placeholder="例：50 分鐘（無則留空）"></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>收費類目 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><select id="ns_cat" onchange="onNsCatChange(this)"><option>學費</option><option>註冊費</option><option>活動</option><option>教材</option><option>其他</option></select></div>
+<div class="formrow"><label>稅別（依收費類目自動帶入，可覆寫）</label><select id="ns_tax"><option>免稅</option><option>應稅</option></select></div>
+</div>
+<div class="formrow"><label>教材冊別（僅教材類需填）</label><input type="text" id="ns_material" placeholder="例：新實用華語（上冊）"></div>
+<div class="formrow"><label>上課方式 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><select id="ns_delivery"><option value="">請選擇</option><option value="預約制">預約制</option><option value="直播制">直播制</option><option value="隨選">隨選</option><option value="實體（舊網站）">實體（舊網站）</option></select></div>
+<div class="hint" style="margin-bottom:10px">收費類目決定免稅／應稅與日後訂單的發票分張；學費、註冊費為免稅，其餘為應稅（選「活動」會自動帶出應稅）。上課方式為課程本身的屬性，需逐筆選擇。此頁不設定價格，售價於「銷售方案設定」中組成方案時填入。</div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeNewSku()">取消</button>
+<button class="btn" onclick="saveNewSku()">儲存</button>
+</div>
+</div></div>
+
+<div class="drawer-mask" id="editSkuDrawerMask" onclick="closeEditSkuDrawer()"></div>
+<div class="drawer" id="editSkuDrawer">
+<div class="drawer-head">
+<div><h2>編輯課程</h2><div class="small" id="es_scope">—</div></div>
+<button class="drawer-close" onclick="closeEditSkuDrawer()" aria-label="關閉">×</button>
+</div>
+<div class="drawer-body">
+<div class="formrow"><label>課程名稱</label><input type="text" id="es_name"></div>
+<div class="grid2">
+<div class="formrow"><label>多語名稱（英文）</label><input type="text" id="es_nameEn"></div>
+<div class="formrow"><label>多語名稱（日文）</label><input type="text" id="es_nameJa"></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>所屬產品線</label><div class="static" id="es_line">—</div></div>
+<div class="formrow"><label>所屬產品系統</label><div class="static" id="es_system">—</div></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>單位 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><input type="text" id="es_unit"></div>
+<div class="formrow"><label>時長</label><input type="text" id="es_duration"></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>收費類目 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><select id="es_cat" onchange="onEsCatChange(this)"><option>學費</option><option>註冊費</option><option>活動</option><option>教材</option><option>其他</option></select></div>
+<div class="formrow"><label>稅別（依收費類目自動帶入，可覆寫）</label><select id="es_tax"><option>免稅</option><option>應稅</option></select></div>
+</div>
+<div class="formrow"><label>教材冊別（僅教材類需填）</label><input type="text" id="es_material"></div>
+<div class="formrow">
+<label>上課方式 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label>
+<select id="es_delivery"><option value="">請選擇</option><option value="預約制">預約制</option><option value="直播制">直播制</option><option value="隨選">隨選</option><option value="實體（舊網站）">實體（舊網站）</option></select>
+<div class="hint">上課方式決定學生端如何預約或入班；銷售方案會自動帶出組成課程的上課方式。</div>
+</div>
+<div class="formrow"><label>狀態</label><select id="es_status"><option value="上架">上架</option><option value="下架">下架</option></select></div>
+<div style="text-align:right;margin-top:10px">
+<button class="btn ghost" onclick="closeEditSkuDrawer()">取消</button>
+<button class="btn" onclick="saveEditSkuDrawer()">儲存</button>
+</div>
+</div>
+</div>
+
+<div class="modal-mask" id="newSystemModal"><div class="modal">
+<h3>新增產品系統</h3>
+<div class="formrow"><label>所屬產品線</label><div class="static" id="nsys_line"></div></div>
+<div class="formrow"><label>代碼</label><input type="text" id="nsys_code" placeholder="例：ZH-XXX"></div>
+<div class="formrow"><label>名稱</label><input type="text" id="nsys_name" placeholder="例：兒童美語班"></div>
+<div class="formrow"><label>班型預設</label><select id="nsys_class"><option>一對一</option><option>小組</option><option>學期</option><option>其他</option></select></div>
+<div class="hint" style="margin-bottom:10px">上課方式為底下各課程自己的屬性，此處不設定；新增課程時逐筆選擇。</div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeModalId('newSystemModal')">取消</button>
+<button class="btn" onclick="saveNewSystem()">新增</button>
+</div>
+</div></div>
+
+<div class="modal-mask" id="newLineModal"><div class="modal">
+<h3>新增產品線</h3>
+<div class="formrow"><label>代碼</label><input type="text" id="nline_code" placeholder="例：KD"></div>
+<div class="formrow"><label>名稱</label><input type="text" id="nline_name" placeholder="例：兒童美語"></div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeModalId('newLineModal')">取消</button>
+<button class="btn" onclick="saveNewLine()">新增</button>
+</div>
+</div></div>
+
+<div class="modal-mask" id="importModal"><div class="modal wide">
+<h3>批次匯入產品／課程</h3>
+<div class="wizard-steps">
+<div class="ws" id="wzs1">1．上傳檔案</div>
+<div class="ws" id="wzs2">2．欄位對映</div>
+<div class="ws" id="wzs3">3．驗證預覽</div>
+<div class="ws" id="wzs4">4．匯入結果</div>
+</div>
+
+<div class="wizstep" id="wzstep1">
+<div class="droparea">拖曳檔案到此處，或點擊選擇 CSV／Excel 檔<br><input type="file" id="wz_file" style="margin-top:10px" onchange="onWzFileChosen(this)"></div>
+<div class="hint" style="margin-top:10px">尚未有匯入檔？<span class="linklike" style="color:var(--navy);cursor:pointer;text-decoration:underline" onclick="showToast('已下載匯入範本 product_course_template.csv')">下載範本</span></div>
+</div>
+
+<div class="wizstep" id="wzstep2">
+<div class="desc small" style="margin-bottom:10px">將檔案欄位對應到系統欄位：</div>
+<div class="maprow"><b>檔案欄位</b><b>對應系統欄位</b></div>
+<div class="maprow"><span>col_A（課程名稱）</span><select><option>課程名稱</option></select></div>
+<div class="maprow"><span>col_B（產品線）</span><select><option>所屬產品線</option></select></div>
+<div class="maprow"><span>col_C（產品系統）</span><select><option>所屬產品系統</option></select></div>
+<div class="maprow"><span>col_D（單位）</span><select><option>單位</option></select></div>
+<div class="maprow"><span>col_E（時長）</span><select><option>時長</option></select></div>
+<div class="maprow"><span>col_F（收費類目）</span><select><option>收費類目</option></select></div>
+<div class="maprow"><span>col_G（稅別）</span><select><option>稅別</option></select></div>
+</div>
+
+<div class="wizstep" id="wzstep3">
+<div class="desc small" style="margin-bottom:10px">驗證結果：共 18 列，16 列通過，2 列有誤（如下）：</div>
+<div class="tablewrap"><table>
+<tr><th>列</th><th>課程名稱</th><th>錯誤原因</th></tr>
+<tr><td>9</td><td>兒童美語 Level 2</td><td><span class="badge red">收費類目空白</span></td></tr>
+<tr><td>14</td><td>台語會話進階班</td><td><span class="badge red">所屬產品系統不存在</span></td></tr>
+</table></div>
+<div class="hint" style="margin-top:8px">可修正原檔後重新上傳，或僅匯入通過驗證的 16 列。</div>
+</div>
+
+<div class="wizstep" id="wzstep4">
+<div class="note" style="margin-bottom:12px">匯入完成：新增 14 筆、更新 2 筆、失敗 2 筆（詳見上一步錯誤列表）。</div>
+<div class="kv"><span>檔案名稱</span><span id="wz_fname">product_sku_import.csv</span></div>
+<div class="kv"><span>匯入時間</span><span>2026-08-25 20:31</span></div>
+<div class="kv"><span>操作人</span><span>張惠雯</span></div>
+</div>
+
+<div style="text-align:right;margin-top:16px">
+<button class="btn ghost" id="wzBackBtn" onclick="wzBack()">上一步</button>
+<button class="btn ghost" onclick="closeImport()">關閉</button>
+<button class="btn" id="wzNextBtn" onclick="wzNext()">下一步</button>
+</div>
+</div></div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+}
+var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','顧問'];
+var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
+var TLI_ROLE_NAV = {
+  '總公司管理者': 'all',
+  '校區主管': ['c01','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16'],
+  '財務': ['a13','a06','a07'],
+  '顧問': ['c01','c02','c04','c06','c07','a01']
+};
+function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
+function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
+function applyRoleVisibility(){
+  var role = tliCurrentRole();
+  var allowed = TLI_ROLE_NAV[role];
+  document.querySelectorAll('.sidebar nav a[data-nav]').forEach(function(a){
+    var key = a.dataset.nav;
+    a.style.display = (allowed === 'all' || allowed.indexOf(key) > -1) ? '' : 'none';
+  });
+  var tagEl = document.getElementById('suRoleTag');
+  if (tagEl) tagEl.textContent = role;
+  var unitEl = document.getElementById('suUnit');
+  if (unitEl) unitEl.textContent = TLI_ROLE_UNIT[role] || '總公司';
+  var campusWrap = document.getElementById('campusSwitchWrap');
+  if (campusWrap) campusWrap.style.display = (role === '總公司管理者') ? '' : 'none';
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.value = role;
+  if (typeof onRoleApplied === 'function') onRoleApplied(role);
+}
+function onRoleSwitch(el){
+  tliSetRole(el.value);
+  applyRoleVisibility();
+  toast('已切換角色為「'+el.value+'」，側欄項目已同步更新');
+}
+function onCampusSwitch(el){ toast('已切換校區檢視為「'+el.value+'」'); }
+function toggleSuMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel'); closePanel('avatarMenu');
+  document.getElementById('suMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(){ closePanel('suMenu'); });
+function initRoleSwitcher(){
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.innerHTML = TLI_ROLES.map(function(r){ return '<option>'+r+'</option>'; }).join('');
+  var csel = document.getElementById('campusSwitcher');
+  if (csel) csel.innerHTML = ['全公司','羅斯福','士林','台中','高雄'].map(function(c){return '<option>'+c+'</option>';}).join('');
+  applyRoleVisibility();
+}
+initRoleSwitcher();
+/* ================= 共用：頂欄通知／使用者選單／登出／toast（全站同一段） ================= */
+var NOTIFS = [
+  {t:'訂單 ORD-2026-0102 已逾期 5 天未收款', time:'10 分鐘前', unread:true},
+  {t:'銷售方案「學期班 Lv.5–8 一期方案」即將於 1/31 下架', time:'1 小時前', unread:true},
+  {t:'內容管理：首頁 Hero 文案已由校區主管發佈', time:'今天 09:12', unread:false},
+  {t:'老師黃志遠已切換為留職停薪', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot');
+  if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>' +
+    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+}
+function markAllRead(ev){
+  if (ev) ev.stopPropagation();
+  NOTIFS.forEach(function(n){ n.unread = false; });
+  renderNotifPanel();
+}
+function toggleNotif(ev){
+  ev.stopPropagation();
+  closePanel('avatarMenu');
+  var p = document.getElementById('notifPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) renderNotifPanel();
+}
+function toggleAvatarMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel');
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+function closePanel(id){
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+document.addEventListener('click', function(){ closePanel('notifPanel'); closePanel('avatarMenu'); });
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+renderNotifPanel();
+
+function showToast(msg){ toast(msg); }
+
+
+function closeModalId(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', function(){ document.querySelectorAll('.moremenu.open').forEach(function(m){m.classList.remove('open');}); });
+
+var SKUS = [
+ {id:'skuC01', name:'中文一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
+ {id:'skuC02', name:'英語一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
+ {id:'skuC03', name:'中文彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'skuC04', name:'英語彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'skuC05', name:'自學影音課程包（中文基礎）', line:'Connect（線上）', system:'自學影音課', unit:'套', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'隨選', status:'上架'},
+ {id:'skuC06', name:'文化主題線上工作坊－茶道體驗', line:'Connect（線上）', system:'文化主題線上課', unit:'場', duration:'90 分鐘', cat:'活動', tax:'應稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'skuC07', name:'企業華語線上培訓（團體班）', line:'Connect（線上）', system:'企業線上培訓', unit:'期', duration:'依合約', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'skuC08', name:'線上華語師資認證班 24 小時', line:'Connect（線上）', system:'線上師資認證', unit:'期', duration:'24 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'sku01', name:'中文一對一 50 分鐘 1 堂', line:'中文', system:'中文一對一', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
+ {id:'sku02', name:'學期班 Lv.5–8 一期', line:'中文', system:'學期班', unit:'期', duration:'16 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku03', name:'教材《新實用華語》上冊', line:'中文', system:'學期班', unit:'冊', duration:'－', cat:'教材', tax:'應稅', material:'新實用華語（上冊）', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku04', name:'入學註冊費', line:'中文', system:'學期班', unit:'次', duration:'－', cat:'註冊費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku05', name:'小組班（4 人）90 分鐘 1 堂', line:'中文', system:'小組班', unit:'堂', duration:'90 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku06', name:'線上課 60 分鐘 1 堂', line:'中文', system:'線上課', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
+ {id:'sku07', name:'文化體驗活動－茶道體驗', line:'中文', system:'文化課', unit:'場', duration:'2 小時', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku08', name:'英語一對一 50 分鐘 1 堂', line:'外文', system:'英語課程', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
+ {id:'sku09', name:'日語學期班 一期', line:'外文', system:'日語課程', unit:'期', duration:'12 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'sku10', name:'華語師資培訓認證班 32 小時', line:'師資班', system:'師資認證班', unit:'期', duration:'32 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
+ {id:'sku11', name:'師培教材包', line:'師資班', system:'師資認證班', unit:'套', duration:'－', cat:'教材', tax:'應稅', material:'師培教材包', deliveryMode:'直播制', status:'上架'},
+ {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
+ {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架'}
+];
+// 課程主檔（與 a03、a04 共用同一份清單）；上課方式為課程自身屬性，逐筆填寫，不再跟隨產品系統
+
+var LINES = [
+ {name:'Connect（線上）', code:'CN', nameEn:'TLI Connect Online', nameJa:'コネクト（オンライン）', desc:'TLI Connect 線上品牌產品線，一階段主力：一對一線上課、彈性團體直播課；次要：自學影音、文化線上課、企業線上培訓、線上師資認證。', order:1, status:'啟用', owner:'數位事業部'},
+ {name:'中文', code:'ZH', nameEn:'Chinese', nameJa:'中国語', desc:'華語教學產品線（實體，舊官網 tli1956.com，二階段整併），涵蓋一對一、學期班、小組班、線上課與文化體驗課程。', order:2, status:'啟用', owner:'中文部'},
+ {name:'外文', code:'FL', nameEn:'Foreign Languages', nameJa:'外国語', desc:'英語、日語等外語教學產品線（實體，舊官網，二階段整併）。', order:3, status:'啟用', owner:'外語部'},
+ {name:'師資班', code:'TC', nameEn:'Teacher Training', nameJa:'教師研修', desc:'華語師資培訓與認證課程產品線（實體，舊官網，二階段整併）。', order:4, status:'啟用', owner:'師培中心'},
+ {name:'方言', code:'DL', nameEn:'Dialects', nameJa:'方言', desc:'台語等本土語言課程產品線（實體，舊官網，二階段整併）。', order:5, status:'啟用', owner:'中文部'}
+];
+var SYSTEMS = [
+ {line:'Connect（線上）', name:'一對一線上課', code:'CN-1V1', classType:'一對一', duration:'50 分鐘', levelRange:'Lv.1–8（全級別）', material:'－', status:'啟用'},
+ {line:'Connect（線上）', name:'彈性團體直播', code:'CN-FLEX', classType:'小組', duration:'50 分鐘／堂，8 堂一期', levelRange:'Lv.1–6', material:'－', status:'啟用'},
+ {line:'Connect（線上）', name:'自學影音課', code:'CN-VOD', classType:'其他', duration:'不限（隨選觀看）', levelRange:'不分級', material:'－', status:'啟用'},
+ {line:'Connect（線上）', name:'文化主題線上課', code:'CN-CUL', classType:'小組', duration:'90 分鐘／場', levelRange:'不分級', material:'－', status:'啟用'},
+ {line:'Connect（線上）', name:'企業線上培訓', code:'CN-CORP', classType:'其他', duration:'依合約', levelRange:'不分級', material:'－', status:'啟用'},
+ {line:'Connect（線上）', name:'線上師資認證', code:'CN-CERT', classType:'學期', duration:'24 小時／期', levelRange:'不分級', material:'線上師培教材包', status:'啟用'},
+ {line:'中文', name:'中文一對一', code:'ZH-1V1', classType:'一對一', duration:'50 分鐘', levelRange:'Lv.1–8（全級別）', material:'－', status:'啟用'},
+ {line:'中文', name:'學期班', code:'ZH-SEM', classType:'學期', duration:'16 週／期', levelRange:'Lv.1–8', material:'新實用華語系列', status:'啟用'},
+ {line:'中文', name:'小組班', code:'ZH-GRP', classType:'小組', duration:'90 分鐘', levelRange:'Lv.1–6', material:'新實用華語系列', status:'啟用'},
+ {line:'中文', name:'線上課', code:'ZH-ON', classType:'一對一', duration:'60 分鐘', levelRange:'Lv.1–8', material:'－', status:'啟用'},
+ {line:'中文', name:'文化課', code:'ZH-CUL', classType:'小組', duration:'2 小時／場', levelRange:'不分級', material:'－', status:'啟用'},
+ {line:'外文', name:'英語課程', code:'EN-GEN', classType:'一對一', duration:'50 分鐘', levelRange:'初級–商務英語', material:'－', status:'啟用'},
+ {line:'外文', name:'日語課程', code:'JA-GEN', classType:'學期', duration:'12 週／期', levelRange:'Lv.1–6', material:'大家的日本語系列', status:'啟用'},
+ {line:'師資班', name:'師資認證班', code:'TC-CERT', classType:'學期', duration:'32 小時／期', levelRange:'不分級', material:'師培教材包', status:'啟用'},
+ {line:'方言', name:'台語班', code:'DL-TW', classType:'小組', duration:'60 分鐘', levelRange:'初級會話', material:'－', status:'啟用'}
+];
+
+var LINE_ORDER = LINES.map(function(l){return l.name;});
+var LINE_SYSTEMS = {};
+LINE_ORDER.forEach(function(ln){ LINE_SYSTEMS[ln] = SYSTEMS.filter(function(s){return s.line===ln;}).map(function(s){return s.name;}); });
+
+var TREE_STORE_KEY = 'tliA02TreeState';
+function loadTreeState(){
+  try{
+    var raw = localStorage.getItem(TREE_STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  }catch(e){}
+  return null;
+}
+function saveTreeState(){
+  try{ localStorage.setItem(TREE_STORE_KEY, JSON.stringify({lines:openLines, systems:openSystems})); }catch(e){}
+}
+var savedTreeState = loadTreeState();
+var openLines = (savedTreeState && savedTreeState.lines) || {};
+var openSystems = (savedTreeState && savedTreeState.systems) || {};
+if (!savedTreeState) openLines[LINE_ORDER[0]] = true;
+
+var view = {kind:'all'}; // kind: all | line | lineForm | systemForm | system
+
+function findLine(name){ return LINES.find(function(l){return l.name===name;}); }
+function findSystem(line, name){ return SYSTEMS.find(function(s){return s.line===line && s.name===name;}); }
+function skuCount(line, sys){
+  return SKUS.filter(function(s){ if (sys) return s.line===line && s.system===sys; return s.line===line; }).length;
+}
+function skuDeliveryMode(sku){
+  return sku.deliveryMode || '';
+}
+function deliveryBadge(mode){
+  if (mode === '預約制') return '<span class="badge blue">預約制</span>';
+  if (mode === '直播制') return '<span class="badge orange">直播制</span>';
+  if (mode === '隨選') return '<span class="badge teal" style="background:#E4F5EE;color:var(--teal)">隨選</span>';
+  if (mode === '實體（舊網站）') return '<span class="badge grey">實體（舊網站）</span>';
+  return '<span class="small">未設定</span>';
+}
+
+function buildTree(){
+  var html = '<div class="all-reset'+(view.kind==='all'?' active':'')+'" onclick="selectAll()">全部產品（'+SKUS.length+'）</div>';
+  LINE_ORDER.forEach(function(lineName){
+    var lineObj = findLine(lineName);
+    var isOpen = !!openLines[lineName];
+    var isActiveLine = (view.kind==='lineForm' || view.kind==='line') && view.line===lineName && !view.system;
+    html += '<div class="line'+(isOpen?' open':'')+'" data-line="'+lineName+'">' +
+      '<div class="linerow'+(isActiveLine?' active':'')+(lineObj.status==='停用'?' status-off':'')+'">' +
+      '<span class="caret" onclick="toggleLine(event,\''+lineName+'\')"><svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span>' +
+      '<span class="linehead" onclick="openLineForm(\''+lineName+'\')">'+lineName+(lineObj.status==='停用'?' <span class="badge grey">停用</span>':'')+'</span>' +
+      '<div class="moremenu-wrap"><button class="moredot" onclick="toggleMore(event,\'more-line-'+lineName+'\')">⋯</button>' +
+      '<div class="moremenu" id="more-line-'+lineName+'">' +
+      '<button onclick="event.stopPropagation();addSystemPrompt(\''+lineName+'\')">新增子節點（產品系統）</button>' +
+      '<button onclick="event.stopPropagation();openLineForm(\''+lineName+'\')">編輯</button>' +
+      '<button onclick="event.stopPropagation();showToast(\'已更新「'+lineName+'」排序，可拖曳項目調整順序\')">排序</button>' +
+      '<button onclick="event.stopPropagation();toggleLineStatus(\''+lineName+'\')">'+(lineObj.status==='啟用'?'停用':'啟用')+'</button>' +
+      '</div></div>' +
+      '</div>' +
+      '<div class="systems">' +
+      '<div class="allsub'+(view.kind==='line'&&view.line===lineName?' active':'')+'" onclick="selectLineSkus(\''+lineName+'\')">課程列表（全部 '+skuCount(lineName)+' 項）</div>' +
+      LINE_SYSTEMS[lineName].map(function(sysName){
+        var sysObj = findSystem(lineName, sysName);
+        var sOpen = !!openSystems[lineName+'|'+sysName];
+        var isActiveSys = (view.kind==='systemForm'||view.kind==='system') && view.line===lineName && view.system===sysName;
+        return '<div class="system'+(sOpen?' open':'')+'">' +
+          '<div class="sysrow'+(isActiveSys?' active':'')+(sysObj.status==='停用'?' status-off':'')+'">' +
+          '<span class="caret" style="width:8px" onclick="toggleSystem(event,\''+lineName+'\',\''+sysName+'\')"><svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span>' +
+          '<span class="sysitem" onclick="openSystemForm(\''+lineName+'\',\''+sysName+'\')">'+sysName+(sysObj.status==='停用'?' <span class="badge grey">停用</span>':'')+'</span>' +
+          '<div class="moremenu-wrap"><button class="moredot" onclick="toggleMore(event,\'more-sys-'+lineName+'-'+sysName+'\')">⋯</button>' +
+          '<div class="moremenu" id="more-sys-'+lineName+'-'+sysName+'">' +
+          '<button onclick="event.stopPropagation();addSkuUnder(\''+lineName+'\',\''+sysName+'\')">新增子節點（課程）</button>' +
+          '<button onclick="event.stopPropagation();openSystemForm(\''+lineName+'\',\''+sysName+'\')">編輯</button>' +
+          '<button onclick="event.stopPropagation();showToast(\'已更新「'+sysName+'」排序\')">排序</button>' +
+          '<button onclick="event.stopPropagation();toggleSystemStatus(\''+lineName+'\',\''+sysName+'\')">'+(sysObj.status==='啟用'?'停用':'啟用')+'</button>' +
+          '</div></div>' +
+          '</div>' +
+          '<div class="syschildren">' +
+          '<span class="syschild" onclick="openSystemForm(\''+lineName+'\',\''+sysName+'\')">系統設定</span>' +
+          '<span class="syschild'+(view.kind==='system'&&view.line===lineName&&view.system===sysName?' active':'')+'" onclick="selectSystemSkus(\''+lineName+'\',\''+sysName+'\')">課程列表（'+skuCount(lineName,sysName)+'）</span>' +
+          '</div></div>';
+      }).join('') +
+      '</div></div>';
+  });
+  document.getElementById('tree').innerHTML = html;
+  var bc = document.getElementById('treeBreadcrumb');
+  if (bc) bc.textContent = treeBreadcrumbLabel();
+}
+
+function treeBreadcrumbLabel(){
+  if (view.kind === 'line' || view.kind === 'lineForm') return '目前選取：'+view.line;
+  if (view.kind === 'system' || view.kind === 'systemForm') return '目前選取：'+view.line+' › '+view.system;
+  return '目前選取：全部產品';
+}
+
+function toggleMore(ev, id){
+  ev.stopPropagation();
+  var wasOpen = document.getElementById(id).classList.contains('open');
+  document.querySelectorAll('.moremenu.open').forEach(function(m){m.classList.remove('open');});
+  if (!wasOpen) document.getElementById(id).classList.add('open');
+}
+function toggleLine(ev, name){
+  ev.stopPropagation();
+  openLines[name] = !openLines[name];
+  saveTreeState();
+  buildTree();
+}
+function toggleSystem(ev, line, name){
+  ev.stopPropagation();
+  var k = line+'|'+name;
+  openSystems[k] = !openSystems[k];
+  saveTreeState();
+  buildTree();
+}
+function expandAllTree(){
+  LINE_ORDER.forEach(function(ln){
+    openLines[ln] = true;
+    (LINE_SYSTEMS[ln]||[]).forEach(function(sn){ openSystems[ln+'|'+sn] = true; });
+  });
+  saveTreeState();
+  buildTree();
+}
+function collapseAllTree(){
+  openLines = {};
+  openSystems = {};
+  saveTreeState();
+  buildTree();
+}
+
+function selectAll(){
+  view = {kind:'all'};
+  buildTree();
+  renderRightPanel();
+}
+function selectLineSkus(line){
+  view = {kind:'line', line:line};
+  buildTree();
+  renderRightPanel();
+}
+function selectSystemSkus(line, sys){
+  view = {kind:'system', line:line, system:sys};
+  openSystems[line+'|'+sys] = true;
+  saveTreeState();
+  buildTree();
+  renderRightPanel();
+}
+function openLineForm(line){
+  view = {kind:'lineForm', line:line};
+  openLines[line] = true;
+  saveTreeState();
+  buildTree();
+  renderRightPanel();
+}
+function openSystemForm(line, sys){
+  view = {kind:'systemForm', line:line, system:sys};
+  openLines[line] = true;
+  openSystems[line+'|'+sys] = true;
+  saveTreeState();
+  buildTree();
+  renderRightPanel();
+}
+
+var DELIVERY_OPTIONS = ['預約制','直播制','隨選','實體（舊網站）'];
+function deliverySelectHtml(s){
+  var opts = DELIVERY_OPTIONS.map(function(m){
+    return '<option value="'+m+'"'+(s.deliveryMode===m?' selected':'')+'>'+m+'</option>';
+  }).join('');
+  return '<select class="dm-inline" onclick="event.stopPropagation()" onchange="onSkuDeliveryInline(\''+s.id+'\',this.value,event)">'+opts+'</select>';
+}
+function skuTableHtml(list, scopeLabel){
+  var rows = list.map(function(s){
+    var taxBadge = s.tax === '免稅' ? '<span class="badge green">免稅</span>' : '<span class="badge orange">應稅</span>';
+    var stBadge = s.status === '上架' ? '<span class="badge green">上架</span>' : '<span class="badge grey">下架</span>';
+    var dmSelect = deliverySelectHtml(s);
+    return '<tr class="rowlink" onclick="location.href=\'a03_product_detail.html?sku='+s.id+'\'"><td>'+s.name+'</td><td>'+s.unit+'</td><td>'+s.duration+'</td><td>'+s.cat+'</td><td>'+dmSelect+'</td><td>'+taxBadge+'</td><td>'+stBadge+'</td>' +
+      '<td><button class="btn ghost sm" onclick="openEditSkuDrawer(\''+s.id+'\',event)">編輯</button> <button class="btn ghost sm" onclick="toggleSkuStatus(\''+s.id+'\',event)">'+(s.status==='上架'?'停用':'啟用')+'</button></td></tr>';
+  }).join('');
+  return '<h2>課程清單　<span class="small" style="font-weight:400">'+scopeLabel+'</span></h2>' +
+    '<div class="tablewrap"><table><tr><th>課程名稱</th><th>單位</th><th>時長</th><th>收費類目</th><th>上課方式</th><th>稅別</th><th>狀態</th><th>操作</th></tr>'+rows+'</table></div>' +
+    '<div class="hint">上課方式為課程自身屬性，「上課方式」欄可直接點選下拉快速修改；點「編輯」開啟完整表單；點列（操作欄以外）可進入課程詳情，含屬性、被哪些銷售方案引用與異動紀錄。</div>';
+}
+
+function renderRightPanel(){
+  var el = document.getElementById('rightPanel');
+  if (view.kind === 'all'){
+    el.innerHTML = skuTableHtml(SKUS, '（全部產品線，共 '+SKUS.length+' 項）');
+  } else if (view.kind === 'line'){
+    var list = SKUS.filter(function(s){return s.line===view.line;});
+    el.innerHTML = skuTableHtml(list, '（'+view.line+' 全部，共 '+list.length+' 項）');
+  } else if (view.kind === 'system'){
+    var list2 = SKUS.filter(function(s){return s.line===view.line && s.system===view.system;});
+    el.innerHTML = skuTableHtml(list2, '（'+view.line+' › '+view.system+'，共 '+list2.length+' 項）');
+  } else if (view.kind === 'lineForm'){
+    var l = findLine(view.line);
+    el.innerHTML =
+      '<h2>產品線設定　'+l.name+'</h2>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>代碼</label><input type="text" id="lf_code" value="'+l.code+'"></div>' +
+      '<div class="formrow"><label>名稱</label><input type="text" id="lf_name" value="'+l.name+'"></div>' +
+      '</div>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>多語名稱（英文）</label><input type="text" id="lf_en" value="'+l.nameEn+'"></div>' +
+      '<div class="formrow"><label>多語名稱（日文）</label><input type="text" id="lf_ja" value="'+l.nameJa+'"></div>' +
+      '</div>' +
+      '<div class="formrow"><label>說明</label><textarea id="lf_desc" rows="3">'+l.desc+'</textarea></div>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>排序</label><input type="number" id="lf_order" value="'+l.order+'"></div>' +
+      '<div class="formrow"><label>負責單位</label><input type="text" id="lf_owner" value="'+l.owner+'"></div>' +
+      '</div>' +
+      '<div class="formrow"><label>狀態</label><label class="switch"><input type="checkbox" id="lf_status" '+(l.status==='啟用'?'checked':'')+'><span class="slider"></span></label> <span class="small">啟用／停用</span></div>' +
+      '<div style="text-align:right"><button class="btn" onclick="saveLineForm()">儲存</button></div>';
+  } else if (view.kind === 'systemForm'){
+    var s = findSystem(view.line, view.system);
+    el.innerHTML =
+      '<h2>產品系統設定　'+s.name+'</h2>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>代碼</label><input type="text" id="sf_code" value="'+s.code+'"></div>' +
+      '<div class="formrow"><label>名稱</label><input type="text" id="sf_name" value="'+s.name+'"></div>' +
+      '</div>' +
+      '<div class="formrow"><label>所屬產品線</label><div class="static">'+s.line+'</div></div>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>班型預設 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><select id="sf_class"><option'+(s.classType==='一對一'?' selected':'')+'>一對一</option><option'+(s.classType==='小組'?' selected':'')+'>小組</option><option'+(s.classType==='學期'?' selected':'')+'>學期</option><option'+(s.classType==='其他'?' selected':'')+'>其他</option></select></div>' +
+      '<div class="formrow"><label>預設時長</label><input type="text" id="sf_duration" value="'+s.duration+'"></div>' +
+      '</div>' +
+      '<div class="grid2">' +
+      '<div class="formrow"><label>對應等級範圍 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><input type="text" id="sf_level" value="'+s.levelRange+'"></div>' +
+      '<div class="formrow"><label>教材系列</label><input type="text" id="sf_material" value="'+s.material+'"></div>' +
+      '</div>' +
+      '<div class="hint" style="margin-bottom:10px">上課方式為底下各課程自己的屬性，產品系統層不設定；請到各課程逐筆編輯。</div>' +
+      '<div class="formrow"><label>狀態</label><label class="switch"><input type="checkbox" id="sf_status" '+(s.status==='啟用'?'checked':'')+'><span class="slider"></span></label> <span class="small">啟用／停用</span></div>' +
+      '<div style="text-align:right"><button class="btn" onclick="saveSystemForm()">儲存</button></div>';
+  }
+}
+
+function saveLineForm(){
+  var l = findLine(view.line);
+  l.code = document.getElementById('lf_code').value;
+  l.name = document.getElementById('lf_name').value;
+  l.nameEn = document.getElementById('lf_en').value;
+  l.nameJa = document.getElementById('lf_ja').value;
+  l.desc = document.getElementById('lf_desc').value;
+  l.order = Number(document.getElementById('lf_order').value)||l.order;
+  l.owner = document.getElementById('lf_owner').value;
+  l.status = document.getElementById('lf_status').checked ? '啟用' : '停用';
+  showToast('已儲存產品線「'+l.name+'」設定');
+  buildTree();
+}
+function saveSystemForm(){
+  var s = findSystem(view.line, view.system);
+  s.code = document.getElementById('sf_code').value;
+  s.name = document.getElementById('sf_name').value;
+  s.classType = document.getElementById('sf_class').value;
+  s.duration = document.getElementById('sf_duration').value;
+  s.levelRange = document.getElementById('sf_level').value;
+  s.material = document.getElementById('sf_material').value;
+  s.status = document.getElementById('sf_status').checked ? '啟用' : '停用';
+  showToast('已儲存產品系統「'+s.name+'」設定');
+  buildTree();
+}
+function toggleLineStatus(name){
+  var l = findLine(name);
+  l.status = l.status==='啟用' ? '停用' : '啟用';
+  showToast('已將產品線「'+name+'」設為'+l.status);
+  buildTree();
+}
+function toggleSystemStatus(line, name){
+  var s = findSystem(line, name);
+  s.status = s.status==='啟用' ? '停用' : '啟用';
+  showToast('已將產品系統「'+name+'」設為'+s.status);
+  buildTree();
+}
+function addSystemPrompt(line){
+  document.getElementById('nsys_line').textContent = line;
+  document.getElementById('nsys_code').value = '';
+  document.getElementById('nsys_name').value = '';
+  document.getElementById('newSystemModal').dataset.line = line;
+  document.getElementById('newSystemModal').classList.add('open');
+}
+function saveNewSystem(){
+  var line = document.getElementById('newSystemModal').dataset.line;
+  var name = document.getElementById('nsys_name').value.trim();
+  if (!name){ showToast('請輸入名稱'); return; }
+  var code = document.getElementById('nsys_code').value.trim() || (line+'-NEW');
+  var classType = document.getElementById('nsys_class').value;
+  SYSTEMS.push({line:line, name:name, code:code, classType:classType, duration:'', levelRange:'', material:'', status:'啟用'});
+  LINE_SYSTEMS[line].push(name);
+  openLines[line] = true;
+  closeModalId('newSystemModal');
+  buildTree();
+  showToast('已新增產品系統「'+name+'」，已出現在「'+line+'」底下');
+}
+function addSkuUnder(line, sys){
+  openNewSku();
+  document.getElementById('ns_line').value = line;
+  fillSystemOptions();
+  document.getElementById('ns_system').value = sys;
+}
+
+function selectAllReset(){ selectAll(); }
+
+buildTree();
+renderRightPanel();
+
+function openNewSku(){
+  var lineSel = document.getElementById('ns_line');
+  lineSel.innerHTML = LINE_ORDER.map(function(l){return '<option>'+l+'</option>';}).join('');
+  fillSystemOptions();
+  lineSel.onchange = fillSystemOptions;
+  document.getElementById('ns_delivery').value = '';
+  document.getElementById('ns_cat').value = '學費';
+  onNsCatChange(document.getElementById('ns_cat'));
+  document.getElementById('newSkuModal').classList.add('open');
+}
+function onNsCatChange(el){
+  var freeCats = ['學費','註冊費'];
+  document.getElementById('ns_tax').value = freeCats.indexOf(el.value) > -1 ? '免稅' : '應稅';
+}
+function fillSystemOptions(){
+  var line = document.getElementById('ns_line').value;
+  document.getElementById('ns_system').innerHTML = (LINE_SYSTEMS[line]||[]).map(function(s){return '<option>'+s+'</option>';}).join('');
+}
+function closeNewSku(){ document.getElementById('newSkuModal').classList.remove('open'); }
+function saveNewSku(){
+  var name = document.getElementById('ns_name').value.trim();
+  if (!name){ showToast('請輸入課程名稱'); return; }
+  var delivery = document.getElementById('ns_delivery').value;
+  if (!delivery){ showToast('請選擇上課方式'); return; }
+  var line = document.getElementById('ns_line').value;
+  var sys = document.getElementById('ns_system').value;
+  var id = 'sku' + String(SKUS.length+1).padStart(2,'0');
+  SKUS.push({id:id, name:name, line:line, system:sys,
+    unit:document.getElementById('ns_unit').value||'堂',
+    duration:document.getElementById('ns_duration').value||'－',
+    cat:document.getElementById('ns_cat').value,
+    tax:document.getElementById('ns_tax').value,
+    material:document.getElementById('ns_material').value,
+    deliveryMode:delivery, status:'上架'});
+  closeNewSku();
+  buildTree();
+  if (view.kind==='all' || (view.kind==='line'&&view.line===line) || (view.kind==='system'&&view.line===line&&view.system===sys)) renderRightPanel();
+  showToast('已新增課程「'+name+'」');
+}
+
+var editingSkuId = null;
+function openEditSkuDrawer(id, ev){
+  if (ev) ev.stopPropagation();
+  var s = SKUS.find(function(x){return x.id===id;});
+  if (!s) return;
+  editingSkuId = id;
+  document.getElementById('es_scope').textContent = s.line + ' › ' + s.system;
+  document.getElementById('es_name').value = s.name;
+  document.getElementById('es_nameEn').value = s.nameEn || '';
+  document.getElementById('es_nameJa').value = s.nameJa || '';
+  document.getElementById('es_line').textContent = s.line;
+  document.getElementById('es_system').textContent = s.system;
+  document.getElementById('es_unit').value = s.unit;
+  document.getElementById('es_duration').value = s.duration;
+  document.getElementById('es_cat').value = s.cat;
+  document.getElementById('es_tax').value = s.tax;
+  document.getElementById('es_material').value = s.material || '';
+  document.getElementById('es_delivery').value = s.deliveryMode || '';
+  document.getElementById('es_status').value = s.status;
+  document.getElementById('editSkuDrawerMask').classList.add('open');
+  document.getElementById('editSkuDrawer').classList.add('open');
+}
+function closeEditSkuDrawer(){
+  document.getElementById('editSkuDrawerMask').classList.remove('open');
+  document.getElementById('editSkuDrawer').classList.remove('open');
+  editingSkuId = null;
+}
+function onEsCatChange(el){
+  var freeCats = ['學費','註冊費'];
+  document.getElementById('es_tax').value = freeCats.indexOf(el.value) > -1 ? '免稅' : '應稅';
+}
+function saveEditSkuDrawer(){
+  var s = SKUS.find(function(x){return x.id===editingSkuId;});
+  if (!s) return;
+  var name = document.getElementById('es_name').value.trim();
+  if (!name){ showToast('請輸入課程名稱'); return; }
+  var delivery = document.getElementById('es_delivery').value;
+  if (!delivery){ showToast('請選擇上課方式'); return; }
+  s.name = name;
+  s.nameEn = document.getElementById('es_nameEn').value;
+  s.nameJa = document.getElementById('es_nameJa').value;
+  s.unit = document.getElementById('es_unit').value || '堂';
+  s.duration = document.getElementById('es_duration').value || '－';
+  s.cat = document.getElementById('es_cat').value;
+  s.tax = document.getElementById('es_tax').value;
+  s.material = document.getElementById('es_material').value;
+  s.deliveryMode = delivery;
+  s.status = document.getElementById('es_status').value;
+  closeEditSkuDrawer();
+  renderRightPanel();
+  showToast('已更新課程「'+s.name+'」');
+}
+function toggleSkuStatus(id, ev){
+  if (ev) ev.stopPropagation();
+  var s = SKUS.find(function(x){return x.id===id;});
+  if (!s) return;
+  s.status = s.status==='上架' ? '下架' : '上架';
+  showToast('已將課程「'+s.name+'」設為'+s.status);
+  renderRightPanel();
+}
+function onSkuDeliveryInline(id, value, ev){
+  if (ev) ev.stopPropagation();
+  var s = SKUS.find(function(x){return x.id===id;});
+  if (!s) return;
+  s.deliveryMode = value;
+  showToast('已將課程「'+s.name+'」上課方式改為「'+value+'」');
+  renderRightPanel();
+}
+
+function closeNewLineOrSys(){}
+function saveNewLine(){
+  var name = document.getElementById('nline_name').value.trim();
+  if (!name){ showToast('請輸入名稱'); return; }
+  var code = document.getElementById('nline_code').value.trim() || 'NEW';
+  LINES.push({name:name, code:code, nameEn:'', nameJa:'', desc:'', order:LINES.length+1, status:'啟用', owner:''});
+  LINE_ORDER.push(name);
+  LINE_SYSTEMS[name] = [];
+  closeModalId('newLineModal');
+  buildTree();
+  showToast('已新增產品線「'+name+'」');
+}
+
+var wzStep = 1;
+function openImport(){
+  wzStep = 1;
+  updateWzStep();
+  document.getElementById('importModal').classList.add('open');
+}
+function closeImport(){ document.getElementById('importModal').classList.remove('open'); }
+function onWzFileChosen(input){
+  if (input.files && input.files[0]) document.getElementById('wz_fname').textContent = input.files[0].name;
+}
+function updateWzStep(){
+  for (var i=1;i<=4;i++){
+    document.getElementById('wzstep'+i).classList.toggle('active', i===wzStep);
+    var el = document.getElementById('wzs'+i);
+    el.classList.toggle('active', i===wzStep);
+    el.classList.toggle('done', i<wzStep);
+  }
+  document.getElementById('wzBackBtn').style.visibility = wzStep===1 ? 'hidden' : 'visible';
+  document.getElementById('wzNextBtn').textContent = wzStep===4 ? '完成' : (wzStep===3 ? '確認匯入' : '下一步');
+}
+function wzNext(){
+  if (wzStep < 4){ wzStep++; updateWzStep(); if (wzStep===4) showToast('匯入完成'); }
+  else { closeImport(); }
+}
+function wzBack(){
+  if (wzStep > 1){ wzStep--; updateWzStep(); }
+}
+
+</script>
+<script>
+function toggleNavGroup(ev, gid){
+  ev.stopPropagation();
+  var g = document.querySelector('#sidebar .navgroup[data-group="'+gid+'"]');
+  if (!g) return;
+  var collapsed = g.classList.toggle('collapsed');
+  try{ localStorage.setItem('tliNavCollapse_'+gid, collapsed ? '1' : '0'); }catch(e){}
+}
+(function initNavGroups(){
+  document.querySelectorAll('#sidebar .navgroup[data-group]').forEach(function(g){
+    var gid = g.dataset.group, saved = null;
+    try{ saved = localStorage.getItem('tliNavCollapse_'+gid); }catch(e){}
+    if (saved === '1') g.classList.add('collapsed');
+  });
+})();
+</script>
+</body>
+</html>

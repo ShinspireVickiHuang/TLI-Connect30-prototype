@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TLI Connect 3.0 會員區－自學課程</title>
+<style>
+:root{
+  --c-primary:#1B4E8C;--c-primary-dark:#123A68;--c-accent:#E8792B;--c-accent-dark:#CF691F;--c-secondary:#0F9B79;
+  --c-bg:#F5F7FA;--c-border:#E4E7EC;--c-muted:#667085;--c-text:#101828;
+  --radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);--shadow-lg:0 8px 24px rgba(16,24,40,.16);
+  --topbar-h:52px;--bottomnav-h:64px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.55;font-size:15px;-webkit-tap-highlight-color:transparent;}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;}
+button{font-family:inherit;}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px;}
+.app{min-height:100vh;position:relative;}
+.topbar{position:sticky;top:0;z-index:60;height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:10px;}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.topbar-logo-wrap{width:26px;height:22px;overflow:hidden;position:relative;flex:none;}
+.topbar-logo-wrap img{position:absolute;left:0;top:0;height:22px;width:auto;max-width:none;}
+.back-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--c-border);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--c-text);flex:none;cursor:pointer;}
+.back-btn svg{width:16px;height:16px;}
+.topbar-title{font-size:16.5px;font-weight:700;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-actions{display:flex;align-items:center;gap:6px;position:relative;}
+.mini-select{border:1px solid var(--c-border);border-radius:6px;padding:4px 6px;font-size:11.5px;background:#fff;color:var(--c-muted);font-family:inherit;max-width:96px;}
+.bell-btn{position:relative;width:32px;height:32px;border-radius:50%;border:1px solid var(--c-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c-muted);}
+.bell-btn svg{width:16px;height:16px;}
+.bell-btn .dot{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--c-accent);border:1.5px solid #fff;}
+.bell-panel{display:none;position:absolute;right:0;top:40px;width:264px;background:#fff;border:1px solid var(--c-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:6px 0;z-index:90;}
+.bell-panel.open{display:block;}
+.bell-panel h4{margin:0;padding:8px 14px 6px;font-size:12.5px;color:var(--c-muted);font-weight:700;}
+.bell-item{padding:9px 14px;font-size:12.5px;border-top:1px solid var(--c-border);display:flex;gap:8px;}
+.bell-item .b-dot{width:6px;height:6px;border-radius:50%;background:var(--c-accent);margin-top:5px;flex:none;}
+.bell-item p{margin:0;color:var(--c-text);}
+.bell-item span{color:var(--c-muted);font-size:11px;}
+.side-nav{display:none;}
+@media(min-width:1024px){
+  .side-nav{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:310px;background:#fff;border-right:1px solid var(--c-border);padding:18px 12px;z-index:50;}
+  .side-brand{display:flex;align-items:center;padding:0 8px 18px;}
+  .side-brand img{height:28px;width:auto;}
+  .side-link{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;font-size:14px;font-weight:600;color:var(--c-muted);margin-bottom:2px;}
+  .side-link svg{width:19px;height:19px;flex:none;}
+  .side-link.active{background:#E6EEF8;color:var(--c-primary);}
+  .side-link:hover:not(.active){background:var(--c-bg);}
+  .app.has-side .topbar{margin-left:310px;}
+  .app.has-side .content{margin-left:310px;}
+}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid var(--c-border);display:flex;height:var(--bottomnav-h);padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 10px rgba(16,24,40,.06);}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--c-muted);font-weight:600;min-height:44px;}
+.bottom-nav a svg{width:22px;height:22px;}
+.bottom-nav a.active{color:var(--c-primary);}
+@media(min-width:1024px){.bottom-nav{display:none;}}
+.content{max-width:960px;margin:0 auto;padding:18px 16px calc(var(--bottomnav-h) + 24px);}
+@media(min-width:1024px){.content{padding:26px 32px 40px;}}
+.page-h{font-size:19px;font-weight:700;margin:2px 0 4px;}
+.page-sub{color:var(--c-muted);font-size:13px;margin:0 0 18px;}
+.section-title{font-size:15px;font-weight:700;margin:24px 0 12px;}
+.section-title.first{margin-top:4px;}
+.card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+.card + .card{margin-top:12px;}
+.flex-between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.stack{display:flex;flex-direction:column;gap:10px;}
+.muted{color:var(--c-muted);}
+.small{font-size:12px;}
+.divider{border:none;border-top:1px solid var(--c-border);margin:14px 0;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;min-height:44px;}
+.btn-primary{background:var(--c-primary);color:#fff;}
+.btn-primary:hover{background:var(--c-primary-dark);}
+.btn-accent{background:var(--c-accent);color:#fff;}
+.btn-accent:hover{background:var(--c-accent-dark);}
+.btn-outline{background:#fff;border:1px solid var(--c-border);color:var(--c-text);}
+.btn-outline:hover{background:var(--c-bg);}
+.btn-ghost{background:none;color:var(--c-muted);}
+.btn:disabled{background:var(--c-border)!important;color:#98A2B3!important;cursor:not-allowed;border-color:var(--c-border)!important;}
+.btn-sm{padding:7px 12px;font-size:12.5px;min-height:36px;}
+.btn-block{width:100%;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
+.badge-info{background:#E6EEF8;color:var(--c-primary);}
+.badge-warn{background:#FCEBDC;color:var(--c-accent-dark);}
+.badge-ok{background:#E4F5F0;color:#0B6B52;}
+.badge-muted{background:var(--c-border);color:var(--c-muted);}
+.badge-full{background:#FBEAEA;color:#B42318;}
+.progress{height:8px;border-radius:6px;background:var(--c-border);overflow:hidden;}
+.progress > div{height:100%;background:var(--c-primary);border-radius:6px;}
+.progress.warn > div{background:var(--c-accent);}
+.list-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--c-border);}
+.list-row:first-child{border-top:none;padding-top:0;}
+.list-row .icon-box{width:38px;height:38px;border-radius:9px;background:var(--c-bg);display:flex;align-items:center;justify-content:center;flex:none;color:var(--c-primary);}
+.list-row .icon-box svg{width:18px;height:18px;}
+.list-row .body{flex:1;min-width:0;}
+.list-row .body h4{margin:0;font-size:13.5px;font-weight:700;}
+.list-row .body p{margin:2px 0 0;font-size:12px;color:var(--c-muted);}
+.list-row .trail{flex:none;text-align:right;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--c-border);margin:18px 0 14px;overflow-x:auto;}
+.tab-btn{padding:9px 14px;border:none;background:none;font-size:13.5px;font-weight:700;color:var(--c-muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit;min-height:40px;}
+.tab-btn.active{color:var(--c-primary);border-color:var(--c-primary);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.banner{border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:13px;display:flex;gap:9px;align-items:flex-start;}
+.banner-success{background:#E4F5F0;color:#0B6B52;border:1px solid #BEE6D9;}
+.banner-warn{background:#FCEBDC;color:#9A4A0F;border:1px solid #F5CBA1;}
+.banner-info{background:#E6EEF8;color:var(--c-primary-dark);border:1px solid #C7DAF0;}
+.hidden{display:none!important;}
+.toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translateX(-50%);background:#101828;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;box-shadow:var(--shadow-lg);white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;}
+.toast.hidden{display:none;}
+@media(min-width:1024px){.toast{bottom:24px;}}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.field label{font-size:13px;font-weight:700;}
+.field textarea{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 11px;font-size:14px;font-family:inherit;color:var(--c-text);background:#fff;width:100%;resize:vertical;}
+
+/* ---------- 自學課程專用 ---------- */
+.course-card{cursor:pointer;}
+.course-card:hover{border-color:var(--c-primary);}
+.player-wrap{padding:0;overflow:hidden;}
+.player-box{position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#123A68,#1B4E8C);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:10px;}
+.player-box .play-circle{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;}
+.player-box .play-circle svg{width:24px;height:24px;color:#fff;}
+.player-box .player-title{font-size:14px;font-weight:700;padding:0 20px;text-align:center;}
+.player-controls{padding:12px 14px;}
+.chapter-toggle{display:none;width:100%;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 14px;font-size:13.5px;font-weight:700;color:var(--c-text);cursor:pointer;font-family:inherit;min-height:44px;margin-top:16px;}
+.chapter-toggle svg{width:16px;height:16px;transition:transform .15s;}
+.chapter-toggle.open svg{transform:rotate(180deg);}
+#chapterListCard{margin-top:10px;}
+@media(max-width:1023px){
+  #chapterListCard.collapsed{display:none;}
+  .chapter-toggle{display:flex;}
+}
+@media(min-width:1024px){
+  #chapterListCard{display:block!important;}
+}
+.chapter-row{cursor:pointer;}
+.chapter-row.current{background:#F7FAFF;margin:0 -16px;padding:12px 16px;border-radius:8px;}
+.chapter-row.current .icon-box{background:#E6EEF8;color:var(--c-primary);}
+.chapter-row.done .icon-box{color:#0B6B52;}
+.material-row .trail{display:flex;gap:6px;}
+.explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
+.explore-link svg{width:15px;height:15px;flex:none;}
+@media(max-width:639px){.explore-link-text{display:none;}}
+</style>
+</head>
+<body>
+<div class="app has-side">
+  <nav class="side-nav" aria-label="主導覽">
+    <div class="side-brand"><a href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a></div>
+    <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
+    <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
+    <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link active" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
+    <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
+    <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
+    <a class="side-link" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
+    <a class="side-link" href="../公開網站/p01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>回官網</a>
+  </nav>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a>
+      <div class="topbar-title" data-i18n-zh="自學課程" data-i18n-en="Self-paced Courses">自學課程</div>
+    </div>
+    <div class="topbar-actions">
+      <a class="explore-link" href="../公開網站/p02_courses.html" aria-label="探索課程" title="探索課程">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span class="explore-link-text">探索課程</span>
+      </a>
+      <select class="mini-select" id="langSelect" aria-label="語言與幣別" onchange="handleLangCurrency(this)"><option value="TWD">中文・TWD</option><option value="USD">English・USD</option><option value="JPY">日本語・JPY</option></select>
+      <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <span class="dot"></span>
+      </button>
+      <div class="bell-panel" id="bellPanel">
+        <h4>通知</h4>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你的方案將於 14 天後到期</p><span>今天 09:20</span></div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ===== 列表視圖 ===== -->
+    <div id="view-list">
+      <p class="page-h">自學課程</p>
+      <p class="page-sub" data-i18n-zh="依自己的步調觀看章節影音、下載教材、追蹤完成進度。" data-i18n-en="Watch at your own pace, download materials, and track progress.">依自己的步調觀看章節影音、下載教材、追蹤完成進度。</p>
+
+      <div class="section-title first">我的自學課程</div>
+      <div class="stack" id="courseList"></div>
+    </div>
+
+    <!-- ===== 課程內容視圖 ===== -->
+    <div id="view-detail" class="hidden">
+      <button class="btn btn-outline btn-sm" onclick="backToList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M15 18l-6-6 6-6"/></svg>回課程列表</button>
+      <p class="page-h" id="detailTitle" style="margin-top:12px;"></p>
+      <p class="page-sub" id="detailSub"></p>
+
+      <div class="card player-wrap">
+        <div class="player-box">
+          <div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="player-title" id="playerTitle">第 1 講</div>
+        </div>
+        <div class="player-controls flex-between">
+          <button class="btn btn-outline btn-sm" id="prevBtn" onclick="stepChapter(-1)">‹ 上一章</button>
+          <span class="small muted" id="chapterCount">第 1／1 講</span>
+          <button class="btn btn-outline btn-sm" id="nextBtn" onclick="stepChapter(1)">下一章 ›</button>
+        </div>
+      </div>
+
+      <button class="chapter-toggle" id="chapterToggleBtn" onclick="toggleChapters()">
+        <span>章節清單</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="card" id="chapterListCard">
+        <div id="chapterList"></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="setTab('files',this)">教材下載</button>
+        <button class="tab-btn" onclick="setTab('log',this)">完成紀錄</button>
+        <button class="tab-btn" onclick="setTab('notes',this)">筆記</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-files">
+        <div class="card"><div id="materialList"></div></div>
+      </div>
+      <div class="tab-panel" id="tab-log">
+        <div class="card"><div id="logList"></div></div>
+      </div>
+      <div class="tab-panel" id="tab-notes">
+        <div class="card">
+          <div class="field">
+            <label for="noteInput">新增筆記</label>
+            <textarea id="noteInput" rows="3" placeholder="記下這一講的重點或問題…"></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="addNote()">儲存筆記</button>
+          <div class="divider"></div>
+          <div id="noteList"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
+    <a href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
+    <a href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
+  </nav>
+</div>
+
+<script>
+
+var TLI_RATES={TWD:{rate:1,symbol:'NT$'},USD:{rate:31.5,symbol:'US$'},JPY:{rate:0.211,symbol:'¥'}};
+function tliFmt(amountTWD,cur){
+  var r=TLI_RATES[cur]||TLI_RATES.TWD;
+  var v=amountTWD/r.rate;
+  var decimals=cur==='TWD'?0:(cur==='JPY'?0:2);
+  return r.symbol+v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.remove('hidden');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(function(){t.classList.add('hidden');},2200);
+}
+function handleLangCurrency(sel){
+  var cur=sel.value||'TWD';
+  var langText=sel.options[sel.selectedIndex].text;
+  document.querySelectorAll('[data-money]').forEach(function(el){
+    el.textContent=tliFmt(parseFloat(el.getAttribute('data-money')),cur);
+  });
+  document.querySelectorAll('[data-i18n-zh]').forEach(function(el){
+    el.textContent = (cur==='TWD') ? el.getAttribute('data-i18n-zh') : el.getAttribute('data-i18n-en');
+  });
+  showToast('顯示語言／幣別已切換為 '+langText);
+}
+function toggleBell(){document.getElementById('bellPanel').classList.toggle('open');}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
+});
+
+var ICON_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg>';
+var ICON_PLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>';
+var ICON_CIRCLE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>';
+var ICON_PDF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg>';
+var ICON_AUDIO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+
+var COURSES = {
+  c1:{
+    id:'c1', name:'發音基礎 20 講', tag:'中文一對一・自學',
+    chapters:[
+      {title:'第 1 講：聲調總覽',dur:'5:20'},
+      {title:'第 2 講：聲母發音',dur:'6:05'},
+      {title:'第 3 講：韻母發音',dur:'6:40'},
+      {title:'第 4 講：輕聲與變調',dur:'5:50'},
+      {title:'第 5 講：兒化音',dur:'4:55'},
+      {title:'第 6 講：語調練習',dur:'6:15'},
+      {title:'第 7 講：常見發音誤區',dur:'7:00'},
+      {title:'第 8 講：對話跟讀 I',dur:'6:30'},
+      {title:'第 9 講：對話跟讀 II',dur:'6:20'},
+      {title:'第 10 講：繞口令練習',dur:'5:10'},
+      {title:'第 11 講：數字與時間唸法',dur:'5:45'},
+      {title:'第 12 講：情緒語氣',dur:'6:00'},
+      {title:'第 13 講：正式與口語差異',dur:'6:25'},
+      {title:'第 14 講：連讀技巧',dur:'5:35'},
+      {title:'第 15 講：停頓與重音',dur:'5:15'},
+      {title:'第 16 講：朗讀短文 I',dur:'7:10'},
+      {title:'第 17 講：朗讀短文 II',dur:'7:05'},
+      {title:'第 18 講：自我介紹錄音',dur:'6:45'},
+      {title:'第 19 講：情境對話錄音',dur:'6:50'},
+      {title:'第 20 講：總複習測驗',dur:'8:00'}
+    ],
+    completed:12, current:12, lastWatched:'08/23',
+    materials:[
+      {type:'pdf',name:'發音基礎講義.pdf',meta:'共 20 頁・已更新 08/10'},
+      {type:'pdf',name:'聲調對照表.pdf',meta:'共 2 頁・已更新 08/10'},
+      {type:'audio',name:'情境對話音檔.mp3',meta:'播放時長 42 分'}
+    ]
+  },
+  c2:{
+    id:'c2', name:'商務華語情境 16 講', tag:'中文一對一・自學',
+    chapters:[
+      {title:'第 1 講：機場入境',dur:'5:40'},
+      {title:'第 2 講：飯店入住',dur:'5:20'},
+      {title:'第 3 講：商務會議開場',dur:'6:10'},
+      {title:'第 4 講：電話聯繫',dur:'5:00'},
+      {title:'第 5 講：Email 用語',dur:'6:35'},
+      {title:'第 6 講：產品簡報',dur:'7:20'},
+      {title:'第 7 講：價格協商',dur:'6:55'},
+      {title:'第 8 講：簽約流程',dur:'6:05'},
+      {title:'第 9 講：商務餐敘',dur:'5:45'},
+      {title:'第 10 講：辦公室閒聊',dur:'4:50'},
+      {title:'第 11 講：客訴處理',dur:'6:15'},
+      {title:'第 12 講：電話會議禮儀',dur:'5:55'},
+      {title:'第 13 講：出差安排',dur:'6:00'},
+      {title:'第 14 講：名片交換禮儀',dur:'4:40'},
+      {title:'第 15 講：跨部門溝通',dur:'6:20'},
+      {title:'第 16 講：期末情境測驗',dur:'8:10'}
+    ],
+    completed:0, current:0, lastWatched:null,
+    materials:[
+      {type:'pdf',name:'商務華語情境手冊.pdf',meta:'共 16 頁・已更新 07/28'},
+      {type:'pdf',name:'常用商務詞彙表.pdf',meta:'共 4 頁・已更新 07/28'}
+    ]
+  }
+};
+
+var state = { courseId:null, idx:0, notes:{} };
+
+function renderCourseList(){
+  var wrap = document.getElementById('courseList');
+  wrap.innerHTML = Object.keys(COURSES).map(function(key){
+    var c = COURSES[key];
+    var total = c.chapters.length;
+    var pct = Math.round(c.completed/total*100);
+    var statusBadge = c.completed===0 ? '<span class="badge badge-muted">尚未開始</span>' : (c.completed>=total ? '<span class="badge badge-ok">已完成</span>' : '<span class="badge badge-ok">進行中</span>');
+    var lastLine = c.lastWatched ? ('上次觀看 '+c.lastWatched) : '尚未觀看';
+    return '' +
+      '<div class="card course-card" onclick="openCourse(\''+c.id+'\')">' +
+        '<div class="flex-between">' +
+          '<div><span class="badge badge-info">'+c.tag+'</span><h3 style="margin:8px 0 2px;font-size:15.5px;">'+c.name+'</h3></div>' +
+          statusBadge +
+        '</div>' +
+        '<div class="progress" style="margin:12px 0 6px;"><div style="width:'+pct+'%;"></div></div>' +
+        '<div class="flex-between">' +
+          '<span class="small muted">已完成 '+c.completed+'／'+total+' 講・剩 '+(total-c.completed)+' 講</span>' +
+          '<span class="small muted">'+lastLine+'</span>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function openCourse(id){
+  state.courseId = id;
+  state.idx = Math.min(COURSES[id].current, COURSES[id].chapters.length-1);
+  document.getElementById('view-list').classList.add('hidden');
+  document.getElementById('view-detail').classList.remove('hidden');
+  document.getElementById('chapterListCard').classList.add('collapsed');
+  document.getElementById('chapterToggleBtn').classList.remove('open');
+  var c = COURSES[id];
+  document.getElementById('detailTitle').textContent = c.name;
+  document.getElementById('detailSub').textContent = c.tag+'・共 '+c.chapters.length+' 講・已完成 '+c.completed+' 講';
+  renderChapterList();
+  renderMaterials();
+  renderLog();
+  renderNotes();
+  updatePlayer();
+  window.scrollTo(0,0);
+}
+
+function backToList(){
+  document.getElementById('view-detail').classList.add('hidden');
+  document.getElementById('view-list').classList.remove('hidden');
+  renderCourseList();
+}
+
+function renderChapterList(){
+  var c = COURSES[state.courseId];
+  var wrap = document.getElementById('chapterList');
+  wrap.innerHTML = c.chapters.map(function(ch,i){
+    var done = i < c.completed;
+    var isCurrent = i === state.idx;
+    var icon = done ? ICON_CHECK : (isCurrent ? ICON_PLAY : ICON_CIRCLE);
+    var statusText = done ? '已完成' : (isCurrent ? '正在看' : '尚未觀看');
+    var cls = 'list-row chapter-row'+(done?' done':'')+(isCurrent?' current':'');
+    return '' +
+      '<div class="'+cls+'" onclick="selectChapter('+i+')">' +
+        '<div class="icon-box">'+icon+'</div>' +
+        '<div class="body"><h4>'+ch.title+'</h4><p>'+ch.dur+'・'+statusText+'</p></div>' +
+        (isCurrent ? '<div class="trail"><span class="badge badge-info">正在看</span></div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function selectChapter(i){
+  state.idx = i;
+  renderChapterList();
+  updatePlayer();
+}
+
+function stepChapter(delta){
+  var c = COURSES[state.courseId];
+  var next = state.idx + delta;
+  if(next < 0 || next >= c.chapters.length) return;
+  state.idx = next;
+  renderChapterList();
+  updatePlayer();
+}
+
+function updatePlayer(){
+  var c = COURSES[state.courseId];
+  var ch = c.chapters[state.idx];
+  document.getElementById('playerTitle').textContent = ch.title;
+  document.getElementById('chapterCount').textContent = '第 '+(state.idx+1)+'／'+c.chapters.length+' 講';
+  document.getElementById('prevBtn').disabled = state.idx===0;
+  document.getElementById('nextBtn').disabled = state.idx===c.chapters.length-1;
+}
+
+function toggleChapters(){
+  document.getElementById('chapterListCard').classList.toggle('collapsed');
+  document.getElementById('chapterToggleBtn').classList.toggle('open');
+}
+
+function renderMaterials(){
+  var c = COURSES[state.courseId];
+  var wrap = document.getElementById('materialList');
+  wrap.innerHTML = c.materials.map(function(m){
+    var icon = m.type==='pdf' ? ICON_PDF : ICON_AUDIO;
+    return '' +
+      '<div class="list-row material-row">' +
+        '<div class="icon-box">'+icon+'</div>' +
+        '<div class="body"><h4>'+m.name+'</h4><p>'+m.meta+'</p></div>' +
+        '<div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast(\'〈'+m.name+'〉已加入下載\')">下載</button></div>' +
+      '</div>';
+  }).join('');
+}
+
+function renderLog(){
+  var c = COURSES[state.courseId];
+  var wrap = document.getElementById('logList');
+  if(c.completed===0){
+    wrap.innerHTML = '<p class="small muted" style="margin:0;">尚未有完成紀錄，開始觀看第 1 講後會出現在這裡。</p>';
+    return;
+  }
+  var base = new Date(2026,7,23);
+  var rows = [];
+  for(var i=c.completed-1;i>=0;i--){
+    var d = new Date(base.getTime() - (c.completed-1-i)*86400000);
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var dd = String(d.getDate()).padStart(2,'0');
+    rows.push('' +
+      '<div class="list-row">' +
+        '<div class="icon-box">'+ICON_CHECK+'</div>' +
+        '<div class="body"><h4>'+c.chapters[i].title+'</h4><p>完成日 '+mm+'/'+dd+'</p></div>' +
+      '</div>');
+  }
+  wrap.innerHTML = rows.join('');
+}
+
+function renderNotes(){
+  var wrap = document.getElementById('noteList');
+  var list = state.notes[state.courseId] || [];
+  if(list.length===0){
+    wrap.innerHTML = '<p class="small muted" style="margin:0;">還沒有筆記。</p>';
+    return;
+  }
+  wrap.innerHTML = list.map(function(n){
+    return '<div class="list-row"><div class="body"><p style="margin:0;color:var(--c-text);font-size:13px;">'+n.text+'</p><p style="margin:2px 0 0;">'+n.time+'</p></div></div>';
+  }).join('');
+}
+
+function addNote(){
+  var input = document.getElementById('noteInput');
+  var text = input.value.trim();
+  if(!text) return;
+  if(!state.notes[state.courseId]) state.notes[state.courseId] = [];
+  var c = COURSES[state.courseId];
+  state.notes[state.courseId].unshift({text:text, time:c.chapters[state.idx].title+' 筆記'});
+  input.value='';
+  renderNotes();
+}
+
+function setTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+renderCourseList();
+</script>
+<div class="toast hidden" id="toast">已完成</div>
+</body>
+</html>

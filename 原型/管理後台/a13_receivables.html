@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>應收與分期沖銷｜TLI Connect 3.0 管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);font-size:14px;}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;max-width:1440px;margin:0 auto;background:#fff;position:relative;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);border-right:1px solid var(--g200);
+display:flex;flex-direction:column;}
+.sidebar .brand{padding:16px 20px;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.sidebar .brand img{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:2px;}
+.sidebar nav{flex:1 0 auto;padding:10px 0;overflow-y:auto;}
+.sidebar nav a{display:flex;align-items:center;gap:11px;padding:9px 18px;font-size:13.5px;
+color:var(--g500);text-decoration:none;border-radius:0 20px 20px 0;margin:1px 10px 1px 0;}
+.sidebar nav a svg{flex-shrink:0;}
+.sidebar nav a:hover{background:var(--g50);color:var(--g900);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar .sec-label{padding:14px 20px 4px;font-size:11px;color:#9aa4b2;letter-spacing:.05em;font-weight:600;}
+.sidebar .usercard{margin:0;padding:14px 18px 18px;border-top:1px solid var(--g200);flex-shrink:0;}
+.sidebar .usercard .u-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.sidebar .usercard .u-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;
+display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.sidebar .usercard .u-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar .usercard .u-role{font-size:11px;color:var(--g500);}
+.sidebar .usercard .u-logout{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--g500);
+text-decoration:none;padding:7px;border:1px solid var(--g200);border-radius:6px;cursor:pointer;
+background:none;width:100%;font-family:inherit;}
+.sidebar .usercard .u-logout:hover{background:var(--g50);color:var(--g900);}
+.sidebar-veil{display:none;}
+.content-col{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--g200);
+display:flex;align-items:center;gap:14px;padding:0 24px;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--g900);}
+.topbar .topbar-title{font-size:13.5px;color:var(--g500);}
+.main{flex:1;padding:26px 32px 60px;min-width:0;background:var(--g50);}
+@media (max-width:1279px){
+.sidebar{width:72px;}
+.sidebar .brand small,.sidebar nav a .navlabel,.sidebar .sec-label,.sidebar .usercard .u-name,.sidebar .usercard .u-role{display:none;}
+.sidebar .brand{align-items:center;padding:16px 8px;}
+.sidebar .brand img{height:24px;}
+.sidebar nav a{justify-content:center;padding:11px 0;margin:1px 8px;border-radius:8px;}
+.sidebar .usercard{padding:12px 8px;}
+.sidebar .usercard .u-row{justify-content:center;margin-bottom:8px;}
+}
+@media (max-width:1023px){
+.app{display:block;max-width:100%;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:300;transform:translateX(-100%);transition:transform .2s;}
+.sidebar.open{transform:translateX(0);}
+.sidebar .brand small,.sidebar nav a .navlabel,.sidebar .sec-label,.sidebar .usercard .u-name,.sidebar .usercard .u-role{display:block;}
+.sidebar .brand{align-items:flex-start;padding:16px 20px;}
+.sidebar .brand img{height:28px;}
+.sidebar nav a{justify-content:flex-start;padding:9px 18px;border-radius:0 20px 20px 0;}
+.sidebar .usercard .u-row{justify-content:flex-start;}
+.sidebar-veil.open{display:block;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:290;}
+.hamburger{display:inline-flex;}
+.content-col{width:100%;}
+.drawer{width:100%;max-width:100%;}
+.modal.wide{width:94vw;}
+.grid4{grid-template-columns:1fr 1fr;}
+.grid3{grid-template-columns:1fr 1fr;}
+}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn.danger{background:#fff;border:1px solid #F0B7B7;color:#C0392B;}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.filterbar select,.filterbar input{padding:7px 10px;border:1px solid var(--g200);border-radius:6px;
+font-size:13px;font-family:inherit;}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.chiprow button{padding:6px 13px;border-radius:16px;border:1px solid var(--g200);background:#fff;font-size:12.5px;
+cursor:pointer;color:var(--g500);font-family:inherit;}
+.chiprow button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pager{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:12.5px;color:var(--g500);flex-wrap:wrap;gap:8px;}
+.pager .pages{display:flex;gap:4px;}
+.pager .pages button{border:1px solid var(--g200);background:#fff;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12.5px;font-family:inherit;color:var(--g900);}
+.pager .pages button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pager .pages button:disabled{color:var(--g200);cursor:not-allowed;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:150;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:420px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal h3{margin-top:0;font-size:16px;}
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:140;}
+.drawer-mask.open{display:flex;justify-content:flex-end;}
+.drawer{background:#fff;width:660px;max-width:94vw;height:100%;overflow-y:auto;padding:24px 28px 60px;
+box-shadow:-3px 0 16px rgba(0,0,0,.1);}
+.drawer .dtop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px;}
+.drawer .dtop h2{margin:0 0 4px;font-size:17px;}
+.drawer .dclose{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+.statcard{background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px;}
+.statcard .lbl{font-size:12px;color:var(--g500);margin-bottom:6px;}
+.statcard .val{font-size:23px;font-weight:700;}
+.statcard .val.warn{color:#C0392B;}
+.checkbox-cell{width:32px;}
+.linklike{color:var(--navy);cursor:pointer;text-decoration:underline;font-size:12.5px;}
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);padding:18px 0;
+border-right:1px solid var(--g200);display:flex;flex-direction:column;transition:width .15s;
+position:sticky;top:0;height:100vh;align-self:flex-start;}
+.sidebar .brand{padding:0 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;}
+.sidebar .brand-logo{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:0;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;}
+.sidebar nav a,.sidebar nav span.disabled{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;
+color:var(--g900);text-decoration:none;position:relative;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar .sec-label{padding:16px 20px 4px;font-size:10.5px;color:var(--g500);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:100;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+/* ---- 右側詳情抽屜 ---- */
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:92vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
+/* ---- 批次匯入精靈 ---- */
+.wizsteps{display:flex;gap:6px;margin-bottom:18px;}
+.wizsteps span{flex:1;text-align:center;padding:6px 4px;font-size:11.5px;border-bottom:3px solid var(--g200);color:var(--g500);}
+.wizsteps span.active{border-color:var(--navy);color:var(--navy);font-weight:600;}
+.wizsteps span.done{border-color:var(--teal);color:var(--teal);}
+.dropzone{border:2px dashed var(--g200);border-radius:8px;padding:34px 16px;text-align:center;cursor:pointer;color:var(--g500);font-size:13px;}
+.dropzone:hover{border-color:var(--navy);color:var(--navy);}
+.dropzone.filled{border-color:var(--teal);color:var(--teal);background:#F5FBF9;}
+.maprow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;}
+.maprow .mlbl{width:120px;flex-shrink:0;color:var(--g500);}
+.maprow select{flex:1;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+.previewrow-err{background:#FBE7E7;}
+.wizfoot{display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--g200);}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;text-align:center;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+/* ---- 共用：頂欄與側欄使用者卡 ---- */
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;display:flex;align-items:center;gap:10px;position:relative;}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.4;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-role{font-size:11px;color:var(--g500);}
+.sidebar .su-logout{display:block;margin:6px 20px 4px;font-size:12px;color:var(--navy);text-decoration:none;}
+.sidebar .su-logout:hover{text-decoration:underline;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-searchicon{font-size:12px;color:var(--g500);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;position:relative;}
+.su-clickarea{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-info{flex:1;min-width:0;}
+.su-name,.su-unit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.5;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-roletag{font-size:10.5px;background:#E6EEF8;color:var(--navy);padding:0 6px;border-radius:8px;display:inline-block;width:fit-content;white-space:nowrap;}
+.sidebar-user .su-unit{font-size:11px;color:var(--g500);}
+.su-menu{top:auto;bottom:64px;left:14px;right:14px;}
+.su-roleswitch,.su-campusswitch{margin:8px 0 0;font-size:11px;color:var(--g500);}
+.su-roleswitch select,.su-campusswitch select{width:100%;margin-top:3px;padding:5px 7px;border:1px solid var(--g200);
+border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
+/* ---- RWD ---- */
+@media (max-width:1279px) and (min-width:1024px){
+  .sidebar{width:72px;}
+  .sidebar .navtext{position:absolute;left:100%;top:50%;transform:translateY(-50%);background:#fff;
+    border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:nowrap;
+    box-shadow:0 4px 12px rgba(16,24,40,.12);opacity:0;pointer-events:none;transition:opacity .12s;margin-left:6px;color:var(--g900);}
+  .sidebar nav a:hover .navtext{opacity:1;}
+  .sidebar .brand{align-items:center;overflow:hidden;}
+  .sidebar .brand-logo{max-width:100%;width:32px;height:28px;object-fit:cover;object-position:left center;flex-shrink:0;}
+  .sidebar .brand-text{display:none;}
+  .sidebar .brand small{display:none;}
+  .sidebar-user{justify-content:center;}
+  .sidebar-user .navtext{display:none;}
+  .sidebar .su-logout{text-align:center;}
+}
+@media (max-width:1023px){
+  .hamburger{display:inline-flex;}
+  .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;transition:left .2s;}
+  .sidebar.open{left:0;}
+  .sidebar-backdrop.open{display:block;}
+  .app{width:100%;}
+  .main{padding:16px 16px 40px;}
+  .topbar{padding:0 16px;margin:-16px -16px 18px;}
+  .tb-search{display:none;}
+  .drawer{width:100%;max-width:100%;}
+}
+
+</style>
+<style>
+/* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
+#sidebar{padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#sidebar .brand{padding:16px 20px 14px;}
+#sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;}
+#sidebar .brand small{margin-top:12px;font-size:12px;color:var(--g500);text-transform:none;letter-spacing:0;font-weight:400;}
+#sidebar .brand-text{display:none;}
+#sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;scrollbar-width:thin;}
+#sidebar nav::-webkit-scrollbar{width:6px;}
+#sidebar nav::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+#sidebar nav a,#sidebar nav span.disabled{align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;font-size:14px;}
+#sidebar .navgroup .sec-label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 12px;margin:20px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+#sidebar .navgroup:first-child .sec-label{margin-top:8px;}
+#sidebar .sec-toggle{background:none;border:none;padding:2px;margin:0;cursor:pointer;color:var(--g500);display:flex;align-items:center;line-height:1;flex-shrink:0;}
+#sidebar .sec-toggle svg{transition:transform .15s;display:block;}
+#sidebar .navgroup.collapsed .sec-toggle svg{transform:rotate(-90deg);}
+#sidebar .navgroup-items{overflow:hidden;}
+#sidebar .navgroup.collapsed .navgroup-items{display:none;}
+#sidebar .sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+#sidebar .su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+#sidebar .su-row .su-avatar{flex-shrink:0;width:36px;height:36px;}
+#sidebar .su-row .su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+#sidebar .su-row .su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#sidebar .su-row .su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+#sidebar .su-row .su-chevron{color:var(--g500);flex-shrink:0;}
+#sidebar .su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+#sidebar .su-menu .su-roleswitch,#sidebar .su-menu .su-campusswitch{margin:6px 4px 2px;font-size:11px;color:var(--g500);}
+#sidebar .su-menu .su-roleswitch select,#sidebar .su-menu .su-campusswitch select{width:100%;margin-top:3px;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--g900);}
+@media (max-width:1279px) and (min-width:1024px){
+  #sidebar{width:72px;}
+  #sidebar .navgroup .sec-label{display:none;}
+  #sidebar .su-row{justify-content:center;}
+  #sidebar .su-menu{left:64px;right:auto;bottom:10px;width:210px;}
+}
+@media (max-width:1023px){
+  #sidebar{width:260px;}
+}
+
+/* ==== 20260826v 容器寬度統一（對齊 a01 基準，覆寫舊版殘留樣式，防止寬內容撐開頁面）==== */
+html,body{overflow-x:hidden;}
+.app{display:flex;min-height:100vh;width:100%;max-width:none;background:#fff;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{padding:0 32px;}
+.pagehead{padding:0;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
+@media (max-width:1023px){
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" class="active" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">應收與分期沖銷</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<div class="pagehead">
+<div><h1>應收與分期沖銷</h1><div class="desc">追蹤訂單分期／月結未收款項，登記收款後自動沖銷對應期數；本模組於底稿標為後續啟用階段，畫面已完整可操作。</div></div>
+</div>
+
+<div class="tabs">
+<button class="active" onclick="arTopTab(this,'list')">應收列表</button>
+<button onclick="arTopTab(this,'recon')">金流對帳</button>
+</div>
+
+<div class="tabpanel active" id="artoppanel-list">
+
+<div class="grid4">
+<div class="statcard"><div class="lbl">本月應收</div><div class="val" id="kpi_due"></div></div>
+<div class="statcard"><div class="lbl">本月已收</div><div class="val" id="kpi_paid"></div></div>
+<div class="statcard"><div class="lbl">逾期金額</div><div class="val warn" id="kpi_overdue"></div></div>
+<div class="statcard"><div class="lbl">逾期筆數</div><div class="val warn" id="kpi_overduecnt"></div></div>
+</div>
+
+<div class="card">
+<div class="filterbar">
+<input type="text" id="f_kw" placeholder="搜尋訂單編號／會員姓名" style="width:200px">
+<select id="f_campus"><option value="">全部校區</option><option>羅斯福</option><option>士林</option><option>台中</option><option>高雄</option></select>
+<select id="f_paymode"><option value="">全部付款方式</option><option>分期</option><option>月結</option><option>訂金＋尾款</option><option>一次付清</option></select>
+<button class="btn ghost" onclick="applyFilterAr()">查詢</button>
+</div>
+<div class="chiprow">
+<button class="chip-q active" onclick="quickAr(this,'')">全部</button>
+<button class="chip-q" onclick="quickAr(this,'逾期')">逾期</button>
+<button class="chip-q" onclick="quickAr(this,'本週到期')">本週到期</button>
+<button class="chip-q" onclick="quickAr(this,'月結')">月結客戶</button>
+</div>
+<div class="tablewrap"><table id="arTable"></table></div>
+<div class="pager" id="arPager"></div>
+</div>
+
+</div>
+
+<div class="tabpanel" id="artoppanel-recon">
+<div class="card">
+<h2>金流對帳</h2>
+<div class="desc" style="margin-bottom:12px">依日期與渠道比對藍新／Stripe 等金流撥款批次與系統收款金額，差異金額標紅，可標記已對帳或匯出對帳表。</div>
+<div class="filterbar">
+<input type="date" id="rc_from"><span class="small">～</span><input type="date" id="rc_to">
+<select id="rc_channel"><option value="">全部渠道</option><option>藍新-TLI羅斯福</option><option>藍新-TLI士林</option><option>Stripe</option><option>刷卡機-台中</option><option>匯款</option><option>現金</option></select>
+<button class="btn ghost" onclick="renderRecon()">查詢</button>
+<button class="btn ghost" style="margin-left:auto" onclick="showToast('已匯出對帳表')">匯出對帳表</button>
+</div>
+<div class="tablewrap"><table id="reconTable"></table></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="drawer-mask" id="arDrawerMask"><div class="drawer">
+<div class="dtop"><div><h2 id="ar_title"></h2><div class="small" id="ar_sub"></div></div>
+<button class="dclose" onclick="closeArDrawer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+<div id="ar_statusrow" style="margin-bottom:14px"></div>
+
+<div class="card">
+<h2>分期／月結期程表</h2>
+<div class="tablewrap"><table id="ar_schedule"></table></div>
+</div>
+
+<div class="card">
+<h2>登記收款</h2>
+<div class="grid2">
+<div class="formrow"><label>本次收款金額</label><input type="number" id="rc_amount"></div>
+<div class="formrow"><label>收款日期</label><input type="date" id="rc_date" value="2026-08-25"></div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>收款方式</label><select id="rc_method"><option>銀行轉帳</option><option>信用卡</option><option>現金</option><option>LINE Pay</option><option>支票</option></select></div>
+<div class="formrow"><label>渠道</label><select id="rc_channel2"><option>藍新-TLI羅斯福</option><option>藍新-TLI士林</option><option>Stripe</option><option>刷卡機-台中</option><option>匯款</option><option>現金</option></select></div>
+</div>
+<div class="formrow"><label>憑證上傳</label><input type="file" id="rc_file"></div>
+<div class="hint" style="margin-bottom:10px" id="rc_hint"></div>
+<div style="text-align:right">
+<button class="btn" onclick="registerPayment()">確認收款，沖銷對應期數</button>
+</div>
+</div>
+
+<div class="card">
+<h2>沖銷紀錄</h2>
+<div class="tablewrap"><table id="ar_settlements"></table></div>
+</div>
+
+</div></div>
+
+<div class="modal-mask" id="adjustModal"><div class="modal">
+<h3>調整期程</h3>
+<div class="formrow"><label>期別</label><div class="small" id="adj_no"></div></div>
+<div class="formrow"><label>到期日</label><input type="date" id="adj_due"></div>
+<div class="formrow"><label>金額</label><input type="number" id="adj_amount"></div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeAdjust()">取消</button>
+<button class="btn" onclick="saveAdjust()">儲存調整</button>
+</div>
+</div></div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+}
+var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','顧問'];
+var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
+var TLI_ROLE_NAV = {
+  '總公司管理者': 'all',
+  '校區主管': ['c01','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16'],
+  '財務': ['a13','a06','a07'],
+  '顧問': ['c01','c02','c04','c06','c07','a01']
+};
+function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
+function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
+function applyRoleVisibility(){
+  var role = tliCurrentRole();
+  var allowed = TLI_ROLE_NAV[role];
+  document.querySelectorAll('.sidebar nav a[data-nav]').forEach(function(a){
+    var key = a.dataset.nav;
+    a.style.display = (allowed === 'all' || allowed.indexOf(key) > -1) ? '' : 'none';
+  });
+  var tagEl = document.getElementById('suRoleTag');
+  if (tagEl) tagEl.textContent = role;
+  var unitEl = document.getElementById('suUnit');
+  if (unitEl) unitEl.textContent = TLI_ROLE_UNIT[role] || '總公司';
+  var campusWrap = document.getElementById('campusSwitchWrap');
+  if (campusWrap) campusWrap.style.display = (role === '總公司管理者') ? '' : 'none';
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.value = role;
+  if (typeof onRoleApplied === 'function') onRoleApplied(role);
+}
+function onRoleSwitch(el){
+  tliSetRole(el.value);
+  applyRoleVisibility();
+  toast('已切換角色為「'+el.value+'」，側欄項目已同步更新');
+}
+function onCampusSwitch(el){ toast('已切換校區檢視為「'+el.value+'」'); }
+function toggleSuMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel'); closePanel('avatarMenu');
+  document.getElementById('suMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(){ closePanel('suMenu'); });
+function initRoleSwitcher(){
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.innerHTML = TLI_ROLES.map(function(r){ return '<option>'+r+'</option>'; }).join('');
+  var csel = document.getElementById('campusSwitcher');
+  if (csel) csel.innerHTML = ['全公司','羅斯福','士林','台中','高雄'].map(function(c){return '<option>'+c+'</option>';}).join('');
+  applyRoleVisibility();
+}
+initRoleSwitcher();
+/* ================= 共用：頂欄通知／使用者選單／登出／toast（全站同一段） ================= */
+var NOTIFS = [
+  {t:'訂單 ORD-2026-0102 已逾期 5 天未收款', time:'10 分鐘前', unread:true},
+  {t:'銷售方案「學期班 Lv.5–8 一期方案」即將於 1/31 下架', time:'1 小時前', unread:true},
+  {t:'內容管理：首頁 Hero 文案已由校區主管發佈', time:'今天 09:12', unread:false},
+  {t:'老師黃志遠已切換為留職停薪', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot');
+  if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>' +
+    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+}
+function markAllRead(ev){
+  if (ev) ev.stopPropagation();
+  NOTIFS.forEach(function(n){ n.unread = false; });
+  renderNotifPanel();
+}
+function toggleNotif(ev){
+  ev.stopPropagation();
+  closePanel('avatarMenu');
+  var p = document.getElementById('notifPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) renderNotifPanel();
+}
+function toggleAvatarMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel');
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+function closePanel(id){
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+document.addEventListener('click', function(){ closePanel('notifPanel'); closePanel('avatarMenu'); });
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+renderNotifPanel();
+
+function showToast(msg){ toast(msg); }
+
+
+
+function arTopTab(btn, name){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('artoppanel-'+name).classList.add('active');
+  if (name==='recon') renderRecon();
+}
+
+var TODAY = new Date('2026-08-25');
+
+var RECV = [
+ {id:'AR-0083', order:'ORD-2026-0083', member:'王小明', campus:'羅斯福', payMode:'月結',
+  installments:[
+    {no:'8 月月結', due:'2026-08-31', amount:17750, status:'已收'},
+    {no:'9 月月結', due:'2026-09-30', amount:17750, status:'待收'}
+  ], settlements:[{date:'2026-08-31', amount:17750, method:'銀行轉帳', voucher:'TX20260831-01'}]},
+ {id:'AR-0091', order:'ORD-2026-0091', member:'陳雅婷', campus:'士林', payMode:'分期',
+  installments:[
+    {no:'第 1 期', due:'2026-07-20', amount:9900, status:'已收'},
+    {no:'第 2 期', due:'2026-08-20', amount:9900, status:'已收'}
+  ], settlements:[{date:'2026-07-20', amount:9900, method:'信用卡', voucher:'TX20260720-07'},{date:'2026-08-20', amount:9900, method:'信用卡', voucher:'TX20260820-11'}]},
+ {id:'AR-0102', order:'ORD-2026-0102', member:'林建宏', campus:'台中', payMode:'一次付清',
+  installments:[{no:'全額', due:'2026-08-20', amount:18900, status:'待收'}], settlements:[]},
+ {id:'AR-0067', order:'ORD-2026-0067', member:'Sarah Chen', campus:'羅斯福', payMode:'分期',
+  installments:[
+    {no:'第 1 期', due:'2026-06-15', amount:9334, status:'已收'},
+    {no:'第 2 期', due:'2026-07-15', amount:9333, status:'已收'},
+    {no:'第 3 期', due:'2026-08-28', amount:9333, status:'待收'}
+  ], settlements:[{date:'2026-06-15', amount:9334, method:'銀行轉帳', voucher:'TX20260615-02'},{date:'2026-07-15', amount:9333, method:'銀行轉帳', voucher:'TX20260715-04'}]},
+ {id:'AR-0054', order:'ORD-2026-0054', member:'佐藤 美咲', campus:'高雄', payMode:'一次付清',
+  installments:[{no:'全額', due:'2026-05-10', amount:16800, status:'已收'}], settlements:[{date:'2026-05-10', amount:16800, method:'現金', voucher:'TX20260510-01'}]},
+ {id:'AR-0121', order:'ORD-2026-0121', member:'台灣藍鵲科技股份有限公司', campus:'羅斯福', payMode:'月結',
+  installments:[
+    {no:'8 月月結', due:'2026-08-05', amount:140000, status:'已收'},
+    {no:'9 月月結', due:'2026-09-05', amount:140000, status:'待收'},
+    {no:'10 月月結', due:'2026-10-05', amount:140000, status:'待收'}
+  ], settlements:[{date:'2026-08-05', amount:140000, method:'銀行轉帳', voucher:'TX20260805-21'}]},
+ {id:'AR-0029', order:'ORD-2026-0029', member:'台灣藍鵲科技股份有限公司', campus:'羅斯福', payMode:'月結',
+  installments:[
+    {no:'7 月月結', due:'2026-07-10', amount:105000, status:'已收'},
+    {no:'8 月月結', due:'2026-08-10', amount:105000, status:'待收'},
+    {no:'9 月月結', due:'2026-09-10', amount:105000, status:'待收'}
+  ], settlements:[{date:'2026-07-10', amount:105000, method:'銀行轉帳', voucher:'TX20260710-16'}]},
+ {id:'AR-0140', order:'ORD-2026-0140', member:'陳建志', campus:'士林', payMode:'分期',
+  installments:[
+    {no:'第 1 期', due:'2026-06-22', amount:6000, status:'已收'},
+    {no:'第 2 期', due:'2026-07-22', amount:6000, status:'已收'},
+    {no:'第 3 期', due:'2026-08-22', amount:6000, status:'待收'},
+    {no:'第 4 期', due:'2026-09-22', amount:6000, status:'待收'}
+  ], settlements:[{date:'2026-06-22', amount:6000, method:'信用卡', voucher:'TX20260622-03'},{date:'2026-07-22', amount:6000, method:'信用卡', voucher:'TX20260722-09'}]},
+ {id:'AR-0075', order:'ORD-2025-0342', member:'王淑芬', campus:'台中', payMode:'一次付清',
+  installments:[{no:'全額', due:'2025-08-01', amount:9600, status:'已收'}], settlements:[{date:'2025-08-01', amount:9600, method:'現金', voucher:'TX20250801-01'}]}
+];
+
+var FAKE_TOTAL_AR = 1076;
+var arPage = 1, arPageSize = 10, arQuick = '';
+
+function nextUnpaid(r){
+  return r.installments.find(function(i){ return i.status==='待收' || i.status==='逾期'; });
+}
+function totalOf(r){ return r.installments.reduce(function(s,i){return s+i.amount;},0); }
+function paidOf(r){ return r.installments.filter(function(i){return i.status==='已收';}).reduce(function(s,i){return s+i.amount;},0); }
+function overdueDays(due){
+  var d = new Date(due);
+  return Math.round((TODAY-d)/86400000);
+}
+function arStatus(r){
+  var nu = nextUnpaid(r);
+  if (!nu) return '已結清';
+  var diff = overdueDays(nu.due);
+  if (diff > 0) return '逾期';
+  if (diff >= -7) return '即將到期';
+  return '正常';
+}
+function statusBadgeAr(s){
+  if (s === '已結清') return '<span class="badge green">已結清</span>';
+  if (s === '逾期') return '<span class="badge red">逾期</span>';
+  if (s === '即將到期') return '<span class="badge orange">即將到期</span>';
+  return '<span class="badge blue">正常</span>';
+}
+
+function renderKpi(){
+  var dueThisMonth = 0, paidThisMonth = 0, overdueAmt = 0, overdueCnt = 0;
+  RECV.forEach(function(r){
+    r.installments.forEach(function(i){
+      var m = i.due.slice(0,7);
+      if (m === '2026-08'){
+        if (i.status === '已收') paidThisMonth += i.amount;
+        else dueThisMonth += i.amount;
+      }
+      if (i.status !== '已收' && overdueDays(i.due) > 0) overdueAmt += i.amount;
+    });
+    if (arStatus(r) === '逾期') overdueCnt++;
+  });
+  document.getElementById('kpi_due').textContent = 'NT$ ' + dueThisMonth.toLocaleString();
+  document.getElementById('kpi_paid').textContent = 'NT$ ' + paidThisMonth.toLocaleString();
+  document.getElementById('kpi_overdue').textContent = 'NT$ ' + overdueAmt.toLocaleString();
+  document.getElementById('kpi_overduecnt').textContent = overdueCnt + ' 筆';
+}
+
+function filteredAr(){
+  var kw = document.getElementById('f_kw').value.trim();
+  var campus = document.getElementById('f_campus').value;
+  var paymode = document.getElementById('f_paymode').value;
+  return RECV.filter(function(r){
+    if (kw && r.order.indexOf(kw)===-1 && r.member.indexOf(kw)===-1) return false;
+    if (campus && r.campus!==campus) return false;
+    if (paymode && r.payMode!==paymode) return false;
+    var st = arStatus(r);
+    if (arQuick==='逾期' && st!=='逾期') return false;
+    if (arQuick==='本週到期' && st!=='即將到期') return false;
+    if (arQuick==='月結' && r.payMode!=='月結') return false;
+    return true;
+  });
+}
+function quickAr(btn, val){
+  arQuick = val;
+  document.querySelectorAll('.chip-q').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  arPage = 1;
+  renderAr();
+}
+function applyFilterAr(){ arPage = 1; renderAr(); }
+
+function renderAr(){
+  renderKpi();
+  var list = filteredAr();
+  var t = document.getElementById('arTable');
+  t.innerHTML = '<tr><th class="checkbox-cell"><input type="checkbox" onclick="toggleAllAr(this)"></th><th>訂單</th><th>會員</th><th>付款方式</th><th>總額</th><th>已收</th><th>未收</th><th>下期到期日</th><th>逾期天數</th><th>狀態</th></tr>';
+  list.forEach(function(r){
+    var total = totalOf(r), paid = paidOf(r), unpaid = total - paid;
+    var nu = nextUnpaid(r);
+    var od = nu ? Math.max(0, overdueDays(nu.due)) : 0;
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.onclick = function(e){ if(e.target.type!=='checkbox') openArDrawer(r.id); };
+    tr.innerHTML = '<td class="checkbox-cell" onclick="event.stopPropagation()"><input type="checkbox" class="ar-chk"></td>' +
+      '<td>'+r.order+'</td><td>'+r.member+'</td><td>'+r.payMode+'</td>' +
+      '<td>NT$ '+total.toLocaleString()+'</td><td>NT$ '+paid.toLocaleString()+'</td><td>NT$ '+unpaid.toLocaleString()+'</td>' +
+      '<td>'+(nu?nu.due:'－')+'</td><td>'+(od>0?od+' 天':'－')+'</td><td>'+statusBadgeAr(arStatus(r))+'</td>';
+    t.appendChild(tr);
+  });
+  var start = (arPage-1)*arPageSize+1, end = Math.min(arPage*arPageSize, FAKE_TOTAL_AR);
+  document.getElementById('arPager').innerHTML =
+    '<div>顯示第 '+start+'–'+end+' 筆／共 '+FAKE_TOTAL_AR.toLocaleString()+' 筆</div>' +
+    '<div class="pages"><button '+(arPage===1?'disabled':'')+' onclick="gotoArPage(arPage-1)">‹ 上一頁</button>' +
+    '<button class="active">'+arPage+'</button>' +
+    '<button onclick="gotoArPage(arPage+1)">下一頁 ›</button>' +
+    '<button class="btn ghost sm" onclick="showToast(\'已發送催收提醒給勾選項目\')" style="margin-left:8px">發送催收提醒</button>' +
+    '<button class="btn ghost sm" onclick="showToast(\'已匯出目前篩選結果，共 '+list.length+' 筆\')">匯出</button></div>';
+}
+function toggleAllAr(el){ document.querySelectorAll('.ar-chk').forEach(function(c){c.checked = el.checked;}); }
+function gotoArPage(p){ if(p<1) return; arPage = p; renderAr(); }
+renderAr();
+
+function byIdAr(id){ return RECV.find(function(r){return r.id===id;}); }
+var curArId = null;
+
+function openArDrawer(id){
+  curArId = id;
+  var r = byIdAr(id);
+  document.getElementById('ar_title').textContent = r.order + '　' + r.member;
+  var total = totalOf(r), paid = paidOf(r);
+  document.getElementById('ar_sub').textContent = r.campus + '校｜付款方式：' + r.payMode + '｜總額 NT$ ' + total.toLocaleString() + '｜已收 NT$ ' + paid.toLocaleString();
+  document.getElementById('ar_statusrow').innerHTML = statusBadgeAr(arStatus(r));
+  renderSchedule(r);
+  renderSettlements(r);
+  var nu = nextUnpaid(r);
+  document.getElementById('rc_amount').value = nu ? nu.amount : '';
+  document.getElementById('rc_hint').textContent = nu ? ('預設帶入下一期未收「'+nu.no+'」金額，可修改為部分收款。') : '本筆已無未收期數。';
+  document.getElementById('arDrawerMask').classList.add('open');
+  document.querySelector('#arDrawerMask .drawer').classList.add('open');
+}
+function closeArDrawer(){ document.getElementById('arDrawerMask').classList.remove('open'); document.querySelector('#arDrawerMask .drawer').classList.remove('open'); curArId = null; }
+
+function renderSchedule(r){
+  var t = document.getElementById('ar_schedule');
+  t.innerHTML = '<tr><th>期別</th><th>到期日</th><th>金額</th><th>狀態</th><th></th></tr>';
+  r.installments.forEach(function(i, idx){
+    var od = overdueDays(i.due);
+    var st = i.status === '已收' ? '已收' : (od>0 ? '逾期' : '待收');
+    var badge = st==='已收' ? '<span class="badge green">已收</span>' : st==='逾期' ? '<span class="badge red">逾期</span>' : '<span class="badge orange">待收</span>';
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+i.no+'</td><td>'+i.due+'</td><td>NT$ '+i.amount.toLocaleString()+'</td><td>'+badge+'</td>' +
+      '<td>'+(i.status!=='已收' ? '<span class="linklike" onclick="openAdjust('+idx+')">調整</span>' : '<span class="small">－</span>')+'</td>';
+    t.appendChild(tr);
+  });
+}
+function renderSettlements(r){
+  var t = document.getElementById('ar_settlements');
+  t.innerHTML = '<tr><th>日期</th><th>金額</th><th>方式</th><th>渠道</th><th>憑證</th></tr>' +
+    (r.settlements.length ? r.settlements.map(function(s){
+      return '<tr><td>'+s.date+'</td><td>NT$ '+s.amount.toLocaleString()+'</td><td>'+s.method+'</td><td>'+(s.channel||'－')+'</td><td>'+s.voucher+'</td></tr>';
+    }).join('') : '<tr><td colspan="5"><span class="small">尚無沖銷紀錄</span></td></tr>');
+}
+
+var RECON = [
+ {date:'2026-08-20', channel:'藍新-TLI羅斯福', sysCount:3, sysAmount:47700, gatewayAmount:47700, status:'已對帳'},
+ {date:'2026-08-21', channel:'Stripe', sysCount:2, sysAmount:19234, gatewayAmount:19234, status:'已對帳'},
+ {date:'2026-08-22', channel:'刷卡機-台中', sysCount:1, sysAmount:18900, gatewayAmount:18900, status:'待對帳'},
+ {date:'2026-08-24', channel:'藍新-TLI士林', sysCount:4, sysAmount:39600, gatewayAmount:37700, status:'異常'},
+ {date:'2026-08-25', channel:'Stripe', sysCount:2, sysAmount:18666, gatewayAmount:18666, status:'待對帳'},
+ {date:'2026-08-10', channel:'匯款', sysCount:1, sysAmount:105000, gatewayAmount:105000, status:'已對帳'},
+ {date:'2026-08-05', channel:'藍新-TLI羅斯福', sysCount:5, sysAmount:63400, gatewayAmount:63400, status:'已對帳'}
+];
+
+function renderRecon(){
+  var from = document.getElementById('rc_from').value;
+  var to = document.getElementById('rc_to').value;
+  var channel = document.getElementById('rc_channel').value;
+  var list = RECON.filter(function(x){
+    if (from && x.date < from) return false;
+    if (to && x.date > to) return false;
+    if (channel && x.channel !== channel) return false;
+    return true;
+  });
+  var t = document.getElementById('reconTable');
+  t.innerHTML = '<tr><th>日期</th><th>渠道</th><th>系統收款筆數</th><th>系統收款金額</th><th>金流撥款金額</th><th>差異</th><th>狀態</th><th></th></tr>';
+  list.forEach(function(x, idx){
+    var diff = x.sysAmount - x.gatewayAmount;
+    var diffHtml = diff===0 ? 'NT$ 0' : '<span style="color:#C0392B;font-weight:600">NT$ '+diff.toLocaleString()+'</span>';
+    var badge = x.status==='已對帳' ? '<span class="badge green">已對帳</span>' : x.status==='異常' ? '<span class="badge red">異常</span>' : '<span class="badge orange">待對帳</span>';
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+x.date+'</td><td>'+x.channel+'</td><td>'+x.sysCount+'</td><td>NT$ '+x.sysAmount.toLocaleString()+'</td>' +
+      '<td>NT$ '+x.gatewayAmount.toLocaleString()+'</td><td>'+diffHtml+'</td><td>'+badge+'</td>' +
+      '<td>'+(x.status!=='已對帳' ? '<span class="linklike" onclick="markReconciled(\''+x.date+'\',\''+x.channel+'\')">標記已對帳</span>' : '<span class="small">－</span>')+'</td>';
+    t.appendChild(tr);
+  });
+}
+function markReconciled(date, channel){
+  var x = RECON.find(function(r){ return r.date===date && r.channel===channel; });
+  if (x){ x.status = '已對帳'; }
+  renderRecon();
+  showToast('已標記「'+date+' '+channel+'」對帳完成');
+}
+
+function registerPayment(){
+  var r = byIdAr(curArId);
+  var nu = nextUnpaid(r);
+  if (!nu){ showToast('本筆已無未收期數'); return; }
+  var amount = Number(document.getElementById('rc_amount').value) || 0;
+  var date = document.getElementById('rc_date').value || '2026-08-25';
+  var method = document.getElementById('rc_method').value;
+  var channel = document.getElementById('rc_channel2').value;
+  if (amount <= 0){ showToast('請輸入收款金額'); return; }
+  nu.status = '已收';
+  r.settlements.push({date: date, amount: amount, method: method, channel: channel, voucher: 'TX'+date.replace(/-/g,'')+'-'+Math.floor(Math.random()*90+10)});
+  showToast('已登記收款（'+channel+'），「'+nu.no+'」已沖銷為已收');
+  openArDrawer(curArId);
+  renderAr();
+}
+
+var adjustIdx = null;
+function openAdjust(idx){
+  adjustIdx = idx;
+  var r = byIdAr(curArId);
+  var i = r.installments[idx];
+  document.getElementById('adj_no').textContent = i.no;
+  document.getElementById('adj_due').value = i.due;
+  document.getElementById('adj_amount').value = i.amount;
+  document.getElementById('adjustModal').classList.add('open');
+}
+function closeAdjust(){ document.getElementById('adjustModal').classList.remove('open'); }
+function saveAdjust(){
+  var r = byIdAr(curArId);
+  var i = r.installments[adjustIdx];
+  i.due = document.getElementById('adj_due').value;
+  i.amount = Number(document.getElementById('adj_amount').value) || i.amount;
+  closeAdjust();
+  openArDrawer(curArId);
+  renderAr();
+  showToast('已調整期程「'+i.no+'」');
+}
+
+</script>
+<script>
+function toggleNavGroup(ev, gid){
+  ev.stopPropagation();
+  var g = document.querySelector('#sidebar .navgroup[data-group="'+gid+'"]');
+  if (!g) return;
+  var collapsed = g.classList.toggle('collapsed');
+  try{ localStorage.setItem('tliNavCollapse_'+gid, collapsed ? '1' : '0'); }catch(e){}
+}
+(function initNavGroups(){
+  document.querySelectorAll('#sidebar .navgroup[data-group]').forEach(function(g){
+    var gid = g.dataset.group, saved = null;
+    try{ saved = localStorage.getItem('tliNavCollapse_'+gid); }catch(e){}
+    if (saved === '1') g.classList.add('collapsed');
+  });
+})();
+</script>
+</body>
+</html>

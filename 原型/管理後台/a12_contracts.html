@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>合約管理｜TLI Connect 3.0 管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);font-size:14px;}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;max-width:1440px;margin:0 auto;background:#fff;position:relative;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);border-right:1px solid var(--g200);
+display:flex;flex-direction:column;}
+.sidebar .brand{padding:16px 20px;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.sidebar .brand img{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:2px;}
+.sidebar nav{flex:1 0 auto;padding:10px 0;overflow-y:auto;}
+.sidebar nav a{display:flex;align-items:center;gap:11px;padding:9px 18px;font-size:13.5px;
+color:var(--g500);text-decoration:none;border-radius:0 20px 20px 0;margin:1px 10px 1px 0;}
+.sidebar nav a svg{flex-shrink:0;}
+.sidebar nav a:hover{background:var(--g50);color:var(--g900);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar .sec-label{padding:14px 20px 4px;font-size:11px;color:#9aa4b2;letter-spacing:.05em;font-weight:600;}
+.sidebar .usercard{margin:0;padding:14px 18px 18px;border-top:1px solid var(--g200);flex-shrink:0;}
+.sidebar .usercard .u-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.sidebar .usercard .u-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;
+display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.sidebar .usercard .u-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar .usercard .u-role{font-size:11px;color:var(--g500);}
+.sidebar .usercard .u-logout{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--g500);
+text-decoration:none;padding:7px;border:1px solid var(--g200);border-radius:6px;cursor:pointer;
+background:none;width:100%;font-family:inherit;}
+.sidebar .usercard .u-logout:hover{background:var(--g50);color:var(--g900);}
+.sidebar-veil{display:none;}
+.content-col{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{height:56px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--g200);
+display:flex;align-items:center;gap:14px;padding:0 24px;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--g900);}
+.topbar .topbar-title{font-size:13.5px;color:var(--g500);}
+.main{flex:1;padding:26px 32px 60px;min-width:0;background:var(--g50);}
+@media (max-width:1279px){
+.sidebar{width:72px;}
+.sidebar .brand small,.sidebar nav a .navlabel,.sidebar .sec-label,.sidebar .usercard .u-name,.sidebar .usercard .u-role{display:none;}
+.sidebar .brand{align-items:center;padding:16px 8px;}
+.sidebar .brand img{height:24px;}
+.sidebar nav a{justify-content:center;padding:11px 0;margin:1px 8px;border-radius:8px;}
+.sidebar .usercard{padding:12px 8px;}
+.sidebar .usercard .u-row{justify-content:center;margin-bottom:8px;}
+}
+@media (max-width:1023px){
+.app{display:block;max-width:100%;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:300;transform:translateX(-100%);transition:transform .2s;}
+.sidebar.open{transform:translateX(0);}
+.sidebar .brand small,.sidebar nav a .navlabel,.sidebar .sec-label,.sidebar .usercard .u-name,.sidebar .usercard .u-role{display:block;}
+.sidebar .brand{align-items:flex-start;padding:16px 20px;}
+.sidebar .brand img{height:28px;}
+.sidebar nav a{justify-content:flex-start;padding:9px 18px;border-radius:0 20px 20px 0;}
+.sidebar .usercard .u-row{justify-content:flex-start;}
+.sidebar-veil.open{display:block;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:290;}
+.hamburger{display:inline-flex;}
+.content-col{width:100%;}
+.drawer{width:100%;max-width:100%;}
+.modal.wide{width:94vw;}
+.grid4{grid-template-columns:1fr 1fr;}
+.grid3{grid-template-columns:1fr 1fr;}
+}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn.danger{background:#fff;border:1px solid #F0B7B7;color:#C0392B;}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 16px;font-size:13.5px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.filterbar select,.filterbar input{padding:7px 10px;border:1px solid var(--g200);border-radius:6px;
+font-size:13px;font-family:inherit;}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.chiprow button{padding:6px 13px;border-radius:16px;border:1px solid var(--g200);background:#fff;font-size:12.5px;
+cursor:pointer;color:var(--g500);font-family:inherit;}
+.chiprow button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pager{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:12.5px;color:var(--g500);flex-wrap:wrap;gap:8px;}
+.pager .pages{display:flex;gap:4px;}
+.pager .pages button{border:1px solid var(--g200);background:#fff;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12.5px;font-family:inherit;color:var(--g900);}
+.pager .pages button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pager .pages button:disabled{color:var(--g200);cursor:not-allowed;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:150;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:140;}
+.drawer-mask.open{display:flex;justify-content:flex-end;}
+.drawer{background:#fff;width:660px;max-width:94vw;height:100%;overflow-y:auto;padding:24px 28px 60px;
+box-shadow:-3px 0 16px rgba(0,0,0,.1);}
+.drawer .dtop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px;}
+.drawer .dtop h2{margin:0 0 4px;font-size:17px;}
+.drawer .dclose{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select,.formrow textarea{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow textarea{resize:vertical;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+.contractbox{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:18px 20px;
+font-size:12.5px;line-height:2;max-height:260px;overflow-y:auto;white-space:pre-wrap;}
+.varbtn{display:inline-block;padding:4px 10px;border:1px solid var(--g200);border-radius:14px;
+background:#fff;font-size:11.5px;color:var(--navy);cursor:pointer;margin:0 6px 6px 0;font-family:inherit;}
+.filelist{list-style:none;padding:0;margin:0;}
+.filelist li{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.switch{position:relative;display:inline-block;width:38px;height:22px;vertical-align:middle;}
+.switch input{opacity:0;width:0;height:0;position:absolute;}
+.switch .slider{position:absolute;inset:0;background:var(--g200);border-radius:22px;cursor:pointer;transition:.15s;}
+.switch .slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+.switch input:checked+.slider{background:var(--teal);}
+.switch input:checked+.slider:before{transform:translateX(16px);}
+.checkbox-cell{width:32px;}
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);padding:18px 0;
+border-right:1px solid var(--g200);display:flex;flex-direction:column;transition:width .15s;
+position:sticky;top:0;height:100vh;align-self:flex-start;}
+.sidebar .brand{padding:0 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;}
+.sidebar .brand-logo{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:0;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;}
+.sidebar nav a,.sidebar nav span.disabled{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;
+color:var(--g900);text-decoration:none;position:relative;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar .sec-label{padding:16px 20px 4px;font-size:10.5px;color:var(--g500);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:100;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+/* ---- 右側詳情抽屜 ---- */
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:92vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
+/* ---- 批次匯入精靈 ---- */
+.wizsteps{display:flex;gap:6px;margin-bottom:18px;}
+.wizsteps span{flex:1;text-align:center;padding:6px 4px;font-size:11.5px;border-bottom:3px solid var(--g200);color:var(--g500);}
+.wizsteps span.active{border-color:var(--navy);color:var(--navy);font-weight:600;}
+.wizsteps span.done{border-color:var(--teal);color:var(--teal);}
+.dropzone{border:2px dashed var(--g200);border-radius:8px;padding:34px 16px;text-align:center;cursor:pointer;color:var(--g500);font-size:13px;}
+.dropzone:hover{border-color:var(--navy);color:var(--navy);}
+.dropzone.filled{border-color:var(--teal);color:var(--teal);background:#F5FBF9;}
+.maprow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;}
+.maprow .mlbl{width:120px;flex-shrink:0;color:var(--g500);}
+.maprow select{flex:1;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+.previewrow-err{background:#FBE7E7;}
+.wizfoot{display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--g200);}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;text-align:center;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+/* ---- 共用：頂欄與側欄使用者卡 ---- */
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;display:flex;align-items:center;gap:10px;position:relative;}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.4;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-role{font-size:11px;color:var(--g500);}
+.sidebar .su-logout{display:block;margin:6px 20px 4px;font-size:12px;color:var(--navy);text-decoration:none;}
+.sidebar .su-logout:hover{text-decoration:underline;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-searchicon{font-size:12px;color:var(--g500);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;position:relative;}
+.su-clickarea{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-info{flex:1;min-width:0;}
+.su-name,.su-unit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.5;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-roletag{font-size:10.5px;background:#E6EEF8;color:var(--navy);padding:0 6px;border-radius:8px;display:inline-block;width:fit-content;white-space:nowrap;}
+.sidebar-user .su-unit{font-size:11px;color:var(--g500);}
+.su-menu{top:auto;bottom:64px;left:14px;right:14px;}
+.su-roleswitch,.su-campusswitch{margin:8px 0 0;font-size:11px;color:var(--g500);}
+.su-roleswitch select,.su-campusswitch select{width:100%;margin-top:3px;padding:5px 7px;border:1px solid var(--g200);
+border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
+/* ---- RWD ---- */
+@media (max-width:1279px) and (min-width:1024px){
+  .sidebar{width:72px;}
+  .sidebar .navtext{position:absolute;left:100%;top:50%;transform:translateY(-50%);background:#fff;
+    border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:nowrap;
+    box-shadow:0 4px 12px rgba(16,24,40,.12);opacity:0;pointer-events:none;transition:opacity .12s;margin-left:6px;color:var(--g900);}
+  .sidebar nav a:hover .navtext{opacity:1;}
+  .sidebar .brand{align-items:center;overflow:hidden;}
+  .sidebar .brand-logo{max-width:100%;width:32px;height:28px;object-fit:cover;object-position:left center;flex-shrink:0;}
+  .sidebar .brand-text{display:none;}
+  .sidebar .brand small{display:none;}
+  .sidebar-user{justify-content:center;}
+  .sidebar-user .navtext{display:none;}
+  .sidebar .su-logout{text-align:center;}
+}
+@media (max-width:1023px){
+  .hamburger{display:inline-flex;}
+  .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;transition:left .2s;}
+  .sidebar.open{left:0;}
+  .sidebar-backdrop.open{display:block;}
+  .app{width:100%;}
+  .main{padding:16px 16px 40px;}
+  .topbar{padding:0 16px;margin:-16px -16px 18px;}
+  .tb-search{display:none;}
+  .drawer{width:100%;max-width:100%;}
+}
+
+</style>
+<style>
+/* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
+#sidebar{padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#sidebar .brand{padding:16px 20px 14px;}
+#sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;}
+#sidebar .brand small{margin-top:12px;font-size:12px;color:var(--g500);text-transform:none;letter-spacing:0;font-weight:400;}
+#sidebar .brand-text{display:none;}
+#sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;scrollbar-width:thin;}
+#sidebar nav::-webkit-scrollbar{width:6px;}
+#sidebar nav::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+#sidebar nav a,#sidebar nav span.disabled{align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;font-size:14px;}
+#sidebar .navgroup .sec-label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 12px;margin:20px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+#sidebar .navgroup:first-child .sec-label{margin-top:8px;}
+#sidebar .sec-toggle{background:none;border:none;padding:2px;margin:0;cursor:pointer;color:var(--g500);display:flex;align-items:center;line-height:1;flex-shrink:0;}
+#sidebar .sec-toggle svg{transition:transform .15s;display:block;}
+#sidebar .navgroup.collapsed .sec-toggle svg{transform:rotate(-90deg);}
+#sidebar .navgroup-items{overflow:hidden;}
+#sidebar .navgroup.collapsed .navgroup-items{display:none;}
+#sidebar .sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+#sidebar .su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+#sidebar .su-row .su-avatar{flex-shrink:0;width:36px;height:36px;}
+#sidebar .su-row .su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+#sidebar .su-row .su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#sidebar .su-row .su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+#sidebar .su-row .su-chevron{color:var(--g500);flex-shrink:0;}
+#sidebar .su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+#sidebar .su-menu .su-roleswitch,#sidebar .su-menu .su-campusswitch{margin:6px 4px 2px;font-size:11px;color:var(--g500);}
+#sidebar .su-menu .su-roleswitch select,#sidebar .su-menu .su-campusswitch select{width:100%;margin-top:3px;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--g900);}
+@media (max-width:1279px) and (min-width:1024px){
+  #sidebar{width:72px;}
+  #sidebar .navgroup .sec-label{display:none;}
+  #sidebar .su-row{justify-content:center;}
+  #sidebar .su-menu{left:64px;right:auto;bottom:10px;width:210px;}
+}
+@media (max-width:1023px){
+  #sidebar{width:260px;}
+}
+
+/* ==== 20260826v 容器寬度統一（對齊 a01 基準，覆寫舊版殘留樣式，防止寬內容撐開頁面）==== */
+html,body{overflow-x:hidden;}
+.app{display:flex;min-height:100vh;width:100%;max-width:none;background:#fff;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{padding:0 32px;}
+.pagehead{padding:0;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
+@media (max-width:1023px){
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" class="active" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">合約管理</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+<div class="pagehead">
+<div><h1>合約管理</h1><div class="desc">學生／家長簽署合約的列表與線上簽署狀態；「合約範本」分頁管理各語言版本範本與「一年一約」效期規則。</div></div>
+<button class="btn" onclick="openNewContract()">＋ 建立合約</button>
+</div>
+
+<div class="tabs">
+<button class="active" onclick="topTab(this,'list')">合約列表</button>
+<button onclick="topTab(this,'tpl')">合約範本</button>
+</div>
+
+<div class="tabpanel active" id="toppanel-list">
+<div class="card">
+<div class="filterbar">
+<input type="text" id="f_kw" placeholder="搜尋合約編號／會員姓名" style="width:200px">
+<select id="f_type"><option value="">全部類型</option><option>一般標準合約（中文）</option><option>一般標準合約（英文）</option><option>一般標準合約（日文）</option><option>師資班合約</option><option>企業合約</option></select>
+<select id="f_status"><option value="">全部簽署狀態</option><option>待簽</option><option>已簽</option><option>到期</option><option>作廢</option></select>
+<select id="f_method"><option value="">全部簽署方式</option><option>線上</option><option>紙本</option></select>
+<button class="btn ghost" onclick="applyFilter()">查詢</button>
+</div>
+<div class="chiprow">
+<button class="chip-quick active" onclick="quickFilter(this,'')">全部</button>
+<button class="chip-quick" onclick="quickFilter(this,'待簽')">待簽署</button>
+<button class="chip-quick" onclick="quickFilter(this,'到期')">即將到期／已到期</button>
+</div>
+<div class="tablewrap"><table id="ctTable"></table></div>
+<div class="pager" id="ctPager"></div>
+</div>
+</div>
+
+<div class="tabpanel" id="toppanel-tpl">
+<div style="display:flex;gap:20px;align-items:flex-start;">
+<div class="card" style="width:280px;flex-shrink:0;">
+<h2>範本列表</h2>
+<div class="tablewrap"><table id="tplTable"></table></div>
+<div class="hint">點列載入右側編輯器；同名範本可存多個版本，僅「使用中」版本會用於新建合約。</div>
+</div>
+<div class="card" style="flex:1;min-width:0;">
+<h2 id="tplEditTitle">範本編輯器</h2>
+<div class="formrow"><label>可插入變數（點擊插入游標所在位置）</label>
+<span class="varbtn" onclick="insertVar('{學生姓名}')">{學生姓名}</span>
+<span class="varbtn" onclick="insertVar('{方案}')">{方案}</span>
+<span class="varbtn" onclick="insertVar('{效期}')">{效期}</span>
+<span class="varbtn" onclick="insertVar('{開始日}')">{開始日}</span>
+<span class="varbtn" onclick="insertVar('{結束日}')">{結束日}</span>
+<span class="varbtn" onclick="insertVar('{金額}')">{金額}</span>
+</div>
+<div class="formrow"><textarea id="tplBody" rows="12"></textarea></div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="saveTplNewVersion()">另存新版本</button>
+<button class="btn" onclick="saveTpl()">儲存範本</button>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>「一年一約」效期規則設定</h2>
+<div class="formrow"><label>啟用一年一約效期規則</label><label class="switch"><input type="checkbox" id="rule_on" checked><span class="slider"></span></label>
+<div class="hint">啟用後，新建合約的效期會依下列規則自動帶入，可於建立時個別調整。</div></div>
+<div class="grid3">
+<div class="formrow"><label>預設效期</label><select id="rule_period"><option>1 年</option><option>6 個月</option><option>依方案天數</option></select></div>
+<div class="formrow"><label>效期起算基準</label><select id="rule_base"><option>簽署日</option><option>開課日</option></select></div>
+<div class="formrow"><label>到期前提醒天數</label><input type="number" id="rule_remind" value="30"></div>
+</div>
+<div class="formrow" style="max-width:420px"><label>到期未續約處理方式</label>
+<select id="rule_expire"><option>自動轉為「到期」狀態，並停用未使用課程權益</option><option>自動轉為「到期」狀態，保留權益待人工確認</option></select></div>
+<div style="text-align:right"><button class="btn" onclick="saveRule()">儲存規則設定</button></div>
+</div>
+</div>
+
+<div class="modal-mask" id="newContractModal"><div class="modal">
+<h3>建立合約</h3>
+<div class="formrow"><label>會員</label><input type="text" id="nc_member" placeholder="輸入姓名搜尋會員"></div>
+<div class="formrow"><label>關聯方案／訂單</label><input type="text" id="nc_order" placeholder="輸入訂單編號，例：ORD-2026-0083"></div>
+<div class="formrow"><label>合約類型</label><select id="nc_type"><option>一般標準合約（中文）</option><option>一般標準合約（英文）</option><option>一般標準合約（日文）</option><option>師資班合約</option><option>企業合約</option></select></div>
+<div class="formrow"><label>簽署方式</label><select id="nc_method"><option>線上</option><option>紙本</option></select></div>
+<div class="hint" style="margin-bottom:10px">效期依「一年一約」規則自動帶入，建立後可於合約詳情調整。</div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeNewContract()">取消</button>
+<button class="btn" onclick="submitNewContract()">建立並產生待簽合約</button>
+</div>
+</div></div>
+
+<div class="modal-mask" id="voidModal"><div class="modal">
+<h3>作廢合約</h3>
+<div class="formrow"><label>作廢原因</label><textarea id="void_reason" rows="3" placeholder="請填寫作廢原因，將記入簽署紀錄"></textarea></div>
+<div style="text-align:right">
+<button class="btn ghost" onclick="closeVoidModal()">取消</button>
+<button class="btn danger" onclick="confirmVoid()">確認作廢</button>
+</div>
+</div></div>
+
+<div class="drawer-mask" id="ctDrawerMask"><div class="drawer">
+<div class="dtop"><div><h2 id="ct_title"></h2><div class="small" id="ct_sub"></div></div>
+<button class="dclose" onclick="closeDrawer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+<div id="ct_statusrow" style="margin-bottom:14px"></div>
+
+<div class="card">
+<h2>合約內容預覽</h2>
+<div class="contractbox" id="ct_preview"></div>
+</div>
+
+<div class="card">
+<h2>關聯訂單</h2>
+<div id="ct_order"></div>
+</div>
+
+<div class="card">
+<h2>附件</h2>
+<ul class="filelist" id="ct_files"></ul>
+<div style="margin-top:10px"><input type="file" id="ct_upload" style="display:none" onchange="onUploadScan(this)">
+<button class="btn ghost sm" onclick="document.getElementById('ct_upload').click()">上傳紙本掃描</button></div>
+</div>
+
+<div class="card">
+<h2>簽署紀錄</h2>
+<div class="tablewrap"><table id="ct_history"></table></div>
+</div>
+
+<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+<button class="btn danger" id="ct_voidBtn" onclick="openVoidModal()">作廢合約</button>
+<button class="btn" id="ct_sendBtn" onclick="sendSignLink()">發送簽署連結</button>
+</div>
+
+</div></div>
+</div>
+</div>
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+}
+var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','顧問'];
+var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
+var TLI_ROLE_NAV = {
+  '總公司管理者': 'all',
+  '校區主管': ['c01','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16'],
+  '財務': ['a13','a06','a07'],
+  '顧問': ['c01','c02','c04','c06','c07','a01']
+};
+function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
+function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
+function applyRoleVisibility(){
+  var role = tliCurrentRole();
+  var allowed = TLI_ROLE_NAV[role];
+  document.querySelectorAll('.sidebar nav a[data-nav]').forEach(function(a){
+    var key = a.dataset.nav;
+    a.style.display = (allowed === 'all' || allowed.indexOf(key) > -1) ? '' : 'none';
+  });
+  var tagEl = document.getElementById('suRoleTag');
+  if (tagEl) tagEl.textContent = role;
+  var unitEl = document.getElementById('suUnit');
+  if (unitEl) unitEl.textContent = TLI_ROLE_UNIT[role] || '總公司';
+  var campusWrap = document.getElementById('campusSwitchWrap');
+  if (campusWrap) campusWrap.style.display = (role === '總公司管理者') ? '' : 'none';
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.value = role;
+  if (typeof onRoleApplied === 'function') onRoleApplied(role);
+}
+function onRoleSwitch(el){
+  tliSetRole(el.value);
+  applyRoleVisibility();
+  toast('已切換角色為「'+el.value+'」，側欄項目已同步更新');
+}
+function onCampusSwitch(el){ toast('已切換校區檢視為「'+el.value+'」'); }
+function toggleSuMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel'); closePanel('avatarMenu');
+  document.getElementById('suMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(){ closePanel('suMenu'); });
+function initRoleSwitcher(){
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.innerHTML = TLI_ROLES.map(function(r){ return '<option>'+r+'</option>'; }).join('');
+  var csel = document.getElementById('campusSwitcher');
+  if (csel) csel.innerHTML = ['全公司','羅斯福','士林','台中','高雄'].map(function(c){return '<option>'+c+'</option>';}).join('');
+  applyRoleVisibility();
+}
+initRoleSwitcher();
+/* ================= 共用：頂欄通知／使用者選單／登出／toast（全站同一段） ================= */
+var NOTIFS = [
+  {t:'訂單 ORD-2026-0102 已逾期 5 天未收款', time:'10 分鐘前', unread:true},
+  {t:'銷售方案「學期班 Lv.5–8 一期方案」即將於 1/31 下架', time:'1 小時前', unread:true},
+  {t:'內容管理：首頁 Hero 文案已由校區主管發佈', time:'今天 09:12', unread:false},
+  {t:'老師黃志遠已切換為留職停薪', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot');
+  if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>' +
+    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+}
+function markAllRead(ev){
+  if (ev) ev.stopPropagation();
+  NOTIFS.forEach(function(n){ n.unread = false; });
+  renderNotifPanel();
+}
+function toggleNotif(ev){
+  ev.stopPropagation();
+  closePanel('avatarMenu');
+  var p = document.getElementById('notifPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) renderNotifPanel();
+}
+function toggleAvatarMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel');
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+function closePanel(id){
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+document.addEventListener('click', function(){ closePanel('notifPanel'); closePanel('avatarMenu'); });
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+renderNotifPanel();
+
+function showToast(msg){ toast(msg); }
+
+
+
+function topTab(btn, name){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('toppanel-'+name).classList.add('active');
+}
+
+var CONTRACTS = [
+ {id:'CT-2026-0142', member:'王小明', plan:'日常會話學期班（48 堂）', type:'一般標準合約（中文）', start:'2026-08-20', end:'2027-08-19', status:'已簽', method:'線上', order:'ORD-2026-0083', orderAmount:35500,
+  files:[{name:'王小明_合約簽署檔.pdf', size:'812 KB'}],
+  history:[{t:'2026-08-20 15:20', who:'顧問 A', what:'發送簽署連結至 wang.ming@example.com'},{t:'2026-08-20 15:32', who:'王大明（家長代簽）', what:'完成線上簽署'}]},
+ {id:'CT-2026-0139', member:'陳雅婷', plan:'商務會話彈性堂數包', type:'一般標準合約（中文）', start:'2026-07-20', end:'2027-07-19', status:'已簽', method:'線上', order:'ORD-2026-0091', orderAmount:19800,
+  files:[{name:'陳雅婷_合約簽署檔.pdf', size:'790 KB'}],
+  history:[{t:'2026-07-20 09:40', who:'系統', what:'訂單成立，自動產生待簽合約'},{t:'2026-07-20 14:12', who:'陳雅婷', what:'完成線上簽署'}]},
+ {id:'CT-2026-0151', member:'李佩珊', plan:'中文一對一 50 分鐘 10 堂包', type:'一般標準合約（中文）', start:'2026-08-22', end:'2027-08-21', status:'待簽', method:'線上', order:'ORD-2026-0108', orderAmount:12500,
+  files:[],
+  history:[{t:'2026-08-22 10:05', who:'顧問 B', what:'發送簽署連結至 0912-345-678（簡訊）'}]},
+ {id:'CT-2026-0128', member:'Sarah Chen', plan:'英語一對一 50 分鐘方案', type:'一般標準合約（英文）', start:'2026-06-01', end:'2027-05-31', status:'已簽', method:'線上', order:'ORD-2026-0067', orderAmount:28000,
+  files:[{name:'SarahChen_Contract.pdf', size:'764 KB'}],
+  history:[{t:'2026-05-30 11:00', who:'顧問 C', what:'發送簽署連結至 sarah.chen@example.com'},{t:'2026-06-01 09:15', who:'Sarah Chen', what:'完成線上簽署'}]},
+ {id:'CT-2026-0119', member:'佐藤 美咲', plan:'日語學期班 一期', type:'一般標準合約（日文）', start:'2026-05-10', end:'2027-05-09', status:'已簽', method:'紙本', order:'ORD-2026-0054', orderAmount:16800,
+  files:[{name:'佐藤美咲_紙本掃描.pdf', size:'1.1 MB'}],
+  history:[{t:'2026-05-08 14:00', who:'顧問 D', what:'交付紙本合約'},{t:'2026-05-10 16:30', who:'顧問 D', what:'上傳已簽署紙本掃描檔'}]},
+ {id:'CT-2026-0075', member:'黃詩涵', plan:'華語師資培訓認證班', type:'師資班合約', start:'2026-06-15', end:'2026-12-15', status:'作廢', method:'紙本', order:'ORD-2026-0075', orderAmount:0,
+  files:[{name:'黃詩涵_紙本掃描.pdf', size:'980 KB'}],
+  history:[{t:'2026-06-11 09:20', who:'顧問 E', what:'交付紙本合約'},{t:'2026-06-15 10:00', who:'顧問 E', what:'上傳已簽署紙本掃描檔'},{t:'2026-06-30 17:10', who:'顧問 E', what:'學生申請取消，合約作廢；原因：學生因個人因素申請全額退費取消'}]},
+ {id:'CT-2026-0163', member:'台灣藍鵲科技股份有限公司', plan:'企業英語培訓方案（20 人）', type:'企業合約', start:'2026-09-01', end:'2027-08-31', status:'待簽', method:'紙本', order:'ORD-2026-0121', orderAmount:420000,
+  files:[],
+  history:[{t:'2026-08-24 16:00', who:'顧問 F', what:'交付紙本合約，待對方用印'}]},
+ {id:'CT-2026-0101', member:'王淑芬', plan:'中文一對一 Lv.1–3', type:'一般標準合約（中文）', start:'2025-08-01', end:'2026-07-31', status:'到期', method:'線上', order:'ORD-2025-0342', orderAmount:9600,
+  files:[{name:'王淑芬_合約簽署檔.pdf', size:'701 KB'}],
+  history:[{t:'2025-07-28 10:00', who:'顧問 A', what:'發送簽署連結'},{t:'2025-08-01 09:30', who:'王淑芬', what:'完成線上簽署'},{t:'2026-08-01 00:00', who:'系統', what:'效期屆滿，自動轉為「到期」狀態'}]},
+ {id:'CT-2026-0088', member:'台灣藍鵲科技股份有限公司', plan:'企業華語培訓方案（15 人）', type:'企業合約', start:'2026-03-01', end:'2027-02-28', status:'已簽', method:'紙本', order:'ORD-2026-0029', orderAmount:315000,
+  files:[{name:'藍鵲科技_企業合約用印本.pdf', size:'2.3 MB'}],
+  history:[{t:'2026-02-20 09:00', who:'顧問 F', what:'交付紙本合約'},{t:'2026-03-01 11:40', who:'顧問 F', what:'上傳已用印紙本掃描檔'}]},
+ {id:'CT-2026-0175', member:'林建宏', plan:'文化體驗活動－茶道體驗', type:'一般標準合約（中文）', start:'2026-08-20', end:'2026-08-20', status:'待簽', method:'線上', order:'ORD-2026-0102', orderAmount:18900,
+  files:[],
+  history:[{t:'2026-08-20 09:00', who:'系統', what:'訂單成立，自動產生待簽合約'}]}
+];
+
+var FAKE_TOTAL = 2384;
+var curPage = 1, pageSize = 10, curQuick = '';
+
+function statusBadgeCt(s){
+  if (s === '已簽') return '<span class="badge green">已簽</span>';
+  if (s === '待簽') return '<span class="badge orange">待簽</span>';
+  if (s === '到期') return '<span class="badge grey">到期</span>';
+  return '<span class="badge red">作廢</span>';
+}
+
+function filteredContracts(){
+  var kw = document.getElementById('f_kw').value.trim();
+  var type = document.getElementById('f_type').value;
+  var status = document.getElementById('f_status').value;
+  var method = document.getElementById('f_method').value;
+  return CONTRACTS.filter(function(c){
+    if (kw && c.id.indexOf(kw)===-1 && c.member.indexOf(kw)===-1) return false;
+    if (type && c.type!==type) return false;
+    if (status && c.status!==status) return false;
+    if (method && c.method!==method) return false;
+    if (curQuick==='待簽' && c.status!=='待簽') return false;
+    if (curQuick==='到期' && c.status!=='到期') return false;
+    return true;
+  });
+}
+
+function quickFilter(btn, val){
+  curQuick = val;
+  document.querySelectorAll('.chip-quick').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  curPage = 1;
+  renderContracts();
+}
+function applyFilter(){ curPage = 1; renderContracts(); }
+
+function renderContracts(){
+  var list = filteredContracts();
+  var t = document.getElementById('ctTable');
+  t.innerHTML = '<tr><th class="checkbox-cell"><input type="checkbox" onclick="toggleAllCt(this)"></th><th>合約編號</th><th>會員</th><th>方案</th><th>類型</th><th>效期</th><th>簽署方式</th><th>狀態</th></tr>';
+  list.forEach(function(c){
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.onclick = function(e){ if(e.target.type!=='checkbox') openDrawer(c.id); };
+    tr.innerHTML = '<td class="checkbox-cell" onclick="event.stopPropagation()"><input type="checkbox" class="ct-chk"></td>' +
+      '<td>'+c.id+'</td><td>'+c.member+'</td><td>'+c.plan+'</td><td><span class="badge blue">'+c.type+'</span></td>' +
+      '<td>'+c.start+' ～ '+c.end+'</td><td>'+c.method+'</td><td>'+statusBadgeCt(c.status)+'</td>';
+    t.appendChild(tr);
+  });
+  var start = (curPage-1)*pageSize+1, end = Math.min(curPage*pageSize, FAKE_TOTAL);
+  document.getElementById('ctPager').innerHTML =
+    '<div>顯示第 '+start+'–'+end+' 筆／共 '+FAKE_TOTAL.toLocaleString()+' 筆</div>' +
+    '<div class="pages"><button '+(curPage===1?'disabled':'')+' onclick="gotoPage(curPage-1)">‹ 上一頁</button>' +
+    '<button class="active">'+curPage+'</button>' +
+    '<button onclick="gotoPage(curPage+1)">下一頁 ›</button>' +
+    '<button class="btn ghost sm" onclick="showToast(\'已匯出目前篩選結果，共 '+list.length+' 筆\')" style="margin-left:8px">匯出</button>' +
+    '<button class="btn ghost sm" onclick="showToast(\'已發送催辦簽署提醒給勾選項目\')">催辦簽署</button></div>';
+}
+function toggleAllCt(el){ document.querySelectorAll('.ct-chk').forEach(function(c){c.checked = el.checked;}); }
+function gotoPage(p){ if(p<1) return; curPage = p; renderContracts(); }
+renderContracts();
+
+function byIdCt(id){ return CONTRACTS.find(function(c){ return c.id===id; }); }
+var curId = null;
+
+function openDrawer(id){
+  curId = id;
+  var c = byIdCt(id);
+  document.getElementById('ct_title').textContent = c.id + '　' + c.member;
+  document.getElementById('ct_sub').textContent = c.plan + '｜' + c.type + '｜效期 ' + c.start + ' ～ ' + c.end;
+  document.getElementById('ct_statusrow').innerHTML = statusBadgeCt(c.status) + ' <span class="small">簽署方式：'+c.method+'</span>';
+  document.getElementById('ct_preview').textContent =
+    '本合約由 TLI 中華語文與「'+c.member+'」雙方簽訂。\n\n甲方（TLI 中華語文）同意提供下列課程服務：\n方　案：'+c.plan+'\n效　期：'+c.start+' 至 '+c.end+'（依「一年一約」規則自動生成）\n金　額：NT$ '+c.orderAmount.toLocaleString()+'\n\n乙方（'+c.member+'）同意遵守 TLI 上課規範與退費辦法，並於效期內完成課程使用。\n\n本合約經雙方簽署（或用印）後生效，一式兩份，甲乙雙方各執一份為憑。';
+  document.getElementById('ct_order').innerHTML =
+    '<div class="kv"><span>關聯訂單</span><span><a href="a05_orders.html">'+c.order+'</a></span></div>' +
+    '<div class="kv"><span>訂單金額</span><span>NT$ '+c.orderAmount.toLocaleString()+'</span></div>';
+  document.getElementById('ct_files').innerHTML = c.files.length ?
+    c.files.map(function(f){ return '<li><span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>'+f.name+'</span><span class="small">'+f.size+'</span></li>'; }).join('') :
+    '<li><span class="small">尚無附件</span></li>';
+  document.getElementById('ct_history').innerHTML =
+    '<tr><th>時間</th><th>操作人</th><th>內容</th></tr>' +
+    c.history.map(function(h){ return '<tr><td>'+h.t+'</td><td>'+h.who+'</td><td>'+h.what+'</td></tr>'; }).join('');
+  var voided = c.status === '作廢';
+  document.getElementById('ct_voidBtn').style.display = voided ? 'none' : '';
+  document.getElementById('ct_sendBtn').style.display = (c.status==='待簽') ? '' : 'none';
+  document.getElementById('ctDrawerMask').classList.add('open');
+  document.querySelector('#ctDrawerMask .drawer').classList.add('open');
+}
+function closeDrawer(){ document.getElementById('ctDrawerMask').classList.remove('open'); document.querySelector('#ctDrawerMask .drawer').classList.remove('open'); curId = null; }
+
+function sendSignLink(){
+  var c = byIdCt(curId);
+  c.history.push({t: nowStr(), who:'顧問（目前登入者）', what:'重新發送簽署連結'});
+  showToast('已發送簽署連結給「'+c.member+'」');
+  openDrawer(curId);
+}
+function onUploadScan(input){
+  if (!input.files || !input.files[0]) return;
+  var c = byIdCt(curId);
+  var fname = input.files[0].name;
+  c.files.push({name: fname, size:'—'});
+  c.history.push({t: nowStr(), who:'顧問（目前登入者）', what:'上傳紙本掃描檔：'+fname});
+  if (c.status === '待簽') c.status = '已簽';
+  showToast('已上傳紙本掃描檔');
+  openDrawer(curId);
+  renderContracts();
+  input.value = '';
+}
+function openVoidModal(){ document.getElementById('void_reason').value=''; document.getElementById('voidModal').classList.add('open'); }
+function closeVoidModal(){ document.getElementById('voidModal').classList.remove('open'); }
+function confirmVoid(){
+  var reason = document.getElementById('void_reason').value.trim();
+  if (!reason){ showToast('請填寫作廢原因'); return; }
+  var c = byIdCt(curId);
+  c.status = '作廢';
+  c.history.push({t: nowStr(), who:'顧問（目前登入者）', what:'合約作廢；原因：'+reason});
+  closeVoidModal();
+  openDrawer(curId);
+  renderContracts();
+  showToast('合約已作廢');
+}
+function nowStr(){
+  var d = new Date();
+  function p(n){return n<10?'0'+n:n;}
+  return '2026-08-25 '+p(d.getHours())+':'+p(d.getMinutes());
+}
+
+function openNewContract(){ document.getElementById('nc_member').value=''; document.getElementById('nc_order').value=''; document.getElementById('newContractModal').classList.add('open'); }
+function closeNewContract(){ document.getElementById('newContractModal').classList.remove('open'); }
+function submitNewContract(){
+  var member = document.getElementById('nc_member').value.trim();
+  if (!member){ showToast('請輸入會員姓名'); return; }
+  var type = document.getElementById('nc_type').value;
+  var method = document.getElementById('nc_method').value;
+  var order = document.getElementById('nc_order').value.trim() || '（未關聯訂單）';
+  var newId = 'CT-2026-0' + (176 + CONTRACTS.length - 9);
+  CONTRACTS.unshift({id:newId, member:member, plan:'（依關聯訂單帶入）', type:type, start:'2026-08-25', end:'2027-08-24', status:'待簽', method:method, order:order, orderAmount:0,
+    files:[], history:[{t: nowStr(), who:'顧問（目前登入者）', what:'建立合約，簽署方式：'+method}]});
+  closeNewContract();
+  curPage = 1;
+  renderContracts();
+  showToast('已建立合約 '+newId+'，狀態：待簽');
+}
+
+var TEMPLATES = [
+ {id:'tpl1', name:'一般標準合約（中文）', lang:'中文', version:'v3.2', effective:'2026-06-01', status:'使用中',
+  body:'本合約由 TLI 中華語文與{學生姓名}雙方簽訂。\n\n方　案：{方案}\n效　期：{開始日} 至 {結束日}（{效期}）\n金　額：{金額}\n\n乙方同意遵守 TLI 上課規範與退費辦法。'},
+ {id:'tpl2', name:'一般標準合約（英文）', lang:'英文', version:'v2.0', effective:'2026-04-15', status:'使用中',
+  body:'This Agreement is made between TLI and {學生姓名}.\n\nProgram: {方案}\nTerm: {開始日} to {結束日} ({效期})\nAmount: {金額}\n\nParty B agrees to comply with TLI class and refund policies.'},
+ {id:'tpl3', name:'一般標準合約（日文）', lang:'日文', version:'v1.4', effective:'2026-03-01', status:'使用中',
+  body:'本契約は TLI 中華語文と{學生姓名}との間で締結されます。\n\nプログラム：{方案}\n期間：{開始日} ～ {結束日}（{效期}）\n金額：{金額}'},
+ {id:'tpl4', name:'師資班合約', lang:'中文', version:'v1.1', effective:'2025-09-01', status:'使用中',
+  body:'本合約適用於 TLI 華語師資培訓認證班學員{學生姓名}。\n\n課程：{方案}\n效期：{開始日} 至 {結束日}\n費用：{金額}\n\n學員同意完成認證考核方案定辦法。'},
+ {id:'tpl5', name:'企業合約', lang:'中文', version:'v2.3', effective:'2026-01-10', status:'使用中',
+  body:'本合約由 TLI 中華語文與企業客戶{學生姓名}簽訂團體培訓服務。\n\n方案：{方案}\n效期：{開始日} 至 {結束日}\n總金額：{金額}\n\n雙方同意依附件課程規劃執行。'},
+ {id:'tpl6', name:'一般標準合約（中文）', lang:'中文', version:'v3.1（舊版）', effective:'2025-01-01', status:'停用',
+  body:'（舊版內容，已由 v3.2 取代，僅供查閱既有合約用）'}
+];
+var curTplId = null;
+
+function renderTplTable(){
+  var t = document.getElementById('tplTable');
+  t.innerHTML = '<tr><th>範本名稱</th><th>版本</th><th>生效日</th><th>狀態</th></tr>';
+  TEMPLATES.forEach(function(tp){
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.onclick = function(){ loadTpl(tp.id); };
+    tr.innerHTML = '<td>'+tp.name+'</td><td>'+tp.version+'</td><td>'+tp.effective+'</td><td>'+(tp.status==='使用中'?'<span class="badge green">使用中</span>':'<span class="badge grey">停用</span>')+'</td>';
+    t.appendChild(tr);
+  });
+}
+function loadTpl(id){
+  curTplId = id;
+  var tp = TEMPLATES.find(function(x){return x.id===id;});
+  document.getElementById('tplEditTitle').textContent = '範本編輯器　'+tp.name+'　'+tp.version;
+  document.getElementById('tplBody').value = tp.body;
+}
+function insertVar(v){
+  var ta = document.getElementById('tplBody');
+  var start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.slice(0,start) + v + ta.value.slice(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + v.length;
+}
+function saveTpl(){
+  if (!curTplId){ showToast('請先於左側選擇一個範本'); return; }
+  var tp = TEMPLATES.find(function(x){return x.id===curTplId;});
+  tp.body = document.getElementById('tplBody').value;
+  showToast('已儲存範本「'+tp.name+' '+tp.version+'」');
+}
+function saveTplNewVersion(){
+  if (!curTplId){ showToast('請先於左側選擇一個範本'); return; }
+  var tp = TEMPLATES.find(function(x){return x.id===curTplId;});
+  var newVer = 'v' + (parseFloat(tp.version)+0.1).toFixed(1);
+  TEMPLATES.forEach(function(t2){ if(t2.name===tp.name) t2.status='停用'; });
+  TEMPLATES.unshift({id:'tpl'+(TEMPLATES.length+1), name:tp.name, lang:tp.lang, version:newVer, effective:'2026-08-25', status:'使用中', body:document.getElementById('tplBody').value});
+  renderTplTable();
+  showToast('已另存為新版本 '+newVer+'，並設為使用中');
+}
+renderTplTable();
+
+function saveRule(){
+  showToast('已儲存「一年一約」效期規則設定');
+}
+
+</script>
+<script>
+function toggleNavGroup(ev, gid){
+  ev.stopPropagation();
+  var g = document.querySelector('#sidebar .navgroup[data-group="'+gid+'"]');
+  if (!g) return;
+  var collapsed = g.classList.toggle('collapsed');
+  try{ localStorage.setItem('tliNavCollapse_'+gid, collapsed ? '1' : '0'); }catch(e){}
+}
+(function initNavGroups(){
+  document.querySelectorAll('#sidebar .navgroup[data-group]').forEach(function(g){
+    var gid = g.dataset.group, saved = null;
+    try{ saved = localStorage.getItem('tliNavCollapse_'+gid); }catch(e){}
+    if (saved === '1') g.classList.add('collapsed');
+  });
+})();
+</script>
+</body>
+</html>

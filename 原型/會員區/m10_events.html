@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TLI Connect 3.0 會員區－我的活動</title>
+<style>
+:root{
+  --c-primary:#1B4E8C;--c-primary-dark:#123A68;--c-accent:#E8792B;--c-accent-dark:#CF691F;--c-secondary:#0F9B79;
+  --c-bg:#F5F7FA;--c-border:#E4E7EC;--c-muted:#667085;--c-text:#101828;
+  --radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);--shadow-lg:0 8px 24px rgba(16,24,40,.16);
+  --topbar-h:52px;--bottomnav-h:64px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.55;font-size:15px;-webkit-tap-highlight-color:transparent;}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;}
+button{font-family:inherit;}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--c-primary);outline-offset:2px;}
+.app{min-height:100vh;position:relative;}
+.topbar{position:sticky;top:0;z-index:60;height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:10px;}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.topbar-logo-wrap{width:26px;height:22px;overflow:hidden;position:relative;flex:none;}
+.topbar-logo-wrap img{position:absolute;left:0;top:0;height:22px;width:auto;max-width:none;}
+.topbar-title{font-size:16.5px;font-weight:700;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-actions{display:flex;align-items:center;gap:6px;position:relative;}
+.mini-select{border:1px solid var(--c-border);border-radius:6px;padding:4px 6px;font-size:11.5px;background:#fff;color:var(--c-muted);font-family:inherit;max-width:96px;}
+.bell-btn{position:relative;width:32px;height:32px;border-radius:50%;border:1px solid var(--c-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c-muted);}
+.bell-btn svg{width:16px;height:16px;}
+.bell-btn .dot{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--c-accent);border:1.5px solid #fff;}
+.bell-panel{display:none;position:absolute;right:0;top:40px;width:264px;background:#fff;border:1px solid var(--c-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:6px 0;z-index:90;}
+.bell-panel.open{display:block;}
+.bell-panel h4{margin:0;padding:8px 14px 6px;font-size:12.5px;color:var(--c-muted);font-weight:700;}
+.bell-item{padding:9px 14px;font-size:12.5px;border-top:1px solid var(--c-border);display:flex;gap:8px;}
+.bell-item .b-dot{width:6px;height:6px;border-radius:50%;background:var(--c-accent);margin-top:5px;flex:none;}
+.bell-item p{margin:0;color:var(--c-text);}
+.bell-item span{color:var(--c-muted);font-size:11px;}
+.side-nav{display:none;}
+@media(min-width:1024px){
+  .side-nav{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:310px;background:#fff;border-right:1px solid var(--c-border);padding:18px 12px;z-index:50;}
+  .side-brand{display:flex;align-items:center;padding:0 8px 18px;}
+  .side-brand img{height:28px;width:auto;}
+  .side-link{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;font-size:14px;font-weight:600;color:var(--c-muted);margin-bottom:2px;}
+  .side-link svg{width:19px;height:19px;flex:none;}
+  .side-link.active{background:#E6EEF8;color:var(--c-primary);}
+  .side-link:hover:not(.active){background:var(--c-bg);}
+  .app.has-side .topbar{margin-left:310px;}
+  .app.has-side .content{margin-left:310px;}
+}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid var(--c-border);display:flex;height:var(--bottomnav-h);padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 10px rgba(16,24,40,.06);}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--c-muted);font-weight:600;min-height:44px;}
+.bottom-nav a svg{width:22px;height:22px;}
+.bottom-nav a.active{color:var(--c-primary);}
+@media(min-width:1024px){.bottom-nav{display:none;}}
+.content{max-width:960px;margin:0 auto;padding:18px 16px calc(var(--bottomnav-h) + 24px);}
+@media(min-width:1024px){.content{padding:26px 32px 40px;}}
+.page-h{font-size:19px;font-weight:700;margin:2px 0 4px;}
+.page-sub{color:var(--c-muted);font-size:13px;margin:0 0 18px;}
+.section-title{font-size:15px;font-weight:700;margin:24px 0 12px;}
+.section-title.first{margin-top:4px;}
+.card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+.card + .card{margin-top:12px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media(max-width:520px){.grid-4{grid-template-columns:repeat(4,1fr);}}
+.flex-between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.stack{display:flex;flex-direction:column;gap:10px;}
+.muted{color:var(--c-muted);}
+.small{font-size:12px;}
+.divider{border:none;border-top:1px solid var(--c-border);margin:14px 0;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;min-height:44px;}
+.btn-primary{background:var(--c-primary);color:#fff;}
+.btn-primary:hover{background:var(--c-primary-dark);}
+.btn-accent{background:var(--c-accent);color:#fff;}
+.btn-accent:hover{background:var(--c-accent-dark);}
+.btn-outline{background:#fff;border:1px solid var(--c-border);color:var(--c-text);}
+.btn-outline:hover{background:var(--c-bg);}
+.btn-ghost{background:none;color:var(--c-muted);}
+.btn-danger-outline{background:#fff;border:1px solid #F5B0A6;color:#B42318;}
+.btn:disabled{background:var(--c-border)!important;color:#98A2B3!important;cursor:not-allowed;border-color:var(--c-border)!important;}
+.btn-sm{padding:7px 12px;font-size:12.5px;min-height:36px;}
+.btn-block{width:100%;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
+.badge-info{background:#E6EEF8;color:var(--c-primary);}
+.badge-warn{background:#FCEBDC;color:var(--c-accent-dark);}
+.badge-ok{background:#E4F5F0;color:#0B6B52;}
+.badge-muted{background:var(--c-border);color:var(--c-muted);}
+.badge-live{background:#F3E8FD;color:#6B21A8;}
+.list-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--c-border);}
+.list-row:first-child{border-top:none;padding-top:0;}
+.list-row .icon-box{width:38px;height:38px;border-radius:9px;background:var(--c-bg);display:flex;align-items:center;justify-content:center;flex:none;color:var(--c-primary);}
+.list-row .icon-box svg{width:18px;height:18px;}
+.list-row .body{flex:1;min-width:0;}
+.list-row .body h4{margin:0;font-size:13.5px;font-weight:700;}
+.list-row .body p{margin:2px 0 0;font-size:12px;color:var(--c-muted);}
+.list-row .trail{flex:none;text-align:right;}
+.hidden{display:none!important;}
+.toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translateX(-50%);background:#101828;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;box-shadow:var(--shadow-lg);white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;}
+.toast.hidden{display:none;}
+@media(min-width:1024px){.toast{bottom:24px;}}
+.explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
+.explore-link svg{width:15px;height:15px;flex:none;}
+@media(max-width:639px){.explore-link-text{display:none;}}
+
+/* 已報名活動卡 */
+.event-reg-card .er-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.countdown{font-size:12px;color:var(--c-accent-dark);font-weight:700;background:#FCEBDC;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.countdown.ok{color:#0B6B52;background:#E4F5F0;}
+.er-meta{display:flex;flex-direction:column;gap:4px;margin:10px 0 14px;font-size:13px;color:var(--c-muted);}
+.er-meta strong{color:var(--c-text);}
+
+/* Sheet / Modal */
+.sheet-overlay{position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.sheet-overlay.hidden{display:none;}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0));max-height:86vh;overflow-y:auto;animation:sheetUp .18s ease-out;}
+@keyframes sheetUp{from{transform:translateY(16px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+.sheet-handle{width:36px;height:4px;background:var(--c-border);border-radius:4px;margin:0 auto 14px;}
+.sheet h3{margin:0 0 4px;font-size:16px;}
+@media(min-width:640px){.sheet-overlay{align-items:center;}.sheet{border-radius:16px;}}
+
+/* 進教室身分驗證 */
+.cr-spinner{width:34px;height:34px;margin:4px auto 12px;border-radius:50%;border:3px solid var(--c-border);border-top-color:var(--c-primary);animation:crSpin .8s linear infinite;}
+@keyframes crSpin{to{transform:rotate(360deg);}}
+.cr-ready-icon{width:40px;height:40px;margin:0 auto 10px;color:#0B6B52;}
+.cr-note{font-size:12px;color:var(--c-muted);margin-top:6px;}
+
+/* 空狀態 */
+.empty-state{text-align:center;padding:40px 16px;color:var(--c-muted);}
+.empty-state .e-icon{width:52px;height:52px;margin:0 auto 14px;color:var(--c-border);}
+.empty-state h4{color:var(--c-text);font-size:15px;margin:0 0 6px;}
+.empty-state p{font-size:13px;margin:0 0 16px;}
+
+/* 報名流程：付款方式 / 渠道 */
+.radio-line{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--c-border);font-size:13.5px;cursor:pointer;}
+.radio-line:first-child{border-top:none;}
+.radio-line .rl-body{flex:1;}
+.radio-line .rl-note{font-size:11.5px;color:var(--c-muted);margin-top:2px;}
+.channel-card{border:1.5px solid var(--c-border);border-radius:var(--radius);padding:13px 14px;cursor:pointer;background:#fff;margin-top:10px;}
+.channel-card.selected{border-color:var(--c-primary);background:#F7FAFF;}
+.channel-card h4{margin:0 0 2px;font-size:14px;}
+.channel-card p{margin:0;font-size:12px;color:var(--c-muted);}
+.channel-sub{margin-top:8px;padding-left:2px;}
+.gw-header-newebpay{background:#0F9B79;color:#fff;padding:14px;border-radius:var(--radius) var(--radius) 0 0;text-align:center;font-weight:800;font-size:15px;}
+.gw-header-stripe{background:#fff;border-bottom:1px solid var(--c-border);padding:14px;text-align:center;font-weight:800;font-size:17px;color:#635BFF;letter-spacing:.5px;}
+.gw-body{background:#fff;border:1px solid var(--c-border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:16px;}
+.gw-row{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px dashed var(--c-border);}
+.gw-row:last-child{border-bottom:none;}
+.field{display:flex;flex-direction:column;gap:5px;margin-top:12px;}
+.field label{font-size:12.5px;font-weight:700;}
+.field input{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:9px 10px;font-size:13.5px;font-family:inherit;color:var(--c-text);background:#fff;min-height:40px;width:100%;}
+</style>
+</head>
+<body>
+<div class="app has-side">
+  <nav class="side-nav" aria-label="主導覽">
+    <div class="side-brand"><a href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a></div>
+    <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
+    <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
+    <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link active" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
+    <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
+    <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
+    <a class="side-link" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
+    <a class="side-link" href="../公開網站/p01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>回官網</a>
+  </nav>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a>
+      <div class="topbar-title" data-i18n-zh="我的活動" data-i18n-en="My Events">我的活動</div>
+    </div>
+    <div class="topbar-actions">
+      <a class="explore-link" href="../公開網站/p02_courses.html" aria-label="探索課程" title="探索課程">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span class="explore-link-text">探索課程</span>
+      </a>
+      <select class="mini-select" id="langSelect" aria-label="語言與幣別" onchange="handleLangCurrency(this)"><option value="TWD">中文・TWD</option><option value="USD">English・USD</option><option value="JPY">日本語・JPY</option></select>
+      <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <span class="dot"></span>
+      </button>
+      <div class="bell-panel" id="bellPanel">
+        <h4>通知</h4>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你報名的活動即將開始</p><span>今天 09:20</span></div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <p class="page-h">我的活動</p>
+    <p class="page-sub">查看已報名的線上活動，開課前 15 分鐘可進入線上教室；也可以探索更多場次。</p>
+
+    <div class="section-title first">已報名活動</div>
+    <div class="stack" id="registeredList"></div>
+    <div class="empty-state hidden" id="registeredEmpty">
+      <div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></div>
+      <h4>目前沒有已報名的活動</h4>
+      <p>瀏覽線上活動，找一場感興趣的場次報名看看</p>
+    </div>
+
+    <div class="section-title">探索活動</div>
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <h4 style="margin:0 0 2px;font-size:13.5px;">更多線上活動</h4>
+          <p class="small muted" style="margin:0;">文化講座、直播工作坊、會話交流會，多為免費參加</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="location.href='../公開網站/p09_events.html'">探索活動</button>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
+    <a href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
+    <a href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
+  </nav>
+</div>
+
+<!-- 進入線上教室 -->
+<div class="sheet-overlay hidden" id="zoomOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;padding:6px 0 4px;">
+      <h3 id="zoomTitle">進入線上教室</h3>
+      <p class="muted small" id="zoomDetail">－</p>
+    </div>
+    <div class="divider"></div>
+    <div id="crVerifying" style="text-align:center;padding:6px 0 10px;">
+      <div class="cr-spinner"></div>
+      <p style="margin:0;font-size:13.5px;font-weight:700;">身分驗證中…</p>
+    </div>
+    <div id="crReady" class="hidden" style="text-align:center;padding:2px 0 10px;">
+      <svg class="cr-ready-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+      <p style="margin:0;font-size:13.5px;font-weight:700;">已為您開啟專屬活動教室（每場唯一會議，需老師放行）</p>
+      <p class="cr-note">教室連結不可轉傳，僅本人登入後可進入</p>
+    </div>
+    <div class="stack">
+      <button class="btn btn-primary btn-block hidden" id="crEnterBtn" onclick="confirmEnterClassroom()">前往教室</button>
+      <button class="btn btn-outline btn-block" onclick="closeZoomModal()">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- 取消報名確認 -->
+<div class="sheet-overlay hidden" id="cancelOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3>確定要取消報名嗎？</h3>
+    <p class="muted small" id="cancelDetail">取消後名額將釋出給候補學員。</p>
+    <div class="stack" style="margin-top:14px;">
+      <button class="btn btn-danger-outline btn-block" onclick="confirmCancelRegistration()">確認取消報名</button>
+      <button class="btn btn-outline btn-block" onclick="document.getElementById('cancelOverlay').classList.add('hidden')">再想想</button>
+    </div>
+  </div>
+</div>
+
+<!-- 報名流程 -->
+<div class="sheet-overlay hidden" id="registerOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div id="registerBody"></div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast">已完成</div>
+
+<script>
+var TLI_RATES={TWD:{rate:1,symbol:'NT$'},USD:{rate:31.5,symbol:'US$'},JPY:{rate:0.211,symbol:'¥'}};
+function tliFmt(amountTWD,cur){
+  var r=TLI_RATES[cur]||TLI_RATES.TWD;
+  var v=amountTWD/r.rate;
+  var decimals=cur==='TWD'?0:(cur==='JPY'?0:2);
+  return r.symbol+v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.remove('hidden');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(function(){t.classList.add('hidden');},2200);
+}
+function handleLangCurrency(sel){
+  var cur=sel.value||'TWD';
+  var langText=sel.options[sel.selectedIndex].text;
+  showToast('顯示語言／幣別已切換為 '+langText);
+}
+function toggleBell(){document.getElementById('bellPanel').classList.toggle('open');}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
+});
+
+/* ===== 全站活動資料（與公開網站 p09 一致，示範用） ===== */
+var EVENTS_M10 = {
+  'cert-info':{title:'2026 TLI 國際華語教師認證線上說明會', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,27,20,0,0), timeLabel:'08/27（四）20:00–21:00'},
+  'flex-open-house':{title:'彈性團體直播 公開體驗場－日文情境會話', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,29,10,0,0), timeLabel:'08/29（六）10:00–10:50'},
+  'culture-midautumn':{title:'中文文化直播－中秋節茶道與詩詞賞析', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,3,19,0,0), timeLabel:'09/03（四）19:00–20:00'},
+  'culture-calligraphy':{title:'中文文化線上課－毛筆書法入門體驗', format:'online', feeType:'paid', feeAmount:600, start:new Date(2026,8,5,15,0,0), timeLabel:'09/05（六）15:00–16:30'},
+  'biz-webinar':{title:'企業線上培訓說明會－員工華語計畫怎麼規劃', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,10,14,0,0), timeLabel:'09/10（四）14:00–15:00'},
+  'flex-mock-exam':{title:'TLI-CPT 模擬檢定線上診斷會', format:'online', feeType:'paid', feeAmount:800, start:new Date(2026,8,18,19,0,0), timeLabel:'09/18（五）19:00–20:30'}
+};
+
+/* 示範用「現在時間」：與會員區其他頁一致，固定為 2026-08-25 10:00 */
+var NOW = new Date(2026,7,25,10,0,0);
+
+/* ===== 已報名活動（前端模擬狀態） ===== */
+var REGISTERED = [
+  {regId:'r1', eventId:'culture-midautumn'},
+  {regId:'r2', eventId:'flex-open-house'}
+];
+var _regCounter = 3;
+
+function countdownInfo(start){
+  var diffMs = start - NOW;
+  var enterOk = diffMs <= 15*60000 && diffMs >= -50*60000;
+  var ended = diffMs < -50*60000;
+  var text;
+  if(ended) text = '已結束';
+  else if(enterOk) text = '開課中，可進入教室';
+  else{
+    var days = Math.floor(diffMs/86400000);
+    if(days >= 1){
+      text = days+' 天後開始';
+    } else {
+      var hrs = Math.floor(diffMs/3600000);
+      var mins = Math.floor((diffMs%3600000)/60000);
+      text = hrs+' 小時 '+mins+' 分後開始';
+    }
+  }
+  return {enterOk:enterOk, ended:ended, text:text};
+}
+
+function renderRegisteredList(){
+  var wrap = document.getElementById('registeredList');
+  var emptyState = document.getElementById('registeredEmpty');
+  if(REGISTERED.length === 0){
+    wrap.innerHTML = '';
+    wrap.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+  wrap.innerHTML = REGISTERED.map(function(r){
+    var ev = EVENTS_M10[r.eventId];
+    if(!ev) return '';
+    var ci = countdownInfo(ev.start);
+    return '<div class="card event-reg-card">'+
+      '<div class="er-top">'+
+        '<div>'+
+          '<span class="badge badge-live">線上活動</span>'+
+          (ev.feeType==='paid' ? '<span class="badge badge-info">已付款</span>' : '<span class="badge badge-ok">已報名</span>')+
+          '<h3 style="margin:8px 0 2px;font-size:15.5px;">'+ev.title+'</h3>'+
+        '</div>'+
+        '<span class="countdown'+(ci.enterOk?' ok':'')+'">'+ci.text+'</span>'+
+      '</div>'+
+      '<div class="er-meta">'+
+        '<span><strong>時間：</strong>'+ev.timeLabel+'</span>'+
+        '<span><strong>上課方式：</strong>線上教室（開課前 15 分鐘開放進入）</span>'+
+      '</div>'+
+      '<div class="flex-between" style="gap:10px;">'+
+        '<button class="btn btn-primary btn-block" '+(ci.enterOk?'':'disabled')+' onclick="enterClassroom(\''+r.regId+'\')">進入線上教室</button>'+
+        (ci.ended ? '' : '<button class="btn btn-danger-outline" onclick="openCancelSheet(\''+r.regId+'\')">取消報名</button>')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function enterClassroom(regId){
+  var r = REGISTERED.filter(function(x){return x.regId===regId;})[0];
+  if(!r) return;
+  var ev = EVENTS_M10[r.eventId];
+  document.getElementById('zoomTitle').textContent = '進入線上教室';
+  document.getElementById('zoomDetail').textContent = ev.title+'・'+ev.timeLabel;
+  document.getElementById('crVerifying').classList.remove('hidden');
+  document.getElementById('crReady').classList.add('hidden');
+  document.getElementById('crEnterBtn').classList.add('hidden');
+  document.getElementById('zoomOverlay').classList.remove('hidden');
+  clearTimeout(window._crTimer);
+  window._crTimer=setTimeout(function(){
+    document.getElementById('crVerifying').classList.add('hidden');
+    document.getElementById('crReady').classList.remove('hidden');
+    document.getElementById('crEnterBtn').classList.remove('hidden');
+  },900);
+}
+function confirmEnterClassroom(){
+  showToast('身分驗證通過，正在為您導向專屬線上教室…');
+  closeZoomModal();
+}
+function closeZoomModal(){document.getElementById('zoomOverlay').classList.add('hidden');}
+
+var _pendingCancelId = null;
+function openCancelSheet(regId){
+  _pendingCancelId = regId;
+  document.getElementById('cancelOverlay').classList.remove('hidden');
+}
+function confirmCancelRegistration(){
+  REGISTERED = REGISTERED.filter(function(r){ return r.regId !== _pendingCancelId; });
+  document.getElementById('cancelOverlay').classList.add('hidden');
+  renderRegisteredList();
+  showToast('已取消報名');
+}
+
+/* ===== 報名流程 sheet ===== */
+var regState = {eventId:null, channel:'newebpay', subMethod:'credit'};
+
+function openRegisterSheet(eventId){
+  var ev = EVENTS_M10[eventId];
+  if(!ev) return;
+  regState.eventId = eventId;
+  regState.channel = 'newebpay';
+  regState.subMethod = 'credit';
+  renderRegisterStep1();
+  document.getElementById('registerOverlay').classList.remove('hidden');
+}
+function closeRegisterOverlay(){
+  document.getElementById('registerOverlay').classList.add('hidden');
+}
+function renderRegisterStep1(){
+  var ev = EVENTS_M10[regState.eventId];
+  var alreadyIn = REGISTERED.some(function(r){ return r.eventId===regState.eventId; });
+  var summary = '<h3>報名確認</h3>'+
+    '<p class="muted small" style="margin:0 0 12px;">'+ev.title+'</p>'+
+    '<div class="card" style="margin-bottom:14px;">'+
+      '<div class="flex-between"><span class="small muted">時間</span><strong class="small">'+ev.timeLabel+'</strong></div>'+
+      '<div class="flex-between" style="margin-top:6px;"><span class="small muted">費用</span><strong class="small">'+(ev.feeType==='free'?'免費':tliFmt(ev.feeAmount,'TWD'))+'</strong></div>'+
+    '</div>';
+  if(alreadyIn){
+    document.getElementById('registerBody').innerHTML = summary+
+      '<div class="banner-info" style="background:#E6EEF8;border:1px solid #C7DAF0;border-radius:10px;padding:12px 14px;font-size:13px;color:var(--c-primary-dark);margin-bottom:14px;">您已報名本場活動，可在「已報名活動」查看詳情。</div>'+
+      '<button class="btn btn-outline btn-block" onclick="closeRegisterOverlay()">關閉</button>';
+    return;
+  }
+  var actionHtml;
+  if(ev.feeType === 'free'){
+    actionHtml = '<div class="stack"><button class="btn btn-accent btn-block" onclick="confirmFreeRegister()">確認免費報名</button><button class="btn btn-outline btn-block" onclick="closeRegisterOverlay()">取消</button></div>';
+  } else {
+    actionHtml =
+      '<div class="section-title" style="margin:16px 0 6px;">支付渠道</div>'+
+      '<div class="channel-card selected" data-channel="newebpay" onclick="selectChannelEvt(\'newebpay\')" id="channelNewebpay">'+
+        '<h4>藍新金流 NewebPay</h4><p>信用卡／ATM 虛擬帳號／超商代碼・新台幣（TWD）</p>'+
+        '<div class="channel-sub" id="newebpaySub">'+
+          '<label class="radio-line" style="padding:8px 0;"><input type="radio" name="npMethod" value="credit" checked onchange="selectSubMethodEvt(\'credit\')"><div class="rl-body">信用卡</div></label>'+
+          '<label class="radio-line" style="padding:8px 0;"><input type="radio" name="npMethod" value="atm" onchange="selectSubMethodEvt(\'atm\')"><div class="rl-body">ATM 虛擬帳號</div></label>'+
+        '</div>'+
+      '</div>'+
+      '<div class="channel-card" data-channel="stripe" onclick="selectChannelEvt(\'stripe\')" id="channelStripe">'+
+        '<h4>Stripe</h4><p>海外信用卡，支援多幣別（USD／JPY）</p>'+
+      '</div>'+
+      '<div class="stack" style="margin-top:16px;"><button class="btn btn-primary btn-block" onclick="goToGatewayEvent()">前往付款</button><button class="btn btn-outline btn-block" onclick="closeRegisterOverlay()">取消</button></div>';
+  }
+  document.getElementById('registerBody').innerHTML = summary + actionHtml;
+}
+function selectChannelEvt(ch){
+  regState.channel = ch;
+  var np=document.getElementById('channelNewebpay'), st=document.getElementById('channelStripe');
+  if(np) np.classList.toggle('selected', ch==='newebpay');
+  if(st) st.classList.toggle('selected', ch==='stripe');
+}
+function selectSubMethodEvt(m){
+  regState.subMethod = m;
+  regState.channel = 'newebpay';
+  selectChannelEvt('newebpay');
+}
+function confirmFreeRegister(){
+  REGISTERED.push({regId:'r'+(_regCounter++), eventId:regState.eventId});
+  renderRegisteredList();
+  var ev = EVENTS_M10[regState.eventId];
+  document.getElementById('registerBody').innerHTML =
+    '<div style="text-align:center;padding:6px 0 4px;">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#0F9B79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:44px;height:44px;margin:0 auto 10px;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg>'+
+      '<h3>報名完成</h3><p class="muted small">'+ev.title+'</p>'+
+    '</div>'+
+    '<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="closeRegisterOverlay()">查看我的活動</button>';
+  showToast('已完成報名');
+}
+function genOrderNo(){
+  var d=new Date();
+  return 'EV'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(Math.floor(1000+Math.random()*9000));
+}
+function goToGatewayEvent(){
+  var ev = EVENTS_M10[regState.eventId];
+  var orderNo = genOrderNo();
+  if(regState.channel === 'newebpay'){
+    document.getElementById('registerBody').innerHTML =
+      '<button class="btn btn-outline btn-sm" onclick="renderRegisterStep1()" style="margin-bottom:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M15 18l-6-6 6-6"/></svg>返回</button>'+
+      '<div class="gw-header-newebpay">藍新金流 NewebPay</div>'+
+      '<div class="gw-body">'+
+        '<div class="gw-row"><span class="muted">商店名稱</span><strong>TLI 士林校</strong></div>'+
+        '<div class="gw-row"><span class="muted">訂單編號</span><strong>'+orderNo+'</strong></div>'+
+        '<div class="gw-row"><span class="muted">應付金額</span><strong>'+tliFmt(ev.feeAmount,'TWD')+'</strong></div>'+
+        (regState.subMethod==='credit' ?
+          ('<div class="field"><label>信用卡卡號</label><input type="text" placeholder="4000 1234 5678 9010"></div>'+
+           '<div class="flex-between" style="gap:10px;"><div class="field" style="flex:1;"><label>有效期限</label><input type="text" placeholder="MM/YY"></div><div class="field" style="flex:1;"><label>安全碼</label><input type="text" placeholder="CVC"></div></div>'+
+           '<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="confirmGatewayEvent(\''+orderNo+'\')">確認付款</button>')
+          :
+          ('<div style="background:var(--c-bg);border-radius:8px;padding:14px;text-align:center;margin-top:12px;"><div class="small muted">ATM 虛擬帳號</div><div style="font-size:18px;font-weight:800;color:var(--c-primary);margin:6px 0;">998-1234-5678-9012</div><div class="small muted">繳費期限 2026-08-28 23:59</div></div>'+
+           '<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="confirmGatewayEvent(\''+orderNo+'\')">確認付款（Demo 模擬已收款）</button>'))+
+      '</div>';
+  } else {
+    document.getElementById('registerBody').innerHTML =
+      '<button class="btn btn-outline btn-sm" onclick="renderRegisterStep1()" style="margin-bottom:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M15 18l-6-6 6-6"/></svg>返回</button>'+
+      '<div class="gw-header-stripe">Stripe</div>'+
+      '<div class="gw-body">'+
+        '<div class="gw-row"><span class="muted">Order No.</span><strong>'+orderNo+'</strong></div>'+
+        '<div class="gw-row"><span class="muted">Amount</span><strong>US$'+(ev.feeAmount/31.5).toFixed(2)+'</strong></div>'+
+        '<div class="field"><label>Card number</label><input type="text" placeholder="4242 4242 4242 4242"></div>'+
+        '<div class="flex-between" style="gap:10px;"><div class="field" style="flex:1;"><label>Expiry</label><input type="text" placeholder="MM/YY"></div><div class="field" style="flex:1;"><label>CVC</label><input type="text" placeholder="CVC"></div></div>'+
+        '<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="confirmGatewayEvent(\''+orderNo+'\')">確認付款</button>'+
+      '</div>';
+  }
+}
+function confirmGatewayEvent(orderNo){
+  REGISTERED.push({regId:'r'+(_regCounter++), eventId:regState.eventId});
+  renderRegisteredList();
+  var ev = EVENTS_M10[regState.eventId];
+  var channelLabel = regState.channel==='newebpay' ? '藍新金流・'+(regState.subMethod==='credit'?'信用卡':'ATM 虛擬帳號') : 'Stripe';
+  document.getElementById('registerBody').innerHTML =
+    '<div style="text-align:center;padding:6px 0 4px;">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#0F9B79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:44px;height:44px;margin:0 auto 10px;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg>'+
+      '<h3>付款完成，報名成功</h3><p class="muted small">'+ev.title+'</p>'+
+      '<p class="small muted" style="margin:4px 0 0;">訂單編號：'+orderNo+'・付款渠道：'+channelLabel+'</p>'+
+    '</div>'+
+    '<div class="banner-info" style="background:#E6EEF8;border:1px solid #C7DAF0;border-radius:10px;padding:12px 14px;font-size:13px;color:var(--c-primary-dark);margin:12px 0;">電子發票已開立，可於「我的」訂單與付款查看。</div>'+
+    '<button class="btn btn-primary btn-block" onclick="closeRegisterOverlay()">查看我的活動</button>';
+  showToast('付款完成，報名成功');
+}
+
+renderRegisteredList();
+(function applyUrlRegister(){
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('register');
+  if(id && EVENTS_M10[id]) openRegisterSheet(id);
+})();
+</script>
+</body>
+</html>
