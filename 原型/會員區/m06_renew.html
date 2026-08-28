@@ -151,9 +151,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <span class="explore-link-text">探索課程</span>
       </a>
       <select class="mini-select" id="currencySelect" aria-label="語言與幣別" onchange="setCurrency(this.value)">
-        <option value="TWD">中文・TWD</option>
-        <option value="USD">English・USD</option>
-        <option value="JPY">日本語・JPY</option>
+        <option value="zh-TW">繁體中文・TWD</option>
+        <option value="zh-CN">简体中文・CNY</option>
+        <option value="en">English・USD</option>
+        <option value="ja">日本語・JPY</option>
+        <option value="de">Deutsch・EUR</option>
       </select>
       <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
@@ -362,7 +364,9 @@ function setInstallments(n){
   state.installments=parseInt(n,10);
   updateTotal();
 }
-function setCurrency(cur){
+function setCurrency(lang){
+  var curMap={'zh-TW':'TWD','zh-CN':'CNY','en':'USD','ja':'JPY','de':'EUR'};
+  var cur=curMap[lang]||'TWD';
   state.currency=cur;
   document.querySelectorAll('.plan-card').forEach(function(c){
     var id=c.dataset.plan;
@@ -370,10 +374,15 @@ function setCurrency(cur){
   });
   updateTotal();
   document.querySelectorAll('[data-i18n-zh]').forEach(function(el){
-    el.textContent = (cur==='TWD') ? el.getAttribute('data-i18n-zh') : el.getAttribute('data-i18n-en');
+    el.textContent = (lang==='zh-TW') ? el.getAttribute('data-i18n-zh') : el.getAttribute('data-i18n-en');
   });
   var sel=document.getElementById('currencySelect');
-  showToast('顯示語言／幣別已切換為 '+sel.options[sel.selectedIndex].text);
+  if(lang==='zh-CN'||lang==='de'){
+    var names={'zh-CN':'简体中文','de':'Deutsch'};
+    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+  } else {
+    showToast('顯示語言／幣別已切換為 '+sel.options[sel.selectedIndex].text);
+  }
 }
 function showToast(msg){
   var t=document.getElementById('toast');

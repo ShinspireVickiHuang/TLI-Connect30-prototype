@@ -222,9 +222,11 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
   </nav>
   <div class="header-right">
     <select class="lang-select" onchange="setLang(this.value)" aria-label="語言切換" data-i18n="lang_select_aria" data-i18n-attr="aria-label">
-      <option value="tc">繁中</option>
-      <option value="en">EN</option>
+      <option value="zh-TW">繁體中文</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="en">English</option>
       <option value="ja">日本語</option>
+      <option value="de">Deutsch</option>
     </select>
     <a class="btn btn-primary btn-sm" data-i18n="btn_consult" href="p06_trial.html?type=consult">預約諮詢</a>
     <a class="btn btn-accent btn-sm" data-i18n="btn_trial" href="p06_trial.html?type=trial">預約試聽</a>
@@ -399,18 +401,18 @@ var TLI_AVATAR_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none
 
 /* ===================== i18n：共用引擎（見 tli_i18n_shared.js 段落 A） ===================== */
 var TLI_LANG_KEY = 'tli_lang';
-window.TLI_CURRENT_LANG = 'tc';
+window.TLI_CURRENT_LANG = 'zh-TW';
 function tliFmt(str, obj){
   if(!str) return str;
   return str.replace(/\{(\w+)\}/g, function(_, k){ return (obj && obj[k] !== undefined) ? obj[k] : ''; });
 }
 function tliDict(){
   var lang = window.TLI_CURRENT_LANG;
-  return Object.assign({}, I18N_COMMON[lang] || {}, I18N_PAGE[lang] || {});
+  return Object.assign({}, I18N_COMMON[lang] || I18N_COMMON['zh-TW'] || {}, I18N_PAGE[lang] || I18N_PAGE['zh-TW'] || {});
 }
 function applyLang(lang){
   window.TLI_CURRENT_LANG = lang;
-  document.documentElement.lang = (lang === 'tc') ? 'zh-Hant' : (lang === 'en' ? 'en' : 'ja');
+  document.documentElement.lang = ({'zh-TW':'zh-Hant','zh-CN':'zh-Hans','en':'en','ja':'ja','de':'de'})[lang] || 'zh-Hant';
   var dict = tliDict();
   document.querySelectorAll('[data-i18n]').forEach(function(el){
     var key = el.getAttribute('data-i18n');
@@ -435,20 +437,24 @@ function applyLang(lang){
   }
   var sel = document.querySelector('.lang-select');
   if(sel) sel.value = lang;
+  if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
+    var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
+    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+  }
 }
 function setLang(lang){
   try{ localStorage.setItem(TLI_LANG_KEY, lang); }catch(e){}
   applyLang(lang);
 }
 function initLang(){
-  var lang = 'tc';
-  try{ lang = localStorage.getItem(TLI_LANG_KEY) || 'tc'; }catch(e){}
+  var lang = 'zh-TW';
+  try{ lang = localStorage.getItem(TLI_LANG_KEY) || 'zh-TW'; }catch(e){}
   applyLang(lang);
 }
 
 /* ===================== i18n：共用字典 I18N_COMMON ===================== */
 var I18N_COMMON = {
-tc: {
+'zh-TW': {
   nav_courses: '課程', nav_events: '活動', nav_teachers: '師資', nav_about: '品牌與校區', nav_faq: '常見問題',
   btn_consult: '預約諮詢', btn_trial: '預約試聽', btn_login: '登入',
   menu_toggle_aria: '開啟選單', lang_select_aria: '語言切換',
@@ -548,7 +554,7 @@ ja: {
 
 /* ===================== i18n：本頁專屬字典 I18N_PAGE（p01 首頁） ===================== */
 var I18N_PAGE = {
-tc: {
+'zh-TW': {
   meta_title: 'TLI Connect｜首頁',
   meta_description: 'TLI Connect 線上課程首頁：一對一線上課與 彈性團體直播 兩大主力、更多線上學習方式入口，以及預約諮詢／試聽申請。',
   p01_hero_eyebrow: '1956 年創校．TLI 線上學習品牌',
@@ -630,7 +636,7 @@ ja: {
 
 /* ===================== i18n：AI 問答庫（三語，段落 C） ===================== */
 var TLI_KB_I18N = {
-tc: [
+'zh-TW': [
   {id:'refund', chip:'退費', q:'如何申請退費？', a:'課程開始前 14 天內申請可全額退費；已開始上課者，依實際已上課堂數與合約約定計算可退款金額，請聯繫原承辦顧問辦理。', short:'開課前 14 天內可全額退費，開課後依已上課堂數計算可退金額。'},
   {id:'reschedule', chip:'請假改期', q:'臨時無法上課，可以退堂或改期嗎？', a:'請於原訂上課時間 12 小時前申請退堂或改期，逾時未通知則視同已上課，不予補課或退還堂數。', short:'上課前 12 小時可申請改期或退堂，逾時視同已上課。'},
   {id:'visa', chip:'簽證', q:'上課時數與簽證申請有什麼關係？', a:'台灣校區學期班課程如週時數達 15 小時，即符合申請學生簽證所需之上課證明條件，實際申請流程與文件請洽校區顧問確認。', short:'週時數達 15 小時的學期班即符合學生簽證申請條件。'},
@@ -670,12 +676,12 @@ ja: [
 
 /* ===================== i18n：顧問姓名（段落 D） ===================== */
 var TLI_ADVISORS_I18N = {
-  tc: ['王顧問','李顧問','陳顧問','張顧問','林顧問'],
+  'zh-TW': ['王顧問','李顧問','陳顧問','張顧問','林顧問'],
   en: ['Advisor Wang','Advisor Li','Advisor Chen','Advisor Chang','Advisor Lin'],
   ja: ['王アドバイザー','李アドバイザー','陳アドバイザー','張アドバイザー','林アドバイザー']
 };
 function aiPickAdvisor(){
-  var list = TLI_ADVISORS_I18N[window.TLI_CURRENT_LANG] || TLI_ADVISORS_I18N.tc;
+  var list = TLI_ADVISORS_I18N[window.TLI_CURRENT_LANG] || TLI_ADVISORS_I18N['zh-TW'];
   return list[Math.floor(Math.random() * list.length)];
 }
 
@@ -702,7 +708,7 @@ function aiRenderChips(target){
   var wrap = document.getElementById('aiChips-'+target);
   if(!wrap) return;
   var dict = tliDict();
-  var kb = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N.tc;
+  var kb = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N['zh-TW'];
   wrap.innerHTML = '';
   wrap.appendChild(aiMakeChipBtn(dict.ai_chip_trial, function(){ aiAsk(dict.ai_chip_trial, target); }));
   kb.forEach(function(item){
@@ -791,7 +797,7 @@ var TLI_AI_KEYWORDS = {
 };
 function aiMatch(text){
   var t = text.trim().toLowerCase();
-  var kbTc = TLI_KB_I18N.tc, kbCur = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N.tc;
+  var kbTc = TLI_KB_I18N['zh-TW'], kbCur = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N['zh-TW'];
   for(var i=0;i<kbTc.length;i++){
     var id = kbTc[i].id;
     var kws = TLI_AI_KEYWORDS[id] || [];

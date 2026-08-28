@@ -237,9 +237,11 @@ main{max-width:1160px;margin:0 auto;padding:0 0 60px;}
   </nav>
   <div class="header-right">
     <select class="lang-select" onchange="setLang(this.value)" aria-label="語言切換" data-i18n="lang_select_aria" data-i18n-attr="aria-label">
-      <option value="tc">繁中</option>
-      <option value="en">EN</option>
+      <option value="zh-TW">繁體中文</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="en">English</option>
       <option value="ja">日本語</option>
+      <option value="de">Deutsch</option>
     </select>
     <a class="btn btn-primary btn-sm" data-i18n="btn_consult" href="p06_trial.html?type=consult">預約諮詢</a>
     <a class="btn btn-accent btn-sm" data-i18n="btn_trial" href="p06_trial.html?type=trial">預約試聽</a>
@@ -386,18 +388,18 @@ var TLI_AVATAR_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none
 
 /* ===================== i18n：共用引擎 ===================== */
 var TLI_LANG_KEY = 'tli_lang';
-window.TLI_CURRENT_LANG = 'tc';
+window.TLI_CURRENT_LANG = 'zh-TW';
 function tliFmt(str, obj){
   if(!str) return str;
   return str.replace(/\{(\w+)\}/g, function(_, k){ return (obj && obj[k] !== undefined) ? obj[k] : ''; });
 }
 function tliDict(){
   var lang = window.TLI_CURRENT_LANG;
-  return Object.assign({}, I18N_COMMON[lang] || {}, I18N_PAGE[lang] || {});
+  return Object.assign({}, I18N_COMMON[lang] || I18N_COMMON['zh-TW'] || {}, I18N_PAGE[lang] || I18N_PAGE['zh-TW'] || {});
 }
 function applyLang(lang){
   window.TLI_CURRENT_LANG = lang;
-  document.documentElement.lang = (lang === 'tc') ? 'zh-Hant' : (lang === 'en' ? 'en' : 'ja');
+  document.documentElement.lang = ({'zh-TW':'zh-Hant','zh-CN':'zh-Hans','en':'en','ja':'ja','de':'de'})[lang] || 'zh-Hant';
   var dict = tliDict();
   document.querySelectorAll('[data-i18n]').forEach(function(el){
     var key = el.getAttribute('data-i18n');
@@ -422,6 +424,10 @@ function applyLang(lang){
   }
   var sel = document.querySelector('.lang-select');
   if(sel) sel.value = lang;
+  if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
+    var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
+    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+  }
   if(typeof onLangApplied === 'function') onLangApplied(lang);
 }
 function setLang(lang){
@@ -429,14 +435,14 @@ function setLang(lang){
   applyLang(lang);
 }
 function initLang(){
-  var lang = 'tc';
-  try{ lang = localStorage.getItem(TLI_LANG_KEY) || 'tc'; }catch(e){}
+  var lang = 'zh-TW';
+  try{ lang = localStorage.getItem(TLI_LANG_KEY) || 'zh-TW'; }catch(e){}
   applyLang(lang);
 }
 
 /* ===================== i18n：共用字典 I18N_COMMON ===================== */
 var I18N_COMMON = {
-tc: {
+'zh-TW': {
   nav_courses: '課程', nav_events: '活動', nav_teachers: '師資', nav_about: '品牌與校區', nav_faq: '常見問題',
   btn_consult: '預約諮詢', btn_trial: '預約試聽', btn_login: '登入',
   menu_toggle_aria: '開啟選單', lang_select_aria: '語言切換',
@@ -536,7 +542,7 @@ ja: {
 
 /* ===================== i18n：本頁專屬字典 I18N_PAGE（p09 活動） ===================== */
 var I18N_PAGE = {
-tc: {
+'zh-TW': {
   meta_title: 'TLI Connect｜活動',
   meta_description: 'TLI Connect 線上活動：文化講座、直播工作坊、會話交流會，依本月、線上、免費篩選，點選卡片查看詳情並報名。',
   p09_hero_title: '線上活動一次看',
@@ -657,7 +663,7 @@ ja: {
 
 /* ===================== i18n：TLI_KB_I18N（AI 知識庫，各語系） ===================== */
 var TLI_KB_I18N = {
-tc: [
+'zh-TW': [
   {id:'refund', chip:'退費', q:'如何申請退費？', a:'課程開始前 14 天內申請可全額退費；已開始上課者，依實際已上課堂數與合約約定計算可退款金額，請聯繫原承辦顧問辦理。', short:'開課前 14 天內可全額退費，開課後依已上課堂數計算可退金額。'},
   {id:'reschedule', chip:'請假改期', q:'臨時無法上課，可以退堂或改期嗎？', a:'請於原訂上課時間 12 小時前申請退堂或改期，逾時未通知則視同已上課，不予補課或退還堂數。', short:'上課前 12 小時可申請改期或退堂，逾時視同已上課。'},
   {id:'visa', chip:'簽證', q:'上課時數與簽證申請有什麼關係？', a:'台灣校區學期班課程如週時數達 15 小時，即符合申請學生簽證所需之上課證明條件，實際申請流程與文件請洽校區顧問確認。', short:'週時數達 15 小時的學期班即符合學生簽證申請條件。'},
@@ -697,12 +703,12 @@ ja: [
 
 /* ===================== 顧問姓名（各語系） ===================== */
 var TLI_ADVISORS_I18N = {
-  tc: ['王顧問','李顧問','陳顧問','張顧問','林顧問'],
+  'zh-TW': ['王顧問','李顧問','陳顧問','張顧問','林顧問'],
   en: ['Advisor Wang','Advisor Li','Advisor Chen','Advisor Chang','Advisor Lin'],
   ja: ['王アドバイザー','李アドバイザー','陳アドバイザー','張アドバイザー','林アドバイザー']
 };
 function aiPickAdvisor(){
-  var list = TLI_ADVISORS_I18N[window.TLI_CURRENT_LANG] || TLI_ADVISORS_I18N.tc;
+  var list = TLI_ADVISORS_I18N[window.TLI_CURRENT_LANG] || TLI_ADVISORS_I18N['zh-TW'];
   return list[Math.floor(Math.random() * list.length)];
 }
 
@@ -714,49 +720,49 @@ var TLI_AI_GREETING_KEY = 'ai_greeting_default';
 var EVENTS = [
   {id:'cert-info', format:'online', month:8, timeLabel:'20:00–21:00', feeType:'free', feeAmount:0, capacity:100, filled:64, hue:'linear-gradient(135deg,#8A6D1F,#C7A855)',
     i18n:{
-      tc:{title:'2026 TLI 國際華語教師認證線上說明會', dateLabel:'08/27（四）', speaker:'教師認證辦公室', icon:'認證', intro:'完整說明 2026 TLI 國際華語教師認證的課程架構、118 小時線上訓練內容與報名資格，適合有意投入華語教學的學員。', bullets:['認證課程架構與時數說明','線上訓練平台操作導覽','Q&A：認證後的教學銜接與陪跑機會']},
+      'zh-TW':{title:'2026 TLI 國際華語教師認證線上說明會', dateLabel:'08/27（四）', speaker:'教師認證辦公室', icon:'認證', intro:'完整說明 2026 TLI 國際華語教師認證的課程架構、118 小時線上訓練內容與報名資格，適合有意投入華語教學的學員。', bullets:['認證課程架構與時數說明','線上訓練平台操作導覽','Q&A：認證後的教學銜接與陪跑機會']},
       en:{title:'2026 TLI International Chinese Teacher Certification Online Info Session', dateLabel:'Aug 27 (Thu)', speaker:'Certification Office', icon:'CERT', intro:'A complete walkthrough of the 2026 TLI International Chinese Teacher Certification — course structure, the 118-hour online training program, and eligibility requirements. Ideal for anyone considering a career in Chinese language teaching.', bullets:['Certification course structure and hour requirements','Guided tour of the online training platform','Q&A: teaching placement and mentorship after certification']},
       ja:{title:'2026年 TLI国際中国語教師認定 オンライン説明会', dateLabel:'8/27（木）', speaker:'教師認定オフィス', icon:'認定', intro:'2026年TLI国際中国語教師認定について、カリキュラム構成、118時間のオンライントレーニング内容、申込資格を詳しくご説明します。中国語教育に関心のある方におすすめです。', bullets:['認定コースの構成と時間数について','オンライントレーニングプラットフォームの操作案内','Q&A：認定後の教壇機会とサポート体制']}
     }},
   {id:'flex-open-house', format:'online', month:8, timeLabel:'10:00–10:50', feeType:'free', feeAmount:0, capacity:20, filled:18, hue:'linear-gradient(135deg,#C23B5A,#E37E92)',
     i18n:{
-      tc:{title:'彈性團體直播 公開體驗場－日文情境會話', dateLabel:'08/29（六）', speaker:'林老師', icon:'日', intro:'實際體驗 彈性團體直播上課方式，與其他學員一起練習日常情境會話，感受同儕學習氛圍。', bullets:['情境會話暖身練習','小組角色扮演互動','體驗後可直接報名正式梯次']},
+      'zh-TW':{title:'彈性團體直播 公開體驗場－日文情境會話', dateLabel:'08/29（六）', speaker:'林老師', icon:'日', intro:'實際體驗 彈性團體直播上課方式，與其他學員一起練習日常情境會話，感受同儕學習氛圍。', bullets:['情境會話暖身練習','小組角色扮演互動','體驗後可直接報名正式梯次']},
       en:{title:'Flexible Group Livestream Open House — Japanese Situational Conversation', dateLabel:'Aug 29 (Sat)', speaker:'Teacher Lin', icon:'JP', intro:'Get a firsthand feel for the Flexible Group Livestream format — practice everyday situational conversation together with fellow students and experience the peer learning atmosphere.', bullets:['Warm-up situational conversation practice','Small-group role-play interaction','Enroll directly in a regular class after the session']},
       ja:{title:'グループライブ配信 体験会－日本語会話（シチュエーション別）', dateLabel:'8/29（土）', speaker:'林先生', icon:'日', intro:'グループライブ配信の授業スタイルを実際に体験。他の受講生と一緒に日常のシチュエーション会話を練習し、仲間と学ぶ雰囲気を感じていただけます。', bullets:['シチュエーション会話のウォームアップ練習','グループでのロールプレイ体験','体験後はそのまま正式クラスにお申込みいただけます']}
     }},
   {id:'culture-midautumn', format:'online', month:9, timeLabel:'19:00–20:00', feeType:'free', feeAmount:0, capacity:30, filled:22, hue:'linear-gradient(135deg,#C2569B,#E28FC4)',
     i18n:{
-      tc:{title:'中文文化直播－中秋節茶道與詩詞賞析', dateLabel:'09/03（四）', speaker:'陳老師', icon:'中', intro:'透過中秋節習俗、茶道體驗與經典詩詞賞析，認識中華文化，適合各程度學員參加，全程中英雙語導覽。', bullets:['中秋節習俗與典故介紹','茶道基本禮儀示範','經典詩詞朗讀與賞析互動']},
+      'zh-TW':{title:'中文文化直播－中秋節茶道與詩詞賞析', dateLabel:'09/03（四）', speaker:'陳老師', icon:'中', intro:'透過中秋節習俗、茶道體驗與經典詩詞賞析，認識中華文化，適合各程度學員參加，全程中英雙語導覽。', bullets:['中秋節習俗與典故介紹','茶道基本禮儀示範','經典詩詞朗讀與賞析互動']},
       en:{title:'Chinese Culture Livestream — Mid-Autumn Tea Ceremony & Poetry Appreciation', dateLabel:'Sep 3 (Thu)', speaker:'Teacher Chen', icon:'CN', intro:'Explore Chinese culture through Mid-Autumn Festival traditions, a tea ceremony experience, and classic poetry appreciation. Open to students of all levels, with bilingual Chinese-English guidance throughout.', bullets:['Introduction to Mid-Autumn Festival customs and legends','Basic tea ceremony etiquette demonstration','Classic poetry reading and interactive appreciation']},
       ja:{title:'中国語文化ライブ配信－中秋節の茶道と詩歌鑑賞', dateLabel:'9/3（木）', speaker:'陳先生', icon:'中', intro:'中秋節の風習や茶道体験、古典詩の鑑賞を通じて中国文化に触れます。レベルを問わずご参加いただけ、中国語・英語のバイリンガルガイド付きです。', bullets:['中秋節の風習と由来のご紹介','茶道の基本作法のデモンストレーション','古典詩の朗読と鑑賞交流']}
     }},
   {id:'culture-calligraphy', format:'online', month:9, timeLabel:'15:00–16:30', feeType:'paid', feeAmount:600, capacity:15, filled:9, hue:'linear-gradient(135deg,#8A6D1F,#C7A855)',
     i18n:{
-      tc:{title:'中文文化線上課－毛筆書法入門體驗', dateLabel:'09/05（六）', speaker:'陳老師', icon:'中', intro:'從握筆姿勢、基本筆畫到完成一幅作品，老師線上示範並即時指導，材料清單將於報名後email通知。', bullets:['握筆姿勢與基本筆畫','部首與簡單字練習','完成個人書法小品']},
+      'zh-TW':{title:'中文文化線上課－毛筆書法入門體驗', dateLabel:'09/05（六）', speaker:'陳老師', icon:'中', intro:'從握筆姿勢、基本筆畫到完成一幅作品，老師線上示範並即時指導，材料清單將於報名後email通知。', bullets:['握筆姿勢與基本筆畫','部首與簡單字練習','完成個人書法小品']},
       en:{title:'Chinese Culture Online Class — Introduction to Brush Calligraphy', dateLabel:'Sep 5 (Sat)', speaker:'Teacher Chen', icon:'CN', intro:'From holding the brush correctly to basic strokes and finishing your own piece, your teacher demonstrates live online with real-time guidance. A materials list will be emailed after you register.', bullets:['Brush-holding posture and basic strokes','Practicing radicals and simple characters','Complete your own small calligraphy piece']},
       ja:{title:'中国語文化オンライン講座－毛筆書道入門体験', dateLabel:'9/5（土）', speaker:'陳先生', icon:'中', intro:'筆の持ち方や基本の筆遣いから作品の完成まで、講師がオンラインでデモンストレーションしながらリアルタイムに指導します。材料リストはお申込み後にメールでご案内します。', bullets:['筆の持ち方と基本の筆遣い','部首と簡単な文字の練習','ご自身の書道作品を完成させます']}
     }},
   {id:'biz-webinar', format:'online', month:9, timeLabel:'14:00–15:00', feeType:'free', feeAmount:0, capacity:50, filled:12, icon:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>', hue:'linear-gradient(135deg,#3A4A5C,#66798D)',
     i18n:{
-      tc:{title:'企業線上培訓說明會－員工華語計畫怎麼規劃', dateLabel:'09/10（四）', speaker:'王顧問', intro:'為企業 HR 與主管說明如何規劃員工華語／外語培訓計畫，包含分級測試、包班排課與月結發票流程。', bullets:['員工程度分級測試流程','包班排課與線上上課方式','企業月結發票與合約說明']},
+      'zh-TW':{title:'企業線上培訓說明會－員工華語計畫怎麼規劃', dateLabel:'09/10（四）', speaker:'王顧問', intro:'為企業 HR 與主管說明如何規劃員工華語／外語培訓計畫，包含分級測試、包班排課與月結發票流程。', bullets:['員工程度分級測試流程','包班排課與線上上課方式','企業月結發票與合約說明']},
       en:{title:'Corporate Online Training Info Session — Planning an Employee Chinese Program', dateLabel:'Sep 10 (Thu)', speaker:'Advisor Wang', intro:'For HR and managers, this session covers how to plan an employee Chinese or foreign-language training program — including level placement tests, group class scheduling, and monthly invoicing.', bullets:['Employee level placement testing process','Group class scheduling and online class formats','Corporate monthly invoicing and contract details']},
       ja:{title:'企業向けオンライン研修説明会－社員向け中国語プランの立て方', dateLabel:'9/10（木）', speaker:'王アドバイザー', intro:'企業の人事担当者・管理者向けに、社員の中国語／外国語研修プランの立て方をご案内します。レベル判定テスト、グループクラスの編成、月締め請求の流れも解説します。', bullets:['社員のレベル判定テストの流れ','グループクラスの編成とオンライン受講形式','企業向け月締め請求と契約についてのご説明']}
     }},
   {id:'flex-mock-exam', format:'online', month:9, timeLabel:'19:00–20:30', feeType:'paid', feeAmount:800, capacity:25, filled:25, icon:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>', hue:'linear-gradient(135deg,#5A4FCF,#8B82E0)',
     i18n:{
-      tc:{title:'TLI-CPT 模擬檢定線上診斷會', dateLabel:'09/18（五）', speaker:'測驗中心', intro:'線上完成一份完整 TLI-CPT 模擬測驗，測驗後由顧問說明成績落點與建議加強方向。', bullets:['完整模擬測驗（線上進行）','成績落點與能力分析','個人化學習建議諮詢']},
+      'zh-TW':{title:'TLI-CPT 模擬檢定線上診斷會', dateLabel:'09/18（五）', speaker:'測驗中心', intro:'線上完成一份完整 TLI-CPT 模擬測驗，測驗後由顧問說明成績落點與建議加強方向。', bullets:['完整模擬測驗（線上進行）','成績落點與能力分析','個人化學習建議諮詢']},
       en:{title:'TLI-CPT Mock Test Online Diagnostic Session', dateLabel:'Sep 18 (Fri)', speaker:'Testing Center', intro:'Complete a full TLI-CPT mock test online, then get a breakdown of your score range and recommended focus areas from an advisor.', bullets:['Full mock test (conducted online)','Score range and skill-level analysis','Personalized study advice consultation']},
       ja:{title:'TLI-CPT模擬検定 オンライン診断会', dateLabel:'9/18（金）', speaker:'テストセンター', intro:'オンラインで TLI-CPT模擬試験をフルで受験いただき、終了後はアドバイザーがスコア分析と学習の重点分野をご案内します。', bullets:['フル模擬試験（オンライン実施）','スコア分析と能力診断','個別学習アドバイスのご相談']}
     }},
   {id:'physical-open-day', format:'physical', month:9, timeLabel:'10:00–16:00', feeType:'free', feeAmount:0, icon:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg>', hue:'linear-gradient(135deg,#5A6472,#8A93A0)',
     i18n:{
-      tc:{title:'士林校區體驗營（實體開放日）', dateLabel:'09/06（日）', campus:'士林校', intro:'開放校園參觀、教室試坐與師資諮詢，適合想實際感受台北士林校區教學環境的學員與家長。', bullets:['校園與教室導覽','師資與課程諮詢桌','現場報名享入班優惠（依當日公告）']},
+      'zh-TW':{title:'士林校區體驗營（實體開放日）', dateLabel:'09/06（日）', campus:'士林校', intro:'開放校園參觀、教室試坐與師資諮詢，適合想實際感受台北士林校區教學環境的學員與家長。', bullets:['校園與教室導覽','師資與課程諮詢桌','現場報名享入班優惠（依當日公告）']},
       en:{title:'Shilin Campus Experience Day (On-site Open House)', dateLabel:'Sep 6 (Sun)', campus:'Shilin Campus', intro:'Tour the campus, sit in on a classroom, and speak with our teaching staff — great for students and parents who want to experience our Taipei Shilin campus firsthand.', bullets:['Campus and classroom tour','Teacher and course consultation desk','On-site enrollment discount (as announced on the day)']},
       ja:{title:'士林キャンパス体験デー（対面オープンデー）', dateLabel:'9/6（日）', campus:'士林キャンパス', intro:'キャンパス見学、教室体験、講師への相談などができます。台北士林キャンパスの教育環境を実際に感じていただきたい学生や保護者の方におすすめです。', bullets:['キャンパス・教室見学','講師・コース相談デスク','当日申込みで入学特典あり（当日発表の内容による）']}
     }},
   {id:'physical-taichung-fair', format:'physical', month:9, timeLabel:'13:00–17:00', feeType:'free', feeAmount:0, icon:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg>', hue:'linear-gradient(135deg,#5A6472,#8A93A0)',
     i18n:{
-      tc:{title:'台中校區語言學習博覽會（實體）', dateLabel:'09/20（日）', campus:'台中校', intro:'集結中文與外語課程諮詢、免費程度快測、企業培訓洽詢攤位，一次了解 TLI 台中校區全部方案。', bullets:['多語種課程諮詢攤位','免費程度快測','企業培訓與合約洽詢']},
+      'zh-TW':{title:'台中校區語言學習博覽會（實體）', dateLabel:'09/20（日）', campus:'台中校', intro:'集結中文與外語課程諮詢、免費程度快測、企業培訓洽詢攤位，一次了解 TLI 台中校區全部方案。', bullets:['多語種課程諮詢攤位','免費程度快測','企業培訓與合約洽詢']},
       en:{title:'Taichung Campus Language Learning Fair (In-Person)', dateLabel:'Sep 20 (Sun)', campus:'Taichung Campus', intro:'Chinese and foreign language course consultations, free level check-ins, and corporate training inquiries all in one place — everything you need to know about our Taichung campus programs.', bullets:['Multi-language course consultation booths','Free quick level check','Corporate training and contract inquiries']},
       ja:{title:'台中キャンパス語学学習フェア（対面）', dateLabel:'9/20（日）', campus:'台中キャンパス', intro:'中国語・外国語コースの相談、無料レベルチェック、企業研修のご相談ブースなど、TLI台中キャンパスの全プログラムが一度にわかります。', bullets:['多言語コース相談ブース','無料レベルチェック','企業研修・契約のご相談']}
     }}
@@ -764,7 +770,7 @@ var EVENTS = [
 
 function evT(ev, field){
   var lang = window.TLI_CURRENT_LANG;
-  var t = (ev.i18n && ev.i18n[lang]) || (ev.i18n && ev.i18n.tc) || {};
+  var t = (ev.i18n && ev.i18n[lang]) || (ev.i18n && ev.i18n['zh-TW']) || {};
   return (t[field] !== undefined) ? t[field] : ev[field];
 }
 
@@ -928,7 +934,7 @@ function aiRenderChips(target){
   var wrap = document.getElementById('aiChips-'+target);
   if(!wrap) return;
   var dict = tliDict();
-  var kb = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N.tc;
+  var kb = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N['zh-TW'];
   wrap.innerHTML = '';
   wrap.appendChild(aiMakeChipBtn(dict.ai_chip_trial, function(){ aiAsk(dict.ai_chip_trial, target); }));
   kb.forEach(function(item){
@@ -947,7 +953,7 @@ function aiInit(target){
 }
 function aiMatch(text){
   var t = text.trim();
-  var kbTc = TLI_KB_I18N.tc, kbCur = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N.tc;
+  var kbTc = TLI_KB_I18N['zh-TW'], kbCur = TLI_KB_I18N[window.TLI_CURRENT_LANG] || TLI_KB_I18N['zh-TW'];
   var KEYWORDS = {
     refund:['退費','退款','退學費','可以退','取消課程','退錢','refund','返金'],
     reschedule:['請假','改期','退堂','取消上課','調課','reschedule','cancel class','振替','キャンセル'],

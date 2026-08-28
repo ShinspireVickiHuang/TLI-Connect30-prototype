@@ -147,7 +147,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
-      <select class="mini-select" aria-label="語言與幣別" onchange="handleLangChange(this)"><option>中文・TWD</option><option>English・USD</option><option>日本語・JPY</option></select>
+      <select class="mini-select" aria-label="語言與幣別" onchange="handleLangChange(this)"><option value="zh-TW">繁體中文・TWD</option><option value="zh-CN">简体中文・CNY</option><option value="en">English・USD</option><option value="ja">日本語・JPY</option><option value="de">Deutsch・EUR</option></select>
       <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
         <span class="dot"></span>
@@ -695,15 +695,22 @@ function tliFmt(amountTWD,cur){
   return r.symbol+v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
 }
 function handleLangChange(sel){
+  var lang=sel.value||'zh-TW';
   var txt=sel.options[sel.selectedIndex].text;
-  CURRENT_CURRENCY = txt.indexOf('USD')>-1 ? 'USD' : (txt.indexOf('JPY')>-1 ? 'JPY' : 'TWD');
+  var curMap={'zh-TW':'TWD','zh-CN':'CNY','en':'USD','ja':'JPY','de':'EUR'};
+  CURRENT_CURRENCY = curMap[lang]||'TWD';
   document.querySelectorAll('[data-money]').forEach(function(el){
     el.textContent=tliFmt(parseFloat(el.getAttribute('data-money')),CURRENT_CURRENCY);
   });
   document.querySelectorAll('[data-i18n-zh]').forEach(function(el){
-    el.textContent = (CURRENT_CURRENCY==='TWD') ? el.getAttribute('data-i18n-zh') : el.getAttribute('data-i18n-en');
+    el.textContent = (lang==='zh-TW') ? el.getAttribute('data-i18n-zh') : el.getAttribute('data-i18n-en');
   });
-  showToast('顯示語言／幣別已切換為 '+txt);
+  if(lang==='zh-CN'||lang==='de'){
+    var names={'zh-CN':'简体中文','de':'Deutsch'};
+    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+  } else {
+    showToast('顯示語言／幣別已切換為 '+txt);
+  }
 }
 renderProfile();
 renderPaymentMethods();
