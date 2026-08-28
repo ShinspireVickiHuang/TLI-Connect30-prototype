@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>B2B 企業客戶｜TLI Connect 3.0 管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;color:var(--g900);padding:18px 0;
+border-right:1px solid var(--g200);display:flex;flex-direction:column;transition:width .15s;
+position:sticky;top:0;height:100vh;align-self:flex-start;}
+.sidebar .brand{padding:0 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;}
+.sidebar .brand-logo{height:28px;width:auto;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:0;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;}
+.sidebar nav a,.sidebar nav span.disabled{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;
+color:var(--g900);text-decoration:none;position:relative;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar .sec-label{padding:16px 20px 4px;font-size:10.5px;color:var(--g500);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn:disabled,.btn.isdisabled{background:var(--g200)!important;color:var(--g500)!important;
+cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+tr.rowlink{cursor:pointer;}
+tr.rowlink:hover{background:#F8FAFD;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
+cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:600;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:160;
+align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;
+overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select,.formrow textarea{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow textarea{resize:vertical;min-height:60px;}
+.formrow .static{padding:7px 0;font-size:13.5px;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
+border-radius:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv span:first-child{color:var(--g500);}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+/* ---- 列表共用 ---- */
+.toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.searchbox{flex:1;min-width:220px;max-width:360px;position:relative;}
+.searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;
+font-size:13px;font-family:inherit;box-sizing:border-box;}
+.searchbox .sicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--g500);font-size:13px;}
+.chipbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:12px;
+background:var(--g50);border:1px solid var(--g200);border-radius:8px;}
+.chipgroup{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.chipgroup .glabel{font-size:11.5px;color:var(--g500);margin-right:2px;}
+.fchip{padding:5px 12px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;
+cursor:pointer;font-family:inherit;color:var(--g900);}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.clearlink{font-size:12px;color:var(--navy);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit;padding:0;}
+.sortable{cursor:pointer;user-select:none;}
+.sortable .sarrow{font-size:10px;color:var(--g200);margin-left:3px;}
+.sortable.sorted .sarrow{color:var(--navy);}
+.pagerbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;
+color:var(--g500);flex-wrap:wrap;gap:10px;}
+.pagerbtns{display:flex;gap:6px;align-items:center;}
+.pagerbtns button{padding:5px 10px;border:1px solid var(--g200);background:#fff;border-radius:6px;
+font-size:12.5px;cursor:pointer;font-family:inherit;}
+.pagerbtns button:disabled{color:var(--g200);cursor:not-allowed;}
+.pagerbtns select{padding:5px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;}
+/* ---- 右側詳情抽屜 ---- */
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:520px;max-width:94vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
+/* ---- 統計卡 ---- */
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;text-align:center;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.sectiontitle{font-size:13px;font-weight:600;margin:16px 0 8px;color:var(--g900);}
+.sectiontitle:first-child{margin-top:0;}
+/* ---- 組織樹 ---- */
+.orgtree{border:1px solid var(--g200);border-radius:8px;padding:4px 0;}
+.orgdept{padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--g500);background:var(--g50);border-bottom:1px solid var(--g200);}
+.orgdept:first-child{border-top:none;}
+.orgemp{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 20px;font-size:13px;border-bottom:1px dashed var(--g200);}
+.orgemp:last-child{border-bottom:none;}
+.orgemp .oe-actions{display:flex;gap:8px;}
+.orgemp .oe-actions button{background:none;border:none;color:var(--navy);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;font-family:inherit;}
+/* ---- 開關 ---- */
+.switchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;}
+.switch{position:relative;display:inline-block;width:38px;height:21px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.switch .slider{position:absolute;cursor:pointer;inset:0;background:var(--g200);border-radius:21px;transition:.15s;}
+.switch .slider:before{position:absolute;content:"";height:15px;width:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+.switch input:checked + .slider{background:var(--teal);}
+.switch input:checked + .slider:before{transform:translateX(17px);}
+/* ---- 共用：頂欄與側欄使用者卡 ---- */
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;display:flex;align-items:center;gap:10px;position:relative;}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.4;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-role{font-size:11px;color:var(--g500);}
+.sidebar .su-logout{display:block;margin:6px 20px 4px;font-size:12px;color:var(--navy);text-decoration:none;}
+.sidebar .su-logout:hover{text-decoration:underline;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-searchicon{font-size:12px;color:var(--g500);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.sidebar-user{padding:14px 20px 16px;border-top:1px solid var(--g200);margin-top:6px;position:relative;}
+.su-clickarea{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-info{flex:1;min-width:0;}
+.su-name,.su-unit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.sidebar-user .su-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.sidebar-user .su-info{display:flex;flex-direction:column;line-height:1.5;}
+.sidebar-user .su-name{font-size:13px;font-weight:600;color:var(--g900);}
+.sidebar-user .su-roletag{font-size:10.5px;background:#E6EEF8;color:var(--navy);padding:0 6px;border-radius:8px;display:inline-block;width:fit-content;white-space:nowrap;}
+.sidebar-user .su-unit{font-size:11px;color:var(--g500);}
+.su-menu{top:auto;bottom:64px;left:14px;right:14px;}
+.su-roleswitch,.su-campusswitch{margin:8px 0 0;font-size:11px;color:var(--g500);}
+.su-roleswitch select,.su-campusswitch select{width:100%;margin-top:3px;padding:5px 7px;border:1px solid var(--g200);
+border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
+/* ---- RWD ---- */
+@media (max-width:1279px) and (min-width:1024px){
+  .sidebar{width:72px;}
+  .sidebar .navtext{position:absolute;left:100%;top:50%;transform:translateY(-50%);background:#fff;
+    border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:nowrap;
+    box-shadow:0 4px 12px rgba(16,24,40,.12);opacity:0;pointer-events:none;transition:opacity .12s;margin-left:6px;color:var(--g900);}
+  .sidebar nav a:hover .navtext{opacity:1;}
+  .sidebar .brand{align-items:center;overflow:hidden;}
+  .sidebar .brand-logo{max-width:100%;width:32px;height:28px;object-fit:cover;object-position:left center;flex-shrink:0;}
+  .sidebar .brand-text{display:none;}
+  .sidebar .brand small{display:none;}
+  .sidebar-user{justify-content:center;}
+  .sidebar-user .navtext{display:none;}
+  .sidebar .su-logout{text-align:center;}
+}
+@media (max-width:1023px){
+  .hamburger{display:inline-flex;}
+  .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;transition:left .2s;}
+  .sidebar.open{left:0;}
+  .sidebar-backdrop.open{display:block;}
+  .app{width:100%;}
+  .main{padding:16px 16px 40px;}
+  .topbar{padding:0 16px;margin:-16px -16px 18px;}
+  .tb-search{display:none;}
+  .drawer{width:100%;max-width:100%;}
+  .statgrid{grid-template-columns:1fr;}
+}
+</style>
+<style>
+/* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
+#sidebar{padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+#sidebar .brand{padding:16px 20px 14px;}
+#sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;}
+#sidebar .brand small{margin-top:12px;font-size:12px;color:var(--g500);text-transform:none;letter-spacing:0;font-weight:400;}
+#sidebar .brand-text{display:none;}
+#sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;scrollbar-width:thin;}
+#sidebar nav::-webkit-scrollbar{width:6px;}
+#sidebar nav::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+#sidebar nav a,#sidebar nav span.disabled{align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;font-size:14px;}
+#sidebar .navgroup .sec-label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 12px;margin:20px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+#sidebar .navgroup:first-child .sec-label{margin-top:8px;}
+#sidebar .sec-toggle{background:none;border:none;padding:2px;margin:0;cursor:pointer;color:var(--g500);display:flex;align-items:center;line-height:1;flex-shrink:0;}
+#sidebar .sec-toggle svg{transition:transform .15s;display:block;}
+#sidebar .navgroup.collapsed .sec-toggle svg{transform:rotate(-90deg);}
+#sidebar .navgroup-items{overflow:hidden;}
+#sidebar .navgroup.collapsed .navgroup-items{display:none;}
+#sidebar .sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+#sidebar .su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+#sidebar .su-row .su-avatar{flex-shrink:0;width:36px;height:36px;}
+#sidebar .su-row .su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+#sidebar .su-row .su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#sidebar .su-row .su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+#sidebar .su-row .su-chevron{color:var(--g500);flex-shrink:0;}
+#sidebar .su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+#sidebar .su-menu .su-roleswitch,#sidebar .su-menu .su-campusswitch{margin:6px 4px 2px;font-size:11px;color:var(--g500);}
+#sidebar .su-menu .su-roleswitch select,#sidebar .su-menu .su-campusswitch select{width:100%;margin-top:3px;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;color:var(--g900);}
+@media (max-width:1279px) and (min-width:1024px){
+  #sidebar{width:72px;}
+  #sidebar .navgroup .sec-label{display:none;}
+  #sidebar .su-row{justify-content:center;}
+  #sidebar .su-menu{left:64px;right:auto;bottom:10px;width:210px;}
+}
+@media (max-width:1023px){
+  #sidebar{width:260px;}
+}
+
+/* ==== 20260826v 容器寬度統一（對齊 a01 基準，覆寫舊版殘留樣式，防止寬內容撐開頁面）==== */
+html,body{overflow-x:hidden;}
+.app{display:flex;min-height:100vh;width:100%;max-width:none;background:#fff;}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{padding:0 32px;}
+.pagehead{padding:0;}
+.card{border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
+@media (max-width:1023px){
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c08" href="../顧問工作台/c08_inquiries.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5c-1 0-1.8.8-1.7 1.8.4 4.7 2.5 8.7 6 11.2 1.1.8 2.6.3 3-1l.6-1.8c.2-.6-.1-1.3-.7-1.6l-2.3-1.1c-.5-.3-1.1-.1-1.5.3l-.8.9c-1.4-1.1-2.5-2.6-3.2-4.3l1-.6c.5-.3.7-.9.5-1.4L4.9 3.8c-.1-.3-.4-.4-.7-.3z"/></svg><span class="navtext">諮詢與試聽</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a18" href="a18_resource_library.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M3 9.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></svg><span class="navtext">資源庫</span></a><a data-nav="a19" class="active" href="a19_b2b_enterprise.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="7" height="14" rx="1"/><rect x="10.5" y="7.5" width="6" height="9.5" rx="1"/><line x1="5.5" y1="6" x2="7.5" y2="6"/><line x1="5.5" y1="9" x2="7.5" y2="9"/><line x1="5.5" y1="12" x2="7.5" y2="12"/><line x1="12.5" y1="10.5" x2="14.5" y2="10.5"/><line x1="12.5" y1="13.5" x2="14.5" y2="13.5"/></svg><span class="navtext">B2B 企業客戶</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">B2B 企業客戶</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<div class="pagehead">
+<div><h1>B2B 企業客戶</h1><div class="desc">企業客戶（會員分類 B／G）以合約價方案採購，內部以母子帳號管理員工學員，並可查看學習報告與請款單；企業詢課由公開網站表單導入，待轉建訂單。</div></div>
+<div class="toolbtns"><button class="btn" onclick="openNewEnterpriseDrawer()">＋ 新增企業客戶</button></div>
+</div>
+
+<div class="tabs" id="mainTabs"></div>
+
+<div class="tabpanel active" id="panel-list">
+<div class="card">
+<div class="toolrow">
+<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="entSearch" placeholder="搜尋企業名稱／主管理者" oninput="onEntSearch(this.value)"></div>
+<button class="btn ghost" onclick="entExport()">匯出</button>
+</div>
+<div class="chipbar">
+<div class="chipgroup" id="entChipTier"></div>
+<div class="chipgroup" id="entChipInvoice"></div>
+<button class="clearlink" onclick="clearEntFilters()">清除全部篩選</button>
+</div>
+<div class="tablewrap"><table id="entTable"></table></div>
+<div class="pagerbar"><span id="entPagerLabel"></span><div class="pagerbtns">
+<span class="small">每頁</span><select id="entPageSizeSel" onchange="onEntPageSizeChange(this)"><option value="10">10</option><option value="20">20</option></select><span class="small">筆</span>
+<button id="entBtnFirst" onclick="entGotoPage(1)">« 第一頁</button>
+<button id="entBtnPrev" onclick="entGotoPageRel(-1)">‹ 上一頁</button>
+<span id="entPageIndicator" class="small"></span>
+<button id="entBtnNext" onclick="entGotoPageRel(1)">下一頁 ›</button>
+<button id="entBtnLast" onclick="entGotoPage(9999)">最後一頁 »</button>
+</div></div>
+</div>
+</div>
+
+<div class="tabpanel" id="panel-inquiry">
+<div class="card">
+<div class="desc" style="margin-bottom:12px">來自公開網站「企業詢課」表單的待處理清單，確認需求後可轉建訂單：</div>
+<div class="tablewrap"><table id="inquiryTable"></table></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- 企業詳情抽屜 -->
+<div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+<div class="drawer-head">
+<div><h2 id="drw_title">企業詳情</h2><div class="small" id="drw_sub"></div></div>
+<button class="drawer-close" onclick="closeDrawer()"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4.5" y1="4.5" x2="15.5" y2="15.5"/><line x1="15.5" y1="4.5" x2="4.5" y2="15.5"/></svg></button>
+</div>
+<div class="drawer-body" id="drw_body"></div>
+</div>
+
+<!-- 邀請員工 modal -->
+<div class="modal-mask" id="inviteModal"><div class="modal">
+<h3>邀請員工</h3>
+<div class="formrow"><label>員工 Email（每行一筆，可貼上多筆批次邀請）</label><textarea id="inviteEmails" placeholder="name1@example.com&#10;name2@example.com"></textarea></div>
+<div class="formrow"><label>加入部門</label><select id="inviteDept"></select></div>
+<div class="hint" id="inviteHint" style="margin-bottom:10px"></div>
+<div style="text-align:right"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployees()">送出邀請</button></div>
+</div></div>
+
+<!-- 產生本月請款單 modal -->
+<div class="modal-mask" id="invoiceGenModal"><div class="modal wide">
+<h3>產生本月請款單</h3>
+<div id="invoiceGenBody"></div>
+</div></div>
+
+<!-- 新增企業客戶 抽屜表單（沿用主抽屜） -->
+
+<script>
+
+function seededRand(seed){
+  var x = Math.sin(seed*9301+49297)*233280;
+  return x - Math.floor(x);
+}
+function addDays(baseStr, days){
+  var d = new Date(baseStr+'T00:00:00');
+  d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
+function padNum(n, len){ var s=String(n); while(s.length<len) s='0'+s; return s; }
+
+/* ================= 示範資料：企業客戶 ================= */
+var ENT_NAMES = ['和霖科技股份有限公司','北辰精密工業股份有限公司','裕發國際貿易有限公司','安泰保經股份有限公司',
+  '瑞新金融顧問股份有限公司','匯泰半導體股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司',
+  '崇信會計師事務所','國際文教基金會','立準工程顧問股份有限公司','翔宇航運股份有限公司'];
+var ENT_ADVISORS = ['顧問 A','顧問 B','顧問 C','顧問 D'];
+var ENT_MANAGERS = [
+  {name:'林淑惠', title:'人資處長'}, {name:'陳建宏', title:'教育訓練主管'}, {name:'黃雅婷', title:'總務經理'},
+  {name:'王志遠', title:'人力資源協理'}, {name:'吳佳蓉', title:'學習發展主管'}, {name:'許俊傑', title:'行政部經理'}
+];
+var DEPTS = ['業務部','研發部','人資部','財務部','行政部','海外事業部'];
+var EMP_SURNAMES = ['王','陳','林','黃','張','李','吳','劉','蔡','楊'];
+var EMP_GIVENS = ['小明','雅婷','建宏','詩涵','志遠','雅萍','冠廷','佳蓉','怡君','俊傑'];
+var SALES_PLAN_NAMES = ['企業內訓合約價方案', '主管班合約價方案', '海外員工線上班合約價方案', '新人基礎班合約價方案'];
+
+function makeEnterprise(i){
+  var r = seededRand(i*5+31), r2 = seededRand(i*9+33), r3 = seededRand(i*13+35), r4 = seededRand(i*17+37);
+  var tier = r < 0.6 ? 'B' : 'G';
+  var mgr = ENT_MANAGERS[i % ENT_MANAGERS.length];
+  var empCount = 12 + Math.floor(r2*180);
+  var start = addDays('2025-01-01', Math.floor(r3*500));
+  var end = addDays(start, 365);
+  var invoiceStatus = ['待開立','已開立','已收款'][Math.floor(r4*3)];
+  var deptList = DEPTS.slice(0, 3+Math.floor(r*3));
+  var employees = [];
+  var empSeed = i*97;
+  for (var e=0;e<Math.min(empCount, 9+Math.floor(r2*6));e++){
+    var sn = EMP_SURNAMES[(empSeed+e)%EMP_SURNAMES.length];
+    var gv = EMP_GIVENS[(empSeed+e*3)%EMP_GIVENS.length];
+    employees.push({
+      id:'emp'+i+'_'+e, name:sn+gv, dept: deptList[e % deptList.length],
+      email:'emp'+i+'_'+e+'@'+(i%2===0?'example':'example-corp')+'.com',
+      status: seededRand(empSeed+e*7) < 0.9 ? '在學' : '停用',
+      attendance: 60 + Math.floor(seededRand(empSeed+e*11)*40),
+      progress: 20 + Math.floor(seededRand(empSeed+e*13)*80),
+      avgScore: 55 + Math.floor(seededRand(empSeed+e*17)*45)
+    });
+  }
+  return {
+    id:'ent'+i, name:ENT_NAMES[i], tier:tier, planName: SALES_PLAN_NAMES[i % SALES_PLAN_NAMES.length],
+    empCount:employees.length, contractStart:start, contractEnd:end, manager:mgr,
+    advisor: ENT_ADVISORS[i % ENT_ADVISORS.length], attendance: 65 + Math.floor(r*30),
+    invoiceStatus:invoiceStatus, payMethod: r>0.5 ? '月結' : '一次付清',
+    taxId: padNum((10000000+(i*53)%89999999),8), depts:deptList, employees:employees,
+    discountRate: 5 + Math.floor(r2*20), scheduleMonthly: r3 > 0.5,
+    invoices: [
+      {period:addDays(end,-95).slice(0,7), amount: 80000+Math.floor(r*400000), status:'已收款'},
+      {period:addDays(end,-65).slice(0,7), amount: 80000+Math.floor(r2*400000), status:'已開立'},
+      {period:addDays(end,-35).slice(0,7), amount: 80000+Math.floor(r3*400000), status:invoiceStatus}
+    ]
+  };
+}
+var ENTERPRISES = []; for (var ei=0; ei<12; ei++) ENTERPRISES.push(makeEnterprise(ei));
+
+function entById(id){ return ENTERPRISES.find(function(e){return e.id===id;}); }
+
+/* ================= 示範資料：企業詢課 ================= */
+var INQUIRY_STATUS = ['待處理','已聯繫','已轉建訂單'];
+function makeInquiry(i){
+  var r = seededRand(i*3+61), r2 = seededRand(i*7+63);
+  var companies = ['勤宇科技股份有限公司','昌益電子股份有限公司','恆信物流股份有限公司','聯泰生醫股份有限公司','鑫達營造股份有限公司'];
+  return {
+    id:'inq'+i, company: companies[i % companies.length], contact: EMP_SURNAMES[i%10]+EMP_GIVENS[i%10],
+    phone: '02-'+padNum(2700+Math.floor(r*900),4)+'-'+padNum(1000+Math.floor(r2*8999),4),
+    empCountNeed: 10 + Math.floor(r*90), note: '希望安排企業內訓體驗課，評估合作方案',
+    submitted: addDays('2026-08-01', Math.floor(r2*26)),
+    status: i<2 ? '待處理' : (i<4 ? '已聯繫' : '已轉建訂單')
+  };
+}
+var INQUIRIES = []; for (var qi=0; qi<6; qi++) INQUIRIES.push(makeInquiry(qi));
+
+/* ================= 徽章 ================= */
+function tierBadgeEnt(t){ return '<span class="badge blue">'+t+' 類</span>'; }
+function invoiceBadge(s){
+  if (s==='已收款') return '<span class="badge green">已收款</span>';
+  if (s==='已開立') return '<span class="badge blue">已開立</span>';
+  return '<span class="badge orange">待開立</span>';
+}
+function inquiryBadge(s){
+  if (s==='已轉建訂單') return '<span class="badge green">已轉建訂單</span>';
+  if (s==='已聯繫') return '<span class="badge blue">已聯繫</span>';
+  return '<span class="badge orange">待處理</span>';
+}
+
+/* ================= 主頁籤 ================= */
+var MAIN_TABS = [{key:'list', label:'企業客戶列表'}, {key:'inquiry', label:'企業詢課'}];
+var currentMainTab = 'list';
+function renderMainTabs(){
+  document.getElementById('mainTabs').innerHTML = MAIN_TABS.map(function(t){
+    var extra = t.key==='inquiry' ? '（'+INQUIRIES.filter(function(q){return q.status==='待處理';}).length+'）' : '';
+    return '<button class="'+(t.key===currentMainTab?'active':'')+'" onclick="switchMainTab(\''+t.key+'\')">'+t.label+extra+'</button>';
+  }).join('');
+}
+function switchMainTab(key){
+  currentMainTab = key;
+  renderMainTabs();
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-'+key); });
+  if (key==='inquiry') renderInquiryTable();
+}
+
+/* ================= 企業列表 ================= */
+var entState = {search:'', filters:{tier:[], invoice:[]}, page:1, pageSize:10};
+function renderEntChips(){
+  document.getElementById('entChipTier').innerHTML = '<span class="glabel">會員分類：</span>' + ['B','G'].map(function(t){
+    return '<button type="button" class="fchip'+(entState.filters.tier.indexOf(t)>-1?' active':'')+'" onclick="toggleEntFilter(\'tier\',\''+t+'\')">'+t+'</button>';
+  }).join('');
+  document.getElementById('entChipInvoice').innerHTML = '<span class="glabel">請款狀態：</span>' + ['待開立','已開立','已收款'].map(function(s){
+    return '<button type="button" class="fchip'+(entState.filters.invoice.indexOf(s)>-1?' active':'')+'" onclick="toggleEntFilter(\'invoice\',\''+s+'\')">'+s+'</button>';
+  }).join('');
+}
+function toggleEntFilter(key, val){
+  var arr = entState.filters[key];
+  var idx = arr.indexOf(val);
+  if (idx>-1) arr.splice(idx,1); else arr.push(val);
+  entState.page = 1;
+  renderEntChips();
+  renderEntTable();
+}
+function clearEntFilters(){
+  entState.search=''; document.getElementById('entSearch').value='';
+  entState.filters = {tier:[], invoice:[]};
+  entState.page = 1;
+  renderEntChips();
+  renderEntTable();
+}
+function onEntSearch(val){ entState.search = val; entState.page = 1; renderEntTable(); }
+function onEntPageSizeChange(el){ entState.pageSize = Number(el.value); entState.page = 1; renderEntTable(); }
+function entFiltered(){
+  var term = entState.search.trim().toLowerCase();
+  return ENTERPRISES.filter(function(e){
+    if (term && e.name.toLowerCase().indexOf(term)===-1 && e.manager.name.toLowerCase().indexOf(term)===-1) return false;
+    if (entState.filters.tier.length && entState.filters.tier.indexOf(e.tier)===-1) return false;
+    if (entState.filters.invoice.length && entState.filters.invoice.indexOf(e.invoiceStatus)===-1) return false;
+    return true;
+  });
+}
+function entMaxPage(){ return Math.max(1, Math.ceil(entFiltered().length/entState.pageSize)); }
+function entGotoPage(p){
+  var max = entMaxPage();
+  if (p<1) p=1; if (p>max) p=max;
+  entState.page = p;
+  renderEntTable();
+}
+function entGotoPageRel(delta){ entGotoPage(entState.page+delta); }
+function entExport(){ toast('已產生匯出檔案，共 '+entFiltered().length+' 筆，請至下載中心取得'); }
+function renderEntTable(){
+  var filtered = entFiltered();
+  var total = filtered.length;
+  var maxPage = Math.max(1, Math.ceil(total/entState.pageSize));
+  if (entState.page > maxPage) entState.page = maxPage;
+  var startIdx = (entState.page-1)*entState.pageSize;
+  var pageRows = filtered.slice(startIdx, startIdx+entState.pageSize);
+  var t = document.getElementById('entTable');
+  t.innerHTML = '<tr><th>企業名稱</th><th>會員分類</th><th>合約價方案</th><th>員工學員數</th><th>合約期間</th><th>主管理者</th><th>本月出席率</th><th>請款狀態</th></tr>';
+  pageRows.forEach(function(e){
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.innerHTML = '<td>'+e.name+'</td><td>'+tierBadgeEnt(e.tier)+'</td><td>'+e.planName+'</td><td>'+e.empCount+'</td>' +
+      '<td>'+e.contractStart+' ～ '+e.contractEnd+'</td><td>'+e.manager.name+'（'+e.manager.title+'）</td>' +
+      '<td>'+e.attendance+'%</td><td>'+invoiceBadge(e.invoiceStatus)+'</td>';
+    tr.addEventListener('click', function(){ openEnterpriseDrawer(e.id); });
+    t.appendChild(tr);
+  });
+  var startLabel = total===0 ? 0 : startIdx+1;
+  var endLabel = Math.min(startIdx+entState.pageSize, total);
+  document.getElementById('entPagerLabel').textContent = '第 '+startLabel+'–'+endLabel+' 筆／共 '+total+' 筆';
+  document.getElementById('entPageIndicator').textContent = '第 '+entState.page+' / '+maxPage+' 頁';
+  document.getElementById('entBtnFirst').disabled = entState.page<=1;
+  document.getElementById('entBtnPrev').disabled = entState.page<=1;
+  document.getElementById('entBtnNext').disabled = entState.page>=maxPage;
+  document.getElementById('entBtnLast').disabled = entState.page>=maxPage;
+  document.getElementById('entPageSizeSel').value = String(entState.pageSize);
+}
+
+/* ================= 企業詢課 ================= */
+function renderInquiryTable(){
+  var t = document.getElementById('inquiryTable');
+  t.innerHTML = '<tr><th>企業名稱</th><th>聯絡人</th><th>電話</th><th>預估人數</th><th>需求備註</th><th>提交日期</th><th>狀態</th><th></th></tr>';
+  INQUIRIES.forEach(function(q){
+    var tr = document.createElement('tr');
+    var actionCell = q.status==='已轉建訂單' ?
+      '<span class="small">已於 '+q.submitted+' 轉建</span>' :
+      '<button class="btn ghost" onclick="convertInquiry(\''+q.id+'\',event)">轉建訂單</button>';
+    tr.innerHTML = '<td>'+q.company+'</td><td>'+q.contact+'</td><td>'+q.phone+'</td><td>'+q.empCountNeed+'</td>' +
+      '<td>'+q.note+'</td><td>'+q.submitted+'</td><td>'+inquiryBadge(q.status)+'</td><td>'+actionCell+'</td>';
+    t.appendChild(tr);
+  });
+}
+function convertInquiry(id, ev){
+  if (ev) ev.stopPropagation();
+  var q = INQUIRIES.find(function(x){return x.id===id;});
+  q.status = '已轉建訂單';
+  renderInquiryTable();
+  renderMainTabs();
+  toast('已將「'+q.company+'」的詢課需求轉為新訂單，請至「建訂單」（c04）完成後續設定');
+}
+
+/* ================= 企業詳情抽屜 ================= */
+var currentEntId = null, currentEntTab = 'org';
+function openEnterpriseDrawer(id){
+  currentEntId = id; currentEntTab = 'org';
+  var e = entById(id);
+  document.getElementById('drw_title').textContent = e.name;
+  document.getElementById('drw_sub').textContent = e.tier+' 類｜'+e.planName+'｜'+e.empCount+' 位員工學員';
+  renderEntDrawerBody(e);
+  document.getElementById('drawerMask').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawerMask').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  currentEntId = null;
+}
+function entDrawerTab(name){
+  currentEntTab = name;
+  renderEntDrawerBody(entById(currentEntId));
+}
+function renderEntDrawerBody(e){
+  var tabs = ['org','report','invoice','contract'];
+  var labels = {org:'組織與母子帳號', report:'學習報告', invoice:'請款', contract:'合約價'};
+  var tabsHtml = '<div class="tabs">' + tabs.map(function(t){
+    return '<button class="'+(t===currentEntTab?'active':'')+'" onclick="entDrawerTab(\''+t+'\')">'+labels[t]+'</button>';
+  }).join('') + '</div>';
+
+  var body = '';
+  if (currentEntTab==='org') body = renderOrgTab(e);
+  else if (currentEntTab==='report') body = renderReportTab(e);
+  else if (currentEntTab==='invoice') body = renderInvoiceTab(e);
+  else if (currentEntTab==='contract') body = renderContractTab(e);
+
+  document.getElementById('drw_body').innerHTML = tabsHtml + '<div>' + body + '</div>';
+}
+
+function renderOrgTab(e){
+  var html = '<div class="kv"><span>企業管理者</span><span>'+e.manager.name+'（'+e.manager.title+'）</span></div>' +
+    '<div class="kv"><span>統一編號</span><span>'+e.taxId+'</span></div>' +
+    '<div class="kv"><span>對應顧問</span><span>'+e.advisor+'</span></div>' +
+    '<div style="text-align:right;margin:10px 0"><button class="btn ghost" onclick="openInviteModal()">邀請員工</button></div>' +
+    '<div class="orgtree">';
+  e.depts.forEach(function(d){
+    var emps = e.employees.filter(function(em){ return em.dept===d; });
+    html += '<div class="orgdept">'+d+'（'+emps.length+' 人）</div>';
+    emps.forEach(function(em){
+      html += '<div class="orgemp"><span>'+em.name+'　<span class="small">'+em.email+'</span>　'+statusBadgeEnt(em.status)+'</span>' +
+        '<span class="oe-actions"><button onclick="transferEmployee(\''+em.id+'\')">轉移</button><button onclick="toggleEmployeeStatus(\''+em.id+'\')">'+(em.status==='在學'?'停用':'恢復')+'</button></span></div>';
+    });
+  });
+  html += '</div>';
+  return html;
+}
+function statusBadgeEnt(s){ return s==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>'; }
+function transferEmployee(empId){ toast('已開啟轉移流程（示範）：可將此員工學員轉移至同企業其他部門或子公司'); }
+function toggleEmployeeStatus(empId){
+  var e = entById(currentEntId);
+  var em = e.employees.find(function(x){return x.id===empId;});
+  em.status = em.status==='在學' ? '停用' : '在學';
+  renderEntDrawerBody(e);
+  toast('已將「'+em.name+'」設為'+em.status);
+}
+function openInviteModal(){
+  var e = entById(currentEntId);
+  document.getElementById('inviteDept').innerHTML = e.depts.map(function(d){return '<option>'+d+'</option>';}).join('');
+  document.getElementById('inviteEmails').value = '';
+  document.getElementById('inviteHint').textContent = '將加入「'+e.name+'」，邀請信會發送至各 Email 帳號。';
+  document.getElementById('inviteModal').classList.add('open');
+}
+function doInviteEmployees(){
+  var raw = document.getElementById('inviteEmails').value.trim();
+  if (!raw){ toast('請輸入至少一筆 Email'); return; }
+  var lines = raw.split('\n').filter(function(l){return l.trim();});
+  var e = entById(currentEntId);
+  var dept = document.getElementById('inviteDept').value;
+  lines.forEach(function(email, idx){
+    e.employees.push({
+      id:'empnew'+Date.now()+idx, name:'（待接受邀請）', dept:dept, email:email.trim(),
+      status:'在學', attendance:0, progress:0, avgScore:0
+    });
+  });
+  e.empCount = e.employees.length;
+  closeModal('inviteModal');
+  renderEntDrawerBody(e);
+  renderEntTable();
+  toast('已發送 '+lines.length+' 封邀請信至「'+dept+'」');
+}
+
+function renderReportTab(e){
+  var avgAttend = Math.round(e.employees.reduce(function(s,em){return s+em.attendance;},0)/Math.max(1,e.employees.length));
+  var avgProgress = Math.round(e.employees.reduce(function(s,em){return s+em.progress;},0)/Math.max(1,e.employees.length));
+  var avgScore = Math.round(e.employees.reduce(function(s,em){return s+em.avgScore;},0)/Math.max(1,e.employees.length));
+  var html = '<div class="formrow"><label>期間篩選</label><div style="display:flex;gap:8px"><input type="date" value="'+addDays(e.contractEnd,-30)+'"><span class="small" style="align-self:center">～</span><input type="date" value="'+e.contractEnd+'"></div></div>' +
+    '<div class="statgrid">' +
+    '<div class="statbox"><div class="num">'+avgAttend+'%</div><div class="lbl">平均出席率</div></div>' +
+    '<div class="statbox"><div class="num">'+avgProgress+'%</div><div class="lbl">平均學習進度</div></div>' +
+    '<div class="statbox"><div class="num">'+avgScore+'</div><div class="lbl">平均評量分數</div></div>' +
+    '</div>' +
+    '<div class="tablewrap"><table><tr><th>姓名</th><th>部門</th><th>出席率</th><th>進度</th><th>評量平均</th></tr>' +
+    e.employees.map(function(em){ return '<tr><td>'+em.name+'</td><td>'+em.dept+'</td><td>'+em.attendance+'%</td><td>'+em.progress+'%</td><td>'+em.avgScore+'</td></tr>'; }).join('') +
+    '</table></div>' +
+    '<div style="display:flex;gap:8px;margin-top:12px"><button class="btn ghost" onclick="exportReport(\'pdf\')">匯出 PDF</button><button class="btn ghost" onclick="exportReport(\'csv\')">匯出 CSV</button></div>' +
+    '<div class="switchrow"><span class="small">排程每月自動寄送學習報告給企業管理者</span><label class="switch"><input type="checkbox" '+(e.scheduleMonthly?'checked':'')+' onchange="toggleScheduleMonthly(this)"><span class="slider"></span></label></div>';
+  return html;
+}
+function exportReport(type){ toast('已產生 '+(type==='pdf'?'PDF':'CSV')+' 學習報告，請至下載中心取得'); }
+function toggleScheduleMonthly(el){
+  var e = entById(currentEntId);
+  e.scheduleMonthly = el.checked;
+  toast(el.checked ? '已開啟每月自動寄送學習報告' : '已關閉每月自動寄送學習報告');
+}
+
+function renderInvoiceTab(e){
+  var html = '<div style="text-align:right;margin-bottom:10px"><button class="btn orange" onclick="openInvoiceGenModal()">產生本月請款單</button></div>' +
+    '<div class="tablewrap"><table><tr><th>期間</th><th>金額</th><th>狀態</th></tr>' +
+    e.invoices.map(function(inv){ return '<tr><td>'+inv.period+'</td><td>NT$ '+inv.amount.toLocaleString()+'</td><td>'+invoiceBadge(inv.status)+'</td></tr>'; }).join('') +
+    '</table></div>' +
+    '<div class="sectiontitle">月結對帳表</div>' +
+    '<div class="kv"><span>付款方式</span><span>'+e.payMethod+'</span></div>' +
+    '<div class="kv"><span>累計應收</span><span>NT$ '+e.invoices.reduce(function(s,i){return s+i.amount;},0).toLocaleString()+'</span></div>' +
+    '<div class="kv"><span>已收款</span><span>NT$ '+e.invoices.filter(function(i){return i.status==='已收款';}).reduce(function(s,i){return s+i.amount;},0).toLocaleString()+'</span></div>' +
+    '<button class="btn ghost" style="margin-top:10px" onclick="toast(\'已產生月結對帳表，請至下載中心取得\')">下載對帳表</button>';
+  return html;
+}
+function openInvoiceGenModal(){
+  var e = entById(currentEntId);
+  var amount = 60000 + e.employees.length*1500;
+  document.getElementById('invoiceGenBody').innerHTML =
+    '<div class="desc" style="margin-bottom:10px">依「'+e.name+'」本月學員使用課時明細預覽請款金額：</div>' +
+    '<div class="tablewrap"><table><tr><th>項目</th><th>數量</th><th>金額</th></tr>' +
+    '<tr><td>員工學員月費（'+e.planName+'）</td><td>'+e.employees.length+'</td><td>NT$ '+amount.toLocaleString()+'</td></tr>' +
+    '</table></div>' +
+    '<div class="hint" style="margin:10px 0">合約折扣率 '+e.discountRate+'% 已套用於明細金額。</div>' +
+    '<div style="text-align:right"><button class="btn ghost" onclick="closeModal(\'invoiceGenModal\')">取消</button> <button class="btn" onclick="doGenInvoice('+amount+')">確認產生請款單</button></div>';
+  document.getElementById('invoiceGenModal').classList.add('open');
+}
+function doGenInvoice(amount){
+  var e = entById(currentEntId);
+  e.invoices.push({period: new Date().toISOString().slice(0,7), amount:amount, status:'待開立'});
+  closeModal('invoiceGenModal');
+  renderEntDrawerBody(e);
+  toast('已產生本月請款單，金額 NT$ '+amount.toLocaleString());
+}
+
+function renderContractTab(e){
+  return '<div class="kv"><span>適用銷售方案</span><span>'+e.planName+'</span></div>' +
+    '<div class="kv"><span>折扣率</span><span>'+e.discountRate+'%</span></div>' +
+    '<div class="kv"><span>有效期</span><span>'+e.contractStart+' ～ '+e.contractEnd+'</span></div>' +
+    '<div class="note" style="margin-top:12px">套用到新訂單：於「建訂單」（c04）為此企業員工學員建單時，系統將自動帶入上述合約價方案與折扣率，顧問可視個案調整。</div>' +
+    '<button class="btn ghost" style="margin-top:10px" onclick="toast(\'已套用合約價設定，將於下次建訂單自動帶入\')">套用到新訂單</button>' +
+    '<div class="hint" style="margin-top:8px"><a href="a12_contracts.html">前往「合約管理」查看完整合約 →</a></div>';
+}
+
+/* ================= 新增企業客戶 ================= */
+var newEntTab = 'basic';
+var newEntDraft = null;
+function openNewEnterpriseDrawer(){
+  currentEntId = null;
+  newEntTab = 'basic';
+  newEntDraft = {name:'', tier:'B', planName:SALES_PLAN_NAMES[0], managerName:'', managerTitle:'', payMethod:'月結'};
+  document.getElementById('drw_title').textContent = '新增企業客戶';
+  document.getElementById('drw_sub').textContent = '依序填寫基本資料、合約與分類、主管理者、付款方式';
+  renderNewEntForm();
+  document.getElementById('drawerMask').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function renderNewEntForm(){
+  var steps = ['basic','contract','manager','pay'];
+  var labels = {basic:'基本資料', contract:'合約與分類', manager:'主管理者', pay:'付款與請款方式'};
+  var tabsHtml = '<div class="tabs">' + steps.map(function(s){
+    return '<button class="'+(s===newEntTab?'active':'')+'" onclick="newEntSwitchTab(\''+s+'\')">'+labels[s]+'</button>';
+  }).join('') + '</div>';
+  var body = '';
+  if (newEntTab==='basic'){
+    body = '<div class="formrow"><label>企業名稱</label><input type="text" id="ne_name" value="'+newEntDraft.name+'" placeholder="請輸入完整公司名稱"></div>' +
+      '<div class="formrow"><label>統一編號</label><input type="text" id="ne_taxid" placeholder="8 碼統一編號"></div>' +
+      '<div class="formrow"><label>對應顧問</label><select id="ne_advisor">'+ENT_ADVISORS.map(function(a){return '<option>'+a+'</option>';}).join('')+'</select></div>';
+  } else if (newEntTab==='contract'){
+    body = '<div class="formrow"><label>會員分類</label><select id="ne_tier"><option'+(newEntDraft.tier==='B'?' selected':'')+'>B</option><option'+(newEntDraft.tier==='G'?' selected':'')+'>G</option></select></div>' +
+      '<div class="formrow"><label>合約價方案</label><select id="ne_plan">'+SALES_PLAN_NAMES.map(function(p){return '<option'+(p===newEntDraft.planName?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>' +
+      '<div class="formrow"><label>折扣率（%）</label><input type="number" id="ne_discount" value="10"></div>' +
+      '<div class="formrow"><label>合約期間</label><div style="display:flex;gap:8px"><input type="date" id="ne_start" value="'+new Date().toISOString().slice(0,10)+'"><span class="small" style="align-self:center">～</span><input type="date" id="ne_end" value="'+addDays(new Date().toISOString().slice(0,10),365)+'"></div></div>';
+  } else if (newEntTab==='manager'){
+    body = '<div class="formrow"><label>主管理者姓名</label><input type="text" id="ne_mgrname" placeholder="例：林淑惠"></div>' +
+      '<div class="formrow"><label>職稱</label><input type="text" id="ne_mgrtitle" placeholder="例：人資處長"></div>' +
+      '<div class="formrow"><label>聯絡 Email</label><input type="email" id="ne_mgremail" placeholder="name@company.com"></div>';
+  } else if (newEntTab==='pay'){
+    body = '<div class="formrow"><label>付款方式</label><select id="ne_pay"><option>月結</option><option>一次付清</option></select></div>' +
+      '<div class="formrow"><label>請款抬頭</label><input type="text" id="ne_invtitle" value="'+newEntDraft.name+'"></div>' +
+      '<button class="btn" style="margin-top:6px" onclick="saveNewEnterprise()">儲存並加入企業客戶列表</button>';
+  }
+  document.getElementById('drw_body').innerHTML = tabsHtml + '<div>' + body + '</div>';
+}
+function newEntSwitchTab(s){
+  captureNewEntDraft();
+  newEntTab = s;
+  renderNewEntForm();
+}
+function captureNewEntDraft(){
+  var nameEl = document.getElementById('ne_name'); if (nameEl) newEntDraft.name = nameEl.value;
+  var tierEl = document.getElementById('ne_tier'); if (tierEl) newEntDraft.tier = tierEl.value;
+  var planEl = document.getElementById('ne_plan'); if (planEl) newEntDraft.planName = planEl.value;
+}
+function saveNewEnterprise(){
+  captureNewEntDraft();
+  var name = newEntDraft.name.trim();
+  if (!name){ toast('請先於「基本資料」分頁輸入企業名稱'); newEntTab='basic'; renderNewEntForm(); return; }
+  var mgrName = (document.getElementById('ne_mgrname') && document.getElementById('ne_mgrname').value.trim()) || '（未指定）';
+  var mgrTitle = (document.getElementById('ne_mgrtitle') && document.getElementById('ne_mgrtitle').value.trim()) || '窗口';
+  var payMethod = document.getElementById('ne_pay').value;
+  var newId = 'entnew'+Date.now();
+  var todayStr = new Date().toISOString().slice(0,10);
+  ENTERPRISES.unshift({
+    id:newId, name:name, tier:newEntDraft.tier, planName:newEntDraft.planName, empCount:0,
+    contractStart:todayStr, contractEnd:addDays(todayStr,365), manager:{name:mgrName, title:mgrTitle},
+    advisor:ENT_ADVISORS[0], attendance:0, invoiceStatus:'待開立', payMethod:payMethod, taxId:'',
+    depts:DEPTS.slice(0,3), employees:[], discountRate:10, scheduleMonthly:false, invoices:[]
+  });
+  closeDrawer();
+  entState.page = 1;
+  renderEntTable();
+  toast('已新增企業客戶「'+name+'」');
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+}
+var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','顧問'];
+var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
+var TLI_ROLE_NAV = {
+  '總公司管理者': 'all',
+  '校區主管': ['c01','c08','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17','a18','a19'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16','a18','a19'],
+  '財務': ['a13','a06','a07','a19'],
+  '顧問': ['c01','c08','c02','c04','c06','c07','a01']
+};
+function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
+function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
+function applyRoleVisibility(){
+  var role = tliCurrentRole();
+  var allowed = TLI_ROLE_NAV[role];
+  document.querySelectorAll('.sidebar nav a[data-nav]').forEach(function(a){
+    var key = a.dataset.nav;
+    a.style.display = (allowed === 'all' || allowed.indexOf(key) > -1) ? '' : 'none';
+  });
+  var tagEl = document.getElementById('suRoleTag');
+  if (tagEl) tagEl.textContent = role;
+  var unitEl = document.getElementById('suUnit');
+  if (unitEl) unitEl.textContent = TLI_ROLE_UNIT[role] || '總公司';
+  var campusWrap = document.getElementById('campusSwitchWrap');
+  if (campusWrap) campusWrap.style.display = (role === '總公司管理者') ? '' : 'none';
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.value = role;
+}
+function onRoleSwitch(el){
+  tliSetRole(el.value);
+  applyRoleVisibility();
+  toast('已切換角色為「'+el.value+'」，側欄項目已同步更新');
+}
+function onCampusSwitch(el){ toast('已切換校區檢視為「'+el.value+'」'); }
+function toggleSuMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel'); closePanel('avatarMenu');
+  document.getElementById('suMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(){ closePanel('suMenu'); });
+function initRoleSwitcher(){
+  var sel = document.getElementById('roleSwitcher');
+  if (sel) sel.innerHTML = TLI_ROLES.map(function(r){ return '<option>'+r+'</option>'; }).join('');
+  var csel = document.getElementById('campusSwitcher');
+  if (csel) csel.innerHTML = ['全公司','羅斯福','士林','台中','高雄'].map(function(c){return '<option>'+c+'</option>';}).join('');
+  applyRoleVisibility();
+}
+initRoleSwitcher();
+/* ================= 共用：頂欄通知／使用者選單／登出／toast（全站同一段） ================= */
+var NOTIFS = [
+  {t:'「和霖科技股份有限公司」本月請款單待開立', time:'25 分鐘前', unread:true},
+  {t:'企業詢課有 2 筆待處理', time:'2 小時前', unread:true},
+  {t:'內容管理：首頁 Hero 文案已由校區主管發佈', time:'今天 09:12', unread:false},
+  {t:'老師黃志遠已切換為留職停薪', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot');
+  if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>' +
+    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+}
+function markAllRead(ev){
+  if (ev) ev.stopPropagation();
+  NOTIFS.forEach(function(n){ n.unread = false; });
+  renderNotifPanel();
+}
+function toggleNotif(ev){
+  ev.stopPropagation();
+  closePanel('avatarMenu');
+  var p = document.getElementById('notifPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) renderNotifPanel();
+}
+function toggleAvatarMenu(ev){
+  ev.stopPropagation();
+  closePanel('notifPanel');
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+function closePanel(id){
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+document.addEventListener('click', function(){ closePanel('notifPanel'); closePanel('avatarMenu'); });
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+renderNotifPanel();
+
+/* ================= 初始化 ================= */
+renderMainTabs();
+renderEntChips();
+renderEntTable();
+renderInquiryTable();
+
+</script>
+<script>
+function toggleNavGroup(ev, gid){
+  ev.stopPropagation();
+  var g = document.querySelector('#sidebar .navgroup[data-group="'+gid+'"]');
+  if (!g) return;
+  var collapsed = g.classList.toggle('collapsed');
+  try{ localStorage.setItem('tliNavCollapse_'+gid, collapsed ? '1' : '0'); }catch(e){}
+}
+(function initNavGroups(){
+  document.querySelectorAll('#sidebar .navgroup[data-group]').forEach(function(g){
+    var gid = g.dataset.group, saved = null;
+    try{ saved = localStorage.getItem('tliNavCollapse_'+gid); }catch(e){}
+    if (saved === '1') g.classList.add('collapsed');
+  });
+})();
+</script>
+</body>
+</html>
