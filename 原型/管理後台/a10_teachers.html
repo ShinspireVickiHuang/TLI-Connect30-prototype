@@ -218,6 +218,7 @@ html,body{overflow-x:hidden;}
 .main{padding:16px 16px 40px;}
 .topbar{padding:0 16px;}
 }
+.phase2-pill{display:inline-block;background:#FFF4E0;border:1px solid #E8A23D;color:#8A5A00;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -250,7 +251,7 @@ html,body{overflow-x:hidden;}
 <button class="active" onclick="dTab(this,'basic')">基本與帳號</button>
 <button onclick="dTab(this,'lang')">可授課語言與等級</button>
 <button onclick="dTab(this,'slots')">可授課時段</button>
-<button onclick="dTab(this,'salary')">薪資級距設定</button>
+<button onclick="dTab(this,'salary')">薪資級距設定<span class="phase2-pill">二階段</span></button>
 <button onclick="dTab(this,'records')">授課紀錄</button>
 </div>
 <div class="tabpanel active" id="panel-basic"></div>

@@ -339,6 +339,7 @@ html,body{overflow-x:hidden;}
 </style>
 <style>
 /* ==== 20260831 學生 360：互動歷程分頁 ==== */
+.phase2-pill{display:inline-block;background:#FFF4E0;border:1px solid #E8A23D;color:#8A5A00;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle;white-space:nowrap;}
 .tl-toolbar{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--gray-100);}
 .tl-group{display:flex;flex-direction:column;gap:6px;min-width:0;}
 .tl-grouplabel{font-size:11px;color:var(--gray-500);font-weight:700;}
@@ -434,7 +435,7 @@ html,body{overflow-x:hidden;}
       <div class="card">
         <div class="tabs" id="tabs">
           <button class="tabbtn active" data-tab="orders" onclick="tliShowTab('orders',this)">訂單與付款</button>
-          <button class="tabbtn" data-tab="timeline" onclick="tliShowTab('timeline',this)">互動歷程</button>
+          <button class="tabbtn" data-tab="timeline" onclick="tliShowTab('timeline',this)">互動歷程<span class="phase2-pill">二階段</span></button>
           <button class="tabbtn" data-tab="courses" onclick="tliShowTab('courses',this)">課程與課時</button>
           <button class="tabbtn" data-tab="lessons" onclick="tliShowTab('lessons',this)">上課紀錄</button>
           <button class="tabbtn" data-tab="contacts" onclick="tliShowTab('contacts',this)">聯絡紀錄</button>
