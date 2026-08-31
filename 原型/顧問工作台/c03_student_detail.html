@@ -337,6 +337,65 @@ html,body{overflow-x:hidden;}
 .tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
 @media (max-width:1023px){ .shell{width:100%;} }
 </style>
+<style>
+/* ==== 20260831 學生 360：互動歷程分頁 ==== */
+.tl-toolbar{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--gray-100);}
+.tl-group{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.tl-grouplabel{font-size:11px;color:var(--gray-500);font-weight:700;}
+.tl-chips{display:flex;flex-wrap:wrap;gap:6px;max-width:520px;}
+.tl-chip{font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid var(--gray-300);background:#fff;cursor:pointer;color:var(--gray-700);font-family:inherit;}
+.tl-chip:hover{border-color:var(--primary);color:var(--primary);}
+.tl-chip.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.tl-chip.tagchip.active{background:#4338ca;border-color:#4338ca;color:#fff;}
+.tl-timeline{position:relative;}
+.tl-item{position:relative;padding:0 0 22px 40px;}
+.tl-item:last-child{padding-bottom:2px;}
+.tl-item::before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--gray-200);}
+.tl-item:last-child::before{display:none;}
+.tl-dot{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-500);}
+.tl-dot svg{width:15px;height:15px;display:block;}
+.tl-dot.web{background:var(--primary-light);color:var(--primary);}
+.tl-dot.inquiry{background:var(--accent-light);color:var(--accent);}
+.tl-dot.chat{background:#f3e8fd;color:#7a3ed9;}
+.tl-dot.lesson{background:var(--secondary-light);color:var(--secondary);}
+.tl-dot.purchase{background:#fff4e5;color:#b54708;}
+.tl-dot.notify{background:var(--gray-100);color:var(--gray-500);}
+.tl-toprow{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:3px;}
+.tl-time{font-size:11.5px;color:var(--gray-500);white-space:nowrap;}
+.tl-title{font-size:13.5px;font-weight:700;color:var(--gray-900);}
+.tl-summary{font-size:12.5px;color:var(--gray-700);line-height:1.6;}
+.tl-expand-btn{font-size:11.5px;color:var(--primary);cursor:pointer;background:none;border:none;padding:0;margin-top:6px;display:inline-flex;align-items:center;gap:3px;font-family:inherit;}
+.tl-transcript{display:none;margin-top:8px;background:var(--gray-50);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.7;max-width:560px;}
+.tl-transcript.open{display:block;}
+.tl-transcript .ln{margin-bottom:4px;}
+.tl-transcript .ln:last-child{margin-bottom:0;}
+.tl-transcript .who{font-weight:700;margin-right:4px;}
+.tl-transcript .who.ai{color:#4338ca;}
+.tl-transcript .who.human{color:#0F9B79;}
+.tl-transcript .who.student{color:var(--gray-700);}
+.tl-tagsrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:9px;}
+.tl-tag{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;}
+.tl-tag.ai{background:#eef2ff;color:#4338ca;}
+.tl-tag.manual{background:#fff7ed;color:#b45309;}
+.tl-tag .rm{cursor:pointer;margin-left:3px;font-weight:700;}
+.tl-tag .rm:hover{opacity:.6;}
+.tl-addtag{position:relative;display:inline-block;}
+.tl-addtag-btn{font-size:11px;padding:3px 9px;border:1px dashed var(--gray-300);border-radius:999px;background:#fff;cursor:pointer;color:var(--gray-500);font-family:inherit;}
+.tl-addtag-btn:hover{border-color:var(--primary);color:var(--primary);}
+.tl-addtag-panel{display:none;position:absolute;top:26px;left:0;background:#fff;border:1px solid var(--gray-200);border-radius:10px;box-shadow:0 8px 20px rgba(16,24,40,.14);padding:10px;width:220px;z-index:20;}
+.tl-addtag-panel.open{display:block;}
+.tl-addtag-panel .existing{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.tl-addtag-panel .existing button{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid var(--gray-200);background:var(--gray-50);cursor:pointer;color:var(--gray-700);font-family:inherit;}
+.tl-addtag-panel .existing button:hover{border-color:var(--primary);color:var(--primary);}
+.tl-addtag-panel .newrow{display:flex;gap:6px;}
+.tl-addtag-panel .newrow input{flex:1;padding:5px 7px;font-size:12px;}
+.tl-addtag-panel .newrow button{padding:5px 8px;font-size:12px;}
+.tl-empty{padding:30px 0;text-align:center;color:var(--gray-500);font-size:13px;}
+@media (max-width:1023px){
+  .tl-toolbar .tl-chips{max-width:100%;}
+  .tl-toolbar .btn{margin-left:0 !important;align-self:flex-start !important;}
+}
+</style>
 </head>
 <body>
 
@@ -375,6 +434,7 @@ html,body{overflow-x:hidden;}
       <div class="card">
         <div class="tabs" id="tabs">
           <button class="tabbtn active" data-tab="orders" onclick="tliShowTab('orders',this)">訂單與付款</button>
+          <button class="tabbtn" data-tab="timeline" onclick="tliShowTab('timeline',this)">互動歷程</button>
           <button class="tabbtn" data-tab="courses" onclick="tliShowTab('courses',this)">課程與課時</button>
           <button class="tabbtn" data-tab="lessons" onclick="tliShowTab('lessons',this)">上課紀錄</button>
           <button class="tabbtn" data-tab="contacts" onclick="tliShowTab('contacts',this)">聯絡紀錄</button>
@@ -386,6 +446,30 @@ html,body{overflow-x:hidden;}
             <thead><tr><th>訂單編號</th><th>項目</th><th>金額</th><th>付款模式</th><th>狀態</th><th></th></tr></thead>
             <tbody id="ordersBody"></tbody>
           </table>
+        </div>
+
+        <div class="tabpanel" data-tab="timeline">
+          <div class="note">互動歷程整合 CDP（官網與行銷行為）與文字客服平台（AI／真人對話），對話內容支援 AI 自動貼標與人工貼標</div>
+          <div class="tl-toolbar">
+            <div class="tl-group">
+              <span class="tl-grouplabel">期間</span>
+              <div class="tl-chips" id="tlPeriodChips">
+                <button class="tl-chip" data-period="30" onclick="tlSetPeriod('30',this)">近 30 天</button>
+                <button class="tl-chip" data-period="90" onclick="tlSetPeriod('90',this)">近 90 天</button>
+                <button class="tl-chip active" data-period="all" onclick="tlSetPeriod('all',this)">全部</button>
+              </div>
+            </div>
+            <div class="tl-group">
+              <span class="tl-grouplabel">事件類型</span>
+              <div class="tl-chips" id="tlTypeChips"></div>
+            </div>
+            <div class="tl-group">
+              <span class="tl-grouplabel">標籤</span>
+              <div class="tl-chips" id="tlTagChips"></div>
+            </div>
+            <button class="btn sm" style="margin-left:auto;align-self:flex-end;" onclick="tlShowSegment()">查看 CDP 分群</button>
+          </div>
+          <div class="tl-timeline" id="tlTimeline"></div>
         </div>
 
         <div class="tabpanel" data-tab="courses">
@@ -547,6 +631,215 @@ document.getElementById('contactsBody').innerHTML=S.contacts.map(function(c){
 document.getElementById('contractsBody').innerHTML=S.contracts.map(function(c){
   return '<tr><td>'+c.no+'</td><td>'+c.type+'</td><td><span class="badge ok">'+c.state+'</span></td><td>'+c.expire+'</td><td><button class="btn sm" onclick="tliToast(\'開啟合約檢視，正式版將顯示線上簽署與時間戳\')">檢視</button></td></tr>';
 }).join('');
+
+/* ================= 互動歷程（20260831 新增） ================= */
+var TL_TYPES=[
+  {key:'web',label:'官網行為'},
+  {key:'inquiry',label:'諮詢'},
+  {key:'chat',label:'客服對話'},
+  {key:'lesson',label:'上課'},
+  {key:'purchase',label:'購買'},
+  {key:'notify',label:'Email／LINE 通知'}
+];
+var TL_ICONS={
+  web:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="3" y1="10" x2="17" y2="10"/><path d="M10 3c2.2 2 2.2 12 0 14M10 3c-2.2 2-2.2 12 0 14"/></svg>',
+  inquiry:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H9l-3.5 3v-3H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><line x1="6.5" y1="7.5" x2="13.5" y2="7.5"/><line x1="6.5" y1="10" x2="11" y2="10"/></svg>',
+  chat:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5a1.5 1.5 0 0 1 1.5-1.5h11A1.5 1.5 0 0 1 17 5.5v6A1.5 1.5 0 0 1 15.5 13H9l-3.5 3.2V13H4.5A1.5 1.5 0 0 1 3 11.5v-6z"/><circle cx="7" cy="8.7" r=".7" fill="currentColor" stroke="none"/><circle cx="10" cy="8.7" r=".7" fill="currentColor" stroke="none"/><circle cx="13" cy="8.7" r=".7" fill="currentColor" stroke="none"/></svg>',
+  lesson:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><polyline points="7 12 9 14 13.5 10"/></svg>',
+  purchase:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2.5-1.6L10 18l-2.5-1.6L5 18V2z"/><line x1="7.5" y1="7" x2="12.5" y2="7"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg>',
+  notify:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="10" rx="1.5"/><path d="M3.5 5.5l6.5 5 6.5-5"/></svg>'
+};
+var TL_AI_ICON='<svg viewBox="0 0 20 20" width="10" height="10" style="vertical-align:-1px;margin-right:1px" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="12" height="9" rx="2"/><line x1="10" y1="7" x2="10" y2="3.5"/><circle cx="10" cy="2.5" r="1" fill="currentColor" stroke="none"/><circle cx="7.8" cy="11.3" r="1" fill="currentColor" stroke="none"/><circle cx="12.2" cy="11.3" r="1" fill="currentColor" stroke="none"/></svg>';
+var TL_SEGMENTS={wang01:'高續約意願',chen01:'高流失風險',emma01:'待安排時區回訪',yamada01:'企業續約關鍵客戶',li01:'效期已過待確認',zhang01:'分期繳款待追蹤',chenjh01:'新生穩定觀察'};
+var TL_CUSTOM={
+  wang01:[
+    {date:'2026-06-02T09:15',type:'web',title:'瀏覽官網「進階商用英文 B3 班」課程頁',summary:'瀏覽時間約 4 分鐘，比較 B3 班與現有 B2 班內容差異，未送出詢問。',sourceLabel:'CDP 串接',sourceClass:'bip',aiTags:[],manualTags:[]},
+    {date:'2026-06-04T11:00',type:'purchase',title:'分期扣款成功（春季學期班 第 2 期）',summary:'訂單 TLI-2026-0841 第 2 期分期扣款完成，金額 NT$11,250。',sourceLabel:'訂單模組',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-06-04T11:02',type:'notify',title:'Email 通知：扣款成功通知已送達並開啟',summary:'系統自動寄送扣款成功通知，學生於 10 分鐘內開啟信件。',sourceLabel:'通知系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-06-20T19:30',type:'lesson',title:'英文學期班 B2 — 出席（NPC 第 3 課）',summary:'授課老師：李老師，教材進度：NPC 第 3 課，出席狀態：出席。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-06-25T10:20',type:'inquiry',title:'諮詢：詢問升班可行性',summary:'顧問陳建豪電訪說明 B3 班開課時間與銜接方式，學生表示考慮中。',sourceLabel:'內部・諮詢紀錄（c08）',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-07-02T21:05',type:'chat',title:'客服對話（真人）：詢問請假補課規則',summary:'詢問本週請假是否可安排補課，客服已完成登記說明。',sourceLabel:'文字客服平台',sourceClass:'b',aiTags:['請假規則'],manualTags:[],
+      transcript:[{role:'student',text:'我這週上課要請假，補課規則是什麼？'},{role:'human',text:'您好，我是客服專員小林。請假需於課前 24 小時提出，效期內可安排 1 次補課。'},{role:'student',text:'了解，那這堂麻煩幫我登記請假。'},{role:'human',text:'已為您登記本堂請假，補課名額會保留到效期到期日 11/20。'}]},
+    {date:'2026-07-10T19:30',type:'lesson',title:'英文學期班 B2 — 缺席（請假）',summary:'依 7/2 客服說明完成請假登記，可於效期內安排 1 次補課。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-07-15T13:40',type:'chat',title:'客服對話（AI）：詢問教材購買方式',summary:'詢問教材購買管道與到貨時間，AI 客服當場完成回覆。',sourceLabel:'文字客服平台',sourceClass:'b',aiTags:['教材諮詢'],manualTags:[],
+      transcript:[{role:'student',text:'請問教材要去哪裡買？'},{role:'ai',text:'您好，我是 TLI 智能客服。教材可於官網「資源庫」線上加購，或於上課時向老師現場購買。'},{role:'student',text:'線上加購大概多久會收到？'},{role:'ai',text:'線上訂購後約 3–5 個工作天寄達，若急用建議現場購買。'}]},
+    {date:'2026-07-18T15:00',type:'purchase',title:'教材加購訂單成立',summary:'訂單 TLI-2026-0891，金額 NT$1,800，全額付清。',sourceLabel:'訂單模組',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-07-18T15:03',type:'notify',title:'Email 通知：訂單確認信已送達',summary:'系統自動寄送訂單 0891 確認信，尚未開啟。',sourceLabel:'通知系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-07-28T19:30',type:'lesson',title:'英文學期班 B2 — 出席（NPC 第 4 課）',summary:'授課老師：李老師，教材進度：NPC 第 4 課，出席狀態：出席。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-01T09:00',type:'notify',title:'LINE 通知：第 3 期扣款提醒已送達',summary:'系統於扣款前 2 天發送提醒，學生已讀。',sourceLabel:'通知系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-03T11:00',type:'purchase',title:'分期扣款失敗（春季學期班 第 3 期）',summary:'訂單 TLI-2026-0841 第 3 期扣款失敗，原因：信用卡已過期。',sourceLabel:'訂單模組',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-05T20:15',type:'chat',title:'客服對話（AI 轉真人）：反映扣款失敗',summary:'學生反映分期扣款失敗且情緒略顯不耐，AI 客服判斷後轉真人專員處理。',sourceLabel:'文字客服平台',sourceClass:'b',aiTags:['價格敏感','扣款失敗'],manualTags:['需優先處理'],
+      transcript:[{role:'student',text:'我這個月的分期扣款怎麼又失敗了？很困擾。'},{role:'ai',text:'您好，我是 TLI 智能客服，已查到您的分期扣款於 8/3 失敗，將為您轉接專員協助處理。'},{role:'human',text:'您好，我是客服專員陳小姐。確認是信用卡已過期導致失敗，需要請您更新卡片資訊。'},{role:'student',text:'好，我現在更新一下，希望這次不要再扣錯。'}]},
+    {date:'2026-08-17T19:30',type:'lesson',title:'英文學期班 B2 — 出席（NPC 第 5 課）',summary:'授課老師：李老師，教材進度：NPC 第 5 課，出席狀態：出席。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-20T14:10',type:'inquiry',title:'諮詢：顧問電話聯絡',summary:'確認第 3 期繳費時間，學生表示本週會處理。',sourceLabel:'內部・諮詢紀錄（c08）',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-24T19:30',type:'lesson',title:'英文學期班 B2 — 出席（NPC 第 6 課）',summary:'授課老師：李老師，教材進度：NPC 第 6 課，出席狀態：出席。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]},
+    {date:'2026-08-26T08:40',type:'web',title:'瀏覽官網「續約優惠方案」頁',summary:'瀏覽時間約 6 分鐘，查看提前續約優惠與升班套餐內容。',sourceLabel:'CDP 串接',sourceClass:'bip',aiTags:[],manualTags:[]}
+  ]
+};
+function tlDeriveTimeline(S){
+  var arr=[];
+  (S.contacts||[]).forEach(function(c){
+    arr.push({date:c.date+'T09:00',type:'inquiry',title:'諮詢：顧問聯絡紀錄（'+c.way+'）',summary:c.note,sourceLabel:'內部・諮詢紀錄（c08）',sourceClass:'muted',aiTags:[],manualTags:[]});
+  });
+  (S.orders||[]).forEach(function(o){
+    arr.push({date:S.join+'T10:00',type:'purchase',title:'訂單成立：'+o.item,summary:o.amount+'／'+o.mode+'／狀態：'+o.status,sourceLabel:'訂單模組',sourceClass:'muted',aiTags:[],manualTags:[]});
+  });
+  (S.lessons||[]).forEach(function(l){
+    arr.push({date:l.date+'T19:00',type:'lesson',title:l.course+' — '+l.att+'（'+l.progress+'）',summary:'授課老師：'+l.teacher+'，教材進度：'+l.progress+'。',sourceLabel:'Park 教務系統',sourceClass:'muted',aiTags:[],manualTags:[]});
+  });
+  return arr;
+}
+function tlFormatDate(iso){
+  var d=new Date(iso);
+  if(isNaN(d.getTime()))return iso;
+  var p=function(n){return (n<10?'0':'')+n;};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function tlRoleLabel(r){return {student:'學生',ai:'AI 客服',human:'真人客服'}[r]||r;}
+var TL_DATA=(TL_CUSTOM[curId]||tlDeriveTimeline(S)).slice();
+TL_DATA.forEach(function(it,i){it._id=i;});
+var tlPeriod='all';
+var tlActiveTypes=new Set(TL_TYPES.map(function(t){return t.key;}));
+var tlActiveTags=new Set();
+
+function tlAllTags(items){
+  var set=new Set();
+  items.forEach(function(it){(it.aiTags||[]).concat(it.manualTags||[]).forEach(function(t){set.add(t);});});
+  return Array.from(set);
+}
+function tlItemById(id){
+  for(var i=0;i<TL_DATA.length;i++){ if(TL_DATA[i]._id===id) return TL_DATA[i]; }
+  return null;
+}
+function tlFilterItems(){
+  var now=new Date();
+  var cutoff=null;
+  if(tlPeriod==='30') cutoff=new Date(now.getTime()-30*86400000);
+  else if(tlPeriod==='90') cutoff=new Date(now.getTime()-90*86400000);
+  return TL_DATA.filter(function(it){
+    if(cutoff && new Date(it.date)<cutoff) return false;
+    if(!tlActiveTypes.has(it.type)) return false;
+    if(tlActiveTags.size>0){
+      var tags=(it.aiTags||[]).concat(it.manualTags||[]);
+      var hit=false;
+      tlActiveTags.forEach(function(t){ if(tags.indexOf(t)>-1) hit=true; });
+      if(!hit) return false;
+    }
+    return true;
+  }).sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+}
+function tlRenderChips(){
+  document.querySelectorAll('#tlPeriodChips .tl-chip').forEach(function(b){ b.classList.toggle('active', b.dataset.period===tlPeriod); });
+  var typeWrap=document.getElementById('tlTypeChips');
+  typeWrap.innerHTML=TL_TYPES.map(function(t){
+    return '<button type="button" class="tl-chip'+(tlActiveTypes.has(t.key)?' active':'')+'" onclick="tlToggleType(\''+t.key+'\')">'+t.label+'</button>';
+  }).join('');
+  var tags=tlAllTags(TL_DATA);
+  var tagWrap=document.getElementById('tlTagChips');
+  if(tags.length===0){
+    tagWrap.innerHTML='<span style="font-size:11.5px;color:var(--gray-500);">尚無標籤</span>';
+  }else{
+    tagWrap.innerHTML=tags.map(function(t){
+      var esc=t.replace(/'/g,"\\'");
+      return '<button type="button" class="tl-chip tagchip'+(tlActiveTags.has(t)?' active':'')+'" onclick="tlToggleTag(\''+esc+'\')">'+t+'</button>';
+    }).join('');
+  }
+}
+function tlToggleType(key){
+  if(tlActiveTypes.has(key)) tlActiveTypes.delete(key); else tlActiveTypes.add(key);
+  tlRender();
+}
+function tlToggleTag(tag){
+  if(tlActiveTags.has(tag)) tlActiveTags.delete(tag); else tlActiveTags.add(tag);
+  tlRender();
+}
+function tlSetPeriod(p){ tlPeriod=p; tlRender(); }
+function tlToggleTranscript(btn){
+  var panel=btn.nextElementSibling;
+  panel.classList.toggle('open');
+  var open=panel.classList.contains('open');
+  var n=panel.querySelectorAll('.ln').length;
+  btn.textContent=(open?'▾ 收合對話（':'▸ 展開對話（')+n+' 則）';
+}
+function tlToggleAddPanel(ev,id){
+  ev.stopPropagation();
+  document.querySelectorAll('.tl-addtag-panel.open').forEach(function(p){ if(p.id!=='tlAddPanel-'+id) p.classList.remove('open'); });
+  document.getElementById('tlAddPanel-'+id).classList.toggle('open');
+}
+document.addEventListener('click',function(){
+  document.querySelectorAll('.tl-addtag-panel.open').forEach(function(p){p.classList.remove('open');});
+});
+function tlAddExistingTag(id,tag){
+  var it=tlItemById(id);
+  if(!it)return;
+  if(it.aiTags.indexOf(tag)>-1||it.manualTags.indexOf(tag)>-1){tliToast('此事件已有標籤「'+tag+'」');return;}
+  it.manualTags.push(tag);
+  tlRender();
+  tliToast('已新增標籤「'+tag+'」');
+}
+function tlAddNewTag(id){
+  var input=document.getElementById('tlNewTagInput-'+id);
+  var v=input?input.value.trim():'';
+  if(!v){tliToast('請先輸入標籤內容');return;}
+  var it=tlItemById(id);
+  if(!it)return;
+  if(it.aiTags.indexOf(v)>-1||it.manualTags.indexOf(v)>-1){tliToast('此事件已有標籤「'+v+'」');return;}
+  it.manualTags.push(v);
+  tlRender();
+  tliToast('已新增標籤「'+v+'」');
+}
+function tlRemoveTag(id,tag){
+  var it=tlItemById(id);
+  if(!it)return;
+  var idx=it.manualTags.indexOf(tag);
+  if(idx>-1) it.manualTags.splice(idx,1);
+  tlRender();
+  tliToast('已移除標籤「'+tag+'」');
+}
+function tlShowSegment(){
+  var seg=TL_SEGMENTS[curId]||'一般關注';
+  tliToast(S.name+' 於 CDP 所屬分群：「'+seg+'」');
+}
+function tlRenderTimeline(){
+  var items=tlFilterItems();
+  var wrap=document.getElementById('tlTimeline');
+  if(!wrap)return;
+  if(items.length===0){ wrap.innerHTML='<div class="tl-empty">此篩選條件下沒有互動紀錄</div>'; return; }
+  var allTags=tlAllTags(TL_DATA);
+  wrap.innerHTML=items.map(function(it){
+    var id=it._id;
+    var transcriptHtml='';
+    if(it.transcript&&it.transcript.length){
+      transcriptHtml='<button type="button" class="tl-expand-btn" onclick="tlToggleTranscript(this)">▸ 展開對話（'+it.transcript.length+' 則）</button>'
+        +'<div class="tl-transcript">'+it.transcript.map(function(l){
+          return '<div class="ln"><span class="who '+l.role+'">'+tlRoleLabel(l.role)+'：</span>'+l.text+'</div>';
+        }).join('')+'</div>';
+    }
+    var aiTagsHtml=(it.aiTags||[]).map(function(t){return '<span class="tl-tag ai">'+TL_AI_ICON+t+'</span>';}).join('');
+    var manualTagsHtml=(it.manualTags||[]).map(function(t){
+      var esc=t.replace(/'/g,"\\'");
+      return '<span class="tl-tag manual">'+t+'<span class="rm" onclick="tlRemoveTag('+id+',\''+esc+'\')">×</span></span>';
+    }).join('');
+    var existingChoices=allTags.filter(function(t){ return it.aiTags.indexOf(t)===-1 && it.manualTags.indexOf(t)===-1; })
+      .map(function(t){ var esc=t.replace(/'/g,"\\'"); return '<button type="button" onclick="tlAddExistingTag('+id+',\''+esc+'\')">'+t+'</button>'; }).join('');
+    var addTagHtml='<span class="tl-addtag" onclick="event.stopPropagation()"><button type="button" class="tl-addtag-btn" onclick="tlToggleAddPanel(event,'+id+')">＋貼標</button>'
+      +'<div class="tl-addtag-panel" id="tlAddPanel-'+id+'">'
+      + (existingChoices?'<div class="existing">'+existingChoices+'</div>':'')
+      + '<div class="newrow"><input type="text" placeholder="新增標籤" id="tlNewTagInput-'+id+'" onkeydown="if(event.key===\'Enter\'){tlAddNewTag('+id+');event.preventDefault();}"><button type="button" class="btn sm" onclick="tlAddNewTag('+id+')">加入</button></div>'
+      +'</div></span>';
+    return '<div class="tl-item">'
+      +'<div class="tl-dot '+it.type+'">'+TL_ICONS[it.type]+'</div>'
+      +'<div class="tl-body">'
+        +'<div class="tl-toprow"><span class="tl-time">'+tlFormatDate(it.date)+'</span><span class="tl-title">'+it.title+'</span><span class="badge '+it.sourceClass+'">'+it.sourceLabel+'</span></div>'
+        +'<div class="tl-summary">'+it.summary+'</div>'
+        +transcriptHtml
+        +'<div class="tl-tagsrow">'+aiTagsHtml+manualTagsHtml+addTagHtml+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+function tlRender(){ tlRenderChips(); tlRenderTimeline(); }
+tlRender();
 
 function tliShowTab(name,btn){
   document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.remove('active');});
