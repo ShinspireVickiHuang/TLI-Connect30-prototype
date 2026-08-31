@@ -712,7 +712,7 @@ function tlItemById(id){
   return null;
 }
 function tlFilterItems(){
-  var now=new Date();
+  var now=new Date('2026-08-31T12:00:00'); // 示範資料基準日，避免日後開啟時「近30/90天」篩不到示範事件
   var cutoff=null;
   if(tlPeriod==='30') cutoff=new Date(now.getTime()-30*86400000);
   else if(tlPeriod==='90') cutoff=new Date(now.getTime()-90*86400000);
