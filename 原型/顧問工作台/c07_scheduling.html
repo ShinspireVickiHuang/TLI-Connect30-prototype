@@ -149,7 +149,7 @@ table.flexcal td.fcell.empty{background:var(--gray-50);color:var(--gray-300);fon
 .roster-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px;}
 .sched-layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start;}
 @media (max-width:1279px){
-  .sched-layout{grid-template-columns:1fr;}
+  .sched-layout,.classtype-grid,.leave-grid,.dispatch-grid{grid-template-columns:1fr;}
   #studentQueue{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
   #studentQueue .queue-item{min-width:220px;flex:0 0 220px;margin-bottom:0;}
   table.cal td.cell.off{color:transparent;cursor:pointer;}
@@ -395,6 +395,24 @@ html,body{overflow-x:hidden;}
 .card{overflow-x:auto;max-width:100%;}
 .tablewrap,.cal-wrap,.flex-cal-wrap{overflow-x:auto;max-width:100%;}
 @media (max-width:1023px){ .shell{width:100%;} }
+
+/* ==== 20260831c 實體排課二階段擴充：子分頁、對照熱度圖、輪替、彈窗 ==== */
+.classtype-grid,.leave-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.dispatch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.dispatch-grid .full{grid-column:1/3;}
+.rotation-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;margin-bottom:6px;font-size:12.5px;}
+.rotation-row .rbtns{display:flex;gap:4px;}
+.rotation-row .rbtns button{background:#fff;border:1px solid var(--gray-300);border-radius:6px;cursor:pointer;padding:3px 6px;color:var(--gray-600);display:flex;align-items:center;}
+.rotation-row .rbtns button:hover{border-color:var(--primary);color:var(--primary);}
+.rotation-row .rbtns button:disabled{opacity:.35;cursor:not-allowed;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:520;align-items:center;justify-content:center;padding:20px;}
+.modal-mask.open{display:flex;}
+.modal-box{background:#fff;border-radius:12px;max-width:480px;width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(16,24,40,.28);}
+.modal-head{padding:14px 18px;border-bottom:1px solid var(--gray-200);font-size:14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.modal-head .modal-close{cursor:pointer;color:var(--gray-500);background:none;border:none;font-size:20px;line-height:1;padding:2px 4px;}
+.modal-body{padding:16px 18px;overflow-y:auto;font-size:12.5px;color:var(--gray-700);line-height:1.7;}
+.modal-body select,.modal-body input[type=text],.modal-body input[type=date]{font-family:inherit;}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
@@ -502,11 +520,25 @@ html,body{overflow-x:hidden;}
       </div><!-- /onlinePanelWrap -->
 
       <div class="top-mode-panel" id="onsitePanelWrap">
+        <div class="mode-tabs" id="onsiteSubTabs">
+          <button type="button" class="active" data-sub="sched" onclick="tliSwitchOnsiteSub('sched')">排課作業</button>
+          <button type="button" data-sub="classtype" onclick="tliSwitchOnsiteSub('classtype')">班型與班表</button>
+          <button type="button" data-sub="leave" onclick="tliSwitchOnsiteSub('leave')">請假與代課</button>
+          <button type="button" data-sub="batch" onclick="tliSwitchOnsiteSub('batch')">批次異動</button>
+        </div>
+
+        <div class="mode-panel active" id="onsiteSubSched">
         <div class="campus-chips" id="campusChips">
           <button type="button" class="active" data-campus="羅斯福" onclick="tliSelectOnsiteCampus('羅斯福')">羅斯福</button>
           <button type="button" data-campus="士林" onclick="tliSelectOnsiteCampus('士林')">士林</button>
           <button type="button" data-campus="台中" onclick="tliSelectOnsiteCampus('台中')">台中</button>
           <button type="button" data-campus="高雄" onclick="tliSelectOnsiteCampus('高雄')">高雄</button>
+        </div>
+        <div class="card" style="padding:12px 18px;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:12px;color:var(--gray-500);white-space:nowrap;">排課模板</span>
+            <select id="onsiteTemplateSelect" onchange="tliApplyOnsiteTemplate(this)" style="flex:1;min-width:220px;max-width:320px;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;"></select>
+          </div>
         </div>
         <div class="sched-layout">
           <div>
@@ -525,8 +557,13 @@ html,body{overflow-x:hidden;}
             </div>
             <div class="card" id="onsiteSuggestCard" style="display:none;">
               <h2>建議老師／教室與時段</h2>
+              <div id="onsiteRankTable"></div>
               <div id="onsiteSuggestList"></div>
               <div class="hint" style="font-size:11px;color:var(--gray-500);">排序：教室可用 &gt; 時間重合度 &gt; 老師等級 &gt; 年資 &gt; 姓名</div>
+            </div>
+            <div class="card" id="onsiteAvailCard" style="display:none;">
+              <h2>老師與學生開放時段對照</h2>
+              <div id="onsiteAvailGrid"></div>
             </div>
             <div class="card">
               <h2>校區老師</h2>
@@ -545,14 +582,125 @@ html,body{overflow-x:hidden;}
                 <span><span class="legend-box booked"></span>已排課</span>
                 <span><span class="legend-box pending"></span>預排（待確認）</span>
               </div>
-              <button class="btn primary" id="onsiteConfirmBtn" style="display:none;margin-top:14px;width:100%;justify-content:center;" onclick="tliConfirmOnsiteSchedule()">確認排課</button>
+              <div style="margin-top:14px;"><span class="badge muted" id="onsitePublishStatus">尚未發布</span></div>
+              <button class="btn primary" id="onsiteConfirmBtn" style="display:none;margin-top:8px;width:100%;justify-content:center;" onclick="tliOpenPublishConfirm()">發布課表</button>
             </div>
             <div class="card">
               <h2>實體班型 <span class="cnt" id="onsiteClassCount"></span></h2>
               <div style="overflow-x:auto;"><table class="flex-table" id="onsiteClassTable"></table></div>
             </div>
+            <div class="card">
+              <h2>外派課程 <span class="stage-tag s2">二階段</span></h2>
+              <div class="dispatch-grid">
+                <div>
+                  <label style="font-size:11.5px;color:var(--gray-500);">學生／企業窗口</label>
+                  <select id="dispatchStudent" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;margin-top:4px;"></select>
+                </div>
+                <div>
+                  <label style="font-size:11.5px;color:var(--gray-500);">授課老師</label>
+                  <select id="dispatchTeacher" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;margin-top:4px;"></select>
+                </div>
+                <div>
+                  <label style="font-size:11.5px;color:var(--gray-500);">上課日期／時段</label>
+                  <div style="display:flex;gap:6px;margin-top:4px;">
+                    <select id="dispatchDay" style="flex:1;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;"></select>
+                    <select id="dispatchHour" style="flex:1;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;"></select>
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:11.5px;color:var(--gray-500);">堂長</label>
+                  <select id="dispatchDuration" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;margin-top:4px;">
+                    <option value="1">1 堂（60 分鐘）</option>
+                    <option value="1.5">1.5 堂（90 分鐘）</option>
+                    <option value="2">2 堂（120 分鐘）</option>
+                  </select>
+                </div>
+                <div class="full">
+                  <label style="font-size:11.5px;color:var(--gray-500);">上課地點（企業地址）</label>
+                  <div style="display:flex;gap:6px;margin-top:4px;">
+                    <input type="text" id="dispatchAddress" value="台北市中山區松江路 128 號 5 樓" style="flex:1;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;">
+                    <button type="button" class="btn sm" style="width:auto;" onclick="tliCheckDispatchArea()">檢查地點範圍</button>
+                  </div>
+                </div>
+              </div>
+              <button class="btn primary sm" style="width:100%;justify-content:center;margin-top:12px;" onclick="tliAddDispatchSession()">加入外派預排</button>
+              <div id="dispatchList" style="margin-top:12px;"></div>
+            </div>
           </div>
         </div>
+        </div><!-- /onsiteSubSched -->
+
+        <div class="mode-panel" id="onsiteSubClasstype">
+          <div class="classtype-grid">
+            <div class="card">
+              <h2>個人班（一對一）</h2>
+              <div style="font-size:12.5px;color:var(--gray-700);line-height:2;">
+                人數上限：<b>1 人</b><br>
+                預設時長：<b>60 分鐘／堂</b><br>
+                計價模型：<b>按堂計費（單堂制）</b>
+              </div>
+            </div>
+            <div class="card">
+              <h2>小型班</h2>
+              <div style="font-size:12.5px;color:var(--gray-700);line-height:2;">
+                人數上限：<b>4 人</b><br>
+                預設時長：<b>90 分鐘／堂</b><br>
+                計價模型：<b>小班包班制（月繳）</b>
+              </div>
+            </div>
+            <div class="card">
+              <h2>學期團班</h2>
+              <div style="font-size:12.5px;color:var(--gray-700);line-height:2;">
+                人數上限：<b>12 人</b><br>
+                預設時長：<b>60 分鐘／堂</b><br>
+                計價模型：<b>學期方案制（期繳）</b>
+              </div>
+              <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100);">
+                <div style="font-size:12px;color:var(--gray-500);margin-bottom:4px;">成班門檻 3 人（目前 <b id="semesterCurCount">2</b> 人，差 <b id="semesterGap">1</b> 人成班）</div>
+                <span class="cap-bar" id="semesterBar" style="width:100%;height:8px;"><i id="semesterBarFill" style="width:66%;"></i></span>
+                <button class="btn sm primary" style="margin-top:10px;" onclick="tliOpenInsertEnroll()">插班報名</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>輪替教學法 <span class="stage-tag s2">二階段</span> <span class="cnt" id="rotationClassLabel">羅斯福實體團體班・商用會話（中高級）</span></h2>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+              <div style="min-width:220px;">
+                <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:6px;">輪替順序（上下移調整順序）</div>
+                <div id="rotationList"></div>
+              </div>
+              <div style="flex:1;min-width:280px;">
+                <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:6px;">未來 8 堂自動輪派預覽</div>
+                <div style="overflow-x:auto;"><table class="flex-table" id="rotationPreview"></table></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /onsiteSubClasstype -->
+
+        <div class="mode-panel" id="onsiteSubLeave">
+          <div class="leave-grid">
+            <div class="card">
+              <h2>學生請假待處理</h2>
+              <div id="studentLeaveList"></div>
+            </div>
+            <div class="card">
+              <h2>補課志願</h2>
+              <div id="makeupWishList"></div>
+            </div>
+            <div class="card">
+              <h2>老師請假代課派工</h2>
+              <div id="teacherLeaveList"></div>
+            </div>
+          </div>
+        </div><!-- /onsiteSubLeave -->
+
+        <div class="mode-panel" id="onsiteSubBatch">
+          <div class="card">
+            <h2>批次異動</h2>
+            <p style="font-size:12.5px;color:var(--gray-500);margin:0 0 10px;">依範圍（某班／某老師／某期間）批次調整時段、教室或授課老師，送出前可預覽影響清單。</p>
+            <button class="btn primary" onclick="tliOpenBatchWizard()">開啟批次異動精靈</button>
+          </div>
+        </div><!-- /onsiteSubBatch -->
       </div><!-- /onsitePanelWrap -->
     </main>
   </div>
@@ -587,6 +735,14 @@ html,body{overflow-x:hidden;}
 
 <div class="ai-backdrop" id="aiBackdrop" onclick="tliToggleAI()"></div>
 <div class="toast" id="toast"></div>
+
+<div class="modal-mask" id="modalMask" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-head"><span id="modalTitle"></span><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉">&times;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
 
 <script>
 function qs(k){return new URLSearchParams(location.search).get(k);}
@@ -914,11 +1070,17 @@ function tliSwitchTopMode(mode){
   try{localStorage.setItem('tliC07TopMode',mode);}catch(e){}
   if(mode==='onsite'){ renderOnsitePanel(); }
 }
+function tliSwitchOnsiteSub(sub){
+  document.querySelectorAll('#onsiteSubTabs button').forEach(function(b){b.classList.toggle('active', b.dataset.sub===sub);});
+  var map={sched:'onsiteSubSched',classtype:'onsiteSubClasstype',leave:'onsiteSubLeave',batch:'onsiteSubBatch'};
+  Object.keys(map).forEach(function(k){document.getElementById(map[k]).classList.toggle('active', k===sub);});
+}
 function tliSelectOnsiteCampus(campus){
   onsiteCampus=campus;
   document.querySelectorAll('#campusChips button').forEach(function(b){b.classList.toggle('active', b.dataset.campus===campus);});
   onsiteSelectedStudentId=null;
   document.getElementById('onsiteSuggestCard').style.display='none';
+  document.getElementById('onsiteAvailCard').style.display='none';
   renderOnsitePanel();
 }
 function onsiteStudentsOfCampus(){
@@ -957,10 +1119,9 @@ function tliSelectOnsiteStudent(id){
   onsiteSelectedStudentId=id;
   renderOnsiteQueue();
   renderOnsiteSuggestions(studentById(id));
+  renderOnsiteAvailGrid(studentById(id));
 }
-function renderOnsiteSuggestions(student){
-  var card=document.getElementById('onsiteSuggestCard');
-  var list=document.getElementById('onsiteSuggestList');
+function computeOnsiteCandidates(student){
   var cands=TEACHERS.filter(function(t){return t.lang===student.lang && t.campus===student.campus;}).map(function(t){
     var overlap=student.prefer.filter(function(slot){return (TEACHER_OPEN[t.id]||[]).some(function(o){return o.day===slot.day&&o.hour===slot.hour;});});
     if(!overlap.length)return null;
@@ -981,13 +1142,58 @@ function renderOnsiteSuggestions(student){
     if(a.teacher.level!==b.teacher.level)return b.teacher.level-a.teacher.level;
     return a.teacher.name.localeCompare(b.teacher.name,'zh-Hant');
   });
-  cands=cands.slice(0,3);
+  return cands;
+}
+function renderOnsiteRankTable(cands,student){
+  var box=document.getElementById('onsiteRankTable');
+  if(!box)return;
+  if(!cands.length){box.innerHTML='';return;}
+  var rows=cands.map(function(c,i){
+    var pct=Math.round(c.overlapCount/student.prefer.length*100);
+    var score=(c.teacher.level*10)+(c.teacher.years*2)+pct;
+    return '<tr><td>#'+(i+1)+'</td><td>'+c.teacher.name+'</td><td>T'+c.teacher.level+'</td><td>'+pct+'%</td><td>'+score+'</td></tr>';
+  }).join('');
+  box.innerHTML='<div style="font-size:11px;color:var(--gray-500);margin-bottom:4px;">配對排序（依教師等級／時段吻合度）</div><table class="flex-table" style="margin-bottom:10px;"><thead><tr><th>排序</th><th>老師</th><th>等級</th><th>時段吻合度</th><th>建議分數</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function renderOnsiteAvailGrid(student){
+  var card=document.getElementById('onsiteAvailCard');
+  if(!student){card.style.display='none';return;}
+  var cands=computeOnsiteCandidates(student).slice(0,3);
+  if(!cands.length){card.style.display='none';return;}
+  card.style.display='';
+  var days=WEEK_DAYS;
+  var hours=[14,18,19,20];
+  var checkSvg='<svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="4 10 8 14 16 6"/></svg>';
+  var html='<div style="overflow-x:auto;"><table class="cal" style="min-width:600px;"><thead><tr><th></th>'+days.map(function(d){return '<th>'+d.label.split(' ')[0]+'</th>';}).join('')+'</tr></thead><tbody>';
+  hours.forEach(function(h){
+    html+='<tr><th>'+h+':00</th>';
+    days.forEach(function(d){
+      var studentWant=student.prefer.some(function(p){return p.day===d.i&&p.hour===h;});
+      var teacherNames=cands.filter(function(c){return (TEACHER_OPEN[c.teacher.id]||[]).some(function(o){return o.day===d.i&&o.hour===h;});}).map(function(c){return c.teacher.name;});
+      var cls='cell',text='';
+      if(studentWant&&teacherNames.length){cls+=' booked';text=checkSvg+' 吻合';}
+      else if(studentWant){cls+=' pending';text='學生偏好';}
+      else if(teacherNames.length){cls+=' avail';text=teacherNames.join('/');}
+      else{cls+=' off';text='';}
+      html+='<td class="'+cls+'" title="'+teacherNames.join('、')+'">'+text+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div><div class="legend"><span><span class="legend-box booked"></span>雙方吻合</span><span><span class="legend-box pending"></span>學生偏好（老師未開放）</span><span><span class="legend-box avail"></span>老師開放（非學生偏好）</span></div>';
+  document.getElementById('onsiteAvailGrid').innerHTML=html;
+}
+function renderOnsiteSuggestions(student){
+  var card=document.getElementById('onsiteSuggestCard');
+  var list=document.getElementById('onsiteSuggestList');
+  var cands=computeOnsiteCandidates(student).slice(0,3);
   if(!cands.length){
     card.style.display='';
+    document.getElementById('onsiteRankTable').innerHTML='';
     list.innerHTML='<div class="empty">此校區找不到同語言、時段吻合的老師，建議調整偏好時段或改為顧問手動指派。</div>';
     return;
   }
   card.style.display='';
+  renderOnsiteRankTable(cands,student);
   list.innerHTML=cands.map(function(c){
     var t=c.teacher, conflict=c.chosen.conflict, room=c.chosen.room?roomById(c.chosen.room):null;
     return '<div class="sugg-card'+(conflict?' conflict':'')+'">'+
@@ -1005,8 +1211,20 @@ function tliChooseOnsiteCandidate(studentId,teacherId,day,hour){
   renderOnsiteRoomCal();
   var btn=document.getElementById('onsiteConfirmBtn');
   btn.style.display='';
-  btn.textContent='確認排課（'+onsitePendingList.length+' 堂）';
-  tliToast('已加入教室日曆預排：'+studentById(studentId).name+' → '+teacherById(teacherId).name+' '+slotLabel({day:day,hour:hour})+'（尚未送出，請確認後按「確認排課」）');
+  btn.textContent='發布課表（'+onsitePendingList.length+' 堂）';
+  var statusEl=document.getElementById('onsitePublishStatus');
+  statusEl.className='badge muted';
+  statusEl.textContent='尚未發布（'+onsitePendingList.length+' 堂待發布）';
+  tliToast('已加入教室日曆預排：'+studentById(studentId).name+' → '+teacherById(teacherId).name+' '+slotLabel({day:day,hour:hour})+'（尚未送出，請於「發布課表」確認後送出）');
+}
+function tliOpenPublishConfirm(){
+  if(!onsitePendingList.length)return;
+  var rows=onsitePendingList.map(function(p){
+    var t=teacherById(p.teacherId);
+    return '<div class="roster-row"><span>'+studentById(p.studentId).name+' → '+t.name+' '+slotLabel({day:p.day,hour:p.hour})+'</span></div>';
+  }).join('');
+  openModal('確認發布課表','即將發布 <b>'+onsitePendingList.length+'</b> 堂預排課程，發布後將立即通知學生與老師：<div style="margin-top:8px;">'+rows+'</div>',
+    '<button type="button" class="btn" onclick="closeModal()">取消</button><button type="button" class="btn primary" onclick="tliConfirmOnsiteSchedule();closeModal();">確認發布</button>');
 }
 function tliConfirmOnsiteSchedule(){
   if(!onsitePendingList.length)return;
@@ -1018,13 +1236,20 @@ function tliConfirmOnsiteSchedule(){
   });
   var doneIds=onsitePendingList.map(function(p){return p.studentId;}).filter(function(v,i,a){return a.indexOf(v)===i;});
   onsiteQueueIds=onsiteQueueIds.filter(function(id){return doneIds.indexOf(id)===-1;});
+  var publishedCount=onsitePendingList.length;
   onsitePendingList=[];
   onsiteSelectedStudentId=null;
   document.getElementById('onsiteSuggestCard').style.display='none';
+  document.getElementById('onsiteAvailCard').style.display='none';
   document.getElementById('onsiteConfirmBtn').style.display='none';
+  var statusEl=document.getElementById('onsitePublishStatus');
+  statusEl.className='badge';
+  statusEl.style.background='var(--secondary-light)';
+  statusEl.style.color='var(--secondary)';
+  statusEl.textContent='已發布 '+publishedCount+' 堂';
   renderOnsiteQueue();
   renderOnsiteRoomCal();
-  tliToast('已確認排課，已通知學生與老師：\n'+summaries.join('\n'));
+  tliToast('已確認發布，已通知學生與老師：\n'+summaries.join('\n'));
 }
 function renderOnsiteRoomOptions(){
   var sel=document.getElementById('onsiteRoomSelect');
@@ -1096,6 +1321,368 @@ function renderOnsitePanel(){
   renderOnsiteRoomCal();
   renderOnsiteTeachers();
   renderOnsiteClasses();
+  renderOnsiteTemplateOptions();
+  renderDispatchOptions();
+  renderDispatchList();
+  renderSemesterProgress();
+  renderRotationList();
+  renderRotationPreview();
+  renderStudentLeaveList();
+  renderMakeupWishList();
+  renderTeacherLeaveList();
+}
+
+// ================= 共用彈窗（發布確認／插班／批次異動精靈共用） =================
+function openModal(title,bodyHtml,footHtml){
+  document.getElementById('modalTitle').innerHTML=title;
+  document.getElementById('modalBody').innerHTML=bodyHtml;
+  document.getElementById('modalFoot').innerHTML=footHtml;
+  document.getElementById('modalMask').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modalMask').classList.remove('open');
+}
+
+// ================= 排課模板 =================
+var ONSITE_TEMPLATES=[
+  {id:'tpl1',label:'平日晚間 2 堂 × 12 週',desc:'每週二、四 19:00–20:00，共 12 週 24 堂'},
+  {id:'tpl2',label:'假日上午 1 堂 × 8 週',desc:'每週六 10:00–11:00，共 8 週 8 堂'},
+  {id:'tpl3',label:'密集班 3 堂/週 × 6 週',desc:'每週一三五 19:00–20:00，共 6 週 18 堂'}
+];
+function renderOnsiteTemplateOptions(){
+  var sel=document.getElementById('onsiteTemplateSelect');
+  if(!sel)return;
+  var keep=sel.value;
+  sel.innerHTML='<option value="">套用排課模板（選填）</option>'+ONSITE_TEMPLATES.map(function(t){return '<option value="'+t.id+'">'+t.label+'</option>';}).join('');
+  sel.value=keep||'';
+}
+function tliApplyOnsiteTemplate(sel){
+  var id=sel.value;
+  if(!id)return;
+  var t=ONSITE_TEMPLATES.find(function(x){return x.id===id;});
+  tliToast('已套用排課模板「'+t.label+'」：'+t.desc+'\n系統將依此模板批次產生預排建議，請於下方教室日曆確認後發布。');
+}
+
+// ================= 外派課程 =================
+var DISPATCH_SESSIONS=[
+  {student:'企業客戶Ａ（商務中文外派班）',teacher:'t2',day:2,hour:10,dur:'2',address:'新北市板橋區文化路 88 號 3 樓',status:'已發布'}
+];
+function renderDispatchOptions(){
+  var studentSel=document.getElementById('dispatchStudent');
+  if(studentSel){
+    var keep=studentSel.value;
+    studentSel.innerHTML=onsiteStudentsOfCampus().map(function(s){return '<option value="'+s.id+'">'+s.name+'（'+s.lang+'／'+s.level+'）</option>';})
+      .concat(['<option value="ent1">企業客戶Ａ（商務中文外派班）</option>','<option value="ent2">企業客戶Ｂ（日文外派班）</option>']).join('');
+    if(keep)studentSel.value=keep;
+  }
+  var teacherSel=document.getElementById('dispatchTeacher');
+  if(teacherSel){teacherSel.innerHTML=TEACHERS.map(function(t){return '<option value="'+t.id+'">'+t.name+'（'+t.lang+'）</option>';}).join('');}
+  var daySel=document.getElementById('dispatchDay');
+  if(daySel){daySel.innerHTML=WEEK_DAYS.map(function(d){return '<option value="'+d.i+'">'+d.label+'</option>';}).join('');}
+  var hourSel=document.getElementById('dispatchHour');
+  if(hourSel){hourSel.innerHTML=HOURS.map(function(h){return '<option value="'+h+'">'+h+':00</option>';}).join('');}
+}
+function tliCheckDispatchArea(){
+  var addr=document.getElementById('dispatchAddress').value.trim();
+  if(!addr){tliToast('請先輸入上課地點');return;}
+  var nearMetro=/台北|新北|桃園/.test(addr);
+  tliToast(nearMetro?'地點檢核：捷運可達，屬既有外派服務範圍':'地點檢核：非雙北桃園地區，屬外縣市，需另議交通費與可授課老師範圍');
+}
+function renderDispatchList(){
+  var box=document.getElementById('dispatchList');
+  if(!box)return;
+  if(!DISPATCH_SESSIONS.length){box.innerHTML='<div class="queueEmpty">目前沒有已排定的外派課程。</div>';return;}
+  box.innerHTML=DISPATCH_SESSIONS.map(function(d){
+    var t=teacherById(d.teacher);
+    return '<div class="queue-item" style="cursor:default;"><div class="name">'+d.student+'</div>'+
+      '<div class="meta">'+(t?t.name:'未指派')+'・'+slotLabel({day:d.day,hour:d.hour})+'・'+d.dur+' 堂<br>地點：'+d.address+'</div>'+
+      '<div style="margin-top:6px;"><span class="badge muted">'+d.status+'</span></div></div>';
+  }).join('');
+}
+function tliAddDispatchSession(){
+  var studentSel=document.getElementById('dispatchStudent');
+  var studentLabel=studentSel.options[studentSel.selectedIndex]?studentSel.options[studentSel.selectedIndex].text:'';
+  var teacherId=document.getElementById('dispatchTeacher').value;
+  var day=parseInt(document.getElementById('dispatchDay').value,10);
+  var hour=parseInt(document.getElementById('dispatchHour').value,10);
+  var dur=document.getElementById('dispatchDuration').value;
+  var addr=document.getElementById('dispatchAddress').value.trim()||'（未填寫地址）';
+  DISPATCH_SESSIONS.push({student:studentLabel,teacher:teacherId,day:day,hour:hour,dur:dur,address:addr,status:'預排（待發布）'});
+  renderDispatchList();
+  tliToast('已加入外派預排：'+studentLabel+' '+slotLabel({day:day,hour:hour})+'，請確認後聯繫學生／企業窗口');
+}
+
+// ================= 班型與班表：學期團班插班／輪替教學法 =================
+var SEMESTER_CLASS={name:'羅斯福學期團班・商用會話（中高級）',threshold:3,current:2,lessonsDone:4,totalLessons:16};
+function renderSemesterProgress(){
+  var curEl=document.getElementById('semesterCurCount');
+  if(!curEl)return;
+  var pct=Math.round(SEMESTER_CLASS.current/SEMESTER_CLASS.threshold*100);
+  curEl.textContent=SEMESTER_CLASS.current;
+  document.getElementById('semesterGap').textContent=Math.max(SEMESTER_CLASS.threshold-SEMESTER_CLASS.current,0);
+  document.getElementById('semesterBarFill').style.width=Math.min(pct,100)+'%';
+}
+function tliOpenInsertEnroll(){
+  var candidates=ALL_STUDENTS.filter(function(s){return s.mode==='onsite';});
+  var options=candidates.map(function(s){return '<option value="'+s.id+'">'+s.name+'（'+s.lang+'／'+s.level+'）</option>';}).join('');
+  openModal('插班報名－'+SEMESTER_CLASS.name,
+    '<label style="font-size:12px;color:var(--gray-500);">選擇學生</label>'+
+    '<select id="insertStudentSelect" style="width:100%;margin-top:4px;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;font-family:inherit;" onchange="tliShowInsertProgress(this.value)">'+
+    '<option value="">請選擇</option>'+options+'</select>'+
+    '<div id="insertProgressCheck" style="margin-top:10px;"></div>',
+    '<button type="button" class="btn" onclick="closeModal()">取消</button><button type="button" class="btn primary" id="insertConfirmBtn" disabled onclick="tliConfirmInsertEnroll()">確認插班</button>'
+  );
+}
+function tliShowInsertProgress(studentId){
+  var box=document.getElementById('insertProgressCheck');
+  var btn=document.getElementById('insertConfirmBtn');
+  if(!studentId){box.innerHTML='';btn.disabled=true;return;}
+  var s=studentById(studentId);
+  var pct=Math.round(SEMESTER_CLASS.lessonsDone/SEMESTER_CLASS.totalLessons*100);
+  box.innerHTML='已檢查班級進度：目前上到第 '+SEMESTER_CLASS.lessonsDone+'／'+SEMESTER_CLASS.totalLessons+' 堂（'+pct+'%），'+s.name+' 插班後將由顧問安排補課銜接前段內容，並依比例計算學費。';
+  btn.disabled=false;
+}
+function tliConfirmInsertEnroll(){
+  var sel=document.getElementById('insertStudentSelect');
+  var s=studentById(sel.value);
+  SEMESTER_CLASS.current+=1;
+  renderSemesterProgress();
+  closeModal();
+  tliToast('已完成插班：'+s.name+' 加入「'+SEMESTER_CLASS.name+'」，'+(SEMESTER_CLASS.current>=SEMESTER_CLASS.threshold?'已達成班門檻，班級狀態更新為「已成班」':'尚差 '+(SEMESTER_CLASS.threshold-SEMESTER_CLASS.current)+' 人成班')+'，已通知學生與老師');
+}
+var ROTATION_TEACHERS=['t2','t1','t5'];
+var UP_SVG='<svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 7 15 12"/></svg>';
+var DOWN_SVG='<svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>';
+function renderRotationList(){
+  var box=document.getElementById('rotationList');
+  if(!box)return;
+  box.innerHTML=ROTATION_TEACHERS.map(function(id,i){
+    var t=teacherById(id);
+    return '<div class="rotation-row"><span>'+(i+1)+'. '+t.name+'<span style="color:var(--gray-500);font-size:11px;"> T'+t.level+'</span></span>'+
+      '<span class="rbtns">'+
+      '<button type="button" '+(i===0?'disabled':'')+' onclick="tliMoveRotation('+i+',-1)" aria-label="上移">'+UP_SVG+'</button>'+
+      '<button type="button" '+(i===ROTATION_TEACHERS.length-1?'disabled':'')+' onclick="tliMoveRotation('+i+',1)" aria-label="下移">'+DOWN_SVG+'</button>'+
+      '</span></div>';
+  }).join('');
+}
+function tliMoveRotation(i,dir){
+  var j=i+dir;
+  if(j<0||j>=ROTATION_TEACHERS.length)return;
+  var tmp=ROTATION_TEACHERS[i];ROTATION_TEACHERS[i]=ROTATION_TEACHERS[j];ROTATION_TEACHERS[j]=tmp;
+  renderRotationList();
+  renderRotationPreview();
+  tliToast('已調整輪替順序');
+}
+function renderRotationPreview(){
+  var box=document.getElementById('rotationPreview');
+  if(!box)return;
+  var rows='';
+  for(var k=0;k<8;k++){
+    var t=teacherById(ROTATION_TEACHERS[k%ROTATION_TEACHERS.length]);
+    rows+='<tr><td>第 '+(k+1)+' 堂（週三 19:00）</td><td>'+t.name+'</td></tr>';
+  }
+  box.innerHTML='<thead><tr><th>堂次</th><th>輪派老師</th></tr></thead><tbody>'+rows+'</tbody>';
+}
+
+// ================= 請假與代課 =================
+var STUDENT_LEAVES=[
+  {id:'sl1',student:'黃冠霖',classInfo:'士林實體團體班・生活會話（初級）',date:'2026-09-03（週四）19:00',status:'待處理',makeupOptions:[{day:2,hour:19},{day:4,hour:19},{day:5,hour:14}]},
+  {id:'sl2',student:'李文彬',classInfo:'一對一（羅斯福・林老師）',date:'2026-09-01（週二）14:00',status:'待處理',makeupOptions:[{day:3,hour:14},{day:5,hour:14}]}
+];
+function renderStudentLeaveList(){
+  var box=document.getElementById('studentLeaveList');
+  if(!box)return;
+  box.innerHTML=STUDENT_LEAVES.map(function(l){
+    if(l.status==='待處理'){
+      return '<div class="queue-item" style="cursor:default;"><div class="name">'+l.student+'</div>'+
+        '<div class="meta">'+l.classInfo+'<br>原訂：'+l.date+'</div>'+
+        '<button class="btn sm primary" style="margin-top:6px;" onclick="tliApproveLeave(\''+l.id+'\')">核可請假</button></div>';
+    }
+    if(l.status==='待選補課'){
+      return '<div class="queue-item" style="cursor:default;"><div class="name">'+l.student+'</div>'+
+        '<div class="meta">'+l.classInfo+'<br>已核可，請選擇補課時段：</div>'+
+        '<select id="makeupSelect_'+l.id+'" style="width:100%;margin-top:6px;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12px;font-family:inherit;">'+
+          l.makeupOptions.map(function(o){return '<option value="'+o.day+'_'+o.hour+'">'+slotLabel(o)+'</option>';}).join('')+
+        '</select>'+
+        '<button class="btn sm primary" style="margin-top:6px;" onclick="tliConfirmMakeup(\''+l.id+'\')">確定安排補課</button></div>';
+    }
+    return '<div class="queue-item" style="cursor:default;opacity:.7;"><div class="name">'+l.student+'</div><div class="meta">'+l.classInfo+'<br>'+l.status+'</div></div>';
+  }).join('');
+}
+function tliApproveLeave(id){
+  var l=STUDENT_LEAVES.find(function(x){return x.id===id;});
+  l.status='待選補課';
+  renderStudentLeaveList();
+  tliToast('已核可 '+l.student+' 的請假申請，請為其安排補課時段');
+}
+function tliConfirmMakeup(id){
+  var l=STUDENT_LEAVES.find(function(x){return x.id===id;});
+  var sel=document.getElementById('makeupSelect_'+id);
+  var parts=sel.value.split('_');
+  var slot={day:parseInt(parts[0],10),hour:parseInt(parts[1],10)};
+  l.status='已安排補課於 '+slotLabel(slot);
+  renderStudentLeaveList();
+  tliToast('已為 '+l.student+' 安排補課於 '+slotLabel(slot)+'，已通知學生與老師');
+}
+var MAKEUP_WISHES=[
+  {id:'mw1',student:'吳建霖',classInfo:'士林實體團體班・生活會話（初級）缺課 08/28',wishes:[{day:1,hour:19},{day:3,hour:19},{day:5,hour:14}],confirmed:false},
+  {id:'mw2',student:'張雅婷',classInfo:'羅斯福實體團體班・商用會話（中高級）缺課 08/27',wishes:[{day:2,hour:19},{day:4,hour:19}],confirmed:false}
+];
+function renderMakeupWishList(){
+  var box=document.getElementById('makeupWishList');
+  if(!box)return;
+  box.innerHTML=MAKEUP_WISHES.map(function(m){
+    return '<div class="queue-item" style="cursor:default;"><div class="name">'+m.student+'</div>'+
+      '<div class="meta">'+m.classInfo+'<br>志願時段：'+m.wishes.map(slotLabel).join('、')+'</div>'+
+      (m.confirmed
+        ? '<span class="badge muted" style="margin-top:6px;display:inline-block;">已確認：'+slotLabel(m.confirmed)+'</span>'
+        : '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">'+m.wishes.map(function(w,i){return '<button class="btn sm" style="width:auto;" onclick="tliConfirmMakeupWish(\''+m.id+'\','+i+')">確認 '+slotLabel(w)+'</button>';}).join('')+'</div>')+
+    '</div>';
+  }).join('');
+}
+function tliConfirmMakeupWish(id,idx){
+  var m=MAKEUP_WISHES.find(function(x){return x.id===id;});
+  m.confirmed=m.wishes[idx];
+  renderMakeupWishList();
+  tliToast('已為 '+m.student+' 確認補課時段：'+slotLabel(m.confirmed)+'，已通知學生與老師');
+}
+var TEACHER_LEAVES=[
+  {id:'tl1',teacher:'李老師',classInfo:'士林實體團體班・生活會話（初級）',date:'週一 09/01 19:00',status:'待指派',lang:'中文'},
+  {id:'tl2',teacher:'林老師',classInfo:'羅斯福實體團體班・商用會話（中高級）',date:'週三 09/02 19:00',status:'待指派',lang:'中文'}
+];
+function renderTeacherLeaveList(){
+  var box=document.getElementById('teacherLeaveList');
+  if(!box)return;
+  box.innerHTML=TEACHER_LEAVES.map(function(l){
+    if(l.status!=='待指派'){
+      return '<div class="queue-item" style="cursor:default;opacity:.7;"><div class="name">'+l.teacher+'（請假）</div><div class="meta">'+l.classInfo+'<br>'+l.date+'<br>'+l.status+'</div></div>';
+    }
+    var subs=TEACHERS.filter(function(t){return t.lang===l.lang && t.name!==l.teacher;}).sort(function(a,b){return b.level-a.level;}).slice(0,2);
+    return '<div class="queue-item" style="cursor:default;"><div class="name">'+l.teacher+'（請假）</div>'+
+      '<div class="meta">'+l.classInfo+'<br>'+l.date+'</div>'+
+      '<div style="font-size:11.5px;color:var(--gray-500);margin-top:6px;">推薦代課老師：</div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">'+subs.map(function(t){return '<button class="btn sm" style="width:auto;" onclick="tliAssignSub(\''+l.id+'\',\''+t.id+'\')">指派 '+t.name+'（T'+t.level+'）</button>';}).join('')+'</div>'+
+    '</div>';
+  }).join('');
+}
+function tliAssignSub(leaveId,teacherId){
+  var l=TEACHER_LEAVES.find(function(x){return x.id===leaveId;});
+  var t=teacherById(teacherId);
+  l.status='已指派代課：'+t.name;
+  renderTeacherLeaveList();
+  tliToast('已指派 '+t.name+' 代課「'+l.classInfo+'」'+l.date+'，已通知原老師、代課老師與學生');
+}
+
+// ================= 批次異動精靈 =================
+var batchWizardStep=1;
+var batchWizardData={};
+function tliOpenBatchWizard(){
+  batchWizardStep=1;
+  batchWizardData={};
+  renderBatchWizard();
+}
+function renderBatchWizard(){
+  var body='';
+  if(batchWizardStep===1){
+    body='<div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;">Step 1／3：選擇異動範圍</div>'+
+      '<select id="batchScopeType" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;" onchange="renderBatchScopeTarget()">'+
+      '<option value="class">某班</option><option value="teacher">某老師</option><option value="period">某期間</option></select>'+
+      '<div id="batchScopeTarget" style="margin-top:8px;"></div>';
+  }else if(batchWizardStep===2){
+    body='<div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;">Step 2／3：異動範圍：'+batchWizardData.scopeLabel+'<br>選擇異動類型</div>'+
+      '<select id="batchChangeType" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;" onchange="renderBatchChangeValue()">'+
+      '<option value="time">改時段</option><option value="room">改教室</option><option value="teacher">改老師</option></select>'+
+      '<div id="batchChangeValue" style="margin-top:8px;"></div>';
+  }else{
+    var impact=tliGenBatchImpact();
+    body='<div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;">Step 3／3：影響清單預覽</div>'+
+      '<div style="font-size:12.5px;margin-bottom:6px;">異動範圍：<b>'+batchWizardData.scopeLabel+'</b>　異動內容：<b>'+batchWizardData.changeLabel+'</b></div>'+
+      '<div style="font-size:12.5px;margin-bottom:6px;">共影響 <b>'+impact.length+'</b> 堂：</div>'+
+      impact.map(function(x){return '<div class="roster-row"><span>'+x+'</span></div>';}).join('');
+  }
+  var footer='';
+  if(batchWizardStep>1)footer+='<button type="button" class="btn" onclick="batchWizardStep--;renderBatchWizard();">上一步</button>';
+  footer+='<button type="button" class="btn" onclick="closeModal()">取消</button>';
+  if(batchWizardStep<3)footer+='<button type="button" class="btn primary" onclick="tliBatchNext()">下一步</button>';
+  else footer+='<button type="button" class="btn primary" onclick="tliSubmitBatch()">確認送出</button>';
+  openModal('批次異動精靈',body,footer);
+  if(batchWizardStep===1)renderBatchScopeTarget();
+  if(batchWizardStep===2)renderBatchChangeValue();
+}
+function renderBatchScopeTarget(){
+  var type=document.getElementById('batchScopeType').value;
+  var box=document.getElementById('batchScopeTarget');
+  if(!box)return;
+  if(type==='class'){
+    box.innerHTML='<select id="batchScopeValue" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+
+      PHYSICAL_CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.name+'</option>';}).join('')+'</select>';
+  }else if(type==='teacher'){
+    box.innerHTML='<select id="batchScopeValue" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+
+      TEACHERS.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select>';
+  }else{
+    box.innerHTML='<div style="display:flex;gap:6px;">'+
+      '<input type="date" id="batchScopeFrom" value="2026-09-01" style="flex:1;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+
+      '<input type="date" id="batchScopeTo" value="2026-09-30" style="flex:1;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;"></div>';
+  }
+}
+function renderBatchChangeValue(){
+  var type=document.getElementById('batchChangeType').value;
+  var box=document.getElementById('batchChangeValue');
+  if(!box)return;
+  if(type==='time'){
+    box.innerHTML='<div style="display:flex;gap:6px;"><select id="batchNewDay" style="flex:1;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+WEEK_DAYS.map(function(d){return '<option value="'+d.i+'">'+d.label+'</option>';}).join('')+'</select>'+
+      '<select id="batchNewHour" style="flex:1;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+HOURS.map(function(h){return '<option value="'+h+'">'+h+':00</option>';}).join('')+'</select></div>';
+  }else if(type==='room'){
+    box.innerHTML='<select id="batchNewRoom" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+ROOMS.map(function(r){return '<option value="'+r.id+'">'+r.name+'</option>';}).join('')+'</select>';
+  }else{
+    box.innerHTML='<select id="batchNewTeacher" style="width:100%;padding:7px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12.5px;">'+TEACHERS.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select>';
+  }
+}
+function tliBatchNext(){
+  if(batchWizardStep===1){
+    var type=document.getElementById('batchScopeType').value;
+    batchWizardData.scopeType=type;
+    if(type==='class'){
+      var c=physicalById(document.getElementById('batchScopeValue').value);
+      batchWizardData.scopeLabel=c?c.name:'－';
+    }else if(type==='teacher'){
+      var t=teacherById(document.getElementById('batchScopeValue').value);
+      batchWizardData.scopeLabel=t?t.name:'－';
+    }else{
+      var from=document.getElementById('batchScopeFrom').value,to=document.getElementById('batchScopeTo').value;
+      batchWizardData.scopeLabel=from+' ~ '+to;
+    }
+  }else if(batchWizardStep===2){
+    var ctype=document.getElementById('batchChangeType').value;
+    batchWizardData.changeType=ctype;
+    if(ctype==='time'){
+      var d=WEEK_DAYS.find(function(w){return w.i==document.getElementById('batchNewDay').value;});
+      var h=document.getElementById('batchNewHour').value;
+      batchWizardData.changeLabel='改為 '+(d?d.label:'')+' '+h+':00';
+    }else if(ctype==='room'){
+      var r=roomById(document.getElementById('batchNewRoom').value);
+      batchWizardData.changeLabel='改教室為 '+(r?r.name:'');
+    }else{
+      var nt=teacherById(document.getElementById('batchNewTeacher').value);
+      batchWizardData.changeLabel='改老師為 '+(nt?nt.name:'');
+    }
+  }
+  batchWizardStep++;
+  renderBatchWizard();
+}
+function tliGenBatchImpact(){
+  if(batchWizardData.scopeType==='class'){
+    return ['09/03（週四）19:00 － 原時段課程','09/10（週四）19:00 － 原時段課程','09/17（週四）19:00 － 原時段課程'];
+  }else if(batchWizardData.scopeType==='teacher'){
+    return ['週一 19:00 一對一課程','週三 19:00 一對一課程','週四 19:00 團體班課程','週五 20:00 一對一課程'];
+  }else{
+    return ['09/01–09/30 期間內共 8 堂實體課程將套用新設定'];
+  }
+}
+function tliSubmitBatch(){
+  var n=tliGenBatchImpact().length;
+  closeModal();
+  tliToast('已送出批次異動，共影響 '+n+' 堂課程，已通知相關老師與學生');
 }
 
 // 深連結：從今日待辦點「待排課學生」或「老師請假待處理」進來
