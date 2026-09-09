@@ -28,6 +28,7 @@
   /* 精簡工具列（預設常駐，取代原本的完整控制面板） */
   .topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--g200);border-radius:10px;padding:8px 14px;margin-bottom:10px;flex:none}
   .topbar-title{font-size:13.5px;font-weight:700;color:var(--navy);white-space:nowrap;margin-right:2px}
+  .topbar-subtitle{font-size:11px;color:var(--g500);white-space:nowrap;margin-right:6px}
   .topbar .product-tabs{margin-bottom:0;border-bottom:none;gap:4px}
   .topbar .product-tab{padding:5px 11px;font-size:12px;border-radius:6px;border-bottom:none;margin-bottom:0}
   .topbar .product-tab.active{background:var(--navy);color:#fff}
@@ -149,6 +150,9 @@
   .scenario-code{font-size:10.5px;font-weight:700;color:var(--teal);letter-spacing:.02em;margin-left:auto;order:2}
   .scenario-solution{font-size:12px;color:var(--g500);margin-top:5px;padding-top:5px;border-top:1px dashed var(--g200);line-height:1.5}
   .scenario-note{font-size:11px;color:var(--g500);margin-top:4px;font-style:italic}
+  .scenario-fulllink{text-align:right;margin-top:6px}
+  .scenario-fulllink a{font-size:10.5px;color:var(--g500);text-decoration:none;border-bottom:1px dotted var(--g500)}
+  .scenario-fulllink a:hover{color:var(--navy);border-color:var(--navy)}
 
   /* 操作路徑示意：一個 pathlane 節點＝一整條橫向 chip 鏈，不再是一步一卡 */
   .node-pathlane{background:var(--g50);border:1px solid var(--g200);max-width:none;padding:12px 14px}
@@ -201,6 +205,7 @@
     .stat-box .label{font-size:10px}
     .topbar{padding:6px 8px;gap:5px;overflow-x:hidden}
     .topbar-title{display:none}
+    .topbar-subtitle{display:none}
     .topbar-select{max-width:76px;font-size:10.5px;padding:5px 3px}
     .topbar .product-tab{padding:5px 8px;font-size:11px}
     .topbar .chip.stage-toggle{padding:5px 8px;font-size:11px}
@@ -245,6 +250,7 @@
 
   <div class="topbar" id="topbar">
     <span class="topbar-title">Connect 3.0 心智圖</span>
+    <span class="topbar-subtitle">痛點 → 解決方案 → 操作路徑；點情境卡可看完整步驟</span>
     <div class="product-tabs" id="productTabs">
       <button class="product-tab active" data-product="all" type="button">全部</button>
       <button class="product-tab" data-product="b2c" type="button">B2C</button>
@@ -314,6 +320,8 @@
       </div>
     </div>
   </div>
+  <footer class="note">資料來源：《B2B 情境與流程對照表 v4》（19 情境）、《B2C 情境與流程對照表 v3》（21 情境）、《合作夥伴情境與流程對照表 v3》（7 情境）、《心智圖骨架 v2》。</footer>
+  <div class="print-footer">資料來源：《B2B 情境與流程對照表 v4》（19 情境）、《B2C 情境與流程對照表 v3》（21 情境）、《合作夥伴情境與流程對照表 v3》（7 情境）、《心智圖骨架 v2》。</div>
 </div>
 <div class="toast" id="toast" hidden></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -448,7 +456,9 @@ function boxContent(node){
       codeHTML += `<span class="status-badge ${node.status}">${statusLabel}</span>`;
     }
     const solutionHTML = node.solution ? `<div class="scenario-solution">${esc(node.solution)}</div>` : '';
-    return `${alsoTag}<div class="scenario-top">${codeHTML}</div><div class="box-title">${esc(node.label)}</div>${solutionHTML}${noteHTML}`;
+    // 完整操作步驟連結：導到情境導覽.html 對應錨點，客戶版也顯示（不是內部資訊）
+    const fullLinkHTML = `<div class="scenario-fulllink"><a href="情境導覽.html#${esc(node.baseId)}" target="_blank" rel="noopener">完整操作步驟 →</a></div>`;
+    return `${alsoTag}<div class="scenario-top">${codeHTML}</div><div class="box-title">${esc(node.label)}</div>${solutionHTML}${noteHTML}${fullLinkHTML}`;
   }
   if(node.type === 'pathlane'){
     const laneLabelHTML = node.laneLabel ? `<div class="lane-label">${esc(node.laneLabel)}</div>` : '';
@@ -907,11 +917,6 @@ collapsedIds = new Set(collectIdsByType(TREE, 'topic', []));
 initControls();
 renderAll();
 scrollRootIntoView();
-</script>
-
-<script>
-/* 內部檢核開關只在網址帶 ?internal=1 時顯示；公開版客戶看不到 */
-(function(){ if(!/[?&]internal=1/.test(location.search)){ var t=document.getElementById('internalModeToggle'); if(t) t.style.display='none'; } })();
 </script>
 </body>
 </html>
