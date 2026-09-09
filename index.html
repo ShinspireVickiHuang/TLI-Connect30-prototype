@@ -3,250 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TLI Connect 3.0 原型總入口</title>
+<title>TLI Connect 3.0 原型導覽</title>
 <style>
-  :root{--navy:#1B4E8C;--orange:#E8792B;--teal:#0F9B79;--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828}
+  :root{--navy:#1B4E8C;--orange:#E8792B;--teal:#0F9B79;--g50:#F5F7FA;--g100:#F0F2F5;--g200:#E4E7EC;--g500:#667085;--g900:#101828}
   *{box-sizing:border-box}
   body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--g50);color:var(--g900);line-height:1.6}
-  .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
   h1{font-size:28px;margin:0 0 6px}
-  .sub{color:var(--g500);margin:0 0 28px}
-  .note{background:#fff;border:1px solid var(--g200);border-left:4px solid var(--orange);border-radius:8px;padding:14px 18px;margin-bottom:28px;font-size:14px}
-  .tier{margin:28px 0 10px;font-size:13px;letter-spacing:.12em;color:var(--g500);text-transform:uppercase}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .sub{color:var(--g500);margin:0 0 32px;font-size:15px}
+  .tier{margin:36px 0 6px;font-size:13px;letter-spacing:.08em;color:var(--g500);text-transform:uppercase}
+  .tier-desc{font-size:13px;color:var(--g500);margin:0 0 14px}
+
+  /* 三大主入口 */
+  .hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:8px}
+  .hero-card{display:block;background:#fff;border:1px solid var(--g200);border-radius:12px;padding:24px 22px;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(16,24,40,.04);transition:.12s}
+  .hero-card:hover{border-color:var(--navy);box-shadow:0 4px 12px rgba(16,24,40,.08)}
+  .hero-card h2{font-size:18px;margin:0 0 8px;color:var(--navy)}
+  .hero-card p{font-size:13.5px;color:var(--g500);margin:0}
+  .hero-label{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--g100);color:var(--g500);margin-left:8px;vertical-align:middle;font-weight:400}
+
+  /* 一般卡片 */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
   .card{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:18px 20px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
   .card h2{font-size:17px;margin:0 0 4px;color:var(--navy)}
-  .card .who{font-size:13px;color:var(--g500);margin:0 0 10px}
-  .card .solve{font-size:13px;background:var(--g50);border-radius:6px;padding:8px 10px;margin:0 0 12px}
+  .card .who{font-size:13px;color:var(--g500);margin:0 0 12px}
   .card ol{margin:0;padding-left:20px;font-size:14px}
   .card li{margin:3px 0}
   .card a{color:var(--g900);text-decoration:none;border-bottom:1px dotted var(--g200)}
   .card a:hover{color:var(--navy);border-color:var(--navy)}
-  .card.legacy{opacity:.6}
-  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#EAF1FA;color:var(--navy);margin-left:6px;vertical-align:middle}
-  .tag.t2{background:#E6F6F1;color:var(--teal)}
-  .tag.old{background:var(--g200);color:var(--g500)}
-  .order{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;margin-bottom:6px}
-  .order span{background:#fff;border:1px solid var(--g200);border-radius:999px;padding:4px 12px}
-  .order i{color:var(--g500)}
+  .card .pointer{font-size:14px;color:var(--g500);margin:0 0 6px}
+  .card .pointer a{color:var(--navy);border:none}
+  .card.compact ol{columns:1}
+
+  /* 第二階段（收在最底、灰底） */
+  .stage2{background:var(--g100);border-radius:12px;padding:24px 26px;margin-top:8px}
+  .stage2 .card{background:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>TLI Connect 3.0 原型總入口</h1>
-  <p class="sub">Connect 3.0 互動原型・示範資料為虛構</p>
+  <h1>TLI Connect 3.0 原型導覽</h1>
+  <p class="sub">線上華語教學平台原型，三條產品線與各角色的操作畫面。</p>
 
-  <div class="note">
-    <strong>建議展示順序：</strong>
-    <div class="order" style="margin-top:6px">
-      <span>1 公開網站</span><i>→</i><span>2 學生會員區</span><i>→</i><span>3 教師端</span><i>→</i><span>4 管理後台・顧問作業區</span><i>→</i><span>5 管理後台・系統設定</span>
-    </div>
-    前台（使用者自己用）與後台（TLI 內部人員用）分開；顧問在後台建訂單、跟進、排課，不是獨立前台。<br>
-    標示「二階段」的畫面或分頁，為第二階段（整併實體教務）交付範圍。
+  <div class="hero-grid">
+    <a class="hero-card" href="原型/心智圖.html">
+      <h2>情境心智圖</h2>
+      <p>痛點 → 解決方案 → 操作路徑，先看整體脈絡再進畫面。</p>
+    </a>
+    <a class="hero-card" href="原型/情境導覽.html">
+      <h2>情境導覽</h2>
+      <p>依業務情境逐步點進畫面，看每一步誰操作、點哪個畫面。</p>
+    </a>
+    <a class="hero-card" href="TLI-Connect-3.0-整體發展藍圖.html">
+      <h2>整體發展藍圖<span class="hero-label">報告</span></h2>
+      <p>產品規劃邏輯與交付階段說明。</p>
+    </a>
   </div>
 
-  <div class="tier">前台・使用者自己用</div>
+  <div class="tier">產品線一・個人線上課程（B2C）</div>
   <div class="grid">
     <div class="card">
-      <h2>公開網站 <span class="tag">一階段</span></h2>
+      <h2>公開網站</h2>
       <p class="who">未登入訪客</p>
-      <p class="solve">解決：Connect 線上品牌的公開站——兩大主力（一對一線上課、彈性團體直播課）、AI 諮詢與明顯的預約諮詢／試聽 CTA；實體課導向舊官網（二階段整併）。</p>
       <ol>
         <li><a href="原型/公開網站/p01_home.html">首頁</a></li>
         <li><a href="原型/公開網站/p02_courses.html">課程總覽</a></li>
-        <li><a href="原型/公開網站/p03_course_detail.html">課程詳情（含銷售方案與適用對象）</a></li>
+        <li><a href="原型/公開網站/p03_course_detail.html">課程詳情</a></li>
         <li><a href="原型/公開網站/p04_teachers.html">師資</a></li>
         <li><a href="原型/公開網站/p05_about_locations.html">品牌與校區</a></li>
         <li><a href="原型/公開網站/p06_trial.html">免費試聽／諮詢申請</a></li>
         <li><a href="原型/公開網站/p07_login_register.html">登入／註冊</a></li>
-        <li><a href="原型/公開網站/p08_faq.html">常見問題（AI 問答）</a></li>
+        <li><a href="原型/公開網站/p08_faq.html">常見問題</a></li>
         <li><a href="原型/公開網站/p09_events.html">活動</a></li>
       </ol>
     </div>
     <div class="card">
-      <h2>學生會員區 <span class="tag">一階段</span></h2>
-      <p class="who">已登入學生（App 式：首頁／預約／課表／我的）</p>
-      <p class="solve">解決：下一堂課在哪、安全進入線上教室（不露連結）、行事曆／列表查詢直接預約、直播班入班、請假改期、兩步續費與金流、以課堂為單位的回饋。</p>
+      <h2>學員會員區</h2>
+      <p class="who">已登入學生</p>
       <ol>
         <li><a href="原型/會員區/m01_home.html">首頁</a></li>
-        <li><a href="原型/會員區/m02_booking.html">預約（選日期→時段→老師）</a></li>
+        <li><a href="原型/會員區/m02_booking.html">預約</a></li>
         <li><a href="原型/會員區/m03_schedule.html">課表</a></li>
         <li><a href="原型/會員區/m04_course_detail.html">我的方案詳情</a></li>
         <li><a href="原型/會員區/m05_leave.html">請假／改期</a></li>
         <li><a href="原型/會員區/m06_renew.html">續費／加購</a></li>
         <li><a href="原型/會員區/m07_profile.html">我的</a></li>
         <li><a href="原型/會員區/m08_self_paced.html">自學課程</a></li>
-        <li><a href="原型/會員區/m09_assessment.html">課堂紀錄與回饋（以課堂為單位）</a></li>
+        <li><a href="原型/會員區/m09_assessment.html">課堂紀錄與回饋</a></li>
         <li><a href="原型/會員區/m10_events.html">我的活動</a></li>
         <li><a href="原型/會員區/m11_quiz.html">線上測驗</a></li>
         <li><a href="原型/會員區/m12_enterprise_report.html">企業學習報告</a></li>
+        <li><a href="原型/會員區/m13_checkout.html?plan=1on1">結帳</a></li>
+        <li><a href="原型/會員區/m14_chat_booking.html">團體聊天室報名</a></li>
       </ol>
     </div>
     <div class="card">
-      <h2>教師端 <span class="tag">一階段基本版</span><span class="tag t2">二階段整併 Park 老師需求</span></h2>
-      <p class="who">老師（App 式：今日／課表／學生／時段／我的）</p>
-      <p class="solve">解決：一階段基本版＝今日課表、進教室放行、課後紀錄與回饋、我的學生、可授課時段、請假代課；二階段整併 Park 老師需求（時數薪資完整版、既有流程遷移）。</p>
+      <h2>老師</h2>
+      <p class="who">授課教師</p>
       <ol>
         <li><a href="原型/教師端/t01_today.html">今日</a></li>
         <li><a href="原型/教師端/t02_schedule.html">課表</a></li>
         <li><a href="原型/教師端/t03_lesson_record.html">課後紀錄與回饋</a></li>
         <li><a href="原型/教師端/t04_availability.html">可授課時段</a></li>
         <li><a href="原型/教師端/t05_leave_sub.html">請假／代課</a></li>
-        <li><a href="原型/教師端/t06_hours_pay.html">時數與薪資（二階段）</a></li>
-        <li><a href="原型/教師端/t07_students.html">我的學生（寫回饋、看學生回饋）</a></li>
+        <li><a href="原型/教師端/t06_hours_pay.html">時數與薪資</a></li>
+        <li><a href="原型/教師端/t07_students.html">我的學生</a></li>
       </ol>
     </div>
-  </div>
-
-  <div class="tier">後台・TLI 內部人員用</div>
-  <div class="grid">
     <div class="card">
-      <h2>管理後台・顧問作業區 <span class="tag">一階段</span></h2>
-      <p class="who">顧問（業務／客服／教務）</p>
-      <p class="solve">解決：待辦驅動、顧問建訂單（替舊網站／實體課程建立訂單並發付款連結；Connect 線上課由學生自助下單）、學生 360、續費追蹤、排課（預約制＋直播班）、AI 助手。</p>
+      <h2>顧問工作台</h2>
+      <p class="who">業務／客服／教務顧問</p>
       <ol>
         <li><a href="原型/顧問工作台/c01_today.html">今日待辦</a></li>
-        <li><a href="原型/顧問工作台/c08_inquiries.html">諮詢與試聽預約（前台諮詢／試聽單彙整）</a></li>
         <li><a href="原型/顧問工作台/c02_students.html">學生</a></li>
-        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360（互動歷程分頁二階段）</a></li>
-        <li><a href="原型/顧問工作台/c04_new_order.html">建訂單（付款方式統一清單；後台「新增訂單」共用此流程）</a></li>
+        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360</a></li>
+        <li><a href="原型/顧問工作台/c04_new_order.html">建訂單</a></li>
         <li><a href="原型/顧問工作台/c05_order_detail.html">訂單詳情</a></li>
         <li><a href="原型/顧問工作台/c06_renewal.html">續費追蹤</a></li>
-        <li><a href="原型/顧問工作台/c07_scheduling.html">排課（實體模式二階段）</a></li>
+        <li><a href="原型/顧問工作台/c07_scheduling.html">排課</a></li>
+        <li><a href="原型/顧問工作台/c08_inquiries.html">諮詢與試聽預約</a></li>
+        <li><a href="原型/顧問工作台/c09_appeals.html">申訴覆核</a></li>
       </ol>
     </div>
     <div class="card">
-      <h2>管理後台・系統設定 <span class="tag">一階段</span></h2>
-      <p class="who">總公司管理者／校區主管／行政人員／財務（依角色顯示選單，可切換示範角色）</p>
-      <p class="solve">解決：多角色 RBAC 與權限管理；會員管理與會員分類分開；產品三層主檔（產品線→產品系統→課程，含上課方式）與銷售方案設定（課程組成＋定價＋適用對象＋折扣）分開管理；訂單發票分張、報表、權限。</p>
+      <h2>TLI 後台</h2>
+      <p class="who">總公司管理者／校區主管／行政人員／財務</p>
       <ol>
-        <li><a href="原型/管理後台/a01_member_rules.html">會員管理（大量資料作業）</a></li>
-        <li><a href="原型/管理後台/a11_categories.html">會員分類（設定）</a></li>
+        <li><a href="原型/管理後台/a01_member_rules.html">會員管理</a></li>
         <li><a href="原型/管理後台/a02_products.html">產品管理（三層）</a></li>
         <li><a href="原型/管理後台/a03_product_detail.html">課程詳情</a></li>
-        <li><a href="原型/管理後台/a04_packages.html">銷售方案設定（含組合包）</a></li>
-        <li><a href="原型/管理後台/a05_orders.html">訂單（新增訂單→建訂單流程、批次匯入）</a></li>
-        <li><a href="原型/管理後台/a12_contracts.html">合約管理（進階功能二階段啟用）</a></li>
-        <li><a href="原型/管理後台/a13_receivables.html">應收與分期沖銷（進階功能二階段啟用）</a></li>
+        <li><a href="原型/管理後台/a04_packages.html">銷售方案設定</a></li>
+        <li><a href="原型/管理後台/a05_orders.html">訂單</a></li>
         <li><a href="原型/管理後台/a06_invoice_setting.html">發票與開票主體</a></li>
-        <li><a href="原型/管理後台/a07_reports.html">報表（擴充報表二階段）</a></li>
+        <li><a href="原型/管理後台/a07_reports.html">報表</a></li>
         <li><a href="原型/管理後台/a08_content_cms.html">內容管理（公開網站 CMS）</a></li>
-        <li><a href="原型/管理後台/a17_master_data.html">基礎資料設定（語言／等級／班型／上課方式／收費類目／校區）</a></li>
-        <li><a href="原型/管理後台/a09_permissions_notify.html">權限管理（帳號／角色／功能矩陣／資料範圍／紀錄）</a></li>
+        <li><a href="原型/管理後台/a09_permissions_notify.html">權限管理</a></li>
+        <li><a href="原型/管理後台/a10_teachers.html">老師管理</a></li>
+        <li><a href="原型/管理後台/a11_categories.html">會員分類</a></li>
+        <li><a href="原型/管理後台/a12_contracts.html">合約管理</a></li>
+        <li><a href="原型/管理後台/a13_receivables.html">應收與分期沖銷</a></li>
+        <li><a href="原型/管理後台/a14_feedback.html">學員回饋</a></li>
         <li><a href="原型/管理後台/a15_notifications.html">通知範本與系統參數</a></li>
-        <li><a href="原型/管理後台/a10_teachers.html">老師管理（薪資級距二階段）</a></li>
-        <li><a href="原型/管理後台/a14_feedback.html">學員回饋（管理者跟進・二階段）</a></li>
-        <li><a href="原型/管理後台/a18_resource_library.html">資源庫（五庫）</a></li>
+        <li><a href="原型/管理後台/a16_events.html">活動管理</a></li>
+        <li><a href="原型/管理後台/a17_master_data.html">基礎資料設定</a></li>
+        <li><a href="原型/管理後台/a18_resource_library.html">資源庫</a></li>
         <li><a href="原型/管理後台/a19_b2b_enterprise.html">B2B 企業客戶</a></li>
-        <li><a href="原型/管理後台/a16_events.html">活動管理（報名名單匯出）</a></li>
-      </ol>
-    </div>
-    <div class="card">
-      <h2>二階段交付範圍 <span class="tag t2">二階段（整併實體教務，8 個月）</span></h2>
-      <p class="who">第二階段才交付的畫面與分頁（散在各區，這裡集中列出）</p>
-      <p class="solve">說明：以下頁面已可點看示意；標「分頁／模式」者，該頁其餘部分屬一階段，只有指名的分頁或模式是二階段交付。</p>
-      <ol>
-        <li><a href="原型/顧問工作台/c07_scheduling.html">排課 → 「實體課」模式（排課作業／班型與班表／請假與代課／批次異動）</a></li>
-        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360 → 「互動歷程」分頁（CDP 串接＋客服對話貼標）</a></li>
-        <li><a href="原型/教師端/t06_hours_pay.html">教師端 → 時數與薪資</a></li>
-        <li><a href="原型/管理後台/a14_feedback.html">學員回饋管理（低分跟進與警示）</a></li>
-        <li><a href="原型/管理後台/a12_contracts.html">合約管理 → 進階功能啟用（線上簽署自動化）</a></li>
-        <li><a href="原型/管理後台/a13_receivables.html">應收與分期沖銷 → 運算邏輯啟用（自動沖銷／催收／對帳）</a></li>
-        <li><a href="原型/管理後台/a10_teachers.html">老師管理 → 「薪資級距」分頁</a></li>
-        <li><a href="原型/管理後台/a07_reports.html">報表 → 擴充報表（月週時數／四校對比／待續待排）</a></li>
+        <li><a href="原型/管理後台/a20_agents.html">代理商管理</a></li>
       </ol>
     </div>
   </div>
 
-  <div class="tier">B2B 企業產品線（新版：已整合進各端正式頁面）</div>
+  <div class="tier">產品線二・企業培訓（B2B）</div>
   <div class="grid">
-    <div class="card">
-      <h2>情境導覽 <span class="tag">先看這個</span></h2>
-      <p class="who">B2B 17 個情境＋B2C 20 個情境 → 每步誰操作、點哪個畫面、原型走到哪</p>
-      <p class="solve">說明：依業務情境逐步點進對應畫面；三條產品線共 47 個情境；文字版在 <code>B2B情境與流程對照表_v4.md</code>、<code>B2C情境與流程對照表_v3.md</code>、<code>合作夥伴情境與流程對照表_v3.md</code>。</p>
+    <div class="card compact">
+      <h2>企業方案頁</h2>
+      <p class="who">公開網站上的企業窗口入口</p>
       <ol>
-        <li><a href="原型/情境導覽.html">情境導覽（B2B／B2C／合作夥伴三分頁、情境×畫面矩陣）</a></li>
-        <li><a href="原型/心智圖.html">情境心智圖（三產品線 → 主題 → 目的 → 痛點 → 情境 → 流程，二階可隱藏，可匯出 PNG／PDF）</a></li>
+        <li><a href="原型/公開網站/p10_enterprise.html">企業方案頁</a></li>
       </ol>
     </div>
     <div class="card">
-      <h2>企業端・HR 專用後台 <span class="tag">新增</span></h2>
-      <p class="who">企業管理者（HR）：獨立登入，只看自己公司</p>
-      <p class="solve">解決：HR 自己看海外廠區員工的出勤率、時數、進度、老師評語（HR 可見層）；管理帳號；匯出 CSV 與申請系統串接；看合約參數與時數池。</p>
+      <h2>企業 HR 端</h2>
+      <p class="who">企業管理者（HR），獨立登入，只看自己公司</p>
       <ol>
-        <li><a href="原型/企業端/h01_dashboard.html">Dashboard（KPI、趨勢、需關注、評語摘要）</a></li>
-        <li><a href="原型/企業端/h02_employees.html">員工管理（邀請／停用／CSV 匯入）</a></li>
-        <li><a href="原型/企業端/h03_reports.html">學習報告（出勤率口徑、匯出 PDF／CSV）</a></li>
-        <li><a href="原型/企業端/h04_api.html">資料串接（串接狀態、CSV 說明、申請系統串接；API 本體二階）</a></li>
-        <li><a href="原型/企業端/h05_contract.html">合約與時數池（部門配額、續約申請）</a></li>
+        <li><a href="原型/企業端/h00_activate.html">企業帳號開通</a></li>
+        <li><a href="原型/企業端/h01_dashboard.html">Dashboard</a></li>
+        <li><a href="原型/企業端/h02_employees.html">員工管理</a></li>
+        <li><a href="原型/企業端/h03_reports.html">學習報告</a></li>
+        <li><a href="原型/企業端/h04_api.html">資料串接</a></li>
+        <li><a href="原型/企業端/h05_contract.html">合約與時數池</a></li>
+        <li><a href="原型/企業端/h06_appeals.html">申訴覆核</a></li>
       </ol>
     </div>
-    <div class="card">
-      <h2>各端 B2B 變動頁 <span class="tag">新版</span></h2>
-      <p class="who">公開網站／會員區／教師端／管理後台為 B2B 新增的變動</p>
-      <p class="solve">說明：新版頁面已取代舊頁；舊版留在 Connect3.0_重構規畫 資料夾。文件見 <code>B2B企業產品線_功能設計_v3.md</code> 第 2.1 節各端變動總表。</p>
-      <ol>
-        <li><a href="原型/公開網站/p01_home.html">首頁 v2（導覽「企業培訓」＋企業區塊）</a></li>
-        <li><a href="原型/公開網站/p10_enterprise.html">企業方案頁（新）</a></li>
-        <li><a href="原型/會員區/m02_booking.html">預約 v2（企業狀態條、時區切換、取消扣時數提示）</a></li>
-        <li><a href="原型/會員區/m12_enterprise_report.html">企業學習報告 v2（時數池、口徑說明、學員可見層評語）</a></li>
-        <li><a href="原型/教師端/t02_schedule.html">課表 v2（雙時區、跨日、企業學員篩選）</a></li>
-        <li><a href="原型/教師端/t03_lesson_record.html">課後紀錄 v2（評語兩層、出席三態免扣提示、客製教材）</a></li>
-        <li><a href="原型/教師端/t07_students.html">我的學生 v2（所屬企業、合約規則卡、客製教材）</a></li>
-        <li><a href="原型/管理後台/a19_b2b_enterprise.html">B2B 企業客戶 v2（合約參數含超額請假規則、串接需求單分頁）</a></li>
-        <li><a href="原型/管理後台/a04_packages.html">銷售方案 v2（企業共用時數池、階梯計價、零元試辦）</a></li>
-        <li><a href="原型/管理後台/a05_orders.html">訂單 v2（企業母帳號、零元試辦、子帳號扣時數、開票主體／幣別）</a></li>
-        <li><a href="原型/管理後台/a06_invoice_setting.html">開票主體 v2（海外公司登記國待定、稅制／範本／收款渠道參數化、主體間服務費）</a></li>
-        <li><a href="原型/管理後台/a07_reports.html">報表 v2（企業報表、依開票主體、主體間服務費對帳）</a></li>
-        <li><a href="原型/管理後台/a13_receivables.html">應收 v2（幣別／匯差、企業月結、外幣入帳）</a></li>
-        <li><a href="原型/會員區/m05_leave.html">請假 v2（免扣次數三種判定）</a></li>
-        <li><a href="原型/會員區/m07_profile.html">我的頁 v2（所屬組織、時區偏好、個資告知）</a></li>
-        <li><a href="原型/教師端/t04_availability.html">可授課時段 v2（雙時區刻度、海外可約區間）</a></li>
-        <li><a href="原型/顧問工作台/c08_inquiries.html">詢課單 v2（企業試辦申請承接、開通種子帳號、狀態流）</a></li>
-        <li><a href="原型/顧問工作台/c04_new_order.html">建訂單 v2（企業訂單分支）</a></li>
-        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360 v2（所屬企業與合約、企業評語 HR 可見層）</a></li>
-      </ol>
+    <div class="card compact">
+      <h2>企業員工學員</h2>
+      <p class="who">操作方式與一般學員相同</p>
+      <p class="pointer">→ 會員區：<a href="原型/會員區/m02_booking.html">預約</a>、<a href="原型/會員區/m05_leave.html">請假／改期</a>、<a href="原型/會員區/m12_enterprise_report.html">企業學習報告</a></p>
+    </div>
+    <div class="card compact">
+      <h2>後台企業客戶與合約</h2>
+      <p class="who">TLI 後台中涉及企業功能的頁面</p>
+      <p class="pointer">→ TLI 後台：<a href="原型/管理後台/a19_b2b_enterprise.html">B2B 企業客戶</a>、<a href="原型/管理後台/a04_packages.html">銷售方案設定</a>、<a href="原型/管理後台/a05_orders.html">訂單</a>、<a href="原型/管理後台/a06_invoice_setting.html">發票與開票主體</a>、<a href="原型/管理後台/a13_receivables.html">應收與分期沖銷</a>、<a href="原型/管理後台/a07_reports.html">報表</a></p>
+    </div>
+    <div class="card compact">
+      <h2>顧問承接</h2>
+      <p class="who">顧問工作台中涉及企業業務的頁面</p>
+      <p class="pointer">→ 顧問工作台：<a href="原型/顧問工作台/c08_inquiries.html">諮詢與試聽預約</a>、<a href="原型/顧問工作台/c04_new_order.html">建訂單</a>、<a href="原型/顧問工作台/c09_appeals.html">申訴覆核</a>、<a href="原型/顧問工作台/c06_renewal.html">續費追蹤</a></p>
     </div>
   </div>
 
-  <div class="tier">合作夥伴產品線（2026-09-09 新增：機構授權、代理商轉介）＋ B 端付款方式擴充</div>
+  <div class="tier">產品線三・合作夥伴</div>
   <div class="grid">
     <div class="card">
-      <h2>機構授權・大學加盟型 <span class="tag">新增</span></h2>
-      <p class="who">合作大學（付授權費＋人頭費）／大學的學生（期程內使用，不付費）</p>
-      <p class="solve">解決：學生用大學專屬代碼開通（無付款）；3 個月期程含大學半導體技能課程與 TLI 半導體中文；影片、音檔、測驗、TLI 老師帶的 30 分鐘團體聊天室；大學入口像一個分校後台。</p>
+      <h2>合作學校</h2>
+      <p class="who">合作大學／大學內學生</p>
       <ol>
-        <li><a href="原型/公開網站/p11_university.html">大學專屬入口（代碼或校內信箱驗證 → 直接開通）</a></li>
-        <li><a href="原型/會員區/m13_checkout.html?plan=1on1">學生自助結帳（B2C 用；機構方案由大學付費不在此購買）</a></li>
-        <li><a href="原型/會員區/m14_chat_booking.html">團體聊天室場次報名（TLI 老師帶、30 分鐘、名額與每週上限待定）</a></li>
+        <li><a href="原型/公開網站/p11_university.html">大學專屬入口</a></li>
         <li><a href="原型/機構端/u01_overview.html">機構端・概況</a></li>
-        <li><a href="原型/機構端/u02_students.html">機構端・學生名單（學期、權益到期）</a></li>
-        <li><a href="原型/機構端/u03_usage.html">機構端・使用報表（匯出 CSV）</a></li>
-        <li><a href="原型/機構端/u04_program.html">機構端・期程與課表（12 週示範、聊天室場次）</a></li>
+        <li><a href="原型/機構端/u02_students.html">機構端・學生名單</a></li>
+        <li><a href="原型/機構端/u03_usage.html">機構端・使用報表</a></li>
+        <li><a href="原型/機構端/u04_program.html">機構端・期程與課表</a></li>
       </ol>
+      <p class="pointer">→ 會員區：<a href="原型/會員區/m14_chat_booking.html">團體聊天室報名</a></p>
     </div>
     <div class="card">
-      <h2>代理商轉介 <span class="tag">新增</span></h2>
-      <p class="who">各城市代理商（只推薦、不代收款）／TLI 後台</p>
-      <p class="solve">解決：轉介碼與連結、學生歸屬、佣金報表（比例與有效期由 TLI 拍板）；學生直接向 TLI 付費。</p>
+      <h2>代理商</h2>
+      <p class="who">各城市代理商</p>
       <ol>
         <li><a href="原型/公開網站/p12_referral.html?ref=REF-SEA07">轉介落地頁（帶代碼）</a></li>
-        <li><a href="原型/公開網站/p12_referral.html">轉介落地頁（無代碼，輸入框）</a></li>
-        <li><a href="原型/代理商端/r01_dashboard.html">代理商端（概況、名單、佣金）</a></li>
-        <li><a href="原型/管理後台/a20_agents.html">後台・代理商管理（建檔、歸屬、結算）</a></li>
+        <li><a href="原型/公開網站/p12_referral.html">轉介落地頁（無代碼）</a></li>
+        <li><a href="原型/代理商端/r01_dashboard.html">代理商端</a></li>
+      </ol>
+      <p class="pointer">→ TLI 後台：<a href="原型/管理後台/a20_agents.html">代理商管理</a></p>
+    </div>
+  </div>
+
+  <div class="tier">共用設定</div>
+  <div class="grid">
+    <div class="card compact">
+      <h2>共用設定</h2>
+      <p class="who">跨產品線共用的系統設定</p>
+      <ol>
+        <li><a href="原型/管理後台/a17_master_data.html#params">參數設定層</a></li>
+        <li><a href="原型/管理後台/a06_invoice_setting.html">開票主體</a></li>
+        <li><a href="原型/管理後台/a18_resource_library.html">教材資源庫</a></li>
       </ol>
     </div>
+  </div>
+
+  <div class="tier">第二階段規畫</div>
+  <div class="stage2">
     <div class="card">
-      <h2>B 端客戶三型、付款方式、參數設定層 <span class="tag">擴充</span></h2>
-      <p class="who">顧問／後台財務／企業 HR</p>
-      <p class="solve">解決：客戶類型企業／機構授權／代理商分流；付款方式分期／月結／預付款倒扣；計價單位時數池或預付金額池；長期客戶「複製上次合約」與專案型方案。</p>
+      <p class="who">下一階段（整併實體教務）才交付的畫面與分頁，先在此列出示意</p>
       <ol>
-        <li><a href="原型/管理後台/a19_b2b_enterprise.html">B2B 客戶（三型分頁、付款方式、複製上次合約、版本歷史）</a></li>
-        <li><a href="原型/管理後台/a04_packages.html">銷售方案（專案型方案、從上次合約複製）</a></li>
-        <li><a href="原型/管理後台/a13_receivables.html">應收（預付款倒扣明細、加值）</a></li>
-        <li><a href="原型/企業端/h05_contract.html">企業端・合約（付款方式、預付餘額卡）</a></li>
-        <li><a href="原型/管理後台/a17_master_data.html#params">基礎資料設定・參數設定層（20 個規則參數集中管理，合約或機構可覆寫）</a></li>
-        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360（新增：測驗結果、回饋彙整分頁）</a></li>
+        <li><a href="原型/顧問工作台/c07_scheduling.html">排課 → 實體課模式（排課作業／班型與班表／請假與代課／批次異動）</a></li>
+        <li><a href="原型/顧問工作台/c03_student_detail.html">學生 360 → 互動歷程分頁（CDP 串接＋客服對話貼標）</a></li>
+        <li><a href="原型/教師端/t06_hours_pay.html">老師時數與薪資</a></li>
+        <li><a href="原型/管理後台/a14_feedback.html">學員回饋管理（低分跟進與警示）</a></li>
+        <li><a href="原型/管理後台/a12_contracts.html">合約管理 → 線上簽署自動化</a></li>
+        <li><a href="原型/管理後台/a13_receivables.html">應收與分期沖銷 → 自動沖銷／催收／對帳</a></li>
+        <li><a href="原型/管理後台/a10_teachers.html">老師管理 → 薪資級距分頁</a></li>
+        <li><a href="原型/管理後台/a07_reports.html">報表 → 月週時數／四校對比／待續待排</a></li>
       </ol>
     </div>
   </div>
