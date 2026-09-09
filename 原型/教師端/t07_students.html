@@ -124,6 +124,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .review-summary .rs-score span{font-size:14px;color:var(--c-accent);}
 .tag-stat{display:inline-block;background:#fff;border:1px solid var(--c-border);border-radius:20px;padding:4px 10px;font-size:11.5px;color:var(--c-text);margin:4px 6px 0 0;}
 .quote{font-size:12.5px;color:var(--c-text);background:#fff;border-left:3px solid var(--c-primary);padding:8px 10px;margin-top:8px;line-height:1.6;}
+/* ---------- B2B 企業合約規則／企業客製教材（v2 新增） ---------- */
+.demo-tag{font-size:10.5px;color:#98A2B3;font-weight:400;}
+.stu-card .meta .ent-line{color:#0B6B52;font-weight:700;}
+.ent-rule-card{background:#EAF6F2;border:1px solid #BEE6D9;border-radius:var(--radius-sm);padding:12px 14px;}
+.ent-rule-card .ent-row{display:flex;justify-content:space-between;font-size:12.5px;color:#0B6B52;padding:5px 0;border-top:1px solid #BEE6D9;}
+.ent-rule-card .ent-row:first-child{border-top:none;}
+.ent-material-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--c-border);font-size:12.5px;}
+.ent-material-row:first-child{border-top:none;}
+.ent-material-row .m-name{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.mat-lvbadge{display:inline-flex;align-items:center;gap:4px;}
+.mat-lvbadge svg{width:11px;height:11px;}
 </style>
 </head>
 <body>
@@ -184,6 +195,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <h3 id="dTitle">學生詳情</h3>
     <p class="muted small" id="dMeta" style="margin:2px 0 14px;">—</p>
 
+    <div class="sheet-sec hidden" id="dEntRuleSec">
+      <div class="lbl">企業合約規則<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+      <div class="ent-rule-card" id="dEntRuleCard"></div>
+    </div>
+
+    <div class="sheet-sec hidden" id="dEntMaterialSec">
+      <div class="lbl">企業客製教材<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+      <div id="dEntMaterialList"></div>
+      <p class="small muted" style="margin:8px 0 0;">企業專屬教材只能用於該企業課程。</p>
+    </div>
+
     <div class="sheet-sec">
       <div class="lbl">四技能趨勢（近 5 堂平均）</div>
       <div id="dSkills"></div>
@@ -216,6 +238,8 @@ document.addEventListener('click',function(e){
 
 var STUDENTS = [
   {id:'wang', name:'王小明', level:'中級 2', type:'個人班', campus:'士林校區', next:'今天 15:00', hasWeek:true, recordId:'L1',
+    enterprise:{company:'匯泰半導體股份有限公司 美國廠區', tzLabel:'美國廠區（UTC-7）', cancelDeadlineHours:24, freeCancelRemain:1, freeCancelTotal:2,
+      materials:[{name:'產線術語單元 第 1 課', level:'企業專屬', href:'../管理後台/a18_resource_library.html'},{name:'安全作業會話情境', level:'企業專屬', href:'../管理後台/a18_resource_library.html'},{name:'日常會話基礎教材（通用版）', level:'公開通用', href:'../管理後台/a18_resource_library.html'}]},
     skills:{listen:4,speak:4,read:4,write:3},
     records:[
       {date:'08/24（一）09:00', material:'《NPC》第 5 冊 第 3 課', note:'「把」字句練習進步，發音需加強聲調。'},
@@ -224,6 +248,8 @@ var STUDENTS = [
     ],
     review:{avg:4.9, count:6, tags:[['有耐心',5],['講解清楚',4],['很會鼓勵人',3]], quotes:['老師教得很仔細，發音問題都會馬上糾正。','上課氣氛輕鬆，我比較敢開口說了。','很喜歡老師用情境對話教學。']}},
   {id:'chen', name:'陳雅婷', level:'中級 2', type:'小組班', campus:'士林校區', next:'明天 10:30', hasWeek:true, recordId:'L2',
+    enterprise:{company:'北辰精密工業股份有限公司 日本廠區', tzLabel:'日本廠區（UTC+9）', cancelDeadlineHours:24, freeCancelRemain:2, freeCancelTotal:2,
+      materials:[{name:'商務會議會話單元', level:'公開通用', href:'../管理後台/a18_resource_library.html'},{name:'設備操作會話補充教材', level:'企業專屬', href:'../管理後台/a18_resource_library.html'}]},
     skills:{listen:4,speak:5,read:4,write:4},
     records:[
       {date:'08/24（一）10:30', material:'《NPC》第 5 冊 第 2 課', note:'口說表現亮眼，可加快進度。'},
@@ -281,6 +307,15 @@ function isPending(s){
   return s.recordId && localStorage.getItem('tli_teacher_record_'+s.recordId) !== '1';
 }
 
+/* 企業客製教材授權層級標記（v2 新增）：企業專屬教材鎖形圖示／公開通用教材一般徽章 */
+function lockSvg(){
+  return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="10" height="8" rx="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg>';
+}
+function materialLevelBadge(level){
+  if (level==='企業專屬') return '<span class="badge badge-warn mat-lvbadge">'+lockSvg()+'企業專屬</span>';
+  return '<span class="badge badge-ok mat-lvbadge">公開通用</span>';
+}
+
 function renderList(){
   var kw = document.getElementById('searchInput').value.trim();
   var listEl = document.getElementById('studentList');
@@ -295,10 +330,11 @@ function renderList(){
     var card = document.createElement('div');
     card.className = 'stu-card';
     card.onclick = function(){ openDetail(s.id); };
+    var entLine = s.enterprise ? ('<div class="meta ent-line">所屬企業：'+s.enterprise.company+'・廠區時區 '+s.enterprise.tzLabel+'</div>') : '';
     card.innerHTML =
       '<div class="avatar">'+s.name.charAt(0)+(pending?'<span class="pending-dot"></span>':'')+'</div>'+
       '<div class="body"><h4>'+s.name+' <span class="badge badge-info" style="margin-left:2px;">'+s.level+'</span></h4>'+
-      '<div class="meta">'+s.type+'・'+s.campus+'・下次上課：'+s.next+(pending?'　<span style="color:var(--c-accent-dark);font-weight:700;">・待寫回饋</span>':'')+'</div></div>'+
+      '<div class="meta">'+s.type+'・'+s.campus+'・下次上課：'+s.next+(pending?'　<span style="color:var(--c-accent-dark);font-weight:700;">・待寫回饋</span>':'')+'</div>'+entLine+'</div>'+
       '<div class="trail">›</div>';
     listEl.appendChild(card);
   });
@@ -311,6 +347,25 @@ function openDetail(id){
   var s = STUDENTS.filter(function(x){return x.id===id;})[0];
   document.getElementById('dTitle').textContent = s.name;
   document.getElementById('dMeta').textContent = s.level+'・'+s.type+'・'+s.campus+'・下次上課：'+s.next;
+
+  var entRuleSec = document.getElementById('dEntRuleSec');
+  var entMaterialSec = document.getElementById('dEntMaterialSec');
+  if(s.enterprise){
+    var ent = s.enterprise;
+    document.getElementById('dEntRuleCard').innerHTML =
+      '<div class="ent-row"><span>所屬企業</span><span>'+ent.company+'</span></div>'+
+      '<div class="ent-row"><span>廠區時區</span><span>'+ent.tzLabel+'</span></div>'+
+      '<div class="ent-row"><span>取消時限</span><span>'+ent.cancelDeadlineHours+' 小時</span></div>'+
+      '<div class="ent-row"><span>本月免扣次數</span><span>'+ent.freeCancelRemain+'／'+ent.freeCancelTotal+' 次</span></div>';
+    entRuleSec.classList.remove('hidden');
+    document.getElementById('dEntMaterialList').innerHTML = (ent.materials||[]).map(function(m){
+      return '<div class="ent-material-row"><span class="m-name">'+m.name+' '+materialLevelBadge(m.level)+'</span><a class="btn btn-outline btn-sm" href="'+m.href+'">查看教材</a></div>';
+    }).join('') || '<p class="small muted">目前尚無企業客製教材。</p>';
+    entMaterialSec.classList.remove('hidden');
+  }else{
+    entRuleSec.classList.add('hidden');
+    entMaterialSec.classList.add('hidden');
+  }
 
   var skillsEl = document.getElementById('dSkills');
   skillsEl.innerHTML = '';

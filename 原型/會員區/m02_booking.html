@@ -215,6 +215,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .search-chip-block.hidden{display:none;}
 mark.search-hit{background:#FDECC8;color:inherit;border-radius:3px;padding:0 1px;}
 .sp-course{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;}
+/* ---------- B2B 企業學員：狀態條／時區切換／已預約清單（v2 新增） ---------- */
+.enterprise-bar{background:#EAF6F2;border:1px solid #BEE6D9;border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;}
+.enterprise-bar .eb-top{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;color:#0B6B52;margin-bottom:8px;flex-wrap:wrap;row-gap:4px;}
+.enterprise-bar .eb-top svg{width:16px;height:16px;flex:none;}
+.enterprise-bar .eb-top-text,.enterprise-bar .eb-top-text #ebCompanyName{white-space:nowrap;}
+@media(max-width:420px){.enterprise-bar .eb-top{flex-direction:column;align-items:flex-start;gap:2px;}}
+.enterprise-bar .eb-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.enterprise-bar .eb-stat{font-size:11.5px;color:#0B6B52;}
+.enterprise-bar .eb-stat b{display:block;font-size:15px;font-weight:800;color:#075A45;}
+.demo-tag{font-size:10.5px;color:#98A2B3;font-weight:400;margin-left:6px;}
+.tz-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.tz-row .tz-label{font-size:12px;color:var(--c-muted);font-weight:700;}
+.tz-local-line{font-size:10.5px;color:var(--c-muted);display:block;margin-top:1px;font-weight:400;}
+.my-booking-card{margin-bottom:16px;}
+.my-booking-row{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:12px 13px;}
+.my-booking-row + .my-booking-row{margin-top:10px;}
+.my-booking-row .mb-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+.my-booking-row .mb-title{font-size:13.5px;font-weight:700;}
+.my-booking-row .mb-meta{font-size:12px;color:var(--c-muted);margin-top:2px;}
+.my-booking-row .mb-actions{display:flex;gap:8px;margin-top:10px;}
+.mb-flag-ok{color:#0B6B52;font-weight:700;}
+.mb-flag-warn{color:#B42318;font-weight:700;}
+.rule-note{font-size:11.5px;color:var(--c-muted);margin-top:8px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -225,6 +248,7 @@ mark.search-hit{background:#FDECC8;color:inherit;border-radius:3px;padding:0 1px
     <a class="side-link active" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
+    <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
     <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
     <a class="side-link" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
@@ -255,9 +279,38 @@ mark.search-hit{background:#FDECC8;color:inherit;border-radius:3px;padding:0 1px
   <main class="content">
     <p class="page-sub" data-i18n-zh="依條件搜尋可預約的課堂，切換行事曆或列表檢視。" data-i18n-en="Search bookable classes by filter, switch between calendar and list.">依條件搜尋可預約的課堂，切換行事曆或列表檢視。</p>
 
-    <div class="banner banner-info" id="balanceBanner">目前剩餘 <strong id="remainCount">8</strong> 堂．效期至 2026-09-08</div>
+    <div class="enterprise-bar" id="enterpriseBar">
+      <div class="eb-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M9 13h1M14 9h1M14 13h1M9 21v-4h6v4"/></svg>
+        <span class="eb-top-text">企業學員：<span id="ebCompanyName">範例半導體 美國廠區</span></span>
+        <span class="demo-tag">示範畫面，資料為模擬數字</span>
+      </div>
+      <div class="eb-stats">
+        <div class="eb-stat">本月剩餘免扣取消次數<b id="ebFreeCancel">1／2 次</b></div>
+        <div class="eb-stat">企業時數池餘額<b id="ebHoursPool">44／120 小時</b></div>
+      </div>
+    </div>
+
+    <div class="banner banner-info" id="balanceBanner">個人方案目前剩餘 <strong id="remainCount">8</strong> 堂．效期至 2026-09-08</div>
 
     <div class="banner banner-warn hidden reschedule-banner" id="rescheduleBanner"></div>
+
+    <div class="tz-row" id="tzRow">
+      <span class="tz-label">課程時段時區</span>
+      <div class="seg" id="tzSeg">
+        <button class="active" onclick="setTimezoneMode('taipei')">台北時間</button>
+        <button onclick="setTimezoneMode('dual')">台北／廠區當地對照</button>
+      </div>
+    </div>
+
+    <div class="card my-booking-card" id="myBookingCard">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">我的已預約（企業合約規則示範）</h3>
+      </div>
+      <p class="small muted" style="margin:6px 0 12px;">一般學員沿用 12 小時取消規則；企業學員的取消時限、改期次數由所屬企業合約設定，以下以貴公司合約參數示範。</p>
+      <div id="myBookingList"></div>
+      <p class="rule-note">目前企業合約設定：取消時限 <strong id="ebDeadlineText">24</strong> 小時（距上課時間）；超過時限取消將扣時數，若本月免扣次數尚有餘額，可改申請免扣請假、不扣時數。取消時限以企業慣用時區（合約設定）計算。</p>
+    </div>
 
     <div id="searchArea">
       <div class="search-box-wrap">
@@ -417,6 +470,7 @@ mark.search-hit{background:#FDECC8;color:inherit;border-radius:3px;padding:0 1px
     <a href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a href="m02_booking.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
   </nav>
 </div>
@@ -432,10 +486,27 @@ mark.search-hit{background:#FDECC8;color:inherit;border-radius:3px;padding:0 1px
       <div class="small"><strong>時間：</strong><span id="slotTime">－</span></div>
       <div class="small"><strong>地點／方式：</strong><span id="slotLocation">－</span></div>
       <div class="small" id="slotCreditLine"><strong>扣堂：</strong>－</div>
+      <div class="small" id="slotEnterpriseRule">－</div>
     </div>
     <div class="stack">
       <button class="btn btn-primary btn-block" id="slotConfirmBtn" onclick="confirmSlotBooking()">確認預約（扣 1 堂）</button>
       <button class="btn btn-outline btn-block" onclick="closeSlotSheet()">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-overlay hidden" id="cancelOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 id="cancelSheetTitle">－</h3>
+    <p class="muted small" id="cancelSheetMeta">－</p>
+    <div class="divider"></div>
+    <div class="small" id="cancelSheetBody" style="margin-bottom:8px;line-height:1.7;">－</div>
+    <div class="small muted" id="cancelSheetTzLine" style="margin-bottom:14px;">－</div>
+    <div class="stack">
+      <button class="btn btn-outline btn-block hidden" id="cancelFreeBtn" onclick="confirmCancelFree()">改申請免扣請假</button>
+      <button class="btn btn-primary btn-block" id="cancelDeductBtn" onclick="confirmCancelDeduct()">確認取消</button>
+      <button class="btn btn-outline btn-block" onclick="closeCancelSheet()">先不取消</button>
     </div>
   </div>
 </div>
@@ -516,6 +587,151 @@ function toggleBell(){document.getElementById('bellPanel').classList.toggle('ope
 document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
 });
+
+/* ================= B2B 企業合約規則示範（v2 新增，資料為模擬數字） ================= */
+var ENTERPRISE={
+  companyName:'範例半導體 美國廠區',
+  timezoneLabel:'美國廠區當地（UTC-7，無日光節約時間）',
+  timezoneOffsetHours:-15, /* 廠區當地 = 台北時間 -15 小時 */
+  freeCancelTotal:2, freeCancelUsed:1,
+  hoursPoolTotal:120, hoursPoolUsed:76,
+  cancelDeadlineHours:24
+};
+var tzMode='taipei';
+function freeCancelRemain(){ return Math.max(0, ENTERPRISE.freeCancelTotal-ENTERPRISE.freeCancelUsed); }
+function hoursPoolRemain(){ return Math.max(0, ENTERPRISE.hoursPoolTotal-ENTERPRISE.hoursPoolUsed); }
+function renderEnterpriseBar(){
+  document.getElementById('ebCompanyName').textContent=ENTERPRISE.companyName;
+  document.getElementById('ebFreeCancel').textContent=freeCancelRemain()+'／'+ENTERPRISE.freeCancelTotal+' 次';
+  document.getElementById('ebHoursPool').textContent=hoursPoolRemain()+'／'+ENTERPRISE.hoursPoolTotal+' 小時';
+  document.getElementById('ebDeadlineText').textContent=ENTERPRISE.cancelDeadlineHours;
+}
+function taipeiToLocal(d){ return new Date(d.getTime()+ENTERPRISE.timezoneOffsetHours*3600000); }
+function fmtOneTime(dt){
+  var wd='日一二三四五六';
+  return (dt.getMonth()+1)+'/'+String(dt.getDate()).padStart(2,'0')+'（'+wd.charAt(dt.getDay())+'）'+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+}
+function fmtDualTime(d){
+  if(tzMode==='taipei') return fmtOneTime(d)+'　台北時間';
+  return fmtOneTime(d)+'　台北時間／'+fmtOneTime(taipeiToLocal(d))+'　廠區當地';
+}
+function setTimezoneMode(mode){
+  tzMode=mode;
+  document.querySelectorAll('#tzSeg button').forEach(function(b,i){
+    b.classList.toggle('active', (mode==='taipei'&&i===0)||(mode==='dual'&&i===1));
+  });
+  showToast(mode==='dual' ? '已顯示台北與廠區當地雙時區對照' : '已切換為台北時間單一顯示');
+  renderMyBookings();
+  renderAll();
+}
+
+/* ================= 我的已預約：企業合約取消／改期規則示範（v2 新增） ================= */
+var NOW_MOMENT=new Date(2026,7,25,10,0,0);
+var activeRescheduleBookingId=null;
+var MY_BOOKINGS=[
+  {id:'mb1', title:'中文一對一－會話進階', teacher:'杜老師', loc:'線上 Zoom', start:new Date(2026,7,29,10,0), cancelled:false},
+  {id:'mb2', title:'中文一對一－聽力加強', teacher:'陳老師', loc:'線上 Zoom', start:new Date(2026,7,25,19,0), cancelled:false}
+];
+function hoursUntil(d){ return (d-NOW_MOMENT)/3600000; }
+function renderMyBookings(){
+  var wrap=document.getElementById('myBookingList');
+  var active=MY_BOOKINGS.filter(function(b){return !b.cancelled;});
+  if(active.length===0){
+    wrap.innerHTML='<p class="small muted">目前沒有已預約課程。</p>';
+    return;
+  }
+  wrap.innerHTML=active.map(function(b){
+    var hu=hoursUntil(b.start);
+    var overLimit=hu<ENTERPRISE.cancelDeadlineHours;
+    var flag=overLimit
+      ? '<span class="mb-flag-warn">已超過企業合約取消時限，取消將扣時數</span>'
+      : '<span class="mb-flag-ok">時限內，取消或改期不扣時數</span>';
+    return '<div class="my-booking-row" data-id="'+b.id+'">'+
+      '<div class="mb-top"><div>'+
+        '<div class="mb-title">'+b.title+'</div>'+
+        '<div class="mb-meta">'+fmtDualTime(b.start)+'・'+b.teacher+'・'+b.loc+'</div>'+
+        '<div class="mb-meta" style="margin-top:4px;">'+flag+'</div>'+
+      '</div></div>'+
+      '<div class="mb-actions">'+
+        '<button class="btn btn-outline btn-sm" onclick="openCancelSheet(\''+b.id+'\')">取消</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="startReschedule(\''+b.id+'\')">改期</button>'+
+      '</div></div>';
+  }).join('');
+}
+var activeCancelId=null;
+function openCancelSheet(id){
+  var b=MY_BOOKINGS.filter(function(x){return x.id===id;})[0];
+  if(!b) return;
+  activeCancelId=id;
+  var hu=hoursUntil(b.start);
+  var overLimit=hu<ENTERPRISE.cancelDeadlineHours;
+  document.getElementById('cancelSheetTitle').textContent=b.title;
+  document.getElementById('cancelSheetMeta').textContent=fmtDualTime(b.start)+'・'+b.teacher;
+  var body=document.getElementById('cancelSheetBody');
+  var freeBtn=document.getElementById('cancelFreeBtn');
+  var deductBtn=document.getElementById('cancelDeductBtn');
+  var tzLine=document.getElementById('cancelSheetTzLine');
+  tzLine.textContent='以企業慣用時區 '+fmtOneTime(b.start)+' 計算，你的當地時間為 '+fmtOneTime(taipeiToLocal(b.start))+'（示範數字）。';
+  if(!overLimit){
+    body.textContent='距上課還有約 '+Math.round(hu)+' 小時，在企業合約 '+ENTERPRISE.cancelDeadlineHours+' 小時取消時限內，取消不扣時數。';
+    freeBtn.classList.add('hidden');
+    deductBtn.textContent='確認取消（不扣時數）';
+    deductBtn.className='btn btn-primary btn-block';
+  }else{
+    if(freeCancelRemain()>0){
+      body.textContent='距上課僅剩約 '+Math.max(0,Math.round(hu))+' 小時，已超過企業合約 '+ENTERPRISE.cancelDeadlineHours+' 小時取消時限。直接取消將扣 1 堂時數；本月免扣取消次數尚餘 '+freeCancelRemain()+' 次，可改申請免扣請假，不扣時數。';
+      freeBtn.classList.remove('hidden');
+      freeBtn.textContent='改申請免扣請假（剩 '+freeCancelRemain()+' 次，不扣時數）';
+    }else{
+      body.textContent='距上課僅剩約 '+Math.max(0,Math.round(hu))+' 小時，已超過企業合約 '+ENTERPRISE.cancelDeadlineHours+' 小時取消時限，且本月免扣次數已用完，取消將記為缺席並扣 1 堂時數。若為產線突發或不可歸責事由，可在取消後提出申訴由 HR 或顧問覆核。';
+      freeBtn.classList.add('hidden');
+    }
+    deductBtn.textContent='確認取消（扣 1 堂時數）';
+    deductBtn.className='btn btn-danger-outline btn-block';
+  }
+  document.getElementById('cancelOverlay').classList.remove('hidden');
+}
+function closeCancelSheet(){ document.getElementById('cancelOverlay').classList.add('hidden'); }
+function confirmCancelDeduct(){
+  var b=MY_BOOKINGS.filter(function(x){return x.id===activeCancelId;})[0];
+  if(!b) return;
+  var overLimit=hoursUntil(b.start)<ENTERPRISE.cancelDeadlineHours;
+  b.cancelled=true;
+  closeCancelSheet();
+  if(overLimit){
+    ENTERPRISE.hoursPoolUsed=Math.min(ENTERPRISE.hoursPoolTotal, ENTERPRISE.hoursPoolUsed+1);
+    showToast('已取消・已扣 1 堂時數');
+  }else{
+    showToast('已取消・未扣時數');
+  }
+  renderEnterpriseBar();
+  renderMyBookings();
+}
+function confirmCancelFree(){
+  var b=MY_BOOKINGS.filter(function(x){return x.id===activeCancelId;})[0];
+  if(!b) return;
+  b.cancelled=true;
+  ENTERPRISE.freeCancelUsed=Math.min(ENTERPRISE.freeCancelTotal, ENTERPRISE.freeCancelUsed+1);
+  closeCancelSheet();
+  showToast('已改申請免扣請假・未扣時數，本月免扣次數剩 '+freeCancelRemain()+' 次');
+  renderEnterpriseBar();
+  renderMyBookings();
+}
+function startReschedule(id){
+  var b=MY_BOOKINGS.filter(function(x){return x.id===id;})[0];
+  if(!b) return;
+  rescheduleMode=true;
+  rescheduleOrigTitle=b.title;
+  rescheduleOrigTime=fmtDualTime(b.start);
+  activeRescheduleBookingId=id;
+  var rb=document.getElementById('rescheduleBanner');
+  rb.classList.remove('hidden');
+  rb.className='banner banner-warn reschedule-banner';
+  rb.textContent='改期：原 '+rescheduleOrigTime+'　'+rescheduleOrigTitle+'・請在下方選擇新時段完成改期';
+  showToast('請在下方選擇新時段完成改期');
+  var area=document.getElementById('searchArea');
+  if(area && area.scrollIntoView) area.scrollIntoView({behavior:'smooth', block:'start'});
+}
 
 /* ================= 資料模型 ================= */
 var TEACHERS={du:{name:'杜老師',spec:'會話進階'},lin:{name:'林老師',spec:'商務中文'},chen:{name:'陳老師',spec:'發音矯正'}};
@@ -820,13 +1036,15 @@ function shiftWeek(dir){
 }
 
 /* ================= 渲染 ================= */
+function slotDateObj(s){ return new Date(TODAY.getTime()+s.dayIndex*86400000+s.hour*3600000); }
 function slotPillHtml(s){
   var cls='slot-pill '+typeCssClass(s.type);
   if(s.myBooked) cls+=' booked';
   else if(isFull(s)) cls+=' full';
   var teacherShort=TEACHERS[s.teacher].name;
+  var localLine = tzMode==='dual' ? ('<span class="tz-local-line">廠區當地 '+fmtOneTime(taipeiToLocal(slotDateObj(s)))+'</span>') : '';
   return '<button class="'+cls+'" onclick="openSlotSheet(\''+s.id+'\')" title="'+escapeHtml(s.courseName)+'">'+
-    '<span class="sp-time">'+s.time+'</span>'+
+    '<span class="sp-time">'+s.time+'</span>'+localLine+
     '<span class="sp-meta sp-course">'+highlightMatch(s.courseName, searchQuery)+'</span>'+
     '<span class="sp-meta">'+s.type+'・'+highlightMatch(teacherShort, searchQuery)+'</span>'+
     '<span class="sp-meta">'+seatsLabel(s)+'</span>'+
@@ -885,9 +1103,10 @@ function renderList(){
       var btnCls = s.myBooked ? 'btn-outline' : (full ? 'btn-outline' : 'btn-primary');
       var disabledAttr = (s.myBooked || full) ? 'disabled' : '';
       var onclickAttr = (s.myBooked || full) ? '' : ("onclick=\"openSlotSheet('"+s.id+"')\"");
+      var listLocalLine = tzMode==='dual' ? ('<span class="tz-local-line">廠區當地 '+fmtOneTime(taipeiToLocal(slotDateObj(s)))+'</span>') : '';
       html+='<div class="list-row">'+
         '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>'+
-        '<div class="body"><h4>'+s.time+' '+highlightMatch(s.courseName, searchQuery)+'</h4><p>'+highlightMatch(TEACHERS[s.teacher].name, searchQuery)+'・'+LOCATIONS[s.loc].name+'・'+seatsLabel(s)+'</p></div>'+
+        '<div class="body"><h4>'+s.time+' '+highlightMatch(s.courseName, searchQuery)+'</h4><p>'+highlightMatch(TEACHERS[s.teacher].name, searchQuery)+'・'+LOCATIONS[s.loc].name+'・'+seatsLabel(s)+'</p>'+listLocalLine+'</div>'+
         '<div class="trail"><button class="btn btn-sm '+btnCls+'" '+disabledAttr+' '+onclickAttr+'>'+btnLabel+'</button></div>'+
       '</div>';
     });
@@ -994,17 +1213,21 @@ function openSlotSheet(id){
   document.getElementById('slotSheetTitle').textContent=s.courseName;
   document.getElementById('slotSheetMeta').textContent=s.date+'（'+s.weekday+'）'+s.time+' 開始';
   document.getElementById('slotTeacher').textContent=TEACHERS[s.teacher].name;
-  document.getElementById('slotTime').textContent=s.date+'（'+s.weekday+'）'+s.time;
+  var slotDate=new Date(TODAY.getTime()+s.dayIndex*86400000+s.hour*3600000);
+  document.getElementById('slotTime').textContent=fmtDualTime(slotDate);
   document.getElementById('slotLocation').textContent=LOCATIONS[s.loc].name;
   var creditLine=document.getElementById('slotCreditLine');
   var confirmBtn=document.getElementById('slotConfirmBtn');
+  var enterpriseRuleEl=document.getElementById('slotEnterpriseRule');
   if(rescheduleMode){
     creditLine.innerHTML='<strong>說明：</strong>改期不扣堂數，原時段將自動取消。';
     confirmBtn.textContent='確認改期至此時段';
+    enterpriseRuleEl.innerHTML='<strong>企業合約規則：</strong>取消時限 '+ENTERPRISE.cancelDeadlineHours+' 小時、本月免扣取消次數 '+freeCancelRemain()+'／'+ENTERPRISE.freeCancelTotal+' 次；一般學員沿用 12 小時規則，企業規則由合約設定，取消時限以企業慣用時區（合約設定）計算。<br>以企業慣用時區 '+fmtOneTime(slotDate)+' 計算，你的當地時間為 '+fmtOneTime(taipeiToLocal(slotDate))+'（示範數字）。';
   }else{
     var previewRemain=Math.max(0,remaining-1);
     creditLine.innerHTML='<strong>扣堂：</strong>扣 1 堂・預約後剩餘 '+previewRemain+' 堂';
     confirmBtn.textContent='確認預約（扣 1 堂）';
+    enterpriseRuleEl.innerHTML='<strong>企業合約規則：</strong>取消時限 '+ENTERPRISE.cancelDeadlineHours+' 小時（一般學員沿用 12 小時規則）、本月免扣取消次數 '+freeCancelRemain()+'／'+ENTERPRISE.freeCancelTotal+' 次、改期規則依合約設定。';
   }
   document.getElementById('slotOverlay').classList.remove('hidden');
 }
@@ -1022,6 +1245,14 @@ function confirmSlotBooking(){
     rb.className='banner banner-success reschedule-banner';
     rb.textContent='已改期：新時段 '+s.date+'（'+s.weekday+'）'+s.time+'・'+TEACHERS[s.teacher].name+'（原 '+rescheduleOrigTime+' '+rescheduleOrigTitle+' 已取消）';
     showToast('已改期成功');
+    if(activeRescheduleBookingId){
+      var origBooking=MY_BOOKINGS.filter(function(x){return x.id===activeRescheduleBookingId;})[0];
+      if(origBooking) origBooking.cancelled=true;
+      var newStart=new Date(TODAY.getTime()+s.dayIndex*86400000+s.hour*3600000);
+      MY_BOOKINGS.push({id:'mb'+(MY_BOOKINGS.length+1), title:s.courseName, teacher:TEACHERS[s.teacher].name, loc:LOCATIONS[s.loc].name, start:newStart, cancelled:false});
+      activeRescheduleBookingId=null;
+      renderMyBookings();
+    }
   }else{
     remaining=Math.max(0,remaining-1);
     document.getElementById('remainCount').textContent=remaining;
@@ -1042,6 +1273,8 @@ if(rescheduleMode){
   rb0.classList.remove('hidden');
   rb0.textContent='改期：原 '+rescheduleOrigTime+'　'+rescheduleOrigTitle;
 }
+renderEnterpriseBar();
+renderMyBookings();
 initFilters();
 renderHotChips();
 renderRecentChips();

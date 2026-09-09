@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代理商推薦｜TLI Connect</title>
+<meta name="description" content="TLI Connect 代理商轉介頁：透過代理商專屬連結或轉介碼進入，完成註冊並自行付費購買課程，訂單自動歸屬該代理商。">
+<style>
+:root{
+  --c-primary:#1B4E8C;
+  --c-primary-dark:#123A66;
+  --c-accent:#E8792B;
+  --c-accent-dark:#CF691F;
+  --c-secondary:#0F9B79;
+  --c-bg:#F5F7FA;
+  --c-border:#E4E7EC;
+  --c-muted:#667085;
+  --c-text:#101828;
+  --radius:14px;
+  --shadow:0 1px 3px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;background:#fff;color:var(--c-text);line-height:1.7;font-size:16px;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+ul{margin:0;padding:0;list-style:none;}
+h1,h2,h3,p{margin:0;}
+
+
+/* 站台頁首 */
+.site-header{background:#fff;border-bottom:1px solid var(--c-border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:40;}
+.brand{font-weight:700;font-size:20px;color:var(--c-primary);display:flex;align-items:center;gap:8px;letter-spacing:.2px;}
+.brand img{height:32px;width:auto;display:block;}
+
+.site-nav{display:flex;gap:22px;align-items:center;font-size:14px;font-weight:600;color:var(--c-text);}
+.site-nav a:hover{color:var(--c-primary);}
+.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.lang-select{border:1px solid var(--c-border);border-radius:6px;padding:6px 8px;font-size:13px;background:#fff;color:var(--c-text);}
+.menu-toggle{display:none;background:none;border:1px solid var(--c-border);border-radius:6px;padding:6px 10px;font-size:16px;cursor:pointer;}
+@media(max-width:780px){
+  .brand img{height:26px;}
+  .site-nav{display:none;width:100%;order:3;flex-direction:column;align-items:flex-start;gap:12px;padding-top:12px;border-top:1px solid var(--c-border);margin-top:10px;}
+  .site-nav.open{display:flex;}
+  .menu-toggle{display:inline-block;min-width:44px;min-height:44px;}
+  .site-nav a{display:flex;align-items:center;width:100%;min-height:44px;box-sizing:border-box;}
+}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:6px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap;}
+.btn-primary{background:var(--c-primary);color:#fff;}
+.btn-primary:hover{background:var(--c-primary-dark);}
+.btn-accent{background:var(--c-accent);color:#fff;}
+.btn-accent:hover{background:var(--c-accent-dark);}
+.btn-outline{background:#fff;border:1px solid var(--c-border);color:var(--c-text);}
+.btn-outline:hover{background:var(--c-bg);}
+.btn-sm{padding:7px 14px;font-size:13px;}
+.text-link{color:var(--c-primary);font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:4px;}
+.text-link:hover{text-decoration:underline;}
+
+main{max-width:1040px;margin:0 auto;padding:0 24px;}
+
+/* Hero：白底、單一大標＋人物照片佔位 */
+.hero2{padding:72px 24px 0;}
+.hero2-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;}
+@media(max-width:860px){.hero2-inner{grid-template-columns:1fr;gap:32px;}}
+.hero2-eyebrow{display:block;color:var(--c-secondary);font-weight:700;font-size:14px;letter-spacing:.3px;margin-bottom:18px;}
+.hero2 h1{font-size:48px;font-weight:800;line-height:1.3;letter-spacing:-.5px;margin-bottom:20px;}
+@media(max-width:600px){.hero2 h1{font-size:34px;}}
+.hero2-lead{font-size:18px;color:var(--c-muted);max-width:480px;margin-bottom:32px;}
+.hero2-actions{display:flex;gap:24px;align-items:center;flex-wrap:wrap;}
+.hero2-visual{background:var(--c-bg);border:1px solid var(--c-border);border-radius:20px;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;color:var(--c-muted);}
+@media(max-width:860px){.hero2-visual{order:-1;aspect-ratio:16/9;max-width:420px;margin:0 auto;}}
+
+/* 通用區塊間距 */
+.home-section{padding:100px 0;}
+@media(max-width:780px){.home-section{padding:60px 0;}}
+.section-head2{max-width:560px;margin:0 auto 40px;text-align:center;}
+.section-head2 h2{font-size:30px;font-weight:800;}
+@media(max-width:600px){.section-head2 h2{font-size:24px;}}
+
+/* 兩張主力課程卡 */
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:700px){.cards-row{grid-template-columns:1fr;}}
+.info-card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);padding:32px 30px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s;}
+.info-card:hover{border-color:var(--c-primary);}
+.info-card h3{font-size:20px;font-weight:800;}
+.info-card p{font-size:15px;color:var(--c-muted);}
+.info-facts{display:flex;gap:20px;font-size:14px;font-weight:700;color:var(--c-text);padding:6px 0 4px;}
+.info-card .text-link{margin-top:6px;}
+
+/* 信任列：純文字 */
+.trust-line-wrap{padding:52px 0;border-top:1px solid var(--c-border);border-bottom:1px solid var(--c-border);}
+.trust-line{max-width:900px;margin:0 auto;text-align:center;color:var(--c-muted);font-size:15px;line-height:2;}
+.trust-line .dot{margin:0 10px;color:var(--c-border);}
+@media(max-width:600px){.trust-line{font-size:14px;}.trust-line .dot{display:block;height:0;margin:0;color:transparent;}}
+
+/* 怎麼開始：三步驟 */
+.steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;}
+@media(max-width:700px){.steps-row{grid-template-columns:1fr;gap:28px;}}
+.step-item{display:flex;gap:16px;}
+.step-num{flex:none;font-size:22px;font-weight:800;color:var(--c-primary);width:40px;height:40px;border:1.5px solid var(--c-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.step-item h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+.step-item p{font-size:14px;color:var(--c-muted);}
+
+/* 學員引言 */
+.quote-wrap{border-top:1px solid var(--c-border);}
+.quote-block{max-width:720px;margin:0 auto;text-align:center;}
+.quote-block p{font-size:26px;font-weight:700;line-height:1.6;color:var(--c-text);margin-bottom:20px;}
+@media(max-width:600px){.quote-block p{font-size:20px;}}
+.quote-block footer{font-size:14px;color:var(--c-muted);font-weight:600;}
+
+/* 活動與自學入口 */
+.link-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:700px){.link-cards{grid-template-columns:1fr;}}
+.link-card{border:1px solid var(--c-border);border-radius:var(--radius);padding:28px 30px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s;}
+.link-card:hover{border-color:var(--c-primary);}
+.link-card h3{font-size:17px;font-weight:800;}
+.link-card p{font-size:14px;color:var(--c-muted);}
+.link-card .text-link{margin-top:6px;}
+
+/* Footer */
+.site-footer{background:#101828;color:#CBD3DE;padding:44px 24px 24px;}
+.footer-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;}
+@media(max-width:780px){.footer-inner{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr;}}
+.footer-inner h4{color:#fff;font-size:14px;margin-bottom:12px;}
+.footer-inner li{font-size:13px;margin-bottom:8px;color:#9AA4B2;}
+.footer-bottom img{display:block;margin:0 auto 10px;height:24px;width:auto;}
+.footer-bottom{max-width:1120px;margin:26px auto 0;padding-top:18px;border-top:1px solid #2A3241;font-size:12px;color:#7C879A;text-align:center;}
+
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#101828;color:#fff;font-size:13.5px;padding:12px 20px;border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:100;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===================== p12 代理商轉介頁專屬樣式 ===================== */
+.ref-hero{padding:64px 24px 56px;background:var(--c-bg);border-bottom:1px solid var(--c-border);}
+.ref-hero-inner{max-width:680px;margin:0 auto;text-align:center;}
+.ref-hero-eyebrow{display:block;color:var(--c-secondary);font-weight:700;font-size:13px;letter-spacing:.3px;margin-bottom:16px;}
+.ref-hero-inner h1{font-size:32px;font-weight:800;line-height:1.35;letter-spacing:-.3px;margin-bottom:14px;}
+@media(max-width:600px){.ref-hero-inner h1{font-size:24px;}}
+.ref-hero-lead{font-size:15.5px;color:var(--c-muted);max-width:520px;margin:0 auto;}
+
+.ref-card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px;max-width:520px;margin:32px auto 0;text-align:left;}
+.ref-badge{display:inline-flex;align-items:center;gap:8px;background:#E6F4EF;color:var(--c-secondary);font-weight:700;font-size:13px;padding:6px 12px;border-radius:20px;margin-bottom:14px;}
+.ref-agent-name{font-size:21px;font-weight:800;margin-bottom:6px;}
+.ref-agent-code{font-size:13.5px;color:var(--c-muted);margin-bottom:18px;}
+.ref-agent-code strong{color:var(--c-text);font-weight:700;}
+.ref-card .btn{width:100%;margin-top:6px;}
+.ref-note{font-size:12.5px;color:var(--c-muted);margin-top:14px;line-height:1.6;}
+
+.ref-input-card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px;max-width:440px;margin:32px auto 0;text-align:left;}
+.ref-input-card label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;}
+.ref-input-row{display:flex;gap:10px;}
+.ref-input-row input{flex:1;min-width:0;border:1px solid var(--c-border);border-radius:6px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--c-text);}
+.ref-input-row input:focus{outline:2px solid var(--c-primary);outline-offset:1px;}
+.ref-input-card .hint{font-size:12.5px;color:var(--c-muted);margin-top:10px;}
+.ref-input-card .altline{margin-top:18px;padding-top:16px;border-top:1px solid var(--c-border);font-size:13.5px;color:var(--c-muted);text-align:center;}
+
+.ref-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;}
+@media(max-width:900px){.ref-steps{grid-template-columns:1fr 1fr;gap:24px;}}
+@media(max-width:520px){.ref-steps{grid-template-columns:1fr;}}
+
+.ref-demo-tag{display:inline-block;font-size:11.5px;color:#98A2B3;background:var(--c-bg);border:1px solid var(--c-border);border-radius:6px;padding:3px 9px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="p01_home.html"><img src="../assets/tli-logo.svg" alt="TLI"></a>
+  <button class="menu-toggle" onclick="document.querySelector('.site-nav').classList.toggle('open')" aria-label="開啟選單" data-i18n="menu_toggle_aria" data-i18n-attr="aria-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+  <nav class="site-nav">
+    <a href="p02_courses.html" data-i18n="nav_courses">課程</a>
+    <a href="p10_enterprise.html" aria-current="page" style="color:var(--c-primary);">企業培訓</a>
+    <a href="p09_events.html" data-i18n="nav_events">活動</a>
+    <a href="p04_teachers.html" data-i18n="nav_teachers">師資</a>
+    <a href="p05_about_locations.html" data-i18n="nav_about">品牌與校區</a>
+    <a href="p08_faq.html" data-i18n="nav_faq">常見問題</a>
+  </nav>
+  <div class="header-right">
+    <select class="lang-select" onchange="setLang(this.value)" aria-label="語言切換" data-i18n="lang_select_aria" data-i18n-attr="aria-label">
+      <option value="zh-TW">繁體中文</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+      <option value="de">Deutsch</option>
+    </select>
+    <a class="btn btn-primary btn-sm" data-i18n="btn_consult" href="p06_trial.html?type=consult">預約諮詢</a>
+    <a class="btn btn-accent btn-sm" data-i18n="btn_trial" href="p06_trial.html?type=trial">預約試聽</a>
+    <a class="btn btn-outline btn-sm" data-i18n="btn_login" href="p07_login_register.html">登入</a>
+  </div>
+</header>
+
+<section class="ref-hero">
+  <div class="ref-hero-inner">
+    <span class="ref-hero-eyebrow">代理商推薦</span>
+    <h1 id="refHeadline">由代理商推薦加入 TLI 學習</h1>
+    <p class="ref-hero-lead" id="refLead">確認推薦來源後即可註冊帳號，自行付費購買課程，系統會自動將您的訂單歸屬給推薦您的代理商。</p>
+
+    <div class="ref-card" id="refKnownCard" style="display:none">
+      <span class="ref-demo-tag">示範畫面，代理商名稱與轉介碼為模擬資料</span>
+      <span class="ref-badge" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 10 8 14 16 5"/></svg>推薦來源已確認</span>
+      <div class="ref-agent-name">由 <span id="refAgentName">範例教育顧問</span> 推薦</div>
+      <div class="ref-agent-code">轉介碼：<strong id="refAgentCode">—</strong></div>
+      <a class="btn btn-accent" id="refRegisterBtn" href="p07_login_register.html">開始註冊</a>
+      <div class="ref-note">歸屬有效期：由 TLI 拍板（待定）。請於有效期內完成註冊並自行付費購買課程，訂單將歸屬於此代理商；代理商僅負責推薦，不會經手您的付款。</div>
+    </div>
+
+    <div class="ref-input-card" id="refInputCard" style="display:none">
+      <span class="ref-demo-tag">示範畫面，代理商名稱與轉介碼為模擬資料</span>
+      <label for="refCodeInput">輸入代理商提供的轉介碼</label>
+      <div class="ref-input-row">
+        <input type="text" id="refCodeInput" placeholder="如：REF-SEA07" autocomplete="off">
+        <button type="button" class="btn btn-primary" onclick="applyRefCode()">套用</button>
+      </div>
+      <div class="hint">沒有轉介碼？由代理商提供的專屬連結進入會自動帶入，不需手動輸入。</div>
+      <div class="altline">也可以<a class="text-link" href="p07_login_register.html">不使用推薦直接註冊</a></div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="home-section">
+    <div class="section-head2">
+      <h2>推薦流程怎麼運作</h2>
+      <p style="margin-top:12px;font-size:14.5px;color:var(--c-muted);">代理商只負責推薦，不代收款；學生一律直接向 TLI 付費</p>
+    </div>
+    <div class="ref-steps">
+      <div class="step-item">
+        <span class="step-num">1</span>
+        <div><h3>輸入代碼或由連結進入</h3><p>透過代理商提供的專屬連結，或手動輸入轉介碼。</p></div>
+      </div>
+      <div class="step-item">
+        <span class="step-num">2</span>
+        <div><h3>完成註冊</h3><p>填寫基本資料建立 TLI 學習帳號。</p></div>
+      </div>
+      <div class="step-item">
+        <span class="step-num">3</span>
+        <div><h3>自行付費購買課程</h3><p>直接向 TLI 付款，代理商不經手任何款項。</p></div>
+      </div>
+      <div class="step-item">
+        <span class="step-num">4</span>
+        <div><h3>歸屬該代理商</h3><p>訂單自動計入推薦您的代理商，作為佣金依據。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" style="padding-top:0;">
+    <div class="section-head2">
+      <h2>常見問題</h2>
+    </div>
+    <div class="link-cards">
+      <div class="link-card">
+        <h3>推薦碼有時效限制嗎？</h3>
+        <p>有。需在歸屬有效期內完成付費，逾期需重新由代理商連結進入才會計入該代理商的轉介。</p>
+      </div>
+      <div class="link-card">
+        <h3>代理商會知道我的付款資訊嗎？</h3>
+        <p>不會。代理商只看得到推薦名單與轉換狀態，所有金流與發票皆由 TLI 直接處理。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <h4 data-i18n="footer_brand_name">TLI 中華語文研習所</h4>
+      <li data-i18n="footer_brand_line1">1956 年創立於美國紐澤西，同年於台北建校</li>
+      <li data-i18n="footer_brand_line2">1976 年教育部核定校名為「中華語文研習所」</li>
+    </div>
+    <div>
+      <h4 data-i18n="footer_col_courses">課程</h4>
+      <ul>
+        <li><a href="p02_courses.html" data-i18n="footer_link_chinese">中文課程</a></li>
+        <li><a href="p02_courses.html" data-i18n="footer_link_foreign">外語課程</a></li>
+        <li><a href="p09_events.html" data-i18n="footer_link_events">線上活動</a></li>
+        <li><a href="p04_teachers.html" data-i18n="footer_link_teachers">師資介紹</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer_col_about">關於 TLI</h4>
+      <ul>
+        <li><a href="p05_about_locations.html" data-i18n="footer_link_history">品牌沿革</a></li>
+        <li><a href="p05_about_locations.html" data-i18n="footer_link_locations">四校地址</a></li>
+        <li><a href="p08_faq.html" data-i18n="footer_link_faq">常見問題</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer_col_start">開始學習</h4>
+      <ul>
+        <li><a href="p06_trial.html" data-i18n="footer_link_trial">免費試聽</a></li>
+        <li><a href="p07_login_register.html" data-i18n="footer_link_login">會員登入／註冊</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom"><img src="../assets/tli-logo.svg" alt="TLI"><span data-i18n="footer_copyright">© 2026 TLI 中華語文研習所．保留所有權利。</span></div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+</script>
+
+<script>
+function setLang(){ showToast('示範版僅呈現介面語系切換'); }
+
+/* ===================== 代理商轉介：示範資料與顯示邏輯 ===================== */
+var AGENT_DIRECTORY = {
+  'REF-SEA07': '範例教育顧問（東南亞地區）',
+  'REF-JP10': '範例教育顧問（日本地區）',
+  'REF-US12': '範例語言顧問（歐美地區）'
+};
+
+function renderReferralState(){
+  var params = new URLSearchParams(window.location.search);
+  var code = (params.get('ref') || '').trim();
+  var knownCard = document.getElementById('refKnownCard');
+  var inputCard = document.getElementById('refInputCard');
+  if (code){
+    var name = AGENT_DIRECTORY[code] || '範例教育顧問';
+    document.getElementById('refAgentName').textContent = name;
+    document.getElementById('refAgentCode').textContent = code;
+    document.getElementById('refRegisterBtn').setAttribute('href', 'p07_login_register.html?ref=' + encodeURIComponent(code));
+    document.getElementById('refHeadline').textContent = '由 ' + name + ' 推薦';
+    knownCard.style.display = '';
+    inputCard.style.display = 'none';
+  } else {
+    knownCard.style.display = 'none';
+    inputCard.style.display = '';
+  }
+}
+function applyRefCode(){
+  var val = document.getElementById('refCodeInput').value.trim();
+  if (!val){
+    showToast('請輸入轉介碼');
+    return;
+  }
+  window.location.href = 'p12_referral.html?ref=' + encodeURIComponent(val);
+}
+renderReferralState();
+</script>
+
+</body>
+</html>

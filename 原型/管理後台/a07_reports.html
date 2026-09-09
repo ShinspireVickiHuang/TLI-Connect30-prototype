@@ -218,16 +218,44 @@ html,body{overflow-x:hidden;}
 .topbar{padding:0 16px;}
 }
 .phase2-pill{display:inline-block;background:#FFF4E0;border:1px solid #E8A23D;color:#8A5A00;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle;white-space:nowrap;}
+/* ==== v2 新增：企業報表／依開票主體／主體間服務費對帳（20260908） ==== */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:16px;}
+.statcard{background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px;}
+.statcard .lbl{font-size:12px;color:var(--g500);margin-bottom:6px;}
+.statcard .val{font-size:23px;font-weight:700;}
+.statcard .sub{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.chiprow button{padding:6px 13px;border-radius:16px;border:1px solid var(--g200);background:#fff;font-size:12.5px;
+cursor:pointer;color:var(--g500);font-family:inherit;}
+.chiprow button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.modal.wide{width:640px;}
+.linklike{color:var(--navy);cursor:pointer;text-decoration:underline;font-size:12.5px;}
+.sectiontitle{font-size:13px;font-weight:600;margin:16px 0 8px;color:var(--g900);}
+.sectiontitle:first-child{margin-top:0;}
+.fieldlist{margin:0;padding-left:18px;font-size:13px;line-height:1.9;}
+.trendwrap{background:#fff;border:1px solid var(--g200);border-radius:8px;padding:14px 16px 8px;margin:14px 0;}
+.trendwrap .tw-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--g500);margin-bottom:6px;}
+@media (max-width:1023px){ .grid4{grid-template-columns:repeat(2,1fr);} .grid5{grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
 <body>
 <div class="app">
-<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c08" href="../顧問工作台/c08_inquiries.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5c-1 0-1.8.8-1.7 1.8.4 4.7 2.5 8.7 6 11.2 1.1.8 2.6.3 3-1l.6-1.8c.2-.6-.1-1.3-.7-1.6l-2.3-1.1c-.5-.3-1.1-.1-1.5.3l-.8.9c-1.4-1.1-2.5-2.6-3.2-4.3l1-.6c.5-.3.7-.9.5-1.4L4.9 3.8c-.1-.3-.4-.4-.7-.3z"/></svg><span class="navtext">諮詢與試聽</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" class="active" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a18" href="a18_resource_library.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M3 9.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></svg><span class="navtext">資源庫</span></a><a data-nav="a19" href="a19_b2b_enterprise.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="7" height="14" rx="1"/><rect x="10.5" y="7.5" width="6" height="9.5" rx="1"/><line x1="5.5" y1="6" x2="7.5" y2="6"/><line x1="5.5" y1="9" x2="7.5" y2="9"/><line x1="5.5" y1="12" x2="7.5" y2="12"/><line x1="12.5" y1="10.5" x2="14.5" y2="10.5"/><line x1="12.5" y1="13.5" x2="14.5" y2="13.5"/></svg><span class="navtext">B2B 企業客戶</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c08" href="../顧問工作台/c08_inquiries.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5c-1 0-1.8.8-1.7 1.8.4 4.7 2.5 8.7 6 11.2 1.1.8 2.6.3 3-1l.6-1.8c.2-.6-.1-1.3-.7-1.6l-2.3-1.1c-.5-.3-1.1-.1-1.5.3l-.8.9c-1.4-1.1-2.5-2.6-3.2-4.3l1-.6c.5-.3.7-.9.5-1.4L4.9 3.8c-.1-.3-.4-.4-.7-.3z"/></svg><span class="navtext">諮詢與試聽</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c09" href="../顧問工作台/c09_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.5v15"/><path d="M5 3.5h9l-2.5 3.5L14 10.5H5"/></svg><span class="navtext">申訴覆核</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" class="active" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a18" href="a18_resource_library.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M3 9.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></svg><span class="navtext">資源庫</span></a><a data-nav="a19" href="a19_b2b_enterprise.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="7" height="14" rx="1"/><rect x="10.5" y="7.5" width="6" height="9.5" rx="1"/><line x1="5.5" y1="6" x2="7.5" y2="6"/><line x1="5.5" y1="9" x2="7.5" y2="9"/><line x1="5.5" y1="12" x2="7.5" y2="12"/><line x1="12.5" y1="10.5" x2="14.5" y2="10.5"/><line x1="12.5" y1="13.5" x2="14.5" y2="13.5"/></svg><span class="navtext">B2B 企業客戶</span></a><a data-nav="a20" href="a20_agents.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6" r="2.3"/><path d="M2.5 16c0-2.6 1.8-4.3 4-4.3s4 1.7 4 4.3"/><circle cx="14.5" cy="8.5" r="1.8"/><path d="M17.3 16c0-1.9-1.3-3.4-2.8-3.4"/><path d="M9 6l3-1.5"/></svg><span class="navtext">代理商管理</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
 <div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">報表</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 <div class="pagehead">
-<div><h1>營運報表<span class="phase2-pill">擴充報表二階段</span></h1><div class="desc">本階段重建 6 張核心報表；以四校銷售為例，可切換金額口徑（發票／訂單／已付款）與校區。</div></div>
+<div><h1>營運報表<span class="phase2-pill">擴充報表二階段</span></h1><div class="desc">本階段重建 6 張核心報表；以四校銷售為例，可切換金額口徑（發票／訂單／已付款）與校區。B2B 升為第二條產品線後，新增「企業報表」「依開票主體」「主體間服務費對帳」三個分頁。</div></div>
 
 </div>
+
+<div class="tabs" id="rpTopTabs">
+<button class="active" onclick="rpTopTab(this,'campus')">校區報表</button>
+<button onclick="rpTopTab(this,'enterprise')">企業報表</button>
+<button onclick="rpTopTab(this,'entity')">依開票主體</button>
+<button onclick="rpTopTab(this,'recon')">主體間服務費對帳</button>
+</div>
+
+<div class="tabpanel active" id="rptoppanel-campus">
 
 <div class="card">
 <div class="filterbar">
@@ -267,10 +295,101 @@ html,body{overflow-x:hidden;}
 <div class="hint">逾期名單同步出現於顧問工作台的「續約與到期提醒」。</div>
 </div>
 
+</div>
+<!-- ==== v2 新增：企業報表 ==== -->
+<div class="tabpanel" id="rptoppanel-enterprise">
+<div class="card">
+<div class="chiprow" id="entViewChips">
+<button class="active" onclick="entViewTab(this,'customer')">企業客戶</button>
+<button onclick="entViewTab(this,'institution')">機構授權</button>
+</div>
+<div id="entCustomerView">
+<div class="filterbar">
+<select id="ent_select" onchange="onEntSelectChange()"></select>
+<select id="ent_dept" onchange="renderEnterpriseReport()"><option value="">全部部門</option></select>
+<input type="date" id="ent_from" value="2026-07-01"> <span class="small">～</span> <input type="date" id="ent_to" value="2026-08-31">
+<button class="btn ghost" onclick="renderEnterpriseReport()">重新取數</button>
+<button class="btn ghost" onclick="openCsvModal()">匯出 CSV（固定欄位）</button>
+</div>
+<div class="hint" style="margin-bottom:10px">出勤率＝實到堂數／應到堂數；應到堂數以合約層免扣次數設定為準，免扣範圍內的請假不列入應到分母，超出免扣次數的請假是否計入分母待確認（依 B2B 企業產品線功能設計 v2 第 5 章）。</div>
+<div class="grid4" id="entKpiRow"></div>
+<div class="trendwrap">
+<div class="tw-head"><span>出勤率趨勢（近 6 個月）</span><span>示範畫面，資料為模擬數字</span></div>
+<div id="entTrendSvg"></div>
+</div>
+<div class="tablewrap"><table id="entTable"></table></div>
+</div>
+<!-- 機構授權維度：依機構／學期拆分資源使用量與開通學生數 -->
+<div id="entInstitutionView" style="display:none">
+<div class="filterbar">
+<select id="inst_select" onchange="renderInstitutionReport()">
+<option value="inst0">範例州立大學</option>
+<option value="inst1">範例州立大學 分校A</option>
+</select>
+<select id="inst_semester" onchange="renderInstitutionReport()">
+<option value="2026s1">2026學年度第1學期</option>
+<option value="2025s2">2025學年度第2學期</option>
+<option value="2025s1">2025學年度第1學期</option>
+</select>
+<button class="btn ghost" onclick="renderInstitutionReport()">重新取數</button>
+<button class="btn ghost" onclick="exportInstCsv()">匯出 CSV</button>
+</div>
+<div class="hint" style="margin-bottom:10px">機構授權採包班／機構整批開通模式，依「機構」與「學期」拆分資源使用量與開通學生數；示範畫面，資料為模擬數字。</div>
+<div class="grid5" id="instKpiRow"></div>
+<div class="tablewrap"><table id="instTable"></table></div>
+</div>
+</div>
+</div>
+<!-- ==== v2 新增：依開票主體 ==== -->
+<div class="tabpanel" id="rptoppanel-entity">
+<div class="card">
+<div class="desc" style="margin-bottom:12px">依開票主體拆分營收與訂單數；海外主體以原幣別呈現，換算金額待月結匯率結算後產出，示範畫面資料為模擬數字。</div>
+<div class="chiprow">
+<button class="active" onclick="billTab(this,'tw')">台灣主體</button>
+<button onclick="billTab(this,'os')">海外公司（登記國待定）</button>
+</div>
+<div id="billingArea"></div>
+</div>
+</div>
+<!-- ==== v2 新增：主體間服務費對帳 ==== -->
+<div class="tabpanel" id="rptoppanel-recon">
+<div class="card">
+<h2>主體間服務費對帳</h2>
+<div class="desc" style="margin-bottom:12px">海外公司（登記國待定）向 TLI 台灣總部支付授課服務費，每月一列；本表供會計師進行移轉訂價文件比對之用。計算基礎與比例尚未拍板，示範畫面資料為模擬數字。</div>
+<div class="filterbar">
+<input type="date" id="settle_from" value="2026-06-01"> <span class="small">～</span> <input type="date" id="settle_to" value="2026-08-31">
+<button class="btn ghost" onclick="renderSettleRecon()">查詢</button>
+<button class="btn ghost" style="margin-left:auto" onclick="toast('已產生對帳表 PDF，請至下載中心取得')">產出對帳表 PDF</button>
+</div>
+<div class="tablewrap"><table id="settleTable"></table></div>
+<div class="hint">供會計師移轉訂價文件使用；服務費計算基礎與比例待會計師確認後定案。</div>
+</div>
+</div>
+
 <div class="modal-mask" id="detailModal"><div class="modal">
 <h3>金額明細</h3>
 <div id="detailModalBody"></div>
 <div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="document.getElementById('detailModal').classList.remove('open')">關閉</button></div>
+</div></div>
+
+<div class="modal-mask" id="csvModal"><div class="modal">
+<h3>匯出 CSV（固定欄位）</h3>
+<div class="sectiontitle">標準匯出欄位（依 B2B 企業產品線功能設計 v2 第 7.5 節）</div>
+<ul class="fieldlist">
+<li>員工姓名</li><li>員工 Email</li><li>部門</li><li>課程／方案名稱</li><li>上課日期</li>
+<li>出席狀態</li><li>時數</li><li>進度</li><li>評量成績</li><li>老師評語（僅 HR 可見層）</li>
+</ul>
+<div class="note" style="margin-top:10px">具體欄位順序與命名待與 HR 代表核對後定案，此處為目前建議欄位清單。</div>
+<div style="text-align:right;margin-top:14px">
+<button class="btn ghost" onclick="document.getElementById('csvModal').classList.remove('open')">關閉</button>
+<button class="btn" onclick="confirmCsvExport()">確認匯出</button>
+</div>
+</div></div>
+
+<div class="modal-mask" id="entityDetailModal"><div class="modal">
+<h3 id="edm_title">明細</h3>
+<div id="edm_body"></div>
+<div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="document.getElementById('entityDetailModal').classList.remove('open')">關閉</button></div>
 </div></div>
 
 </div>
@@ -331,10 +450,10 @@ var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','�
 var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
 var TLI_ROLE_NAV = {
   '總公司管理者': 'all',
-  '校區主管': ['c01','c08','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17','a18','a19'],
-  '行政人員': ['a01','a05','a12','a06','a13','a16'],
-  '財務': ['a13','a06','a07'],
-  '顧問': ['c01','c08','c02','c04','c06','c07','a01']
+  '校區主管': ['c01','c08','c02','c04','c09','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17','a18','a19','a20'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16','a20'],
+  '財務': ['a13','a06','a07','a20'],
+  '顧問': ['c01','c08','c02','c04','c09','c06','c07','a01']
 };
 function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
 function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }
@@ -444,6 +563,276 @@ function toggleNavGroup(ev, gid){
     if (saved === '1') g.classList.add('collapsed');
   });
 })();
+</script>
+<script>
+/* ================= v2 新增：頁面級分頁切換 ================= */
+function rpTopTab(btn, name){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#rpTopTabs ~ .tabpanel, .tabpanel[id^="rptoppanel-"]').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('rptoppanel-'+name).classList.add('active');
+  if (name==='enterprise'){
+    renderEnterpriseReport();
+    if (entViewCurrentKey==='institution') renderInstitutionReport();
+  }
+  if (name==='entity') billTab(document.querySelector('#rptoppanel-entity .chiprow button.active'), billingCurrentKey);
+  if (name==='recon') renderSettleRecon();
+}
+
+function seededRand(seed){
+  var x = Math.sin(seed*9301+49297)*233280;
+  return x - Math.floor(x);
+}
+
+/* ================= 企業報表 ================= */
+var RPT_ENTERPRISES = [
+  {id:'rent0', name:'匯泰半導體股份有限公司', depts:['研發部','人資部','行政部','海外事業部']},
+  {id:'rent1', name:'和霖科技股份有限公司', depts:['業務部','研發部','財務部']},
+  {id:'rent2', name:'北辰精密工業股份有限公司', depts:['業務部','行政部']},
+  {id:'rent3', name:'東岳生技股份有限公司', depts:['研發部','人資部']}
+];
+function deptStats(entIdx, deptIdx){
+  var r1 = seededRand(entIdx*41+deptIdx*3+7), r2 = seededRand(entIdx*43+deptIdx*5+11),
+      r3 = seededRand(entIdx*47+deptIdx*7+13), r4 = seededRand(entIdx*53+deptIdx*11+17),
+      r5 = seededRand(entIdx*59+deptIdx*13+19);
+  var attendTotal = 40 + Math.floor(r1*60);
+  var attendActual = Math.round(attendTotal * (0.72 + r2*0.26));
+  var poolTotal = 200 + Math.floor(r3*400);
+  var poolUsed = Math.round(poolTotal * (0.35 + r4*0.5));
+  return {
+    hours: 60 + Math.floor(r1*220),
+    attendActual: attendActual, attendTotal: attendTotal,
+    poolUsed: poolUsed, poolTotal: poolTotal,
+    progress: 25 + Math.floor(r4*65),
+    assess: 55 + Math.floor(r5*40)
+  };
+}
+function initEntSelect(){
+  var sel = document.getElementById('ent_select');
+  sel.innerHTML = RPT_ENTERPRISES.map(function(e){ return '<option value="'+e.id+'">'+e.name+'</option>'; }).join('');
+  refreshDeptOptions();
+}
+function refreshDeptOptions(){
+  var ent = RPT_ENTERPRISES.find(function(e){return e.id===document.getElementById('ent_select').value;}) || RPT_ENTERPRISES[0];
+  var dsel = document.getElementById('ent_dept');
+  dsel.innerHTML = '<option value="">全部部門</option>' + ent.depts.map(function(d){ return '<option>'+d+'</option>'; }).join('');
+}
+function onEntSelectChange(){ refreshDeptOptions(); renderEnterpriseReport(); }
+function renderEnterpriseReport(){
+  var ent = RPT_ENTERPRISES.find(function(e){return e.id===document.getElementById('ent_select').value;}) || RPT_ENTERPRISES[0];
+  var entIdx = RPT_ENTERPRISES.indexOf(ent);
+  var deptFilter = document.getElementById('ent_dept').value;
+  var depts = deptFilter ? [deptFilter] : ent.depts;
+  var rows = depts.map(function(d){
+    var di = ent.depts.indexOf(d);
+    var s = deptStats(entIdx, di);
+    s.dept = d;
+    return s;
+  });
+  var sumHours=0, sumActual=0, sumTotal=0, sumPoolUsed=0, sumPoolTotal=0, sumProgress=0, sumAssess=0;
+  rows.forEach(function(s){
+    sumHours+=s.hours; sumActual+=s.attendActual; sumTotal+=s.attendTotal;
+    sumPoolUsed+=s.poolUsed; sumPoolTotal+=s.poolTotal; sumProgress+=s.progress; sumAssess+=s.assess;
+  });
+  var avgAttend = sumTotal ? Math.round(sumActual/sumTotal*1000)/10 : 0;
+  var avgProgress = rows.length ? Math.round(sumProgress/rows.length) : 0;
+  var avgAssess = rows.length ? Math.round(sumAssess/rows.length) : 0;
+  var poolPct = sumPoolTotal ? Math.round(sumPoolUsed/sumPoolTotal*100) : 0;
+  document.getElementById('entKpiRow').innerHTML =
+    '<div class="statcard"><div class="lbl">出勤率（實到／應到）</div><div class="val">'+avgAttend+'%</div><div class="sub">'+sumActual+' ／ '+sumTotal+' 堂</div></div>' +
+    '<div class="statcard"><div class="lbl">學習時數合計</div><div class="val">'+sumHours+'</div><div class="sub">小時</div></div>' +
+    '<div class="statcard"><div class="lbl">時數池消耗</div><div class="val">'+poolPct+'%</div><div class="sub">'+sumPoolUsed+' ／ '+sumPoolTotal+' 小時</div></div>' +
+    '<div class="statcard"><div class="lbl">平均進度／評量</div><div class="val">'+avgProgress+'%</div><div class="sub">評量均分 '+avgAssess+' 分</div></div>';
+  var t = document.getElementById('entTable');
+  t.innerHTML = '<tr><th>部門</th><th>出勤率（實到／應到）</th><th>學習時數</th><th>時數池消耗</th><th>進度</th><th>評量彙總</th></tr>' +
+    rows.map(function(s){
+      var pct = s.attendTotal ? Math.round(s.attendActual/s.attendTotal*1000)/10 : 0;
+      var pp = s.poolTotal ? Math.round(s.poolUsed/s.poolTotal*100) : 0;
+      return '<tr><td>'+s.dept+'</td><td>'+pct+'%（'+s.attendActual+'／'+s.attendTotal+'）</td><td>'+s.hours+' 小時</td>' +
+        '<td>'+pp+'%（'+s.poolUsed+'／'+s.poolTotal+'）</td><td>'+s.progress+'%</td><td>'+s.assess+' 分</td></tr>';
+    }).join('') +
+    (rows.length>1 ? '<tr><td><b>合計／均值</b></td><td><b>'+avgAttend+'%</b></td><td><b>'+sumHours+' 小時</b></td><td><b>'+poolPct+'%</b></td><td><b>'+avgProgress+'%</b></td><td><b>'+avgAssess+' 分</b></td></tr>' : '');
+  renderEntTrend(entIdx);
+}
+function renderEntTrend(entIdx){
+  var months = ['3 月','4 月','5 月','6 月','7 月','8 月'];
+  var vals = months.map(function(m, i){ return 60 + Math.round(seededRand(entIdx*97+i*13+29)*35); });
+  var w=560, h=120, pad=24;
+  var max=100, min=40;
+  var pts = vals.map(function(v,i){
+    var x = pad + i*(w-2*pad)/(vals.length-1);
+    var y = h-pad - (v-min)/(max-min)*(h-2*pad);
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  var dots = vals.map(function(v,i){
+    var x = pad + i*(w-2*pad)/(vals.length-1);
+    var y = h-pad - (v-min)/(max-min)*(h-2*pad);
+    return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="#1B4E8C"/>' +
+      '<text x="'+x.toFixed(1)+'" y="'+(y-8).toFixed(1)+'" font-size="10.5" fill="#667085" text-anchor="middle">'+v+'%</text>';
+  }).join('');
+  var labels = months.map(function(m,i){
+    var x = pad + i*(w-2*pad)/(vals.length-1);
+    return '<text x="'+x.toFixed(1)+'" y="'+(h-6)+'" font-size="10.5" fill="#667085" text-anchor="middle">'+m+'</text>';
+  }).join('');
+  document.getElementById('entTrendSvg').innerHTML =
+    '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="xMidYMid meet">' +
+    '<polyline points="'+pts+'" fill="none" stroke="#1B4E8C" stroke-width="2"/>' + dots + labels + '</svg>';
+}
+function openCsvModal(){ document.getElementById('csvModal').classList.add('open'); }
+function confirmCsvExport(){
+  document.getElementById('csvModal').classList.remove('open');
+  toast('已匯出 CSV（固定欄位），示範畫面資料為模擬數字');
+}
+
+/* ================= 企業報表：機構授權維度 ================= */
+var entViewCurrentKey = 'customer';
+function entViewTab(btn, key){
+  entViewCurrentKey = key;
+  if (btn){
+    btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  }
+  document.getElementById('entCustomerView').style.display = (key==='customer') ? '' : 'none';
+  document.getElementById('entInstitutionView').style.display = (key==='institution') ? '' : 'none';
+  if (key==='institution') renderInstitutionReport();
+}
+var RPT_INSTITUTIONS = [
+  {id:'inst0', name:'範例州立大學'},
+  {id:'inst1', name:'範例州立大學 分校A'}
+];
+var RPT_SEMESTERS = [
+  {id:'2026s1', name:'2026學年度第1學期'},
+  {id:'2025s2', name:'2025學年度第2學期'},
+  {id:'2025s1', name:'2025學年度第1學期'}
+];
+function institutionStats(instIdx, semIdx){
+  var r1 = seededRand(instIdx*61+semIdx*7+3), r2 = seededRand(instIdx*67+semIdx*11+5),
+      r3 = seededRand(instIdx*71+semIdx*13+9), r4 = seededRand(instIdx*73+semIdx*17+13),
+      r5 = seededRand(instIdx*79+semIdx*19+17);
+  return {
+    students: 80 + Math.floor(r1*320),
+    video: 300 + Math.floor(r2*1200),
+    audio: 200 + Math.floor(r3*900),
+    quiz: 60 + Math.floor(r4*400),
+    chat: 150 + Math.floor(r5*700)
+  };
+}
+function renderInstitutionReport(){
+  var instSel = document.getElementById('inst_select');
+  var semSel = document.getElementById('inst_semester');
+  var instIdx = RPT_INSTITUTIONS.findIndex(function(i){return i.id===instSel.value;});
+  if (instIdx<0) instIdx = 0;
+  var semIdx = RPT_SEMESTERS.findIndex(function(s){return s.id===semSel.value;});
+  if (semIdx<0) semIdx = 0;
+  var inst = RPT_INSTITUTIONS[instIdx];
+  var sem = RPT_SEMESTERS[semIdx];
+  var s = institutionStats(instIdx, semIdx);
+  document.getElementById('instKpiRow').innerHTML =
+    '<div class="statcard"><div class="lbl">開通學生數</div><div class="val">'+s.students+'</div><div class="sub">人</div></div>' +
+    '<div class="statcard"><div class="lbl">影片使用量</div><div class="val">'+s.video+'</div><div class="sub">次觀看</div></div>' +
+    '<div class="statcard"><div class="lbl">音檔使用量</div><div class="val">'+s.audio+'</div><div class="sub">次收聽</div></div>' +
+    '<div class="statcard"><div class="lbl">測驗使用量</div><div class="val">'+s.quiz+'</div><div class="sub">份完成</div></div>' +
+    '<div class="statcard"><div class="lbl">聊天室使用量</div><div class="val">'+s.chat+'</div><div class="sub">則訊息</div></div>';
+  var t = document.getElementById('instTable');
+  t.innerHTML = '<tr><th>機構</th><th>學期</th><th>開通學生數</th><th>影片</th><th>音檔</th><th>測驗</th><th>聊天室</th></tr>' +
+    '<tr><td>'+inst.name+'</td><td>'+sem.name+'</td><td>'+s.students+' 人</td><td>'+s.video+' 次</td><td>'+s.audio+' 次</td><td>'+s.quiz+' 份</td><td>'+s.chat+' 則</td></tr>';
+}
+function exportInstCsv(){
+  var instSel = document.getElementById('inst_select');
+  var semSel = document.getElementById('inst_semester');
+  var instName = RPT_INSTITUTIONS.find(function(i){return i.id===instSel.value;}).name;
+  var semName = RPT_SEMESTERS.find(function(s){return s.id===semSel.value;}).name;
+  toast('已匯出「'+instName+'／'+semName+'」機構授權報表 CSV，示範畫面資料為模擬數字');
+}
+
+/* ================= 依開票主體 ================= */
+var billingCurrentKey = 'tw';
+var BILLING_TW = CAMPUS_BASE.map(function(c){ return {name:c.name, orders: Math.round(c.order/9500), revenue:c.order}; });
+var BILLING_OS = [
+  {currency:'USD', entity:'半導體股份有限公司（美國廠區）', orders: 3, amount: 12800},
+  {currency:'JPY', entity:'半導體股份有限公司（日本廠區）', orders: 2, amount: 1860000}
+];
+function billTab(btn, key){
+  billingCurrentKey = key;
+  if (btn){
+    btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  }
+  var area = document.getElementById('billingArea');
+  if (key==='tw'){
+    var total = BILLING_TW.reduce(function(s,c){return s+c.revenue;},0);
+    var totalOrders = BILLING_TW.reduce(function(s,c){return s+c.orders;},0);
+    area.innerHTML = '<div class="tablewrap"><table><tr><th>校區</th><th>訂單數</th><th>營收（NT$）</th><th></th></tr>' +
+      BILLING_TW.map(function(c){
+        return '<tr><td>'+c.name+'</td><td>'+c.orders+'</td><td>NT$ '+c.revenue.toLocaleString()+'</td>' +
+          '<td><span class="linklike" onclick=\'openEntityDetail("TLI 台灣總部","'+c.name+'","NT$ '+c.revenue.toLocaleString()+'","TWD")\'>看明細</span></td></tr>';
+      }).join('') +
+      '<tr><td><b>合計</b></td><td><b>'+totalOrders+'</b></td><td><b>NT$ '+total.toLocaleString()+'</b></td><td></td></tr></table></div>' +
+      '<div class="hint">開票主體：TLI 台灣總部，幣別：新台幣（TWD）。示範畫面，資料為模擬數字。</div>';
+  } else {
+    area.innerHTML = '<div class="tablewrap"><table><tr><th>幣別</th><th>企業客戶（示例）</th><th>訂單數</th><th>原幣金額</th><th>換算金額（NT$）</th><th>匯率</th><th></th></tr>' +
+      BILLING_OS.map(function(o){
+        return '<tr><td>'+o.currency+'</td><td>'+o.entity+'</td><td>'+o.orders+'</td><td>'+o.currency+' '+o.amount.toLocaleString()+'</td>' +
+          '<td>－</td><td class="small">依月結匯率</td>' +
+          '<td><span class="linklike" onclick=\'openEntityDetail("海外公司（登記國待定）","'+o.entity+'","'+o.currency+' '+o.amount.toLocaleString()+'","'+o.currency+'")\'>看明細</span></td></tr>';
+      }).join('') +
+      '</table></div>' +
+      '<div class="hint">開票主體：海外公司（登記國待定）。換算金額待月結匯率結算後產出；本區塊資料為示範畫面，模擬數字。</div>';
+  }
+}
+function openEntityDetail(entity, name, amount, currency){
+  document.getElementById('edm_title').textContent = name;
+  document.getElementById('edm_body').innerHTML =
+    '<div class="kv"><span>開票主體</span><span>'+entity+'</span></div>' +
+    '<div class="kv"><span>幣別</span><span>'+currency+'</span></div>' +
+    '<div class="kv"><span>金額</span><span>'+amount+'</span></div>' +
+    '<div class="note" style="margin-top:10px">示範畫面，資料為模擬數字。</div>';
+  document.getElementById('entityDetailModal').classList.add('open');
+}
+
+/* ================= 主體間服務費對帳 ================= */
+var SETTLE_ROWS = [
+  {month:'2026-06', overseas:'海外公司（登記國待定）', domestic:'TLI 台灣總部', hours:182, basis:'依時數', status:'已付款'},
+  {month:'2026-07', overseas:'海外公司（登記國待定）', domestic:'TLI 台灣總部', hours:205, basis:'依營收比例', status:'已確認'},
+  {month:'2026-08', overseas:'海外公司（登記國待定）', domestic:'TLI 台灣總部', hours:231, basis:'依時數', status:'待對帳'}
+];
+function settleBasisLabel(b){
+  return b==='依時數' ? '依時數' : '依營收比例（比例待會計師確認）';
+}
+function settleStatusBadge(s){
+  if (s==='已付款') return '<span class="badge green">已付款</span>';
+  if (s==='已確認') return '<span class="badge blue">已確認</span>';
+  return '<span class="badge orange">待對帳</span>';
+}
+function renderSettleRecon(){
+  var from = document.getElementById('settle_from').value;
+  var to = document.getElementById('settle_to').value;
+  var list = SETTLE_ROWS.filter(function(r){
+    if (from && r.month < from.slice(0,7)) return false;
+    if (to && r.month > to.slice(0,7)) return false;
+    return true;
+  });
+  var t = document.getElementById('settleTable');
+  t.innerHTML = '<tr><th>月份</th><th>海外主體</th><th>台灣主體</th><th>授課時數</th><th>服務費計算基礎</th><th>狀態</th><th></th></tr>' +
+    list.map(function(r,idx){
+      var actions = '<span class="linklike" onclick="toast(\'已產生「'+r.month+'」對帳表 PDF，請至下載中心取得\')">產出對帳表 PDF</span>';
+      if (r.status!=='已付款') actions += ' ｜ <span class="linklike" onclick="advanceSettleStatus(\''+r.month+'\')">'+(r.status==='待對帳'?'標記已確認':'標記已付款')+'</span>';
+      return '<tr><td>'+r.month+'</td><td>'+r.overseas+'</td><td>'+r.domestic+'</td><td>'+r.hours+' 小時</td>' +
+        '<td>'+settleBasisLabel(r.basis)+'</td><td>'+settleStatusBadge(r.status)+'</td><td>'+actions+'</td></tr>';
+    }).join('');
+}
+function advanceSettleStatus(month){
+  var r = SETTLE_ROWS.find(function(x){return x.month===month;});
+  if (!r) return;
+  r.status = r.status==='待對帳' ? '已確認' : '已付款';
+  renderSettleRecon();
+  toast('「'+month+'」對帳狀態已更新為「'+r.status+'」');
+}
+
+initEntSelect();
+renderEnterpriseReport();
+billTab(null, 'tw');
+renderSettleRecon();
 </script>
 </body>
 </html>

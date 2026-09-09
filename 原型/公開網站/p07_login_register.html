@@ -69,6 +69,10 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
 .switch-note a{color:var(--c-primary);font-weight:700;}
 .switch-note a:hover{text-decoration:underline;}
 
+.refcode-row{display:flex;gap:8px;}
+.refcode-input{flex:1;background:var(--c-bg);color:var(--c-muted);}
+.refcode-note{font-size:12px;color:var(--c-muted);margin-top:6px;}
+
 .role-switch{display:flex;gap:8px;margin-bottom:12px;}
 .role-pill{flex:1;border:1px solid var(--c-border);background:#fff;border-radius:8px;padding:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--c-muted);min-height:42px;}
 .role-pill.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary);}
@@ -176,6 +180,8 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
   <button class="menu-toggle" onclick="document.querySelector('.site-nav').classList.toggle('open')" aria-label="開啟選單" data-i18n="menu_toggle_aria" data-i18n-attr="aria-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   <nav class="site-nav">
     <a href="p02_courses.html" data-i18n="nav_courses">課程</a>
+    <a href="p10_enterprise.html">企業培訓</a>
+    <a href="p09_events.html" data-i18n="nav_events">活動</a>
     <a href="p04_teachers.html" data-i18n="nav_teachers">師資</a>
     <a href="p05_about_locations.html" data-i18n="nav_about">品牌與校區</a>
     <a href="p08_faq.html" data-i18n="nav_faq">常見問題</a>
@@ -261,6 +267,14 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
               <option data-i18n="p07_goal_other">其他</option>
             </select>
           </div>
+          <div class="field" id="refCodeField" style="display:none;">
+            <label data-i18n="p07_label_refcode">推薦代碼</label>
+            <div class="refcode-row">
+              <input type="text" id="refCodeDisplay" class="refcode-input" readonly>
+              <button type="button" class="btn btn-outline btn-sm" onclick="clearRefCode()" data-i18n="p07_refcode_clear">清除</button>
+            </div>
+            <div class="refcode-note" data-i18n="p07_refcode_note">示範畫面，資料為模擬數字</div>
+          </div>
           <button type="submit" class="btn btn-accent btn-block" data-i18n="p07_btn_submit_register">完成註冊</button>
         </form>
         <div class="switch-note"><span data-i18n="p07_switch_to_login_text">已經有帳號？</span><a href="#" onclick="switchTab('login');return false;" data-i18n="p07_switch_to_login_link">前往登入</a></div>
@@ -331,6 +345,30 @@ function showToast(msg){
 var authRole = 'student';
 var currentTab = 'login';
 
+/* 從網址 ?ref= 參數讀取代理商推薦碼（純前端 demo，示範資料固定為「範例教育顧問（東南亞地區）」） */
+var referralCode = null;
+try{
+  var __refParam = new URLSearchParams(window.location.search).get('ref');
+  if(__refParam) referralCode = __refParam;
+}catch(e){}
+var REFERRAL_AGENT_NAME = '範例教育顧問（東南亞地區）';
+
+function updateRefCodeUi(){
+  var field = document.getElementById('refCodeField');
+  if(!field) return;
+  if(referralCode){
+    document.getElementById('refCodeDisplay').value = '推薦代碼：' + referralCode + '（由 ' + REFERRAL_AGENT_NAME + ' 推薦）';
+    field.style.display = 'block';
+  } else {
+    field.style.display = 'none';
+  }
+}
+function clearRefCode(){
+  referralCode = null;
+  updateRefCodeUi();
+  showToast('已清除推薦代碼，將以一般會員身分註冊');
+}
+
 function setRole(role){
   authRole = role;
   document.querySelectorAll('.role-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.role===role); });
@@ -347,6 +385,7 @@ function switchTab(name){
   document.getElementById('panelRegister').classList.toggle('active', showRegisterForm);
   document.getElementById('panelRegister').style.display = showRegisterForm ? 'block':'none';
   document.getElementById('panelRegisterTeacherNote').style.display = showTeacherNote ? 'block':'none';
+  if(showRegisterForm) updateRefCodeUi();
 }
 function fakeLogin(e){
   if(e && e.preventDefault) e.preventDefault();
@@ -358,7 +397,15 @@ function fakeLogin(e){
   document.getElementById('successCard').classList.add('show');
   var isTeacher = authRole === 'teacher';
   var dict = tliDict();
-  document.getElementById('successCardLink').href = isTeacher ? '../教師端/t01_today.html' : '../會員區/m01_home.html';
+  var successLink = document.getElementById('successCardLink');
+  if(isTeacher){
+    successLink.href = '../教師端/t01_today.html';
+  } else if(referralCode){
+    /* 有推薦碼時，帶著實際讀到的 ref 值導向會員區結帳頁，讓轉介歸屬自動延續 */
+    successLink.href = '../會員區/m13_checkout.html?ref=' + encodeURIComponent(referralCode);
+  } else {
+    successLink.href = '../會員區/m01_home.html';
+  }
   document.getElementById('successCardText').textContent = isTeacher ? dict.p07_success_text_teacher : dict.p07_success_text_student;
   document.getElementById('successCardBtnText').textContent = isTeacher ? dict.p07_success_btn_teacher : dict.p07_success_btn_student;
   return false;
@@ -580,6 +627,7 @@ var I18N_PAGE = {
   p07_goal_daily: '生活會話', p07_goal_business: '商用／職場溝通',
   p07_goal_exam: '檢定考試準備（如 TOCFL／HSK／TOEIC）',
   p07_goal_visa: '簽證所需上課證明', p07_goal_other: '其他',
+  p07_label_refcode: '推薦代碼', p07_refcode_clear: '清除', p07_refcode_note: '示範畫面，資料為模擬數字',
   p07_forgot_password: '忘記密碼？',
   p07_toast_forgot_password: '已送出，請至信箱查收密碼重設信',
   p07_btn_submit_login: '登入', p07_btn_submit_register: '完成註冊',
@@ -610,6 +658,7 @@ en: {
   p07_goal_daily: 'Everyday Conversation', p07_goal_business: 'Business / Workplace Communication',
   p07_goal_exam: 'Test Prep (e.g. TOCFL / HSK / TOEIC)',
   p07_goal_visa: 'Attendance Proof for Visa', p07_goal_other: 'Other',
+  p07_label_refcode: 'Referral Code', p07_refcode_clear: 'Clear', p07_refcode_note: 'Demo screen, sample data',
   p07_forgot_password: 'Forgot your password?',
   p07_toast_forgot_password: 'Sent — please check your inbox for the password reset email',
   p07_btn_submit_login: 'Log In', p07_btn_submit_register: 'Complete Sign Up',
@@ -640,6 +689,7 @@ ja: {
   p07_goal_daily: '日常会話', p07_goal_business: 'ビジネス／職場でのコミュニケーション',
   p07_goal_exam: '検定試験対策（TOCFL／HSK／TOEICなど）',
   p07_goal_visa: 'ビザ申請に必要な出席証明', p07_goal_other: 'その他',
+  p07_label_refcode: '紹介コード', p07_refcode_clear: 'クリア', p07_refcode_note: 'デモ画面、サンプルデータです',
   p07_forgot_password: 'パスワードをお忘れですか？',
   p07_toast_forgot_password: '送信しました。メールでパスワード再設定のご案内をご確認ください',
   p07_btn_submit_login: 'ログイン', p07_btn_submit_register: '登録を完了する',

@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>員工管理｜TLI Connect 3.0 企業管理後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;padding:0;display:flex;flex-direction:column;height:100vh;
+overflow:hidden;border-right:1px solid var(--g200);position:sticky;top:0;align-self:flex-start;transition:left .2s;}
+.sidebar .brand{padding:16px 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;flex-shrink:0;}
+.sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:12px;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:8px 8px 8px;}
+.sidebar .sec-label{padding:0 12px;margin:12px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+.sidebar .sec-label:first-child{margin-top:4px;}
+.sidebar nav a{display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;
+font-size:14px;color:var(--g900);text-decoration:none;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+.su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+.su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+.su-chevron{color:var(--g500);flex-shrink:0;}
+.su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;
+padding:6px 10px;width:180px;}
+.tb-search input{border:none;background:none;outline:none;font-size:12.5px;font-family:inherit;width:100%;color:var(--g900);}
+.tb-bellbtn{position:relative;background:none;border:none;cursor:pointer;font-size:17px;padding:4px;line-height:1;}
+.tb-dot{position:absolute;top:0;right:0;width:7px;height:7px;background:#C0392B;border-radius:50%;display:none;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-notifpanel{width:300px;padding:10px;}
+.tb-notifpanel .tn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+padding:4px 6px 8px;border-bottom:1px solid var(--g200);margin-bottom:6px;}
+.tb-notifpanel .tn-head a{font-size:11.5px;cursor:pointer;}
+.tb-notifitem{padding:8px 6px;border-radius:6px;font-size:12.5px;line-height:1.5;}
+.tb-notifitem:hover{background:var(--g50);}
+.tb-notifitem.unread{background:#EEF3FA;}
+.tb-notifitem .tn-t{color:var(--g500);font-size:11px;margin-top:2px;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.btn.danger{background:#fff;border:1px solid #F0B4B4;color:#C0392B;}
+.btn:disabled{background:var(--g200)!important;color:var(--g500)!important;cursor:not-allowed!important;}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;max-width:100%;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.orange{background:#FCE9DA;color:var(--orange);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;border-radius:6px;}
+.formrow{margin-bottom:13px;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input,.formrow select,.formrow textarea{width:100%;padding:7px 10px;border:1px solid var(--g200);
+border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow textarea{resize:vertical;min-height:60px;}
+.small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:160;align-items:center;justify-content:center;}
+.modal-mask.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:90vw;max-height:85vh;overflow:auto;padding:22px;}
+.modal.wide{width:640px;}
+.modal h3{margin-top:0;font-size:16px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* ---- 員工管理專用 ---- */
+.toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.toolrow .tr-left{display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1;}
+.toolrow .tr-right{display:flex;gap:8px;flex-wrap:wrap;}
+.searchbox{flex:1;min-width:200px;max-width:320px;position:relative;}
+.searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;box-sizing:border-box;}
+.searchbox .sicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--g500);}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.fchip{padding:5px 12px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--g900);}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pagerbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:var(--g500);flex-wrap:wrap;gap:10px;}
+.pagerbtns{display:flex;gap:6px;align-items:center;}
+.pagerbtns button{padding:5px 10px;border:1px solid var(--g200);background:#fff;border-radius:6px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.pagerbtns button:disabled{color:var(--g200);cursor:not-allowed;}
+.csvpanel{display:none;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:14px;margin-top:10px;font-size:12.5px;line-height:1.8;}
+.csvpanel.open{display:block;}
+.csvpanel code{background:#fff;border:1px solid var(--g200);border-radius:4px;padding:1px 5px;font-size:11.5px;}
+@media (max-width:1023px){
+.hamburger{display:inline-flex;}
+.sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
+.sidebar.open{left:0;}
+.sidebar-backdrop.open{display:block;}
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;margin:-16px -16px 18px;}
+.tb-search{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar">
+<a class="brand" href="h01_dashboard.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small>企業管理後台</small></a>
+<nav>
+<div class="sec-label">企業管理</div>
+<a data-nav="h01" href="h01_dashboard.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg><span>儀表板</span></a>
+<a data-nav="h02" class="active" href="h02_employees.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span>員工管理</span></a>
+<a data-nav="h03" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
+<a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
+<a data-nav="h05" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
+<a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>申訴覆核</span></a>
+</nav>
+<div class="sidebar-user" id="sidebarUser">
+<div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar">陳</span><span class="su-info"><span class="su-name">陳雅婷 Sarah Chen</span><span class="su-roletag">企業管理者</span></span>
+<svg class="su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div>
+<div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div>
+</div>
+</div>
+
+<div class="main">
+<div class="topbar">
+<button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button>
+<div class="tb-title">員工管理</div>
+<div class="tb-actions">
+<div class="tb-search"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋員工"></div>
+<button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button>
+<div class="tb-panel tb-notifpanel" id="notifPanel"></div>
+<button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">陳</button>
+<div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div>
+</div>
+</div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<div class="note" style="margin-bottom:14px">示範畫面，資料為模擬數字，非實際企業資料。</div>
+
+<div class="pagehead">
+<div><h1>員工管理</h1><div class="desc">邀請員工加入企業帳號、查看在學狀態與累計時數。停用帳號後該員工無法再登入預約課程，已使用時數不會退回。</div></div>
+</div>
+
+<div class="card">
+<div class="toolrow">
+<div class="tr-left">
+<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="empSearch" placeholder="搜尋姓名或 Email" oninput="onEmpSearch(this.value)"></div>
+<div class="chipbar" id="deptChips"></div>
+</div>
+<div class="tr-right">
+<button class="btn ghost" onclick="toggleCsvPanel()">批次匯入 CSV</button>
+<button class="btn" onclick="openInviteModal()">＋ 邀請員工</button>
+</div>
+</div>
+<div class="csvpanel" id="csvPanel">
+<strong>批次匯入格式說明</strong><br>
+上傳 UTF-8 編碼的 CSV 檔，第一列為欄位標題，欄位順序如下：<br>
+<code>員工姓名</code>、<code>Email</code>、<code>部門</code>、<code>廠區時區</code>（填入「美國廠區」或「日本廠區」）<br>
+每次匯入上限 500 筆，Email 重複的資料列會被略過並列在匯入結果中。
+<div style="margin-top:10px"><button class="btn ghost" onclick="simulateCsvImport()">選擇檔案並匯入（示範）</button></div>
+</div>
+<div class="tablewrap"><table id="empTable"></table></div>
+<div class="pagerbar"><span id="empPagerLabel"></span><div class="pagerbtns">
+<span class="small">每頁</span><select id="empPageSizeSel" onchange="onEmpPageSizeChange(this)"><option value="10">10</option><option value="20">20</option></select><span class="small">筆</span>
+<button id="empBtnFirst" onclick="empGotoPage(1)">« 第一頁</button>
+<button id="empBtnPrev" onclick="empGotoPageRel(-1)">‹ 上一頁</button>
+<span id="empPageIndicator" class="small"></span>
+<button id="empBtnNext" onclick="empGotoPageRel(1)">下一頁 ›</button>
+<button id="empBtnLast" onclick="empGotoPage(9999)">最後一頁 »</button>
+</div></div>
+</div>
+
+</div>
+</div>
+
+<!-- 邀請員工 modal -->
+<div class="modal-mask" id="inviteModal"><div class="modal">
+<h3>邀請員工</h3>
+<div class="formrow"><label>員工 Email</label><input type="email" id="inviteEmail" placeholder="name@company.com"></div>
+<div class="formrow"><label>姓名</label><input type="text" id="inviteName" placeholder="員工姓名"></div>
+<div class="formrow"><label>部門</label><select id="inviteDept"></select></div>
+<div class="formrow"><label>廠區時區</label><select id="inviteSite"></select></div>
+<div class="hint">邀請送出後，系統會寄送設定密碼連結至員工 Email，員工完成設定後即可登入預約課程。</div>
+<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployee()">送出邀請</button></div>
+</div></div>
+
+<!-- 停用確認 modal -->
+<div class="modal-mask" id="disableModal"><div class="modal">
+<h3>停用員工帳號</h3>
+<div id="disableBody" style="font-size:13.5px;line-height:1.7"></div>
+<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('disableModal')">取消</button> <button class="btn danger" onclick="confirmDisable()">確認停用</button></div>
+</div></div>
+
+<script>
+function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
+function addDays(baseStr, days){ var d=new Date(baseStr+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+
+/* ===== 企業與員工示範資料（與 h01、h03 共用同一組產生邏輯，確保跨頁資料一致） ===== */
+var SITE_LIST = [
+  {id:'us', name:'美國廠區', tz:'UTC-7（美國西部時間）'},
+  {id:'jp', name:'日本廠區', tz:'UTC+9（日本標準時間）'}
+];
+var DEPTS = ['廠務部','設備工程部','品保部','資訊部','人資部'];
+var US_NAMES = ['John Miller','Emily Tran','David Park','Rachel Kim','Michael Brown','Sophia Garcia','Kevin Lee','Laura Chen','Daniel Wright','Olivia Martinez','Brian Wu','Natalie Scott'];
+var JP_NAMES = ['田中 涼子','佐藤 健一','鈴木 美咲','高橋 大輔','伊藤 由美','渡辺 翔太','中村 直樹','小林 愛','加藤 拓也','山本 麻衣','斉藤 亮','松本 恵'];
+var FEEDBACK_POOL = [
+  '口語表達進步明顯，能主動用中文提問。',
+  '聽力理解穩定，建議加強生產線相關詞彙的口說練習。',
+  '出席穩定，作業按時繳交，發音仍需加強聲調。',
+  '本月因出差請假兩次，仍保持課前預習習慣。',
+  '閱讀理解進步快，寫作部分句型變化可以再豐富。',
+  '課堂互動積極，建議加強書面表達的用詞精準度。'
+];
+function makeEmployee(i){
+  var siteIdx = i % 2;
+  var site = SITE_LIST[siteIdx];
+  var pool = siteIdx===0 ? US_NAMES : JP_NAMES;
+  var name = pool[Math.floor(i/2) % pool.length];
+  var r1=seededRand(i*7+11), r2=seededRand(i*11+13), r3=seededRand(i*13+17), r4=seededRand(i*17+19);
+  var dept = DEPTS[i % DEPTS.length];
+  var status = r1 < 0.92 ? '在學' : '停用';
+  var attendance = 55 + Math.floor(r2*45);
+  var hours = 20 + Math.floor(r3*140);
+  var emailName = name.toLowerCase().replace(/[^a-z]/g,'').slice(0,10);
+  var email = (siteIdx===0 && emailName ? emailName : 'emp'+i) + '@example-semi.com';
+  return {
+    id:'emp'+i, name:name, email:email, dept:dept, site:site.name, tz:site.tz,
+    status:status, hours:hours, attendance:attendance,
+    joined: addDays('2026-01-01', Math.floor(r4*200)),
+    skills:{ listen:30+Math.floor(seededRand(i*3+2)*65), speak:30+Math.floor(seededRand(i*5+4)*65),
+             read:30+Math.floor(seededRand(i*9+6)*65), write:30+Math.floor(seededRand(i*15+8)*65) },
+    score:55+Math.floor(seededRand(i*19+10)*45),
+    feedback: FEEDBACK_POOL[i % FEEDBACK_POOL.length],
+    feedbackDate: addDays('2026-09-08', -Math.floor(seededRand(i*31+21)*21))
+  };
+}
+var EMP_COUNT = 26;
+var EMPLOYEES = []; for (var ii=0; ii<EMP_COUNT; ii++) EMPLOYEES.push(makeEmployee(ii));
+var nextEmpSeq = EMP_COUNT;
+
+/* ===== 部門篩選 chip ===== */
+var empState = {search:'', dept:'', page:1, pageSize:10};
+function renderDeptChips(){
+  document.getElementById('deptChips').innerHTML = DEPTS.map(function(d){
+    return '<button type="button" class="fchip'+(empState.dept===d?' active':'')+'" onclick="toggleDeptChip(\''+d+'\')">'+d+'</button>';
+  }).join('');
+}
+function toggleDeptChip(d){
+  empState.dept = (empState.dept===d) ? '' : d;
+  empState.page = 1;
+  renderDeptChips();
+  renderEmpTable();
+}
+function onEmpSearch(v){ empState.search = v; empState.page = 1; renderEmpTable(); }
+function onEmpPageSizeChange(el){ empState.pageSize = Number(el.value); empState.page = 1; renderEmpTable(); }
+function empFiltered(){
+  var term = empState.search.trim().toLowerCase();
+  return EMPLOYEES.filter(function(e){
+    if (term && e.name.toLowerCase().indexOf(term)===-1 && e.email.toLowerCase().indexOf(term)===-1) return false;
+    if (empState.dept && e.dept!==empState.dept) return false;
+    return true;
+  });
+}
+function empMaxPage(){ return Math.max(1, Math.ceil(empFiltered().length/empState.pageSize)); }
+function empGotoPage(p){ var max=empMaxPage(); if (p<1) p=1; if (p>max) p=max; empState.page=p; renderEmpTable(); }
+function empGotoPageRel(delta){ empGotoPage(empState.page+delta); }
+function statusBadge(s){ return s==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>'; }
+function renderEmpTable(){
+  var filtered = empFiltered();
+  var total = filtered.length;
+  var maxPage = Math.max(1, Math.ceil(total/empState.pageSize));
+  if (empState.page > maxPage) empState.page = maxPage;
+  var startIdx = (empState.page-1)*empState.pageSize;
+  var pageRows = filtered.slice(startIdx, startIdx+empState.pageSize);
+  var t = document.getElementById('empTable');
+  t.innerHTML = '<tr><th>姓名</th><th>Email</th><th>部門</th><th>廠區時區</th><th>狀態</th><th>累計時數</th><th>出勤率</th><th></th></tr>';
+  pageRows.forEach(function(e){
+    var tr = document.createElement('tr');
+    var actionBtn = e.status==='在學'
+      ? '<button class="btn ghost" onclick="openDisableModal(\''+e.id+'\')">停用</button>'
+      : '<span class="small">已停用</span>';
+    tr.innerHTML = '<td>'+e.name+'</td><td>'+e.email+'</td><td>'+e.dept+'</td><td>'+e.site+'</td>'+
+      '<td>'+statusBadge(e.status)+'</td><td>'+e.hours+' 小時</td><td>'+e.attendance+'%</td><td>'+actionBtn+'</td>';
+    t.appendChild(tr);
+  });
+  var startLabel = total===0 ? 0 : startIdx+1;
+  var endLabel = Math.min(startIdx+empState.pageSize, total);
+  document.getElementById('empPagerLabel').textContent = '第 '+startLabel+'–'+endLabel+' 筆／共 '+total+' 筆';
+  document.getElementById('empPageIndicator').textContent = '第 '+empState.page+' / '+maxPage+' 頁';
+  document.getElementById('empBtnFirst').disabled = empState.page<=1;
+  document.getElementById('empBtnPrev').disabled = empState.page<=1;
+  document.getElementById('empBtnNext').disabled = empState.page>=maxPage;
+  document.getElementById('empBtnLast').disabled = empState.page>=maxPage;
+  document.getElementById('empPageSizeSel').value = String(empState.pageSize);
+}
+
+/* ===== 邀請員工 ===== */
+function openInviteModal(){
+  document.getElementById('inviteEmail').value = '';
+  document.getElementById('inviteName').value = '';
+  var dsel = document.getElementById('inviteDept');
+  dsel.innerHTML = DEPTS.map(function(d){ return '<option>'+d+'</option>'; }).join('');
+  var ssel = document.getElementById('inviteSite');
+  ssel.innerHTML = SITE_LIST.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('');
+  document.getElementById('inviteModal').classList.add('open');
+}
+function doInviteEmployee(){
+  var email = document.getElementById('inviteEmail').value.trim();
+  var name = document.getElementById('inviteName').value.trim();
+  if (!email || !name){ toast('請填寫 Email 與姓名'); return; }
+  var dept = document.getElementById('inviteDept').value;
+  var siteId = document.getElementById('inviteSite').value;
+  var site = SITE_LIST.find(function(s){ return s.id===siteId; });
+  var newEmp = {
+    id:'emp'+(nextEmpSeq++), name:name, email:email, dept:dept, site:site.name, tz:site.tz,
+    status:'在學', hours:0, attendance:0, joined:new Date().toISOString().slice(0,10),
+    skills:{listen:0,speak:0,read:0,write:0}, score:0, feedback:''
+  };
+  EMPLOYEES.unshift(newEmp);
+  empState.page = 1;
+  renderEmpTable();
+  closeModal('inviteModal');
+  toast('已邀請「'+name+'」，設定密碼連結已寄至 '+email);
+}
+
+/* ===== 停用員工 ===== */
+var pendingDisableId = null;
+function openDisableModal(id){
+  pendingDisableId = id;
+  var e = EMPLOYEES.find(function(x){ return x.id===id; });
+  document.getElementById('disableBody').innerHTML = '確定要停用「'+e.name+'」（'+e.email+'）的帳號嗎？停用後該員工將無法登入預約課程，已使用的 '+e.hours+' 小時不會退回企業時數池。';
+  document.getElementById('disableModal').classList.add('open');
+}
+function confirmDisable(){
+  var e = EMPLOYEES.find(function(x){ return x.id===pendingDisableId; });
+  if (e) e.status = '停用';
+  closeModal('disableModal');
+  renderEmpTable();
+  toast('已停用「'+e.name+'」的帳號');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+/* ===== 批次匯入 CSV 說明面板 ===== */
+function toggleCsvPanel(){ document.getElementById('csvPanel').classList.toggle('open'); }
+function simulateCsvImport(){ toast('示範畫面：實際上線後將解析 CSV 並批次建立員工帳號'); }
+
+/* ===== 初始化 ===== */
+renderDeptChips();
+renderEmpTable();
+
+/* ===== 共用：側欄／頂欄／通知／登出／toast ===== */
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }
+function toggleSuMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); closePanel('avatarMenu'); document.getElementById('suMenu').classList.toggle('open'); }
+function closePanel(id){ var el=document.getElementById(id); if (el) el.classList.remove('open'); }
+document.addEventListener('click', function(){ closePanel('suMenu'); closePanel('notifPanel'); closePanel('avatarMenu'); });
+var NOTIFS = [
+  {t:'王大明尚未完成本月「廠務部」出勤率確認', time:'1 小時前', unread:true},
+  {t:'「資料串接」申請已受理，TLI 顧問將於 3 個工作日內與您聯繫', time:'今天 08:40', unread:true},
+  {t:'系統已產生上月學習報告 PDF，可至「學習報告」下載', time:'昨天', unread:false}
+];
+function renderNotifPanel(){
+  var panel = document.getElementById('notifPanel'); if (!panel) return;
+  var unread = NOTIFS.filter(function(n){return n.unread;}).length;
+  var dot = document.getElementById('tbDot'); if (dot) dot.style.display = unread ? 'block' : 'none';
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>'+
+    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+}
+function markAllRead(ev){ if (ev) ev.stopPropagation(); NOTIFS.forEach(function(n){n.unread=false;}); renderNotifPanel(); }
+function toggleNotif(ev){ ev.stopPropagation(); closePanel('avatarMenu'); closePanel('suMenu'); var p=document.getElementById('notifPanel'); p.classList.toggle('open'); if (p.classList.contains('open')) renderNotifPanel(); }
+function toggleAvatarMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); closePanel('suMenu'); document.getElementById('avatarMenu').classList.toggle('open'); }
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){ el=document.createElement('div'); el.id='toastEl'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2400);
+}
+renderNotifPanel();
+</script>
+</body>
+</html>

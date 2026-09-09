@@ -163,6 +163,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .timeline-item .t-dot{width:8px;height:8px;border-radius:50%;background:var(--c-primary);margin-top:5px;flex:none;}
 .timeline-item p{margin:0;font-size:12.5px;}
 .timeline-item span{color:var(--c-muted);font-size:11px;}
+/* ---------- B2B 時數池／出勤率口徑／評語分層（v2 新增） ---------- */
+.demo-tag{font-size:10.5px;color:#98A2B3;font-weight:400;margin-left:6px;}
+.pool-card{background:#EAF6F2;border:1px solid #BEE6D9;border-radius:var(--radius);padding:14px;}
+.pool-card .pc-label{font-size:12px;color:#0B6B52;font-weight:700;}
+.pool-card .pc-value{font-size:22px;font-weight:800;color:#075A45;margin:6px 0 2px;}
+.attendance-def{font-size:12px;color:var(--c-primary-dark);background:#E6EEF8;border:1px solid #C7DAF0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.7;}
+.feedback-note{font-size:11.5px;color:var(--c-muted);background:var(--c-bg);border-radius:var(--radius-sm);padding:8px 10px;margin-top:8px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -173,6 +180,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
+    <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
     <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
     <a class="side-link active" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
@@ -214,7 +222,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <div>
           <span class="badge badge-info">會員分類 B</span>
           <h3 style="margin:8px 0 2px;font-size:16.5px;">和霖科技股份有限公司</h3>
-          <p class="small muted" style="margin:2px 0 0;">合約期間 2026/01/01－2026/12/31</p>
+          <p class="small muted" style="margin:2px 0 0;">合約期間 2026/01/01－2026/12/31・我的所屬部門：<strong id="myDeptLabel">業務部</strong></p>
         </div>
       </div>
       <div class="chip-row" id="periodChips" style="margin:14px 0 0;">
@@ -225,10 +233,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <p class="small muted" id="periodNote" style="margin:0;">統計區間：2026/08/01－2026/08/28</p>
     </div>
 
+    <div class="section-title">企業時數池<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+    <div class="card pool-card">
+      <div class="pc-label">共用時數池餘額</div>
+      <div class="pc-value"><span id="poolRemain">356</span> ／ <span id="poolTotal">600</span> 小時</div>
+      <p class="small" style="margin:0;color:#0B6B52;">母帳號購買總時數池，各部門依配額領用；子帳號扣時數時從企業母帳號池子扣，非各自獨立計算。</p>
+    </div>
+
     <div class="section-title">關鍵指標</div>
     <div class="stat-grid" id="statGrid"></div>
 
     <div class="section-title">出席率趨勢</div>
+    <div class="attendance-def">
+      出勤率口徑：實到堂數／應到堂數。免扣次數內的請假不列入應到分母；超出免扣次數的請假記為缺席、計入應到分母。員工如提出申訴且經 HR 或顧問覆核通過，將改記請假、不計入缺席。本頁數字僅供參考，正式數字以 HR 管理後台報表為準。
+    </div>
     <div class="card chart-wrap">
       <div class="bar-chart" id="barChart"></div>
     </div>
@@ -274,6 +292,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <button class="btn btn-outline btn-sm" onclick="showToast('報表 PDF 已產生，將於下載中心提供')">匯出 PDF</button>
       <button class="btn btn-outline btn-sm" onclick="showToast('員工明細 CSV 已匯出')">匯出 CSV</button>
       <button class="btn btn-outline btn-sm" onclick="showToast('請款單由 TLI 顧問端提供，如需請洽您的專屬顧問')">查看請款單</button>
+      <button class="btn btn-outline btn-sm" onclick="showToast('已匯出我的學習紀錄')">匯出我的學習紀錄</button>
       <button class="btn btn-accent btn-sm" onclick="openInviteSheet()">邀請員工</button>
       <label class="switch" id="scheduleSwitch" onclick="toggleSchedule(event)">
         <span class="switch-track"></span>排程每月寄送
@@ -286,6 +305,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
   </nav>
 </div>
@@ -301,6 +321,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="divider"></div>
     <div class="small" style="font-weight:700;">評量歷次</div>
     <div id="empTestHistory" style="margin-top:6px;"></div>
+    <div class="divider"></div>
+    <div class="small" style="font-weight:700;">老師評語（學員可見層）</div>
+    <div class="quote" id="empFeedbackQuote" style="margin-top:6px;">－</div>
+    <p class="feedback-note">老師另有僅供教學組內部使用的觀察備註，不對外開放；企業學員另有一層「HR 可見評語」，供 HR 後台與開放 API 查詢使用，本頁不顯示，需於 HR 後台查看。</p>
     <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="document.getElementById('empDrawerOverlay').classList.add('hidden')">關閉</button>
   </div>
 </div>
@@ -519,6 +543,13 @@ function openEmpDrawer(id){
   ].map(function(x){
     return '<div class="list-row"><div class="icon-box">'+ICON_AWARD+'</div><div class="body"><h4>'+x.type+'</h4><p>對照 TLI-CPT '+x.level+'</p></div><div class="trail"><span class="badge badge-info">'+x.score+' 分</span></div></div>';
   }).join('');
+  var feedbackByStatus={
+    '已完成':'恭喜完成本期課程，各項技能表現穩定，建議續約進階課程延續學習節奏。',
+    '暫停':'近期出席不穩定，建議與部門主管確認排課時間是否需要調整。',
+    '進行中':'本月上課表現穩定，聽說讀寫持續進步，請繼續保持練習。'
+  };
+  document.getElementById('empFeedbackQuote').textContent='「'+(feedbackByStatus[e.status]||feedbackByStatus['進行中'])+'」';
+
   document.getElementById('empDrawerOverlay').classList.remove('hidden');
 }
 function statusText(s){ return s; }

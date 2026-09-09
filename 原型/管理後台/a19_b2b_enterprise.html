@@ -53,6 +53,7 @@ tr.rowlink:hover{background:#F8FAFD;}
 .badge.orange{background:#FCE9DA;color:var(--orange);}
 .badge.grey{background:var(--g200);color:var(--g500);}
 .badge.red{background:#FBE7E7;color:#C0392B;}
+.badge.teal{background:#E1F3EE;color:var(--teal);}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
 .tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
 cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
@@ -74,6 +75,8 @@ border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
 .formrow .static{padding:7px 0;font-size:13.5px;}
 .note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
 border-radius:6px;}
+.crosslink{display:block;font-size:11.5px;color:var(--g500);margin:6px 0 10px;}
+.crosslink a{color:var(--navy);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
 .kv span:first-child{color:var(--g500);}
@@ -122,6 +125,7 @@ display:flex;flex-direction:column;}
 .statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
 .sectiontitle{font-size:13px;font-weight:600;margin:16px 0 8px;color:var(--g900);}
 .sectiontitle:first-child{margin-top:0;}
+.demo-tag{display:block;font-size:10px;font-weight:400;color:#98A2B3;text-transform:none;letter-spacing:0;white-space:normal;}
 /* ---- 組織樹 ---- */
 .orgtree{border:1px solid var(--g200);border-radius:8px;padding:4px 0;}
 .orgdept{padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--g500);background:var(--g50);border-bottom:1px solid var(--g200);}
@@ -278,7 +282,7 @@ html,body{overflow-x:hidden;}
 </head>
 <body>
 <div class="app">
-<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c08" href="../顧問工作台/c08_inquiries.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5c-1 0-1.8.8-1.7 1.8.4 4.7 2.5 8.7 6 11.2 1.1.8 2.6.3 3-1l.6-1.8c.2-.6-.1-1.3-.7-1.6l-2.3-1.1c-.5-.3-1.1-.1-1.5.3l-.8.9c-1.4-1.1-2.5-2.6-3.2-4.3l1-.6c.5-.3.7-.9.5-1.4L4.9 3.8c-.1-.3-.4-.4-.7-.3z"/></svg><span class="navtext">諮詢與試聽</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a18" href="a18_resource_library.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M3 9.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></svg><span class="navtext">資源庫</span></a><a data-nav="a19" class="active" href="a19_b2b_enterprise.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="7" height="14" rx="1"/><rect x="10.5" y="7.5" width="6" height="9.5" rx="1"/><line x1="5.5" y1="6" x2="7.5" y2="6"/><line x1="5.5" y1="9" x2="7.5" y2="9"/><line x1="5.5" y1="12" x2="7.5" y2="12"/><line x1="12.5" y1="10.5" x2="14.5" y2="10.5"/><line x1="12.5" y1="13.5" x2="14.5" y2="13.5"/></svg><span class="navtext">B2B 企業客戶</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
+<div class="sidebar" id="sidebar"><a class="brand" href="../顧問工作台/c01_today.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small class="navtext">管理後台</small></a><nav><div class="navgroup" data-group="advisor"><div class="sec-label"><span class="navtext">顧問作業</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'advisor')" aria-label="收合顧問作業"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="c01" href="../顧問工作台/c01_today.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.5"/><rect x="7.5" y="1.5" width="5" height="3" rx="1"/><line x1="7.5" y1="8" x2="12.5" y2="8"/><line x1="7.5" y1="11" x2="12.5" y2="11"/></svg><span class="navtext">今日待辦</span></a><a data-nav="c08" href="../顧問工作台/c08_inquiries.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5c-1 0-1.8.8-1.7 1.8.4 4.7 2.5 8.7 6 11.2 1.1.8 2.6.3 3-1l.6-1.8c.2-.6-.1-1.3-.7-1.6l-2.3-1.1c-.5-.3-1.1-.1-1.5.3l-.8.9c-1.4-1.1-2.5-2.6-3.2-4.3l1-.6c.5-.3.7-.9.5-1.4L4.9 3.8c-.1-.3-.4-.4-.7-.3z"/></svg><span class="navtext">諮詢與試聽</span></a><a data-nav="c02" href="../顧問工作台/c02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span class="navtext">學生</span></a><a data-nav="c04" href="../顧問工作台/c04_new_order.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="navtext">建訂單</span></a><a data-nav="c09" href="../顧問工作台/c09_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.5v15"/><path d="M5 3.5h9l-2.5 3.5L14 10.5H5"/></svg><span class="navtext">申訴覆核</span></a><a data-nav="c06" href="../顧問工作台/c06_renewal.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 1 1-1.8-4.3"/><path d="M16 2v4h-4"/></svg><span class="navtext">續費追蹤</span></a><a data-nav="c07" href="../顧問工作台/c07_scheduling.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/></svg><span class="navtext">排課</span></a></div></div><div class="navgroup" data-group="sysset"><div class="sec-label"><span class="navtext">系統設定</span><button type="button" class="sec-toggle navtext" onclick="toggleNavGroup(event,'sysset')" aria-label="收合系統設定"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></button></div><div class="navgroup-items"><a data-nav="a01" href="a01_member_rules.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></svg><span class="navtext">會員管理</span></a><a data-nav="a11" href="a11_categories.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h4.5L17 5.5V10l-8 8-6.5-6.5L10 3z"/><circle cx="13" cy="7" r="1"/></svg><span class="navtext">會員分類</span></a><a data-nav="a02" href="a02_products.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l7-3.5L17 6v8l-7 3.5L3 14V6z"/><path d="M3 6l7 3.5L17 6"/><line x1="10" y1="9.5" x2="10" y2="17.5"/></svg><span class="navtext">產品管理</span></a><a data-nav="a04" href="a04_packages.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M3 7l7-4 7 4"/><line x1="10" y1="7" x2="10" y2="17"/></svg><span class="navtext">銷售方案設定</span></a><a data-nav="a05" href="a05_orders.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h10v16l-2-1.3L11 18l-2-1.3L7 18l-2-1.3V2z"/><line x1="7.5" y1="6" x2="12.5" y2="6"/><line x1="7.5" y1="9" x2="12.5" y2="9"/></svg><span class="navtext">訂單</span></a><a data-nav="a12" href="a12_contracts.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span class="navtext">合約管理</span></a><a data-nav="a13" href="a13_receivables.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><line x1="2.5" y1="8.5" x2="17.5" y2="8.5"/><line x1="5" y1="12" x2="8" y2="12"/></svg><span class="navtext">應收與分期</span></a><a data-nav="a06" href="a06_invoice_setting.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/></svg><span class="navtext">發票設定</span></a><a data-nav="a07" href="a07_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span class="navtext">報表</span></a><a data-nav="a08" href="a08_content_cms.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><line x1="8" y1="3" x2="8" y2="17"/></svg><span class="navtext">內容管理</span></a><a data-nav="a17" href="a17_master_data.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="16" y2="5"/><circle cx="8" cy="5" r="1.6"/><line x1="4" y1="10" x2="16" y2="10"/><circle cx="13" cy="10" r="1.6"/><line x1="4" y1="15" x2="16" y2="15"/><circle cx="10" cy="15" r="1.6"/></svg><span class="navtext">基礎資料設定</span></a><a data-nav="a18" href="a18_resource_library.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M3 9.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></svg><span class="navtext">資源庫</span></a><a data-nav="a19" class="active" href="a19_b2b_enterprise.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="7" height="14" rx="1"/><rect x="10.5" y="7.5" width="6" height="9.5" rx="1"/><line x1="5.5" y1="6" x2="7.5" y2="6"/><line x1="5.5" y1="9" x2="7.5" y2="9"/><line x1="5.5" y1="12" x2="7.5" y2="12"/><line x1="12.5" y1="10.5" x2="14.5" y2="10.5"/><line x1="12.5" y1="13.5" x2="14.5" y2="13.5"/></svg><span class="navtext">B2B 企業客戶</span></a><a data-nav="a20" href="a20_agents.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6" r="2.3"/><path d="M2.5 16c0-2.6 1.8-4.3 4-4.3s4 1.7 4 4.3"/><circle cx="14.5" cy="8.5" r="1.8"/><path d="M17.3 16c0-1.9-1.3-3.4-2.8-3.4"/><path d="M9 6l3-1.5"/></svg><span class="navtext">代理商管理</span></a><a data-nav="a09" href="a09_permissions_notify.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l6.5 2.5v5C16.5 14 13.8 17 10 18c-3.8-1-6.5-4-6.5-8.5v-5L10 2z"/></svg><span class="navtext">權限管理</span></a><a data-nav="a15" href="a15_notifications.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="navtext">通知範本與系統參數</span></a><a data-nav="a10" href="a10_teachers.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="15" height="9.5" rx="1.5"/><path d="M7 6.5V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="10.5" x2="17.5" y2="10.5"/></svg><span class="navtext">老師管理</span></a><a data-nav="a14" href="a14_feedback.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3v-3H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg><span class="navtext">學員回饋</span></a><a data-nav="a16" href="a16_events.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="6.5" y1="2" x2="6.5" y2="5.5"/><line x1="13.5" y1="2" x2="13.5" y2="5.5"/><circle cx="10" cy="12.3" r="2"/></svg><span class="navtext">活動管理</span></a></div></div></nav><div class="sidebar-user" id="sidebarUser"><div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar" id="suAvatar">王</span><span class="navtext su-info"><span class="su-name" id="suName">王大明</span><span class="su-roletag" id="suRoleTag">總公司管理者</span></span><svg class="navtext su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div><div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><div class="su-roleswitch"><label>切換角色檢視</label><select id="roleSwitcher" onchange="onRoleSwitch(this)"></select></div><div class="su-campusswitch" id="campusSwitchWrap" style="display:none"><label>切換校區檢視</label><select id="campusSwitcher" onchange="onCampusSwitch(this)"></select></div><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div>
 <div class="main"><div class="topbar"><button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg class="navicon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button><div class="tb-title">B2B 企業客戶</div><div class="tb-actions"><div class="tb-search"><svg class="navicon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋"></div><button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg class="navicon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button><div class="tb-panel tb-notifpanel" id="notifPanel"></div><button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">王</button><div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div></div></div><div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
 <div class="pagehead">
@@ -295,8 +299,10 @@ html,body{overflow-x:hidden;}
 <button class="btn ghost" onclick="entExport()">匯出</button>
 </div>
 <div class="chipbar">
+<div class="chipgroup" id="entChipType"></div>
 <div class="chipgroup" id="entChipTier"></div>
 <div class="chipgroup" id="entChipInvoice"></div>
+<div class="chipgroup" id="entChipTrial"></div>
 <button class="clearlink" onclick="clearEntFilters()">清除全部篩選</button>
 </div>
 <div class="tablewrap"><table id="entTable"></table></div>
@@ -346,6 +352,33 @@ html,body{overflow-x:hidden;}
 <div id="invoiceGenBody"></div>
 </div></div>
 
+<!-- 串接需求單備註 modal（v2 修改：原稽核用二次確認 modal 改為備註編輯） -->
+<div class="modal-mask" id="connReqNoteModal"><div class="modal">
+<h3>編輯備註</h3>
+<div class="formrow"><label id="connReqNoteLabel"></label><textarea id="connReqNoteInput" placeholder="輸入本次追蹤備註"></textarea></div>
+<div style="text-align:right;margin-top:16px"><button class="btn ghost" onclick="closeModal('connReqNoteModal')">取消</button> <button class="btn" onclick="doSaveConnReqNote()">儲存備註</button></div>
+</div></div>
+
+<!-- 複製上次合約 modal（v2 新增：示範畫面，資料為模擬數字） -->
+<div class="modal-mask" id="copyContractModal"><div class="modal wide">
+<h3>複製上次合約</h3>
+<div id="copyContractBody"></div>
+</div></div>
+
+<!-- 新增下學期 modal（v2 新增：機構授權「學期設定」用，示範畫面，資料為模擬數字） -->
+<div class="modal-mask" id="addSemesterModal"><div class="modal">
+<h3>新增下學期</h3>
+<div class="formrow"><label>學期名稱</label><input type="text" id="semName" placeholder="例：2026 秋季班"></div>
+<div class="formrow"><label>起訖日期</label><div style="display:flex;gap:8px"><input type="date" id="semStart"><span class="small" style="align-self:center">～</span><input type="date" id="semEnd"></div></div>
+<div style="text-align:right;margin-top:16px"><button class="btn ghost" onclick="closeModal('addSemesterModal')">取消</button> <button class="btn" onclick="doAddSemester()">新增學期</button></div>
+</div></div>
+
+<!-- 核准權益展延 modal（v2 新增：機構授權型專用，示範畫面，資料為模擬數字） -->
+<div class="modal-mask" id="institutionRenewalModal"><div class="modal wide">
+<h3>核准權益展延</h3>
+<div id="institutionRenewalBody"></div>
+</div></div>
+
 <!-- 新增企業客戶 抽屜表單（沿用主抽屜） -->
 
 <script>
@@ -375,8 +408,165 @@ var EMP_SURNAMES = ['王','陳','林','黃','張','李','吳','劉','蔡','楊']
 var EMP_GIVENS = ['小明','雅婷','建宏','詩涵','志遠','雅萍','冠廷','佳蓉','怡君','俊傑'];
 var SALES_PLAN_NAMES = ['企業內訓合約價方案', '主管班合約價方案', '海外員工線上班合約價方案', '新人基礎班合約價方案'];
 
+/* 客戶類型三型（2026-09-09 拍板）：一般企業／機構授權／代理商。
+   機構授權與代理商的企業名稱一律用虛構名，指定索引覆寫，不與 ENT_NAMES 混用 */
+var ENT_TYPE_OVERRIDE = {
+  1: {type:'agent', name:'範例教育顧問（東南亞地區）'},
+  3: {type:'agent', name:'範例教育顧問（日本地區）'},
+  5: {type:'institution', name:'範例州立大學'},
+  9: {type:'institution', name:'範例州立大學 分校A'}
+};
+var ENT_TYPE_LABELS = {general:'一般企業', institution:'機構授權', agent:'代理商'};
+
+var CONNREQ_SYSTEM_NAMES = ['人資資訊系統（HRIS）','差勤系統','薪資系統','教育訓練管理系統（LMS）','單一登入（SSO）系統'];
+var CONNREQ_SYNC_DATA = ['出勤紀錄','學習時數','課程進度','部門異動','帳號異動'];
+var CONNREQ_STATUS_LIST = ['新進','評估中','已排入二階','串接中','已上線'];
+var IT_TITLES = ['IT 專員','IT 主管','系統管理師','資訊部經理'];
+function makeConnReq(entIdx, ci){
+  var r = seededRand(entIdx*211+ci*7+51), r2 = seededRand(entIdx*223+ci*11+53), r3 = seededRand(entIdx*227+ci*13+55), r4 = seededRand(entIdx*229+ci*17+57);
+  var submitted = addDays('2026-02-01', Math.floor(r*180));
+  var statusIdx = Math.min(CONNREQ_STATUS_LIST.length-1, Math.floor(r2*CONNREQ_STATUS_LIST.length));
+  var sn = EMP_SURNAMES[(entIdx+ci)%EMP_SURNAMES.length], gv = EMP_GIVENS[(entIdx+ci*3)%EMP_GIVENS.length];
+  var syncCount = 1 + Math.floor(r4*2);
+  var syncData = [];
+  for (var s=0; s<syncCount; s++){
+    var d = CONNREQ_SYNC_DATA[(entIdx+ci+s) % CONNREQ_SYNC_DATA.length];
+    if (syncData.indexOf(d)===-1) syncData.push(d);
+  }
+  return {
+    id:'connreq'+entIdx+'_'+ci,
+    itContact: sn+gv+'（'+IT_TITLES[(entIdx+ci)%IT_TITLES.length]+'）',
+    systemName: CONNREQ_SYSTEM_NAMES[(entIdx+ci*2) % CONNREQ_SYSTEM_NAMES.length],
+    syncData: syncData.join('、'),
+    submitted: submitted,
+    expectedLaunch: addDays(submitted, 30+Math.floor(r3*90)),
+    status: CONNREQ_STATUS_LIST[statusIdx],
+    advisor: ENT_ADVISORS[(entIdx+ci) % ENT_ADVISORS.length],
+    note: ''
+  };
+}
+var RENEWAL_REASONS = ['企業內部年度預算尚未核准，需要延長採購決議時間','人資單位仍在盤點下年度受訓名額，先申請展延銜接','企業教育訓練承辦人異動，需要時間交接後續事宜'];
+function makeRenewalRequests(entIdx, contractEnd){
+  var r = seededRand(entIdx*331+71), r2 = seededRand(entIdx*337+73), r3 = seededRand(entIdx*341+79);
+  var todayStr = new Date().toISOString().slice(0,10);
+  var diffDays = Math.ceil((new Date(contractEnd+'T00:00:00') - new Date(todayStr+'T00:00:00'))/86400000);
+  /* 展延申請只掛在「尚未到期或到期 30 天內」的企業，避免已嚴重逾期合約出現不合理的展延情境 */
+  if (diffDays < -30) return [];
+  if (r > 0.55) return [];
+  var base = contractEnd > todayStr ? contractEnd : todayStr; /* max(合約迄日, 今天)：ISO 日期字串可直接比大小 */
+  var count = r2 > 0.8 ? 2 : 1;
+  var arr = [];
+  for (var i=0;i<count;i++){
+    var periodDays = [30,60,90][Math.floor(seededRand(entIdx*349+83+i)*3)];
+    var submitted = addDays(contractEnd, -(10+Math.floor(r3*40)));
+    var status = (count>1 && i===0) ? (seededRand(entIdx*353+i)>0.5?'已核准':'已婉拒') : '待審核';
+    arr.push({
+      id:'renew'+entIdx+'_'+i, submitted:submitted, periodDays:periodDays,
+      requestedNewEnd: addDays(base, periodDays),
+      reason: RENEWAL_REASONS[(entIdx+i)%RENEWAL_REASONS.length],
+      status: status
+    });
+  }
+  return arr;
+}
+/* 合約版本歷史（v2 新增：支援「複製上次合約」＋版本歷史列表，示範畫面，資料為模擬數字） */
+function makeContractHistory(i, currentPlanName, currentDiscountRate, currentStart){
+  var r = seededRand(i*401+151);
+  var histCount = 1 + Math.floor(r*2); // 1～2 筆歷史版本
+  var versions = [];
+  for (var v=0; v<histCount; v++){
+    var vStart = addDays(currentStart, -365*(histCount-v));
+    var vPlan = SALES_PLAN_NAMES[(i+v) % SALES_PLAN_NAMES.length];
+    var vDiscount = 5 + ((i+v)*3) % 20;
+    versions.push({version:'v'+(v+1)+'.0', effectiveDate:vStart, planSummary: vPlan+'／折扣 '+vDiscount+'%', status:'已到期'});
+  }
+  versions.push({version:'v'+(histCount+1)+'.0', effectiveDate:currentStart, planSummary: currentPlanName+'／折扣 '+currentDiscountRate+'%', status:'生效中'});
+  return versions;
+}
+/* 學期紀錄清單（v2 新增：機構授權「學期設定」表格用，示範畫面，資料為模擬數字。
+   固定產出「上一學期（已結束）／本學期（進行中）／下學期（未開始）」三筆，狀態於畫面渲染時依今天日期動態判斷。
+   20260909e 新增：每筆學期附開通人頭數，供「本期開通人頭數計數表」使用（示範畫面，資料為模擬數字）。
+   20260909f 新增：資金流補充——學生繳學費給大學（含多門課），大學再依人頭付 TLI，故人頭數需經「人頭對帳」雙方確認才可請款。
+   每筆學期附對帳狀態 reconcileStatus（pending／confirmed）與異議清單 disputes；已結束學期預設視為歷史已確認、
+   進行中學期示範帶入待處理異議，供顧問操作示範；未開始學期尚未進入對帳流程。
+   20260909f 修正：學期年份改錨定「今天」的實際年份，不再取合約起始日（start，最舊可回溯到 2025-01-01）的年份——
+   合約起始日隨機分布可能落在較舊年份，若沿用該年份推算學期，三筆學期會全數早於今天，導致「本學期」永遠找不到
+   進行中的學期，人頭對帳與「產生本期機構帳單」防呆機制形同虛設（20260909f 驗收發現的阻斷性 bug）。
+   此處僅影響學期起訖年份的計算基準，不影響 contractStart/contractEnd 等既有合約日期欄位。
+   20260909g 修正：企業索引 5「範例州立大學」的本期人頭數與異議需對齊機構端 u01_overview.html／u02_students.html
+   的示範數字（開通 186、異議 3 筆：退學／未開始使用／重複），否則同一份原型跨端頁面數字對不上會被抓到；
+   其餘機構（含索引 9「範例州立大學 分校A」）人頭數維持隨機，但上限收斂在三位數以內（<1000）較合理。 */
+function makeSemesterList(i, start){
+  var y = new Date().getFullYear();
+  var isFeaturedUniv = (i===5); /* 「範例州立大學」：需對齊 u01／u02 示範數字 */
+  var list = [
+    {id:'sem'+i+'_0', name:(y-1)+' 秋季班', start:(y-1)+'-09-01', end:(y-1)+'-12-20', headcount: 120+Math.floor(seededRand(i*461+271)*500)},
+    {id:'sem'+i+'_1', name:y+' 春季班', start:y+'-02-01', end:y+'-06-15', headcount: 130+Math.floor(seededRand(i*463+277)*550)},
+    {id:'sem'+i+'_2', name:y+' 秋季班', start:y+'-09-01', end:y+'-12-20', headcount: isFeaturedUniv ? 186 : (140+Math.floor(seededRand(i*467+281)*580))}
+  ];
+  var todayStr = new Date().toISOString().slice(0,10);
+  list.forEach(function(s, si){
+    if (todayStr > s.end){
+      s.reconcileStatus = 'confirmed'; s.disputes = [];
+    } else if (todayStr < s.start){
+      s.reconcileStatus = 'pending'; s.disputes = [];
+    } else if (isFeaturedUniv){
+      /* 「範例州立大學」進行中學期：對齊 u02_students.html 示範異議（同 3 種原因，各 1 筆），
+         全數接受後人頭數 186-3=183，與 u02 liveHeadcount() = RECONCILE_BASE(186) - disputedCount() 公式一致 */
+      s.reconcileStatus = 'pending';
+      s.disputes = [
+        {id:'dp'+i+'_'+si+'_0', alias:'化名學生A', reason:'退學', status:'pending'},
+        {id:'dp'+i+'_'+si+'_1', alias:'化名學生B', reason:'未開始使用', status:'pending'},
+        {id:'dp'+i+'_'+si+'_2', alias:'化名學生C', reason:'重複', status:'pending'}
+      ];
+    } else {
+      /* 其他機構進行中學期：示範畫面，帶 2 筆待處理異議，供顧問操作示範 */
+      s.reconcileStatus = 'pending';
+      s.disputes = [
+        {id:'dp'+i+'_'+si+'_0', alias:'化名學生A', reason:'退學', status:'pending'},
+        {id:'dp'+i+'_'+si+'_1', alias:'化名學生B', reason:'未開始使用', status:'pending'}
+      ];
+    }
+  });
+  return list;
+}
+/* 機構授權型專屬資料（v2 新增：學期、專屬代碼、資源包、機構窗口，示範畫面） */
+function makeInstitutionInfo(i, start, end){
+  var r = seededRand(i*431+241), r2 = seededRand(i*443+251);
+  var semester = r > 0.5 ? '上學期' : '下學期';
+  var semStart = semester==='上學期' ? start.slice(0,4)+'-09-01' : start.slice(0,4)+'-02-01';
+  var mgr = ENT_MANAGERS[(i+2) % ENT_MANAGERS.length];
+  return {
+    periodStart: start, periodEnd: end,
+    semester: semester, semesterStart: semStart, semesterEnd: addDays(semStart, 130),
+    code: 'INST-'+padNum(i+1,4), emailDomain: '@example-state-u.edu',
+    studentCount: 300 + Math.floor(r2*1200),
+    contactName: mgr.name, contactTitle: mgr.title,
+    contactEmail: 'contact'+i+'@example-state-u.edu',
+    semesters: makeSemesterList(i, start),
+    extensionLog: [], /* 20260909 新增：權益展延核准紀錄，比照合約展延申請的紀錄列做法 */
+    billingLog: [] /* 20260909e 新增：「產生本期機構帳單」的產生紀錄，示範畫面，資料為模擬數字 */
+  };
+}
+/* 代理商型專屬資料（v2 新增：轉介碼、名單歸屬規則、結算週期，示範畫面） */
+function makeAgentInfo(i){
+  var r = seededRand(i*457+263);
+  /* i===1（範例教育顧問（東南亞地區）」）需與 a20 代理商管理／代理商端 r01 的示範代理商資料對齊，
+     固定使用同一組轉介碼 REF-SEA07，確保跨頁資料一致；其餘索引沿用原本的流水號規則 */
+  var referralCode = (i===1) ? 'REF-SEA07' : 'REF-'+padNum(i+1,5);
+  return {
+    referralCode: referralCode,
+    attributionRule: '以轉介碼綁定成交名單（歸屬有效期由 TLI 拍板，待定）',
+    commissionRate: '', // 佣金比例待定，由 TLI 拍板
+    settlementCycle: r > 0.5 ? '月結' : '季結'
+  };
+}
 function makeEnterprise(i){
   var r = seededRand(i*5+31), r2 = seededRand(i*9+33), r3 = seededRand(i*13+35), r4 = seededRand(i*17+37);
+  var r5 = seededRand(i*19+41), r6 = seededRand(i*23+43);
+  var override = ENT_TYPE_OVERRIDE[i];
+  var entType = override ? override.type : 'general';
+  var entName = override ? override.name : ENT_NAMES[i];
   var tier = r < 0.6 ? 'B' : 'G';
   var mgr = ENT_MANAGERS[i % ENT_MANAGERS.length];
   var empCount = 12 + Math.floor(r2*180);
@@ -398,18 +588,55 @@ function makeEnterprise(i){
       avgScore: 55 + Math.floor(seededRand(empSeed+e*17)*45)
     });
   }
+  var contractParamsSet = r6 > 0.35;
+  var trial = r5 < 0.25;
+  var connReqCount = trial ? Math.floor(r5*2) : (1 + Math.floor(r4*3));
+  var connectionRequests = []; for (var ci=0; ci<connReqCount; ci++) connectionRequests.push(makeConnReq(i, ci));
+  var pricingUnit = seededRand(i*409+211) > 0.5 ? 'hourpool' : 'prepaidpool';
+  var prepaidAmount = 50000 + Math.floor(seededRand(i*419+223)*150000);
+  var contractParams = {
+    followC2CDefault: contractParamsSet ? (r6 > 0.7) : true,
+    cancelWindowHours: 12,
+    monthlyFreeCancel: 1 + Math.floor(r*3),
+    rescheduleMaxTimes: 2 + Math.floor(r2*3),
+    rescheduleWindowHours: 12,
+    overageLeavePolicy: r5 > 0.15 ? 'appeal' : 'noappeal',
+    timezone: ['Asia/Taipei','Asia/Tokyo','America/Los_Angeles','America/New_York','UTC'][i % 5],
+    poolTotal: 500 + Math.floor(r3*2000),
+    poolExpiry: end,
+    deptQuota: deptList.map(function(d, di){ return {dept:d, quota: 50 + di*20}; }),
+    tieredPricing: {type: r4 > 0.5 ? 'accounts' : 'hours', tiers:[{from:1,to:50},{from:51,to:200},{from:201,to:''}]},
+    renewalExtension: {days:'', requireApproval: true, maxTimes:''},
+    /* v2 新增：付款方式與計價單位（2026-09-09 拍板：合約付款方式需支援分期／月結／預付款倒扣） */
+    paymentMethod: ['installment','monthly','prepaid'][Math.floor(seededRand(i*401+199)*3)],
+    pricingUnit: pricingUnit,
+    prepaidAmount: prepaidAmount,
+    prepaidDeductUnit: '', // 每堂倒扣單價待定，由 TLI 拍板
+    prepaidBalance: Math.floor(prepaidAmount * (0.3 + seededRand(i*421+227)*0.6)),
+    prepaidThreshold: '' // 低於門檻提醒之門檻值待定，由 TLI 拍板，不由固定比例試算
+  };
+  var discountRate = 5 + Math.floor(r2*20);
+  var planName = SALES_PLAN_NAMES[i % SALES_PLAN_NAMES.length];
+  var institutionInfo = entType==='institution' ? makeInstitutionInfo(i, start, end) : null;
+  var agentInfo = entType==='agent' ? makeAgentInfo(i) : null;
+  var finalEmpCount = entType==='institution' ? institutionInfo.studentCount : (entType==='agent' ? 0 : employees.length);
   return {
-    id:'ent'+i, name:ENT_NAMES[i], tier:tier, planName: SALES_PLAN_NAMES[i % SALES_PLAN_NAMES.length],
-    empCount:employees.length, contractStart:start, contractEnd:end, manager:mgr,
+    id:'ent'+i, name:entName, entType:entType, tier:tier, planName: planName,
+    empCount:finalEmpCount, contractStart:start, contractEnd:end, manager:mgr,
     advisor: ENT_ADVISORS[i % ENT_ADVISORS.length], attendance: 65 + Math.floor(r*30),
     invoiceStatus:invoiceStatus, payMethod: r>0.5 ? '月結' : '一次付清',
     taxId: padNum((10000000+(i*53)%89999999),8), depts:deptList, employees:employees,
-    discountRate: 5 + Math.floor(r2*20), scheduleMonthly: r3 > 0.5,
+    discountRate: discountRate, scheduleMonthly: r3 > 0.5,
     invoices: [
       {period:addDays(end,-95).slice(0,7), amount: 80000+Math.floor(r*400000), status:'已收款'},
       {period:addDays(end,-65).slice(0,7), amount: 80000+Math.floor(r2*400000), status:'已開立'},
       {period:addDays(end,-35).slice(0,7), amount: 80000+Math.floor(r3*400000), status:invoiceStatus}
-    ]
+    ],
+    trial: trial, contractParamsSet: contractParamsSet, contractParams: contractParams,
+    connectionRequests: connectionRequests, renewalRequests: makeRenewalRequests(i, end),
+    contractHistory: makeContractHistory(i, planName, discountRate, start),
+    institutionInfo: institutionInfo,
+    agentInfo: agentInfo
   };
 }
 var ENTERPRISES = []; for (var ei=0; ei<12; ei++) ENTERPRISES.push(makeEnterprise(ei));
@@ -432,6 +659,12 @@ function makeInquiry(i){
 var INQUIRIES = []; for (var qi=0; qi<6; qi++) INQUIRIES.push(makeInquiry(qi));
 
 /* ================= 徽章 ================= */
+function entTypeBadge(t){
+  if (t==='institution') return '<span class="badge teal">機構授權</span>';
+  if (t==='agent') return '<span class="badge grey">代理商</span>';
+  return '<span class="badge blue">一般企業</span>';
+}
+function contractVersionBadge(s){ return s==='生效中' ? '<span class="badge green">生效中</span>' : '<span class="badge grey">已到期</span>'; }
 function tierBadgeEnt(t){ return '<span class="badge blue">'+t+' 類</span>'; }
 function invoiceBadge(s){
   if (s==='已收款') return '<span class="badge green">已收款</span>';
@@ -442,6 +675,40 @@ function inquiryBadge(s){
   if (s==='已轉建訂單') return '<span class="badge green">已轉建訂單</span>';
   if (s==='已聯繫') return '<span class="badge blue">已聯繫</span>';
   return '<span class="badge orange">待處理</span>';
+}
+function contractParamsBadge(e){ return e.contractParamsSet ? '<span class="badge green">已設定</span>' : '<span class="badge grey">未設定</span>'; }
+/* 學期狀態徽章：依今天日期與學期起訖判斷進行中／已結束／未開始（v2 新增） */
+function semesterStatusBadge(s){
+  var today = new Date().toISOString().slice(0,10);
+  if (today < s.start) return '<span class="badge grey">未開始</span>';
+  if (today > s.end) return '<span class="badge grey">已結束</span>';
+  return '<span class="badge green">進行中</span>';
+}
+function contractExpiryCell(e){
+  var today = new Date();
+  var end = new Date(e.contractEnd+'T00:00:00');
+  var diffDays = Math.ceil((end-today)/86400000);
+  var badge;
+  if (diffDays<0) badge = '<span class="badge red">已逾期 '+Math.abs(diffDays)+' 天</span>';
+  else if (diffDays<=30) badge = '<span class="badge red">30 天內到期</span>';
+  else if (diffDays<=60) badge = '<span class="badge orange">60 天內到期</span>';
+  else if (diffDays<=90) badge = '<span class="badge blue">90 天內到期</span>';
+  else badge = '<span class="badge grey">尚有 '+diffDays+' 天</span>';
+  return e.contractEnd+'<div class="small" style="margin-top:2px">'+badge+'</div>';
+}
+function trialBadge(e){ return e.trial ? '<span class="badge orange">試辦中</span>' : '<span class="badge blue">正式</span>'; }
+function connReqStatusBadge(s){
+  if (s==='已上線') return '<span class="badge green">已上線</span>';
+  if (s==='串接中') return '<span class="badge orange">串接中</span>';
+  if (s==='已排入二階') return '<span class="badge blue">已排入二階</span>';
+  if (s==='評估中') return '<span class="badge blue">評估中</span>';
+  return '<span class="badge grey">新進</span>';
+}
+var CONNREQ_STATUS_RANK = {'新進':0,'評估中':1,'已排入二階':2,'串接中':3,'已上線':4};
+function connReqSummary(e){
+  if (!e.connectionRequests.length) return '<span class="badge grey">尚未提出</span>';
+  var top = e.connectionRequests.reduce(function(a,b){ return CONNREQ_STATUS_RANK[b.status]>CONNREQ_STATUS_RANK[a.status] ? b : a; });
+  return connReqStatusBadge(top.status) + (e.connectionRequests.length>1 ? '<span class="small">（'+e.connectionRequests.length+' 筆）</span>' : '');
 }
 
 /* ================= 主頁籤 ================= */
@@ -461,13 +728,19 @@ function switchMainTab(key){
 }
 
 /* ================= 企業列表 ================= */
-var entState = {search:'', filters:{tier:[], invoice:[]}, page:1, pageSize:10};
+var entState = {search:'', filters:{type:[], tier:[], invoice:[], trial:[]}, page:1, pageSize:10};
 function renderEntChips(){
+  document.getElementById('entChipType').innerHTML = '<span class="glabel">客戶類型：</span>' + ['general','institution','agent'].map(function(t){
+    return '<button type="button" class="fchip'+(entState.filters.type.indexOf(t)>-1?' active':'')+'" onclick="toggleEntFilter(\'type\',\''+t+'\')">'+ENT_TYPE_LABELS[t]+'</button>';
+  }).join('');
   document.getElementById('entChipTier').innerHTML = '<span class="glabel">會員分類：</span>' + ['B','G'].map(function(t){
     return '<button type="button" class="fchip'+(entState.filters.tier.indexOf(t)>-1?' active':'')+'" onclick="toggleEntFilter(\'tier\',\''+t+'\')">'+t+'</button>';
   }).join('');
   document.getElementById('entChipInvoice').innerHTML = '<span class="glabel">請款狀態：</span>' + ['待開立','已開立','已收款'].map(function(s){
     return '<button type="button" class="fchip'+(entState.filters.invoice.indexOf(s)>-1?' active':'')+'" onclick="toggleEntFilter(\'invoice\',\''+s+'\')">'+s+'</button>';
+  }).join('');
+  document.getElementById('entChipTrial').innerHTML = '<span class="glabel">合作階段：</span>' + ['試辦中'].map(function(s){
+    return '<button type="button" class="fchip'+(entState.filters.trial.indexOf(s)>-1?' active':'')+'" onclick="toggleEntFilter(\'trial\',\''+s+'\')">'+s+'</button>';
   }).join('');
 }
 function toggleEntFilter(key, val){
@@ -480,7 +753,7 @@ function toggleEntFilter(key, val){
 }
 function clearEntFilters(){
   entState.search=''; document.getElementById('entSearch').value='';
-  entState.filters = {tier:[], invoice:[]};
+  entState.filters = {type:[], tier:[], invoice:[], trial:[]};
   entState.page = 1;
   renderEntChips();
   renderEntTable();
@@ -491,8 +764,10 @@ function entFiltered(){
   var term = entState.search.trim().toLowerCase();
   return ENTERPRISES.filter(function(e){
     if (term && e.name.toLowerCase().indexOf(term)===-1 && e.manager.name.toLowerCase().indexOf(term)===-1) return false;
+    if (entState.filters.type.length && entState.filters.type.indexOf(e.entType)===-1) return false;
     if (entState.filters.tier.length && entState.filters.tier.indexOf(e.tier)===-1) return false;
     if (entState.filters.invoice.length && entState.filters.invoice.indexOf(e.invoiceStatus)===-1) return false;
+    if (entState.filters.trial.length && !e.trial) return false;
     return true;
   });
 }
@@ -513,13 +788,15 @@ function renderEntTable(){
   var startIdx = (entState.page-1)*entState.pageSize;
   var pageRows = filtered.slice(startIdx, startIdx+entState.pageSize);
   var t = document.getElementById('entTable');
-  t.innerHTML = '<tr><th>企業名稱</th><th>會員分類</th><th>合約價方案</th><th>員工學員數</th><th>合約期間</th><th>主管理者</th><th>本月出席率</th><th>請款狀態</th></tr>';
+  t.innerHTML = '<tr><th>企業名稱</th><th>客戶類型</th><th>會員分類</th><th>合約價方案</th><th>員工學員數</th><th>合約期間</th><th>合約到期<span class="demo-tag">示範畫面，資料為模擬數字</span></th><th>主管理者</th><th>本月出席率</th><th>請款狀態</th><th>合約參數狀態</th><th>串接狀態</th><th>合作階段</th></tr>';
   pageRows.forEach(function(e){
     var tr = document.createElement('tr');
     tr.className = 'rowlink';
-    tr.innerHTML = '<td>'+e.name+'</td><td>'+tierBadgeEnt(e.tier)+'</td><td>'+e.planName+'</td><td>'+e.empCount+'</td>' +
-      '<td>'+e.contractStart+' ～ '+e.contractEnd+'</td><td>'+e.manager.name+'（'+e.manager.title+'）</td>' +
-      '<td>'+e.attendance+'%</td><td>'+invoiceBadge(e.invoiceStatus)+'</td>';
+    tr.innerHTML = '<td>'+e.name+'</td><td>'+entTypeBadge(e.entType)+'</td><td>'+tierBadgeEnt(e.tier)+'</td><td>'+e.planName+'</td><td>'+e.empCount+'</td>' +
+      '<td>'+e.contractStart+' ～ '+e.contractEnd+'</td><td>'+contractExpiryCell(e)+'</td><td>'+e.manager.name+'（'+e.manager.title+'）</td>' +
+      '<td>'+e.attendance+'%</td><td>'+invoiceBadge(e.invoiceStatus)+'</td>' +
+      '<td>'+contractParamsBadge(e)+'</td><td>'+connReqSummary(e)+'</td>' +
+      '<td>'+trialBadge(e)+'</td>';
     tr.addEventListener('click', function(){ openEnterpriseDrawer(e.id); });
     t.appendChild(tr);
   });
@@ -560,8 +837,9 @@ function convertInquiry(id, ev){
 /* ================= 企業詳情抽屜 ================= */
 var currentEntId = null, currentEntTab = 'org';
 function openEnterpriseDrawer(id){
-  currentEntId = id; currentEntTab = 'org';
+  currentEntId = id;
   var e = entById(id);
+  currentEntTab = e.entType==='agent' ? 'agentinfo' : (e.entType==='institution' ? 'institution' : 'org');
   document.getElementById('drw_title').textContent = e.name;
   document.getElementById('drw_sub').textContent = e.tier+' 類｜'+e.planName+'｜'+e.empCount+' 位員工學員';
   renderEntDrawerBody(e);
@@ -578,8 +856,19 @@ function entDrawerTab(name){
   renderEntDrawerBody(entById(currentEntId));
 }
 function renderEntDrawerBody(e){
-  var tabs = ['org','report','invoice','contract'];
-  var labels = {org:'組織與母子帳號', report:'學習報告', invoice:'請款', contract:'合約價'};
+  var tabs, labels;
+  /* 依客戶類型顯示不同分頁組合，避免三種類型內容混雜在同一頁（2026-09-09 拍板） */
+  if (e.entType === 'agent'){
+    tabs = ['agentinfo'];
+    labels = {agentinfo:'代理商資訊'};
+  } else if (e.entType === 'institution'){
+    tabs = ['institution','contract','contractparams'];
+    labels = {institution:'機構授權資訊', contract:'合約價', contractparams:'合約參數'};
+  } else {
+    tabs = ['org','report','invoice','contract','contractparams','connreq'];
+    labels = {org:'組織與母子帳號', report:'學習報告', invoice:'請款', contract:'合約價', contractparams:'合約參數', connreq:'串接需求單'};
+  }
+  if (tabs.indexOf(currentEntTab) === -1) currentEntTab = tabs[0];
   var tabsHtml = '<div class="tabs">' + tabs.map(function(t){
     return '<button class="'+(t===currentEntTab?'active':'')+'" onclick="entDrawerTab(\''+t+'\')">'+labels[t]+'</button>';
   }).join('') + '</div>';
@@ -589,6 +878,10 @@ function renderEntDrawerBody(e){
   else if (currentEntTab==='report') body = renderReportTab(e);
   else if (currentEntTab==='invoice') body = renderInvoiceTab(e);
   else if (currentEntTab==='contract') body = renderContractTab(e);
+  else if (currentEntTab==='contractparams') body = renderContractParamsTab(e);
+  else if (currentEntTab==='connreq') body = renderConnReqTab(e);
+  else if (currentEntTab==='institution') body = renderInstitutionTab(e);
+  else if (currentEntTab==='agentinfo') body = renderAgentInfoTab(e);
 
   document.getElementById('drw_body').innerHTML = tabsHtml + '<div>' + body + '</div>';
 }
@@ -702,12 +995,544 @@ function doGenInvoice(amount){
 }
 
 function renderContractTab(e){
+  var historyRows = e.contractHistory.slice().reverse().map(function(v){
+    return '<tr><td>'+v.version+'</td><td>'+v.effectiveDate+'</td><td>'+v.planSummary+'</td><td>'+contractVersionBadge(v.status)+'</td></tr>';
+  }).join('');
   return '<div class="kv"><span>適用銷售方案</span><span>'+e.planName+'</span></div>' +
     '<div class="kv"><span>折扣率</span><span>'+e.discountRate+'%</span></div>' +
     '<div class="kv"><span>有效期</span><span>'+e.contractStart+' ～ '+e.contractEnd+'</span></div>' +
     '<div class="note" style="margin-top:12px">套用到新訂單：於「建訂單」（c04）為此企業員工學員建單時，系統將自動帶入上述合約價方案與折扣率，顧問可視個案調整。</div>' +
     '<button class="btn ghost" style="margin-top:10px" onclick="toast(\'已套用合約價設定，將於下次建訂單自動帶入\')">套用到新訂單</button>' +
-    '<div class="hint" style="margin-top:8px"><a href="a12_contracts.html">前往「合約管理」查看完整合約 →</a></div>';
+    '<div class="hint" style="margin-top:8px"><a href="a12_contracts.html">前往「合約管理」查看完整合約 →</a></div>' +
+    '<div class="sectiontitle">合約版本歷史<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+    '<div class="tablewrap"><table><tr><th>版本</th><th>生效日</th><th>方案摘要</th><th>狀態</th></tr>'+historyRows+'</table></div>' +
+    '<div style="text-align:right;margin-top:12px"><button class="btn orange" onclick="openCopyContractModal()">複製上次合約</button></div>';
+}
+
+/* ================= 複製上次合約（v2 新增：長期客戶可複製歷史合約參數另存新版本） ================= */
+var copyContractState = {step:'list', selectedIdx:null, draft:null};
+function openCopyContractModal(){
+  copyContractState = {step:'list', selectedIdx:null, draft:null};
+  renderCopyContractModal();
+  document.getElementById('copyContractModal').classList.add('open');
+}
+function renderCopyContractModal(){
+  var e = entById(currentEntId);
+  var body = document.getElementById('copyContractBody');
+  if (copyContractState.step === 'list'){
+    var rows = e.contractHistory.map(function(v, idx){
+      return '<tr><td>'+v.version+'</td><td>'+v.effectiveDate+'</td><td>'+v.planSummary+'</td><td>'+contractVersionBadge(v.status)+'</td>' +
+        '<td><button class="btn ghost" onclick="selectCopyContract('+idx+')">選擇此版本</button></td></tr>';
+    }).join('');
+    body.innerHTML = '<div class="desc" style="margin-bottom:10px">選擇一筆歷史合約版本，將其參數帶入新合約表單：</div>' +
+      '<div class="tablewrap"><table><tr><th>版本</th><th>生效日</th><th>方案摘要</th><th>狀態</th><th></th></tr>'+rows+'</table></div>' +
+      '<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal(\'copyContractModal\')">取消</button></div>';
+  } else if (copyContractState.step === 'edit'){
+    var v = e.contractHistory[copyContractState.selectedIdx];
+    var d = copyContractState.draft;
+    body.innerHTML = '<div class="note" style="margin-bottom:12px">已帶入「'+v.version+'」（'+v.effectiveDate+'）合約參數，請確認修改後另存新合約。</div>' +
+      '<div class="formrow"><label>合約價方案</label><select id="cc_plan">'+SALES_PLAN_NAMES.map(function(p){return '<option'+(p===d.planName?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>' +
+      '<div class="formrow"><label>折扣率（%）</label><input type="number" min="0" id="cc_discount" value="'+d.discountRate+'"></div>' +
+      '<div class="formrow"><label>合約期間</label><div style="display:flex;gap:8px"><input type="date" id="cc_start" value="'+d.start+'"><span class="small" style="align-self:center">～</span><input type="date" id="cc_end" value="'+d.end+'"></div></div>' +
+      '<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal(\'copyContractModal\')">取消</button> <button class="btn" onclick="saveCopiedContract()">另存新合約</button></div>';
+  }
+}
+function selectCopyContract(idx){
+  var e = entById(currentEntId);
+  var v = e.contractHistory[idx];
+  var parts = v.planSummary.split('／折扣 ');
+  var planName = parts[0];
+  var discountRate = parts[1] ? parseInt(parts[1]) : e.discountRate;
+  copyContractState.step = 'edit';
+  copyContractState.selectedIdx = idx;
+  copyContractState.draft = {planName: planName, discountRate: discountRate, start: v.effectiveDate, end: addDays(v.effectiveDate,365)};
+  renderCopyContractModal();
+}
+function saveCopiedContract(){
+  var e = entById(currentEntId);
+  var planName = document.getElementById('cc_plan').value;
+  var discountRate = Number(document.getElementById('cc_discount').value) || 0;
+  var start = document.getElementById('cc_start').value;
+  var end = document.getElementById('cc_end').value;
+  /* 舊生效版本改為已到期，新版本設為生效中（僅前端模擬，重新整理即重置） */
+  e.contractHistory.forEach(function(v){ if (v.status==='生效中') v.status = '已到期'; });
+  var newVersion = 'v' + (e.contractHistory.length+1) + '.0';
+  e.contractHistory.push({version:newVersion, effectiveDate:start, planSummary: planName+'／折扣 '+discountRate+'%', status:'生效中'});
+  e.planName = planName; e.discountRate = discountRate; e.contractStart = start; e.contractEnd = end;
+  closeModal('copyContractModal');
+  renderEntDrawerBody(e);
+  renderEntTable();
+  toast('已另存新合約版本「'+newVersion+'」');
+}
+
+/* ================= 合約參數（v2 新增：示範畫面，資料為模擬數字） ================= */
+function renderContractParamsTab(e){
+  var cp = e.contractParams;
+  var cancelDisabled = cp.followC2CDefault ? 'disabled' : '';
+  var tzOptions = ['Asia/Taipei','Asia/Tokyo','America/Los_Angeles','America/New_York','UTC'].map(function(tz){
+    return '<option value="'+tz+'"'+(cp.timezone===tz?' selected':'')+'>'+tz+'</option>';
+  }).join('');
+  var deptRows = cp.deptQuota.map(function(dq, idx){
+    return '<div class="pickrow"><span class="pname">'+dq.dept+'</span><input type="number" min="0" value="'+dq.quota+'" style="width:100px" onchange="onDeptQuotaChange('+idx+',this.value)"><span class="small">小時</span></div>';
+  }).join('');
+  var tierRows = cp.tieredPricing.tiers.map(function(t, idx){
+    return '<tr><td><input type="number" value="'+t.from+'" style="width:80px" onchange="onEntTierField('+idx+',\'from\',this.value)"></td>' +
+      '<td><input type="number" value="'+t.to+'" style="width:80px" placeholder="不限" onchange="onEntTierField('+idx+',\'to\',this.value)"></td>' +
+      '<td class="small">由 TLI 拍板</td></tr>';
+  }).join('');
+  return '<div class="note">示範畫面，資料為模擬數字，實際合約參數於正式合約簽署後由顧問設定。</div>' +
+   '<div class="crosslink">預設值來自<a href="a17_master_data.html#params">基礎資料設定 → 參數設定</a>，此處僅供本合約覆寫。</div>' +
+   '<div class="sectiontitle">付款方式與計價單位</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>付款方式</label><select onchange="onCpField(\'paymentMethod\',this.value)">' +
+   '<option value="installment"'+(cp.paymentMethod==='installment'?' selected':'')+'>分期</option>' +
+   '<option value="monthly"'+(cp.paymentMethod==='monthly'?' selected':'')+'>月結</option>' +
+   '<option value="prepaid"'+(cp.paymentMethod==='prepaid'?' selected':'')+'>預付款倒扣</option>' +
+   '</select></div>' +
+   '<div class="formrow"><label>計價單位</label><select onchange="onPricingUnitChange(this.value)">' +
+   '<option value="hourpool"'+(cp.pricingUnit==='hourpool'?' selected':'')+'>時數池</option>' +
+   '<option value="prepaidpool"'+(cp.pricingUnit==='prepaidpool'?' selected':'')+'>預付金額池</option>' +
+   '</select></div>' +
+   '</div>' +
+   (cp.pricingUnit==='prepaidpool' ? renderPrepaidPoolFields(cp) : '') +
+   '<div class="switchrow" style="margin-top:10px"><span class="small">沿用 C2C 預設（取消時限 12 小時）。企業合約層規則只套用於本企業員工學員，不影響 C2C 個人學員的既有規則。</span><label class="switch"><input type="checkbox" '+(cp.followC2CDefault?'checked':'')+' onchange="onFollowC2CToggle(this)"><span class="slider"></span></label></div>' +
+   '<div class="sectiontitle">取消與改期</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>取消時限（小時）</label><input type="number" min="0" value="'+cp.cancelWindowHours+'" '+cancelDisabled+' onchange="onCpField(\'cancelWindowHours\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>每月免扣次數</label><input type="number" min="0" value="'+cp.monthlyFreeCancel+'" onchange="onCpField(\'monthlyFreeCancel\',Number(this.value)||0)"></div>' +
+   '</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>改期規則－允許次數</label><input type="number" min="0" value="'+cp.rescheduleMaxTimes+'" onchange="onCpField(\'rescheduleMaxTimes\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>改期規則－時限（小時）</label><input type="number" min="0" value="'+cp.rescheduleWindowHours+'" onchange="onCpField(\'rescheduleWindowHours\',Number(this.value)||0)"></div>' +
+   '</div>' +
+   '<div class="formrow"><label>超額請假處理規則</label><select onchange="onCpField(\'overageLeavePolicy\',this.value)">' +
+   '<option value="appeal"'+(cp.overageLeavePolicy==='appeal'?' selected':'')+'>扣時數，可申訴覆核（預設）</option>' +
+   '<option value="noappeal"'+(cp.overageLeavePolicy==='noappeal'?' selected':'')+'>直接扣時數，不開放申訴</option>' +
+   '</select><div class="hint" style="margin-top:4px">申訴由 HR 或顧問覆核，通過改記請假不扣。</div></div>' +
+   '<div class="formrow"><label>企業慣用時區（取消時限與扣時數的判定基準）</label><select onchange="onCpField(\'timezone\',this.value)">'+tzOptions+'</select></div>' +
+   '<div class="sectiontitle">企業共用時數池</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>時數池總量（小時）</label><input type="number" min="0" value="'+cp.poolTotal+'" onchange="onCpField(\'poolTotal\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>效期</label><input type="date" value="'+cp.poolExpiry+'" onchange="onCpField(\'poolExpiry\',this.value)"></div>' +
+   '</div>' +
+   '<div class="hint" style="margin-bottom:6px">部門配額（子帳號依部門配額領用時數池）：</div>' +
+   '<div class="orgtree">'+deptRows+'</div>' +
+   '<button class="btn ghost" style="margin-top:8px" onclick="addDeptQuotaRow()">＋ 新增部門配額列</button>' +
+   '<div class="sectiontitle">到期展延</div>' +
+   '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>展延天數</label><input type="number" min="0" value="'+cp.renewalExtension.days+'" placeholder="由 TLI 拍板" onchange="onRenewalField(\'days\',this.value)"></div>' +
+   '<div class="formrow"><label>可申請次數</label><input type="number" min="0" value="'+cp.renewalExtension.maxTimes+'" placeholder="由 TLI 拍板" onchange="onRenewalField(\'maxTimes\',this.value)"></div>' +
+   '</div>' +
+   '<div class="switchrow"><span class="small">展延是否需 TLI 審核</span><label class="switch"><input type="checkbox" '+(cp.renewalExtension.requireApproval?'checked':'')+' onchange="onRenewalApprovalToggle(this)"><span class="slider"></span></label></div>' +
+   '<div class="sectiontitle">展延申請</div>' +
+   '<div class="note" style="margin-bottom:10px">來自企業端提出的合約展延申請，示範畫面，資料為模擬數字。</div>' +
+   renderRenewalRequests(e) +
+   '<div class="sectiontitle">階梯計價規則</div>' +
+   '<div class="formrow" style="max-width:220px"><label>規則類型</label><select onchange="onTieredTypeChange(this.value)">' +
+   '<option value="accounts"'+(cp.tieredPricing.type==='accounts'?' selected':'')+'>依帳號數</option>' +
+   '<option value="hours"'+(cp.tieredPricing.type==='hours'?' selected':'')+'>依總時數</option>' +
+   '</select></div>' +
+   '<div class="tablewrap"><table><tr><th>級距起</th><th>級距迄</th><th>單價</th></tr>'+tierRows+'</table></div>' +
+   '<button class="btn ghost" style="margin-top:8px" onclick="addEntTierRow()">＋ 新增級距</button>' +
+   '<div class="hint" style="margin-top:6px">級距與單價數字一律由 TLI 拍板，此處僅供顧問先建立級距框架。</div>' +
+   '<div class="sectiontitle">教材與智財</div>' +
+   '<div class="note">教材由 TLI 教研團隊維護；教材智慧財產權歸屬 TLI，企業僅取得合約期間之使用權；企業對課程與教材內容負保密義務，不得對外揭露教學術語。</div>' +
+   '<div style="text-align:right;margin-top:16px"><button class="btn" onclick="saveContractParams()">儲存合約參數</button></div>';
+}
+/* 計價單位選「預付金額池」時顯示的欄位：每堂倒扣單價與低於門檻提醒文案（2026-09-09 拍板） */
+function renderPrepaidPoolFields(cp){
+  return '<div class="grid2">' +
+   '<div class="formrow"><label>預付金額（示範數字）</label><input type="number" min="0" value="'+cp.prepaidAmount+'" onchange="onCpField(\'prepaidAmount\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>每堂倒扣單價</label><input type="text" value="" placeholder="待定" disabled></div>' +
+   '</div>' +
+   '<div class="grid2">' +
+   '<div class="formrow"><label>餘額（示範數字）</label><input type="number" min="0" value="'+cp.prepaidBalance+'" onchange="onCpField(\'prepaidBalance\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>低於門檻提醒</label><div class="static small">門檻由 TLI 拍板（待定）</div></div>' +
+   '</div>' +
+   '<div class="note">餘額低於門檻時系統將提醒承辦顧問。</div>';
+}
+function onPricingUnitChange(val){
+  var e = entById(currentEntId);
+  e.contractParams.pricingUnit = val;
+  renderEntDrawerBody(e);
+}
+function onFollowC2CToggle(el){
+  var e = entById(currentEntId);
+  e.contractParams.followC2CDefault = el.checked;
+  if (el.checked) e.contractParams.cancelWindowHours = 12;
+  renderEntDrawerBody(e);
+}
+function onCpField(field, val){
+  entById(currentEntId).contractParams[field] = val;
+}
+function addDeptQuotaRow(){
+  var e = entById(currentEntId);
+  e.contractParams.deptQuota.push({dept:'（新部門）', quota:0});
+  renderEntDrawerBody(e);
+}
+function onDeptQuotaChange(idx, val){
+  entById(currentEntId).contractParams.deptQuota[idx].quota = Number(val)||0;
+}
+function onRenewalField(field, val){
+  entById(currentEntId).contractParams.renewalExtension[field] = val;
+}
+function onRenewalApprovalToggle(el){
+  entById(currentEntId).contractParams.renewalExtension.requireApproval = el.checked;
+}
+function renewalStatusBadge(s){
+  if (s==='已核准') return '<span class="badge green">已核准</span>';
+  if (s==='已婉拒') return '<span class="badge grey">已婉拒</span>';
+  return '<span class="badge orange">待審核</span>';
+}
+function renderRenewalRequests(e){
+  if (!e.renewalRequests || !e.renewalRequests.length) return '<div class="small">此企業目前尚無展延申請。</div>';
+  var rows = e.renewalRequests.map(function(req){
+    var actionCell = req.status==='待審核'
+      ? '<button class="btn ghost" onclick="approveRenewalRequest(\''+req.id+'\')">核准並更新合約期間</button> <button class="btn ghost" onclick="declineRenewalRequest(\''+req.id+'\')">婉拒</button>'
+      : '<span class="small">已處理</span>';
+    return '<tr><td>'+req.submitted+'</td><td>'+req.periodDays+' 天（延至 '+req.requestedNewEnd+'）</td><td style="white-space:normal;max-width:220px">'+req.reason+'</td><td>'+renewalStatusBadge(req.status)+'</td><td>'+actionCell+'</td></tr>';
+  }).join('');
+  return '<div class="tablewrap"><table><tr><th>申請日</th><th>展延期間</th><th>原因</th><th>狀態</th><th>動作</th></tr>'+rows+'</table></div>';
+}
+function approveRenewalRequest(reqId){
+  var e = entById(currentEntId);
+  var req = e.renewalRequests.find(function(x){return x.id===reqId;});
+  if (!req) return;
+  if (!confirm('確認核准展延申請，並將合約迄日更新為 '+req.requestedNewEnd+'？')) return;
+  req.status = '已核准';
+  e.contractEnd = req.requestedNewEnd;
+  renderEntDrawerBody(e);
+  renderEntTable();
+  toast('已核准展延申請，「'+e.name+'」合約期間已更新為至 '+req.requestedNewEnd);
+}
+function declineRenewalRequest(reqId){
+  var e = entById(currentEntId);
+  var req = e.renewalRequests.find(function(x){return x.id===reqId;});
+  if (!req) return;
+  if (!confirm('確認婉拒此展延申請？')) return;
+  req.status = '已婉拒';
+  renderEntDrawerBody(e);
+  toast('已婉拒展延申請');
+}
+function onTieredTypeChange(val){
+  entById(currentEntId).contractParams.tieredPricing.type = val;
+}
+function addEntTierRow(){
+  var e = entById(currentEntId);
+  e.contractParams.tieredPricing.tiers.push({from:'', to:''});
+  renderEntDrawerBody(e);
+}
+function onEntTierField(idx, field, val){
+  entById(currentEntId).contractParams.tieredPricing.tiers[idx][field] = val;
+}
+function saveContractParams(){
+  var e = entById(currentEntId);
+  e.contractParamsSet = true;
+  renderEntTable();
+  toast('已儲存「'+e.name+'」的合約參數設定');
+}
+
+/* ================= 串接需求單（v2 修改：API 本體移至二階，一階段僅承接串接需求，示範畫面，資料為模擬數字） ================= */
+function renderConnReqTab(e){
+  var reqRows = e.connectionRequests.map(function(c){
+    var statusOptions = CONNREQ_STATUS_LIST.map(function(s){
+      return '<option value="'+s+'"'+(c.status===s?' selected':'')+'>'+s+'</option>';
+    }).join('');
+    return '<tr><td>'+e.name+'</td><td>'+c.itContact+'</td><td>'+c.systemName+'</td><td>'+c.syncData+'</td><td>'+c.expectedLaunch+'</td>' +
+      '<td>'+connReqStatusBadge(c.status)+'</td><td>'+c.advisor+'</td>' +
+      '<td><select style="width:auto" onchange="updateConnReqStatus(\''+c.id+'\',this.value)">'+statusOptions+'</select> ' +
+      '<button class="btn ghost" onclick="openConnReqNote(\''+c.id+'\')">備註</button></td></tr>';
+  }).join('');
+  return '<div class="note">系統對接屬導入服務，二階段由 TLI 專案團隊執行；一階段企業以標準 CSV 匯出為主。示範畫面，資料為模擬數字。</div>' +
+   '<div class="sectiontitle">串接需求單列表</div>' +
+   '<div class="tablewrap"><table><tr><th>企業</th><th>IT 聯絡人</th><th>系統名稱</th><th>要同步的資料</th><th>期望上線</th><th>狀態</th><th>負責顧問</th><th>動作</th></tr>' +
+   (reqRows || '<tr><td colspan="8" class="small" style="white-space:normal;padding:14px 12px">此企業尚未提出串接需求單。</td></tr>') +
+   '</table></div>';
+}
+function updateConnReqStatus(reqId, val){
+  var e = entById(currentEntId);
+  var c = e.connectionRequests.find(function(x){ return x.id===reqId; });
+  if (!c) return;
+  c.status = val;
+  renderEntDrawerBody(e);
+  renderEntTable();
+  toast('已將「'+c.systemName+'」串接需求單狀態更新為「'+val+'」');
+}
+function openConnReqNote(reqId){
+  window.__connReqNoteId = reqId;
+  var e = entById(currentEntId);
+  var c = e.connectionRequests.find(function(x){ return x.id===reqId; });
+  document.getElementById('connReqNoteLabel').textContent = c.systemName+'（'+c.itContact+'）備註';
+  document.getElementById('connReqNoteInput').value = c.note || '';
+  document.getElementById('connReqNoteModal').classList.add('open');
+}
+function doSaveConnReqNote(){
+  var e = entById(currentEntId);
+  var c = e.connectionRequests.find(function(x){ return x.id===window.__connReqNoteId; });
+  if (c) c.note = document.getElementById('connReqNoteInput').value;
+  closeModal('connReqNoteModal');
+  renderEntDrawerBody(e);
+  toast('已儲存備註');
+}
+
+/* ================= 機構授權型詳情（v2 新增：示範畫面，資料為模擬數字） ================= */
+function renderInstitutionTab(e){
+  var info = e.institutionInfo;
+  var resourceRows = [
+    {key:'video', label:'影片'}, {key:'audio', label:'音檔'}, {key:'quiz', label:'測驗'}, {key:'chat', label:'聊天室'}
+  ].map(function(r){
+    return '<tr><td>'+r.label+'</td><td><input type="text" value="" placeholder="由 TLI 拍板" disabled style="width:140px"></td></tr>';
+  }).join('');
+  var semesters = info.semesters || [];
+  var semesterRows = semesters.map(function(s){
+    return '<tr><td>'+s.name+'</td><td>'+s.start+' ～ '+s.end+'</td><td>'+semesterStatusBadge(s)+'</td></tr>';
+  }).join('');
+  return '<div class="note">示範畫面，資料為模擬數字。</div>' +
+   '<div class="hint" style="margin:-2px 0 12px">資金流：學生 → 大學（學費）→ TLI（授權費＋人頭費）；Connect 不向學生收款。</div>' +
+   '<div class="sectiontitle">合作期間</div>' +
+   '<div class="kv"><span>合作起訖</span><span>'+info.periodStart+' ～ '+info.periodEnd+'</span></div>' +
+   '<div class="sectiontitle">計費模式<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   renderInstitutionBillingModel(e, info) +
+   '<div class="sectiontitle">學期設定<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="tablewrap"><table><tr><th>學期名稱</th><th>起訖日期</th><th>狀態</th></tr>' +
+   (semesterRows || '<tr><td colspan="3" class="small" style="white-space:normal;padding:14px 12px">此機構尚未建立學期紀錄。</td></tr>') +
+   '</table></div>' +
+   '<div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="openAddSemesterModal()">新增下學期</button></div>' +
+   '<div class="sectiontitle">權益展延</div>' +
+   '<div class="note" style="margin-bottom:10px">機構學生逾期未使用課程權益之展延申請，示範畫面，資料為模擬數字。</div>' +
+   renderExtensionLog(info) +
+   '<div style="text-align:right;margin-top:10px"><button class="btn orange" onclick="openInstitutionRenewalModal()">核准權益展延</button></div>' +
+   '<div class="sectiontitle">專屬代碼與信箱網域</div>' +
+   '<div class="kv"><span>專屬代碼</span><span>'+info.code+'</span></div>' +
+   '<div class="kv"><span>校內信箱網域</span><span>'+info.emailDomain+'</span></div>' +
+   '<div class="sectiontitle">資源包</div>' +
+   '<div class="tablewrap"><table><tr><th>資源項目</th><th>每週上限</th></tr>'+resourceRows+'</table></div>' +
+   '<div class="sectiontitle">學生數</div>' +
+   '<div class="kv"><span>學生數</span><span>'+info.studentCount+' 人</span></div>' +
+   '<div class="hint">學生數為資源包容量規劃依據；實際計費以下方「本期開通人頭數」為準，統一由機構付款。</div>' +
+   '<div class="sectiontitle">機構窗口</div>' +
+   '<div class="kv"><span>姓名／職稱</span><span>'+info.contactName+'（'+info.contactTitle+'）</span></div>' +
+   '<div class="kv"><span>聯絡方式</span><span>'+info.contactEmail+'</span></div>';
+}
+
+/* 計費模式：授權費（每期）＋人頭費（每位開通學生），機構統一付款，不向學生收費。
+   20260909e 新增：金額待 TLI 業務與大學合作條件議定，此處一律留白並連結參數設定；
+   「產生本期機構帳單」僅示範觸發動作，實際帳單資料在 a05 機構授權帳單訂單與 a13 應收頁面示範。
+   20260909f 新增：資金流補充——學生繳學費給大學（含多門課），大學再依人頭付 TLI，人頭數需經「人頭對帳」
+   （學校確認開通名單、顧問處理異議）雙方確認後才可產生帳單。 */
+function currentInstSemester(info){
+  var semesters = info.semesters || [];
+  var todayStr = new Date().toISOString().slice(0,10);
+  return semesters.find(function(s){ return todayStr>=s.start && todayStr<=s.end; }) || semesters[semesters.length-1];
+}
+function semesterReconcileBadge(s){
+  var pendingCount = (s.disputes||[]).filter(function(d){return d.status==='pending';}).length;
+  if (pendingCount>0) return '<span class="badge orange">有異議 '+pendingCount+' 筆</span>';
+  if (s.reconcileStatus==='confirmed') return '<span class="badge green">學校已確認</span>';
+  return '<span class="badge grey">待學校確認</span>';
+}
+function renderInstitutionBillingModel(e, info){
+  var semesters = info.semesters || [];
+  var cur = currentInstSemester(info);
+  var headcountRows = semesters.map(function(s){
+    return '<tr><td>'+s.name+'</td><td>'+s.headcount+' 人</td><td>'+semesterStatusBadge(s)+'</td><td>'+semesterReconcileBadge(s)+'</td></tr>';
+  }).join('');
+  return '<div class="grid2">' +
+   '<div class="formrow"><label>授權費（每期）</label><input type="text" value="" placeholder="參數設定 #待定" disabled></div>' +
+   '<div class="formrow"><label>人頭費（每位開通學生）</label><input type="text" value="" placeholder="參數設定 #待定" disabled></div>' +
+   '</div>' +
+   '<div class="kv"><span>計費週期</span><span>3 個月／12 週（示範）</span></div>' +
+   '<div class="crosslink">金額由<a href="a17_master_data.html#params">基礎資料設定 → 參數設定</a>拍板後帶入，機構可覆寫。</div>' +
+   '<div class="hint" style="margin:8px 0 4px">本期開通人頭數計數表（依學期，示範畫面，資料為模擬數字）：</div>' +
+   '<div class="tablewrap"><table><tr><th>學期</th><th>開通人頭數</th><th>學期狀態</th><th>對帳狀態</th></tr>'+headcountRows+'</table></div>' +
+   '<div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="doExportInstHeadcountList()">匯出開通名單給學校</button> ' +
+   '<button class="btn ghost" onclick="doMarkInstReconcileConfirmed()">標記學校已確認</button></div>' +
+   '<div class="sectiontitle" style="margin-top:16px">人頭對帳・異議處理<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="hint" style="margin-bottom:6px">本期（'+(cur?cur.name:'－')+'）異議清單，顧問可逐筆接受（從人頭數扣除）或不接受：</div>' +
+   renderInstDisputeTable(cur) +
+   '<div class="sectiontitle" style="margin-top:16px">產生機構帳單</div>' +
+   '<div style="text-align:right;margin-top:10px"><button class="btn teal" onclick="doGenerateInstitutionBill()">產生本期機構帳單</button></div>' +
+   renderInstitutionBillingLog(info);
+}
+function renderInstDisputeTable(cur){
+  if (!cur) return '<div class="small">此機構目前無進行中學期。</div>';
+  var disputes = cur.disputes || [];
+  if (!disputes.length) return '<div class="small" style="margin-bottom:6px">本期目前無異議申報。</div>';
+  var rows = disputes.map(function(d){
+    var statusCell = d.status==='pending' ? '<span class="badge orange">待處理</span>'
+      : d.status==='accepted' ? '<span class="badge green">已接受（已扣除）</span>'
+      : '<span class="badge grey">不接受（維持計費）</span>';
+    var actionCell = d.status==='pending'
+      ? '<button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="doResolveInstDispute(\''+d.id+'\',true)">接受</button> <button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="doResolveInstDispute(\''+d.id+'\',false)">不接受</button>'
+      : '<span class="small">已處理</span>';
+    return '<tr><td>'+d.alias+'</td><td>'+d.reason+'</td><td>'+statusCell+'</td><td>'+actionCell+'</td></tr>';
+  }).join('');
+  return '<div class="tablewrap" style="margin-bottom:10px"><table><tr><th>學生化名</th><th>異議原因</th><th>狀態</th><th>顧問處理</th></tr>'+rows+'</table></div>';
+}
+function renderInstitutionBillingLog(info){
+  var log = info.billingLog || [];
+  if (!log.length) return '<div class="small" style="margin-top:8px">此機構目前尚無機構帳單產生紀錄。</div>';
+  var rows = log.map(function(r){
+    return '<tr><td>'+r.semester+'</td><td>'+r.headcount+' 人</td><td>'+r.generatedBy+'</td><td>'+r.time+'</td><td><span class="badge blue">已產生</span></td></tr>';
+  }).join('');
+  return '<div class="tablewrap" style="margin-top:8px"><table><tr><th>對應學期</th><th>人頭數（雙方確認）</th><th>產生人</th><th>產生時間</th><th>狀態</th></tr>'+rows+'</table></div>';
+}
+function doExportInstHeadcountList(){
+  var e = entById(currentEntId);
+  var info = e.institutionInfo;
+  var cur = currentInstSemester(info);
+  if (!cur){ toast('此機構尚無進行中學期，無法匯出名單'); return; }
+  toast('已產生「'+cur.name+'」開通名單並通知機構窗口（'+info.contactName+'）。示範畫面，資料為模擬數字，未實際寄送。');
+}
+function doMarkInstReconcileConfirmed(){
+  var e = entById(currentEntId);
+  var info = e.institutionInfo;
+  var cur = currentInstSemester(info);
+  if (!cur){ toast('此機構尚無進行中學期'); return; }
+  var pending = (cur.disputes||[]).filter(function(d){return d.status==='pending';});
+  if (pending.length){ toast('尚有 '+pending.length+' 筆異議待處理，請先完成人頭對帳'); return; }
+  cur.reconcileStatus = 'confirmed';
+  renderEntDrawerBody(e);
+  toast('已標記「'+cur.name+'」學校已確認，人頭對帳完成，現可產生本期機構帳單。');
+}
+function doResolveInstDispute(disputeId, accept){
+  var e = entById(currentEntId);
+  var info = e.institutionInfo;
+  var cur = currentInstSemester(info);
+  if (!cur) return;
+  var d = (cur.disputes||[]).find(function(x){return x.id===disputeId;});
+  if (!d || d.status!=='pending') return;
+  d.status = accept ? 'accepted' : 'rejected';
+  if (accept) cur.headcount = Math.max(0, cur.headcount - 1);
+  renderEntDrawerBody(e);
+  toast(accept ? ('已接受異議，'+d.alias+' 已從人頭數扣除，本期人頭數更新為 '+cur.headcount+' 人') : ('已標記不接受異議（'+d.alias+'），人頭數不變'));
+}
+function doGenerateInstitutionBill(){
+  var e = entById(currentEntId);
+  var info = e.institutionInfo;
+  var current = currentInstSemester(info);
+  if (!current){ toast('此機構尚無學期資料，無法產生帳單'); return; }
+  var pendingDisputes = (current.disputes||[]).filter(function(d){return d.status==='pending';}).length;
+  if (pendingDisputes>0 || current.reconcileStatus!=='confirmed'){
+    toast('請先完成人頭對帳');
+    return;
+  }
+  if (!info.billingLog) info.billingLog = [];
+  var now = new Date();
+  var timeStr = now.toISOString().slice(0,10)+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  info.billingLog.unshift({semester: current.name, headcount: current.headcount, generatedBy:'王大明（總公司管理者）', time: timeStr});
+  renderEntDrawerBody(e);
+  toast('已產生本期機構帳單（'+current.name+'・'+current.headcount+' 人，雙方確認）：帳單將列入「訂單」（a05）機構授權帳單類型，並同步進入「應收與分期」（a13）機構授權帳單應收列。');
+}
+
+/* 新增下學期 modal（v2 新增：機構授權「學期設定」用，示範畫面，資料為模擬數字） */
+function openAddSemesterModal(){
+  document.getElementById('semName').value = '';
+  document.getElementById('semStart').value = '';
+  document.getElementById('semEnd').value = '';
+  document.getElementById('addSemesterModal').classList.add('open');
+}
+function doAddSemester(){
+  var e = entById(currentEntId);
+  var name = document.getElementById('semName').value.trim();
+  var start = document.getElementById('semStart').value;
+  var end = document.getElementById('semEnd').value;
+  if (!name || !start || !end){ toast('請完整填寫學期名稱與起訖日期'); return; }
+  if (!e.institutionInfo.semesters) e.institutionInfo.semesters = [];
+  e.institutionInfo.semesters.push({id:'semnew'+Date.now(), name:name, start:start, end:end});
+  closeModal('addSemesterModal');
+  renderEntDrawerBody(e);
+  toast('已新增學期「'+name+'」');
+}
+
+/* 核准權益展延 modal（v2 新增：可選擇學生或整批核准，核准前二次確認，示範畫面，資料為模擬數字） */
+var institutionRenewalState = {mode:'batch'};
+function openInstitutionRenewalModal(){
+  institutionRenewalState = {mode:'batch'};
+  renderInstitutionRenewalModal();
+  document.getElementById('institutionRenewalModal').classList.add('open');
+}
+function renderInstitutionRenewalModal(){
+  var e = entById(currentEntId);
+  var mode = institutionRenewalState.mode;
+  var students = e.employees || [];
+  var studentRows = students.map(function(em){
+    return '<div class="orgemp"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;width:100%"><input type="checkbox" class="ext-stu-check" value="'+em.id+'">'+em.name+'　<span class="small">'+em.email+'</span></label></div>';
+  }).join('');
+  var body = document.getElementById('institutionRenewalBody');
+  body.innerHTML = '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字，核准後僅更新畫面顯示，不會實際延長系統權益。</div>' +
+    '<div class="formrow"><label>核准範圍</label>' +
+    '<label style="display:block;margin-bottom:6px"><input type="radio" name="ext_scope" value="batch" '+(mode==='batch'?'checked':'')+' onchange="onExtScopeChange(this.value)"> 整批核准（全部學生，共 '+students.length+' 人）</label>' +
+    '<label style="display:block"><input type="radio" name="ext_scope" value="select" '+(mode==='select'?'checked':'')+' onchange="onExtScopeChange(this.value)"> 選擇學生</label>' +
+    '</div>' +
+    (mode==='select' ? '<div class="orgtree">'+(studentRows || '<div class="small">此機構目前無可選學生示範資料。</div>')+'</div>' : '') +
+    '<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal(\'institutionRenewalModal\')">取消</button> <button class="btn orange" onclick="doApproveInstitutionRenewal()">核准展延</button></div>';
+}
+function onExtScopeChange(val){
+  institutionRenewalState.mode = val;
+  renderInstitutionRenewalModal();
+}
+/* 20260909 新增：權益展延紀錄列渲染，比照 renderRenewalRequests（合約展延申請）的做法——
+   核准後直接以紀錄呈現，不再放可互動按鈕（該筆狀態已是「已核准」，無待處理動作） */
+function renderExtensionLog(info){
+  var log = info.extensionLog || [];
+  if (!log.length) return '<div class="small" style="margin-top:8px">此機構目前尚無權益展延核准紀錄。</div>';
+  var rows = log.map(function(r){
+    return '<tr><td>'+r.target+'</td><td>'+r.oldExpiry+'</td><td>'+r.newExpiry+'</td><td>'+r.approvedBy+'</td><td>'+r.time+'</td><td><span class="badge green">已核准</span></td></tr>';
+  }).join('');
+  return '<div class="tablewrap" style="margin-top:8px"><table><tr><th>對象</th><th>原到期</th><th>新到期</th><th>核准人</th><th>核准時間</th><th>狀態</th></tr>'+rows+'</table></div>';
+}
+function doApproveInstitutionRenewal(){
+  var e = entById(currentEntId);
+  var info = e.institutionInfo;
+  var mode = institutionRenewalState.mode;
+  var count, label;
+  if (mode==='batch'){
+    count = (e.employees||[]).length;
+    label = '整批核准・全部學生（共 '+count+' 人）';
+  } else {
+    var checked = document.querySelectorAll('#institutionRenewalBody .ext-stu-check:checked');
+    count = checked.length;
+    if (!count){ toast('請至少選擇一位學生'); return; }
+    label = '選擇學生・共 '+count+' 人';
+  }
+  if (!confirm('確認核准'+label+'的權益展延？')) return;
+  /* 原到期取目前最新一筆學期迄日；新到期示範展延 30 天，實際天數由 TLI 拍板 */
+  var semesters = info.semesters || [];
+  var oldExpiry = semesters.length ? semesters[semesters.length-1].end : info.periodEnd;
+  var newExpiry = addDays(oldExpiry, 30);
+  if (!info.extensionLog) info.extensionLog = [];
+  var now = new Date();
+  var timeStr = now.toISOString().slice(0,10)+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  info.extensionLog.unshift({
+    target: label, oldExpiry: oldExpiry, newExpiry: newExpiry,
+    approvedBy: '王大明（總公司管理者）', time: timeStr
+  });
+  closeModal('institutionRenewalModal');
+  renderEntDrawerBody(e);
+  toast('已核准'+label+'的權益展延，紀錄已寫入（原到期 '+oldExpiry+' → 新到期 '+newExpiry+'）');
+}
+
+/* ================= 代理商型詳情（v2 新增：摘要卡＋連結至代理商詳細管理，示範畫面，資料為模擬數字） ================= */
+function renderAgentInfoTab(e){
+  var info = e.agentInfo;
+  return '<div class="note">示範畫面，資料為模擬數字。</div>' +
+   '<div class="card" style="margin-top:10px">' +
+   '<div class="kv"><span>轉介碼</span><span>'+info.referralCode+'</span></div>' +
+   '<div class="kv"><span>名單歸屬規則</span><span>'+info.attributionRule+'</span></div>' +
+   '<div class="kv"><span>佣金比例</span><span class="small">待定</span></div>' +
+   '<div class="formrow" style="margin-top:10px"><label>結算週期</label><select onchange="onAgentSettlementChange(this.value)">' +
+   '<option value="月結"'+(info.settlementCycle==='月結'?' selected':'')+'>月結</option>' +
+   '<option value="季結"'+(info.settlementCycle==='季結'?' selected':'')+'>季結</option>' +
+   '</select></div>' +
+   '</div>' +
+   '<div style="text-align:right;margin-top:14px"><a class="btn ghost" href="a20_agents.html">查看代理商詳細管理 →</a></div>';
+}
+function onAgentSettlementChange(val){
+  var e = entById(currentEntId);
+  e.agentInfo.settlementCycle = val;
+  toast('已更新結算週期為「'+val+'」');
 }
 
 /* ================= 新增企業客戶 ================= */
@@ -716,7 +1541,7 @@ var newEntDraft = null;
 function openNewEnterpriseDrawer(){
   currentEntId = null;
   newEntTab = 'basic';
-  newEntDraft = {name:'', tier:'B', planName:SALES_PLAN_NAMES[0], managerName:'', managerTitle:'', payMethod:'月結'};
+  newEntDraft = {name:'', entType:'general', tier:'B', planName:SALES_PLAN_NAMES[0], managerName:'', managerTitle:'', payMethod:'月結'};
   document.getElementById('drw_title').textContent = '新增企業客戶';
   document.getElementById('drw_sub').textContent = '依序填寫基本資料、合約與分類、主管理者、付款方式';
   renderNewEntForm();
@@ -731,7 +1556,12 @@ function renderNewEntForm(){
   }).join('') + '</div>';
   var body = '';
   if (newEntTab==='basic'){
-    body = '<div class="formrow"><label>企業名稱</label><input type="text" id="ne_name" value="'+newEntDraft.name+'" placeholder="請輸入完整公司名稱"></div>' +
+    body = '<div class="formrow"><label>客戶類型</label><select id="ne_enttype" onchange="onNewEntTypeChange(this.value)">' +
+      '<option value="general"'+(newEntDraft.entType==='general'?' selected':'')+'>一般企業</option>' +
+      '<option value="institution"'+(newEntDraft.entType==='institution'?' selected':'')+'>機構授權</option>' +
+      '<option value="agent"'+(newEntDraft.entType==='agent'?' selected':'')+'>代理商</option>' +
+      '</select></div>' +
+      '<div class="formrow"><label>企業名稱</label><input type="text" id="ne_name" value="'+newEntDraft.name+'" placeholder="請輸入完整公司名稱"></div>' +
       '<div class="formrow"><label>統一編號</label><input type="text" id="ne_taxid" placeholder="8 碼統一編號"></div>' +
       '<div class="formrow"><label>對應顧問</label><select id="ne_advisor">'+ENT_ADVISORS.map(function(a){return '<option>'+a+'</option>';}).join('')+'</select></div>';
   } else if (newEntTab==='contract'){
@@ -755,8 +1585,10 @@ function newEntSwitchTab(s){
   newEntTab = s;
   renderNewEntForm();
 }
+function onNewEntTypeChange(val){ newEntDraft.entType = val; }
 function captureNewEntDraft(){
   var nameEl = document.getElementById('ne_name'); if (nameEl) newEntDraft.name = nameEl.value;
+  var typeEl = document.getElementById('ne_enttype'); if (typeEl) newEntDraft.entType = typeEl.value;
   var tierEl = document.getElementById('ne_tier'); if (tierEl) newEntDraft.tier = tierEl.value;
   var planEl = document.getElementById('ne_plan'); if (planEl) newEntDraft.planName = planEl.value;
 }
@@ -770,10 +1602,27 @@ function saveNewEnterprise(){
   var newId = 'entnew'+Date.now();
   var todayStr = new Date().toISOString().slice(0,10);
   ENTERPRISES.unshift({
-    id:newId, name:name, tier:newEntDraft.tier, planName:newEntDraft.planName, empCount:0,
+    id:newId, name:name, entType:newEntDraft.entType, tier:newEntDraft.tier, planName:newEntDraft.planName, empCount:0,
     contractStart:todayStr, contractEnd:addDays(todayStr,365), manager:{name:mgrName, title:mgrTitle},
     advisor:ENT_ADVISORS[0], attendance:0, invoiceStatus:'待開立', payMethod:payMethod, taxId:'',
-    depts:DEPTS.slice(0,3), employees:[], discountRate:10, scheduleMonthly:false, invoices:[]
+    depts:DEPTS.slice(0,3), employees:[], discountRate:10, scheduleMonthly:false, invoices:[],
+    contractParamsSet:false, contractParams:{followC2CDefault:true, cancelWindowHours:12, monthlyFreeCancel:1, rescheduleMaxTimes:2, rescheduleWindowHours:12,
+      overageLeavePolicy:'appeal', timezone:'Asia/Taipei', poolTotal:0, poolExpiry:addDays(todayStr,365), deptQuota:[], tieredPricing:{type:'accounts', tiers:[{from:1,to:''}]},
+      renewalExtension:{days:'', requireApproval:true, maxTimes:''},
+      paymentMethod:'monthly', pricingUnit:'hourpool', prepaidAmount:0, prepaidDeductUnit:'', prepaidBalance:0, prepaidThreshold:''},
+    connectionRequests:[], renewalRequests:[], trial:true,
+    contractHistory:[{version:'v1.0', effectiveDate:todayStr, planSummary:newEntDraft.planName+'／折扣 10%', status:'生效中'}],
+    institutionInfo: newEntDraft.entType==='institution' ? {
+      periodStart:todayStr, periodEnd:addDays(todayStr,365), semester:'上學期', semesterStart:todayStr, semesterEnd:addDays(todayStr,130),
+      code:'INST-NEW', emailDomain:'@example-state-u.edu', studentCount:0,
+      contactName:mgrName, contactTitle:mgrTitle, contactEmail:'contact@example-state-u.edu',
+      semesters: makeSemesterList(0, todayStr),
+      extensionLog: [],
+      billingLog: [] /* 20260909e 新增：新建機構客戶時同步初始化機構帳單產生紀錄 */
+    } : null,
+    agentInfo: newEntDraft.entType==='agent' ? {
+      referralCode:'REF-NEW', attributionRule:'以轉介碼綁定成交名單（歸屬有效期由 TLI 拍板，待定）', commissionRate:'', settlementCycle:'月結'
+    } : null
   });
   closeDrawer();
   entState.page = 1;
@@ -795,10 +1644,10 @@ var TLI_ROLES = ['總公司管理者','校區主管','行政人員','財務','�
 var TLI_ROLE_UNIT = {'總公司管理者':'總公司','校區主管':'士林校','行政人員':'士林校','財務':'總公司','顧問':'羅斯福校'};
 var TLI_ROLE_NAV = {
   '總公司管理者': 'all',
-  '校區主管': ['c01','c08','c02','c04','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17','a18','a19'],
-  '行政人員': ['a01','a05','a12','a06','a13','a16','a18','a19'],
-  '財務': ['a13','a06','a07','a19'],
-  '顧問': ['c01','c08','c02','c04','c06','c07','a01']
+  '校區主管': ['c01','c08','c02','c04','c09','c06','c07','a01','a05','a12','a07','a10','a14','a16','a17','a18','a19','a20'],
+  '行政人員': ['a01','a05','a12','a06','a13','a16','a18','a19','a20'],
+  '財務': ['a13','a06','a07','a19','a20'],
+  '顧問': ['c01','c08','c02','c04','c09','c06','c07','a01']
 };
 function tliCurrentRole(){ try{ return localStorage.getItem('tliDemoRole') || '總公司管理者'; }catch(e){ return '總公司管理者'; } }
 function tliSetRole(r){ try{ localStorage.setItem('tliDemoRole', r); }catch(e){} }

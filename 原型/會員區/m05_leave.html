@@ -93,6 +93,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
+/* ---------- B2B 企業學員請假規則示範（v2 新增） ---------- */
+.enterprise-bar{background:#EAF6F2;border:1px solid #BEE6D9;border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.enterprise-bar .eb-top{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;color:#0B6B52;margin-bottom:8px;flex-wrap:wrap;row-gap:4px;}
+.enterprise-bar .eb-top svg{width:16px;height:16px;flex:none;}
+@media(max-width:420px){.enterprise-bar .eb-top{flex-direction:column;align-items:flex-start;gap:2px;}}
+.enterprise-bar .eb-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.enterprise-bar .eb-stat{font-size:11.5px;color:#0B6B52;}
+.enterprise-bar .eb-stat b{display:block;font-size:15px;font-weight:800;color:#075A45;}
+.demo-tag{font-size:10.5px;color:#98A2B3;font-weight:400;}
+.scenario-picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.scenario-chip{border:1px solid var(--c-border);background:#fff;border-radius:20px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--c-muted);cursor:pointer;font-family:inherit;}
+.scenario-chip.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary);}
+.banner-ok{background:#EAF6F2;color:#0B6B52;border:1px solid #BEE6D9;}
+.rule-note{font-size:11.5px;color:var(--c-muted);margin-top:8px;line-height:1.6;}
+.leave-record-row{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:11px 13px;}
+.leave-record-row + .leave-record-row{margin-top:8px;}
+.leave-record-row .lr-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+.leave-record-row .lr-title{font-size:13px;font-weight:700;}
+.leave-record-row .lr-meta{font-size:11.5px;color:var(--c-muted);margin-top:2px;}
+.lr-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex:none;}
+.lr-badge-ok{background:#E4F5F0;color:#0B6B52;}
+.lr-badge-pending{background:#FCEBDC;color:#9A4A0F;}
+.lr-badge-deduct{background:#FBEAEA;color:#912018;}
 </style>
 </head>
 <body>
@@ -103,6 +126,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link active" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
+    <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
     <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
     <a class="side-link" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
@@ -135,6 +159,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <main class="content">
     <p class="page-sub" data-i18n-zh="確認課堂資訊後選擇取消或改期。" data-i18n-en="Review the class, then cancel or reschedule.">確認課堂資訊後選擇取消或改期。</p>
 
+    <div class="enterprise-bar" id="enterpriseBar">
+      <div class="eb-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M9 13h1M14 9h1M14 13h1M9 21v-4h6v4"/></svg>
+        <span>企業學員：範例半導體 美國廠區</span>
+        <span class="demo-tag">示範畫面，資料為模擬數字</span>
+      </div>
+      <div class="eb-stats">
+        <div class="eb-stat">企業合約請假時限<b id="ebDeadline">24 小時</b></div>
+        <div class="eb-stat">本月免扣請假次數（帳號現況）<b id="ebFreeRemain">1／2 次</b></div>
+      </div>
+    </div>
+    <p class="small muted" style="margin:-6px 0 14px;">一般學員（非企業員工）沿用既有 12 小時請假／取消規則，不適用本頁企業合約規則；下方情境切換可預覽企業合約三種判定結果。</p>
+
+    <div class="scenario-picker" id="scenarioPicker"></div>
+
     <div class="card">
       <span class="badge badge-info" id="dType">中文一對一</span>
       <h3 style="margin:8px 0 4px;font-size:16px;" id="dTitle">－</h3>
@@ -147,13 +186,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     </div>
 
     <div class="banner banner-danger hidden" id="ruleBanner" style="margin-top:14px;"></div>
+    <div class="banner hidden" id="enterpriseRuleBanner" style="margin-top:14px;"></div>
 
     <div class="card" id="actionCard" style="margin-top:14px;">
-      <h4 style="margin:0 0 10px;font-size:14px;">選擇處理方式</h4>
-      <div class="stack">
+      <h4 style="margin:0 0 10px;font-size:14px;" id="actionCardTitle">選擇處理方式</h4>
+      <div class="stack" id="generalActions">
         <button class="btn btn-danger-outline btn-block" id="cancelBtn" onclick="confirmCancel()">取消（退回堂數）</button>
         <button class="btn btn-primary btn-block" id="rescheduleBtn" onclick="goReschedule()">改期（選新時段）</button>
       </div>
+      <div class="stack hidden" id="enterpriseActions">
+        <button class="btn btn-primary btn-block" id="applyLeaveBtn" onclick="applyLeave()">申請請假</button>
+        <button class="btn btn-outline btn-block" id="rescheduleBtnEnt" onclick="goReschedule()">改期（選新時段）</button>
+        <button class="btn btn-outline btn-block hidden" id="appealBtn" onclick="openAppealSheet()">提出申訴</button>
+      </div>
+      <p class="rule-note" id="enterpriseActionNote"></p>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">請假紀錄</h3>
+        <span class="demo-tag">示範畫面，資料為模擬數字</span>
+      </div>
+      <p class="small muted" style="margin:6px 0 12px;">企業合約規則判定僅適用企業員工學員；一般學員請假紀錄仍沿用 12 小時規則，不列規則判定欄。</p>
+      <div id="leaveRecordList"></div>
     </div>
   </main>
 
@@ -161,8 +216,36 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a href="m03_schedule.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
   </nav>
+</div>
+
+<div class="sheet-overlay hidden" id="appealOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 style="margin:0 0 4px;">提出申訴</h3>
+    <p class="muted small" id="appealSheetMeta" style="margin:0 0 12px;">－</p>
+    <div class="divider"></div>
+    <div style="margin:14px 0;">
+      <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">原因</label>
+      <select id="appealReason" style="width:100%;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 11px;font-size:14px;font-family:inherit;min-height:44px;">
+        <option value="produce">產線突發狀況</option>
+        <option value="uncontrollable">其他不可歸責事由</option>
+        <option value="system">系統或流程認定有誤</option>
+        <option value="other">其他</option>
+      </select>
+    </div>
+    <div style="margin:14px 0;">
+      <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">說明</label>
+      <textarea id="appealNote" rows="4" placeholder="請簡述申訴原因，供 HR 或顧問覆核參考" style="width:100%;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 11px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+    </div>
+    <p class="small muted" style="margin:0 0 14px;">送出後由 HR 或顧問覆核；覆核通過將改記請假、不扣時數，結果會通知你。</p>
+    <div class="stack">
+      <button class="btn btn-primary btn-block" onclick="submitAppeal()">送出申訴</button>
+      <button class="btn btn-outline btn-block" onclick="closeAppealSheet()">先不提出</button>
+    </div>
+  </div>
 </div>
 
 <div class="sheet-overlay hidden" id="successOverlay">
@@ -225,34 +308,105 @@ document.addEventListener('click',function(e){
 
 var NOW = new Date(2026,7,25,10,0,0);
 var CLASSES = {
-  c1:{title:'中文一對一－會話進階',time:'08/25（二）今天 18:00–18:50',start:new Date(2026,7,25,18,0),teacher:'杜老師',mode:'線上 Zoom',type:'individual'},
-  c2:{title:'中文一對一－會話進階',time:'08/26（三）明天 14:00–14:50',start:new Date(2026,7,26,14,0),teacher:'杜老師',mode:'線上 Zoom',type:'individual'},
-  c3:{title:'中文小組班（初級）',time:'08/29（六）10:00–11:30',start:new Date(2026,7,29,10,0),teacher:'林老師',mode:'台北校區 A203 教室',type:'group'}
+  c1:{title:'中文一對一－會話進階',time:'08/25（二）今天 18:00–18:50',start:new Date(2026,7,25,18,0),teacher:'杜老師',mode:'線上 Zoom',type:'individual',audience:'general',scenarioLabel:'一般學員・12 小時內'},
+  c2:{title:'中文一對一－會話進階',time:'08/26（三）明天 14:00–14:50',start:new Date(2026,7,26,14,0),teacher:'杜老師',mode:'線上 Zoom',type:'individual',audience:'general',scenarioLabel:'一般學員・時限外'},
+  c3:{title:'中文小組班（初級）',time:'08/29（六）10:00–11:30',start:new Date(2026,7,29,10,0),teacher:'林老師',mode:'台北校區 A203 教室',type:'group',audience:'general',scenarioLabel:'小組班（需洽顧問）'},
+  /* ================= B2B 企業合約請假規則示範（v2 新增，資料為模擬數字） ================= */
+  e1:{title:'中文一對一－商務會話',time:'08/30（日）10:00–10:50',start:new Date(2026,7,30,10,0),teacher:'杜老師',mode:'線上 Zoom',type:'individual',audience:'enterprise',scenarioLabel:'企業學員・時限內',demoFreeRemain:null},
+  e2:{title:'中文一對一－聽力加強',time:'08/25（二）今天 16:00–16:50',start:new Date(2026,7,25,16,0),teacher:'陳老師',mode:'線上 Zoom',type:'individual',audience:'enterprise',scenarioLabel:'企業學員・超時限・免扣次數內',demoFreeRemain:1},
+  e3:{title:'中文一對一－閱讀寫作',time:'08/25（二）今天 13:00–13:50',start:new Date(2026,7,25,13,0),teacher:'林老師',mode:'線上 Zoom',type:'individual',audience:'enterprise',scenarioLabel:'企業學員・超時限・免扣已用完',demoFreeRemain:0}
 };
-var params=new URLSearchParams(location.search);
-var id=params.get('class');
-if(!CLASSES[id])id='c2';
-var c=CLASSES[id];
+var ENTERPRISE_DEADLINE_HOURS=24;
+var currentId=null;
+var c=null;
 
-document.getElementById('dType').textContent = c.type==='group' ? '中文小組班' : '中文一對一';
-document.getElementById('dTitle').textContent = c.title;
-document.getElementById('dTime').textContent = c.time;
-document.getElementById('dTeacher').textContent = c.teacher;
-document.getElementById('dMode').textContent = c.mode;
+function buildScenarioPicker(){
+  var wrap=document.getElementById('scenarioPicker');
+  var order=['c2','c1','c3','e1','e2','e3'];
+  wrap.innerHTML='';
+  order.forEach(function(key){
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='scenario-chip';
+    btn.dataset.id=key;
+    btn.textContent=CLASSES[key].scenarioLabel;
+    btn.onclick=function(){ renderClass(key); };
+    wrap.appendChild(btn);
+  });
+}
 
-var hoursUntil=(c.start-NOW)/3600000;
-var banner=document.getElementById('ruleBanner');
-var cancelBtn=document.getElementById('cancelBtn');
-var rescheduleBtn=document.getElementById('rescheduleBtn');
+function renderClass(id){
+  if(!CLASSES[id])id='c2';
+  currentId=id;
+  c=CLASSES[id];
 
-if(c.type==='group'){
-  banner.classList.remove('hidden');
-  banner.textContent='小組班請假需整班申請，個人無法自行取消或改期，請洽顧問協助處理。';
-  cancelBtn.disabled=true;rescheduleBtn.disabled=true;
-}else if(hoursUntil<12){
-  banner.classList.remove('hidden');
-  banner.textContent='已進入開課前 12 小時內，取消或改期恕不退還堂數。';
-  cancelBtn.disabled=true;rescheduleBtn.disabled=true;
+  document.querySelectorAll('.scenario-chip').forEach(function(chip){
+    chip.classList.toggle('active', chip.dataset.id===id);
+  });
+
+  document.getElementById('dType').textContent = c.type==='group' ? '中文小組班' : '中文一對一';
+  document.getElementById('dTitle').textContent = c.title;
+  document.getElementById('dTime').textContent = c.time;
+  document.getElementById('dTeacher').textContent = c.teacher;
+  document.getElementById('dMode').textContent = c.mode;
+
+  var hoursUntil=(c.start-NOW)/3600000;
+  var banner=document.getElementById('ruleBanner');
+  var entBanner=document.getElementById('enterpriseRuleBanner');
+  var generalActions=document.getElementById('generalActions');
+  var enterpriseActions=document.getElementById('enterpriseActions');
+  var actionTitle=document.getElementById('actionCardTitle');
+  var cancelBtn=document.getElementById('cancelBtn');
+  var rescheduleBtn=document.getElementById('rescheduleBtn');
+  var applyLeaveBtn=document.getElementById('applyLeaveBtn');
+  var rescheduleBtnEnt=document.getElementById('rescheduleBtnEnt');
+  var entNote=document.getElementById('enterpriseActionNote');
+  var appealBtn=document.getElementById('appealBtn');
+
+  banner.className='banner banner-danger hidden';
+  banner.textContent='';
+  entBanner.className='banner hidden';
+  entBanner.textContent='';
+  cancelBtn.disabled=false; rescheduleBtn.disabled=false;
+  applyLeaveBtn.disabled=false; applyLeaveBtn.textContent='申請請假';
+  entNote.textContent='';
+  appealBtn.classList.add('hidden');
+
+  if(c.audience==='enterprise'){
+    actionTitle.textContent='企業合約請假規則判定';
+    generalActions.classList.add('hidden');
+    enterpriseActions.classList.remove('hidden');
+
+    var within = hoursUntil>=ENTERPRISE_DEADLINE_HOURS;
+    if(within){
+      entBanner.className='banner banner-ok';
+      entBanner.textContent='距上課還有約 '+Math.round(hoursUntil)+' 小時，在企業合約 '+ENTERPRISE_DEADLINE_HOURS+' 小時請假時限內，申請後不扣時數。';
+      entNote.textContent='本情境示範：時限內請假，直接判定不扣時數。';
+    }else if(c.demoFreeRemain>0){
+      entBanner.className='banner banner-warn';
+      entBanner.textContent='距上課僅剩約 '+Math.max(0,Math.round(hoursUntil))+' 小時，已超過企業合約 '+ENTERPRISE_DEADLINE_HOURS+' 小時請假時限；本情境示範本月免扣請假次數尚餘 '+c.demoFreeRemain+' 次，申請後不扣時數，免扣次數扣減 1 次。';
+      entNote.textContent='本情境示範：超時限但免扣次數內，記請假、不扣時數、免扣剩餘 '+(c.demoFreeRemain-1)+' 次。';
+    }else{
+      entBanner.className='banner banner-danger';
+      entBanner.textContent='已超過本月免扣次數，本次記缺席並扣 1 堂時數。若為產線突發或不可歸責事由，可提出申訴由 HR 或顧問覆核。';
+      entNote.textContent='本情境示範：已超過本月免扣次數，本次記缺席並扣 1 堂時數；如提出申訴且覆核通過，將改記請假、不扣時數。';
+      appealBtn.classList.remove('hidden');
+    }
+  }else{
+    actionTitle.textContent='選擇處理方式';
+    generalActions.classList.remove('hidden');
+    enterpriseActions.classList.add('hidden');
+
+    if(c.type==='group'){
+      banner.classList.remove('hidden');
+      banner.textContent='小組班請假需整班申請，個人無法自行取消或改期，請洽顧問協助處理。';
+      cancelBtn.disabled=true;rescheduleBtn.disabled=true;
+    }else if(hoursUntil<12){
+      banner.classList.remove('hidden');
+      banner.textContent='已進入開課前 12 小時內，取消或改期恕不退還堂數。';
+      cancelBtn.disabled=true;rescheduleBtn.disabled=true;
+    }
+  }
 }
 
 function confirmCancel(){
@@ -260,12 +414,96 @@ function confirmCancel(){
   document.getElementById('successOverlay').classList.remove('hidden');
 }
 function goReschedule(){
-  var params=new URLSearchParams();
-  params.set('reschedule','1');
-  params.set('title', c.title);
-  params.set('time', c.time);
-  location.href='m02_booking.html?'+params.toString();
+  var rp=new URLSearchParams();
+  rp.set('reschedule','1');
+  rp.set('title', c.title);
+  rp.set('time', c.time);
+  location.href='m02_booking.html?'+rp.toString();
 }
+
+/* ================= 請假紀錄（含規則判定欄，v2 新增） ================= */
+var LEAVE_RECORDS=[
+  {date:'08/12（三）', title:'中文一對一－會話進階', audience:'enterprise', ruleTag:'時限內', result:'不扣時數', badge:'ok'},
+  {date:'08/03（一）', title:'中文一對一－聽力加強', audience:'general', ruleTag:'－（一般學員 12 小時規則）', result:'已於時限內取消，不扣堂數', badge:'ok'}
+];
+function renderLeaveRecords(){
+  var wrap=document.getElementById('leaveRecordList');
+  if(LEAVE_RECORDS.length===0){
+    wrap.innerHTML='<p class="small muted">目前沒有請假紀錄。</p>';
+    return;
+  }
+  wrap.innerHTML=LEAVE_RECORDS.map(function(r){
+    var badgeClass = r.badge==='pending' ? 'lr-badge-pending' : (r.badge==='deduct' ? 'lr-badge-deduct' : 'lr-badge-ok');
+    return '<div class="leave-record-row">'+
+      '<div class="lr-top"><div>'+
+        '<div class="lr-title">'+r.title+'</div>'+
+        '<div class="lr-meta">'+r.date+'・'+(r.audience==='enterprise'?'企業學員':'一般學員')+'</div>'+
+      '</div><span class="lr-badge '+badgeClass+'">'+r.ruleTag+'</span></div>'+
+      '<div class="lr-meta" style="margin-top:6px;">結果：'+r.result+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function applyLeave(){
+  if(!c || c.audience!=='enterprise') return;
+  var hoursUntil=(c.start-NOW)/3600000;
+  var within = hoursUntil>=ENTERPRISE_DEADLINE_HOURS;
+  var ruleTag, result, badge, toastMsg;
+  if(within){
+    ruleTag='時限內'; result='不扣時數'; badge='ok';
+    toastMsg='已送出請假申請・不扣時數';
+  }else if(c.demoFreeRemain>0){
+    ruleTag='超時限・免扣次數內';
+    result='記請假，不扣時數，免扣剩餘 '+(c.demoFreeRemain-1)+' 次';
+    badge='ok';
+    toastMsg='已送出請假申請・不扣時數，免扣次數扣減 1 次';
+  }else{
+    ruleTag='超時限・免扣已用完';
+    result='記缺席，扣 1 堂時數；可提出申訴，由 HR 或顧問覆核';
+    badge='deduct';
+    toastMsg='已送出請假申請，本次記缺席並扣 1 堂時數';
+  }
+  var recId='lr'+Date.now();
+  LEAVE_RECORDS.unshift({id:recId, date:'08/25（今天）', title:c.title, audience:'enterprise', ruleTag:ruleTag, result:result, badge:badge});
+  lastDeductedRecordId = (badge==='deduct') ? recId : null;
+  renderLeaveRecords();
+  showToast(toastMsg);
+  document.getElementById('applyLeaveBtn').disabled=true;
+  document.getElementById('applyLeaveBtn').textContent='已送出請假申請';
+}
+
+/* ================= 申訴（免扣次數用完・記缺席扣時數，v2 新增） ================= */
+var lastDeductedRecordId=null;
+function openAppealSheet(){
+  if(!c) return;
+  document.getElementById('appealSheetMeta').textContent=c.title+'・'+c.time;
+  document.getElementById('appealReason').selectedIndex=0;
+  document.getElementById('appealNote').value='';
+  document.getElementById('appealOverlay').classList.remove('hidden');
+}
+function closeAppealSheet(){
+  document.getElementById('appealOverlay').classList.add('hidden');
+}
+function submitAppeal(){
+  document.getElementById('appealOverlay').classList.add('hidden');
+  showToast('已送出申訴，覆核結果會通知你');
+  document.getElementById('appealBtn').disabled=true;
+  document.getElementById('appealBtn').textContent='申訴審核中';
+  var targetId = lastDeductedRecordId;
+  var rec = LEAVE_RECORDS.filter(function(r){ return r.id===targetId; })[0];
+  if(rec){
+    rec.ruleTag='超時限・申訴審核中';
+    rec.result='已提出申訴，待 HR 或顧問覆核；覆核通過將改記請假、不扣時數';
+    rec.badge='pending';
+    renderLeaveRecords();
+  }
+}
+
+buildScenarioPicker();
+var initParams=new URLSearchParams(location.search);
+var initId=initParams.get('class');
+renderClass(CLASSES[initId] ? initId : 'c2');
+renderLeaveRecords();
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

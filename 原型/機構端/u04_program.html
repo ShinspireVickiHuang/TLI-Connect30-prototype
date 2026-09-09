@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>期程與課表｜TLI Connect 3.0 大學合作管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
+--g50:#F5F7FA;--g200:#E4E7EC;--g500:#667085;--g900:#101828;}
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+background:var(--g50);color:var(--g900);}
+a{color:var(--navy);}
+.app{display:flex;min-height:100vh;width:100%;background:#fff;}
+.sidebar{width:260px;flex-shrink:0;background:#fff;padding:0;display:flex;flex-direction:column;height:100vh;
+overflow:hidden;border-right:1px solid var(--g200);position:sticky;top:0;align-self:flex-start;transition:left .2s;}
+.sidebar .brand{padding:16px 20px 14px;font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px;
+border-bottom:1px solid var(--g200);margin-bottom:6px;text-decoration:none;color:inherit;cursor:pointer;flex-shrink:0;}
+.sidebar .brand-logo{height:28px;width:auto;object-fit:contain;object-position:left center;display:block;}
+.sidebar .brand small{display:block;font-weight:400;font-size:12px;color:var(--g500);margin-top:12px;}
+.sidebar nav{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:8px 8px 8px;}
+.sidebar .sec-label{padding:0 12px;margin:12px 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;font-weight:600;}
+.sidebar .sec-label:first-child{margin-top:4px;}
+.sidebar nav a{display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;margin:2px 0;border-radius:8px;
+font-size:14px;color:var(--g900);text-decoration:none;}
+.sidebar nav a .navicon{flex-shrink:0;color:var(--g500);}
+.sidebar nav a:hover{background:var(--g50);}
+.sidebar nav a.active{background:#E6EEF8;color:var(--navy);font-weight:600;}
+.sidebar nav a.active .navicon{color:var(--navy);}
+.sidebar-user{display:block;border-top:1px solid var(--g200);padding:10px 12px;margin:0;flex-shrink:0;position:relative;}
+.su-row{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;}
+.su-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:flex;
+align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.su-info{flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px;line-height:1.2;}
+.su-name{font-size:14px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.su-roletag{font-size:12px;background:#E6EEF8;color:var(--navy);padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0;}
+.su-chevron{color:var(--g500);flex-shrink:0;}
+.su-menu{top:auto;bottom:60px;left:10px;right:10px;width:auto;padding:8px;}
+.su-menu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.su-menu a:hover{background:var(--g50);}
+.main{flex:1;padding:26px 32px 60px;min-width:0;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;
+border-bottom:1px solid var(--g200);position:sticky;top:0;background:#fff;z-index:40;margin:-26px -32px 22px;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:19px;cursor:pointer;color:var(--g900);padding:4px 6px;margin-right:4px;}
+.topbar .tb-title{font-size:15px;font-weight:600;color:var(--g900);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-actions{display:flex;align-items:center;gap:14px;position:relative;flex-shrink:0;}
+.tb-avatarbtn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:none;
+cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;}
+.tb-panel{display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
+.tb-panel.open{display:block;}
+.tb-avatarmenu{width:150px;padding:6px;}
+.tb-avatarmenu a{display:block;padding:8px 10px;font-size:13px;color:var(--g900);text-decoration:none;border-radius:6px;}
+.tb-avatarmenu a:hover{background:var(--g50);}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:110;}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap;}
+.pagehead h1{font-size:20px;margin:0;}
+.pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
+border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:15px;margin:0 0 12px;}
+.tablewrap{overflow-x:auto;max-width:100%;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
+border-bottom:1px solid var(--g200);white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge.blue{background:#E7EEF8;color:var(--navy);}
+.badge.green{background:#E4F5EE;color:var(--teal);}
+.badge.grey{background:var(--g200);color:var(--g500);}
+.note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;border-radius:6px;}
+.small{font-size:12px;color:var(--g500);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
+opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.enthead{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
+.enthead .entname{font-size:17px;font-weight:700;}
+.enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
+.statgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 4px;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;}
+.statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
+.statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.wk-row td{vertical-align:top;}
+.wk-cell-title{font-weight:600;margin-bottom:2px;}
+.wk-cell-sub{color:var(--g500);font-size:12px;}
+.wk-current{background:#F7FAFF;}
+@media (max-width:1023px){
+.hamburger{display:inline-flex;}
+.sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
+.sidebar.open{left:0;}
+.sidebar-backdrop.open{display:block;}
+.app{width:100%;}
+.main{padding:16px 16px 40px;}
+.topbar{padding:0 16px;margin:-16px -16px 18px;}
+.statgrid4{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar">
+<a class="brand" href="u01_overview.html"><img class="brand-logo" src="../assets/tli-logo.svg" alt="TLI"><small>機構合作入口</small></a>
+<nav>
+<div class="sec-label">大學合作管理</div>
+<a data-nav="u01" href="u01_overview.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg><span>概況</span></a>
+<a data-nav="u02" href="u02_students.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span>學生名單</span></a>
+<a data-nav="u03" href="u03_usage.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>使用報表</span></a>
+<a data-nav="u04" class="active" href="u04_program.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="1.5"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="7" y1="2" x2="7" y2="5.5"/><line x1="13" y1="2" x2="13" y2="5.5"/></svg><span>期程與課表</span></a>
+</nav>
+<div class="sidebar-user" id="sidebarUser">
+<div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar">校</span><span class="su-info"><span class="su-name">範例州立大學 國際處</span><span class="su-roletag">機構管理者</span></span>
+<svg class="su-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg></div>
+<div class="tb-panel su-menu" id="suMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div>
+</div>
+</div>
+
+<div class="main">
+<div class="topbar">
+<button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button>
+<div class="tb-title">期程與課表</div>
+<div class="tb-actions">
+<button class="btn ghost" onclick="exportCsv()" style="margin-right:4px;">匯出 CSV</button>
+<button class="tb-avatarbtn" onclick="toggleAvatarMenu(event)" aria-label="使用者選單">校</button>
+<div class="tb-panel tb-avatarmenu" id="avatarMenu"><a href="javascript:void(0)" onclick="toast('功能建置中，敬請期待')">個人設定</a><a href="../公開網站/p01_home.html">前往官網</a><a href="javascript:void(0)" onclick="doLogout()">登出</a></div>
+</div>
+</div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳；12 週期程為示範標模擬，實際期程長度與課表以合作合約為準。示範畫面，資料為模擬數字。</div>
+
+<div class="card">
+<div class="pagehead">
+<div><h1>期程與課表</h1><div class="desc">3 個月合作期程的每週安排：大學負責半導體技能課程、TLI 負責半導體相關中文課程、Connect 提供自學資源任務與團體聊天室場次。</div></div>
+<button class="btn" onclick="exportCsv()">匯出 CSV</button>
+</div>
+<div class="statgrid4" id="programKpiGrid"></div>
+</div>
+
+<div class="card">
+<h2>12 週期程課表（示範畫面，資料為模擬數字）</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>週次</th><th>半導體技能課程（大學）</th><th>半導體相關中文（TLI）</th><th>Connect 資源任務</th><th>團體聊天室場次</th></tr></thead>
+<tbody id="weekTbody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h2>聊天室場次與報名人數（示範畫面，資料為模擬數字）</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>週次</th><th>主題</th><th>帶領老師</th><th>時間（台北）</th><th>已報名人數</th><th>狀態</th></tr></thead>
+<tbody id="sessionTbody"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+/* 12 週期程為示範標模擬，實際期程長度與內容以合作合約為準 */
+var TOTAL_WEEKS = 12;
+var CURRENT_WEEK = 2;
+var UNI_SKILLS = ['半導體製程概論','潔淨室安全與規範','製程設備操作導論','良率與品質管理','設備維護基礎','資料分析與紀錄','跨部門協作實務','產線問題排除','自動化設備概念','法規與職業安全','專案實作演練','成果發表與總結'];
+var TLI_TOPICS = ['產業詞彙導入','工作場域對話','安全指示用語','會議與報告用語','跨部門溝通句型','數據與圖表描述','客訴與問題說明','簡報表達練習','面談與求職中文','情境角色扮演','綜合口語演練','期末成果發表'];
+/* 聊天室主題與帶領老師資料來源：教師端 t02_schedule.html 的 CHAT_SESSIONS 常數（C1/C2），照抄以確保跨頁一致 */
+var CHAT_TOPICS = ['日常對話練習','時事話題討論'];
+var TEACHERS = ['林老師（TLI）'];
+
+function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
+
+document.getElementById('programKpiGrid').innerHTML = [
+  {num:CURRENT_WEEK+' ／ '+TOTAL_WEEKS, lbl:'目前週次（示範）'},
+  {num:'186', lbl:'本期人頭數'},
+  {num:'12', lbl:'本期聊天室場次數'},
+  {num:'41%', lbl:'聊天室使用率（近 30 天）'}
+].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
+
+var weekRows = '';
+for(var w=1; w<=TOTAL_WEEKS; w++){
+  var isCurrent = w===CURRENT_WEEK;
+  var chatCount = 1;
+  weekRows += '<tr class="wk-row'+(isCurrent?' wk-current':'')+'">'+
+    '<td><div class="wk-cell-title">第 '+w+' 週</div>'+(isCurrent?'<span class="badge blue">本週</span>':'')+'</td>'+
+    '<td><div class="wk-cell-title">'+UNI_SKILLS[w-1]+'</div><div class="wk-cell-sub">範例州立大學開課</div></td>'+
+    '<td><div class="wk-cell-title">'+TLI_TOPICS[w-1]+'</div><div class="wk-cell-sub">TLI 老師授課</div></td>'+
+    '<td><div class="wk-cell-title">影片＋音檔＋單元測驗</div><div class="wk-cell-sub">自學資源任務</div></td>'+
+    '<td>'+chatCount+' 場<div class="wk-cell-sub">團體聊天室</div></td>'+
+    '</tr>';
+}
+document.getElementById('weekTbody').innerHTML = weekRows;
+
+var sessionRows = '';
+for(var w2=1; w2<=TOTAL_WEEKS; w2++){
+  var r1 = seededRand(w2*3+1), r2 = seededRand(w2*5+2);
+  var registered = 3 + Math.floor(r1*10);
+  var teacher = TEACHERS[w2 % TEACHERS.length];
+  var topic = CHAT_TOPICS[w2 % CHAT_TOPICS.length];
+  var status = w2 < CURRENT_WEEK ? '<span class="badge green">已完成</span>' : (w2 === CURRENT_WEEK ? '<span class="badge blue">本週場次</span>' : '<span class="badge grey">未開放報名</span>');
+  sessionRows += '<tr><td>第 '+w2+' 週</td><td>'+topic+'</td><td>'+teacher+'</td><td>週'+(1+Math.floor(r2*4))+' 14:00</td><td>已報名 '+registered+' 人</td><td>'+status+'</td></tr>';
+}
+document.getElementById('sessionTbody').innerHTML = sessionRows;
+
+function exportCsv(){ toast('已產生期程與課表 CSV（示範畫面，不會實際下載檔案）'); }
+
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }
+function toggleSuMenu(ev){ ev.stopPropagation(); closePanel('avatarMenu'); document.getElementById('suMenu').classList.toggle('open'); }
+function closePanel(id){ var el=document.getElementById(id); if (el) el.classList.remove('open'); }
+document.addEventListener('click', function(){ closePanel('suMenu'); closePanel('avatarMenu'); });
+function toggleAvatarMenu(ev){ ev.stopPropagation(); closePanel('suMenu'); document.getElementById('avatarMenu').classList.toggle('open'); }
+function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }
+function toast(msg){
+  var el = document.getElementById('toastEl');
+  if (!el){ el=document.createElement('div'); el.id='toastEl'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2400);
+}
+</script>
+</body>
+</html>

@@ -79,19 +79,66 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .legend .closed{background:#fff;}
 .legend .locked{background:var(--c-primary);border-color:var(--c-primary);}
 .legend .flexmark{background:#7C3AED;border-color:#7C3AED;}
+.legend .chatmark{background:#BE185D;border-color:#BE185D;}
 .grid-wrap{overflow-x:auto;}
-.avail-grid{display:grid;grid-template-columns:56px repeat(7,1fr);gap:4px;min-width:640px;}
+.avail-grid{display:grid;grid-template-columns:74px repeat(7,1fr);gap:4px;min-width:680px;}
 .gcell{font-size:11px;color:var(--c-muted);display:flex;align-items:center;justify-content:center;padding:6px 2px;text-align:center;}
 .gcell.dowhead{font-weight:700;color:var(--c-text);}
 .slot-cell{height:34px;border-radius:var(--radius-sm);border:1px solid var(--c-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#98A2B3;position:relative;}
 .slot-cell.open{background:rgba(15,155,121,.22);border-color:var(--c-secondary);color:#0B6B52;}
 .slot-cell.locked{background:var(--c-primary);border-color:var(--c-primary);color:#fff;cursor:pointer;}
 .slot-cell.flexmark::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#7C3AED;}
-.gcell.rowlabel{cursor:pointer;border-radius:6px;}
+.slot-cell.chatmark::before{content:"";position:absolute;bottom:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#BE185D;}
+.gcell.rowlabel{cursor:pointer;border-radius:6px;padding:4px 2px;flex-direction:column;line-height:1.3;}
 .gcell.rowlabel:hover{background:var(--c-bg);color:var(--c-primary);font-weight:700;}
 .toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translateX(-50%);background:#101828;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;box-shadow:var(--shadow-lg);white-space:nowrap;}
 .toast.hidden{display:none;}
 @media(min-width:1024px){.toast{bottom:24px;}}
+/* ---------- B2B 雙時區刻度／海外學員可約區間（v2 新增） ---------- */
+.demo-tag{font-size:10.5px;color:#98A2B3;font-weight:400;}
+.plant-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.plant-row .pr-label{font-size:12px;color:var(--c-muted);font-weight:700;}
+.plant-select{border:1px solid var(--c-border);border-radius:6px;padding:7px 9px;font-size:12.5px;background:#fff;color:var(--c-text);font-family:inherit;}
+.rt-taipei{font-weight:700;color:var(--c-text);}
+.rt-local{font-size:9px;color:var(--c-muted);margin-top:1px;white-space:normal;word-break:break-word;line-height:1.25;}
+.rt-local .cross-day{color:var(--c-accent-dark);font-weight:700;display:block;}
+.legend .overseas-swatch{background:#fff;position:relative;overflow:hidden;}
+.legend .overseas-swatch::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(124,58,237,.35) 0 3px,transparent 3px 6px);}
+.slot-cell.overseas-hl{position:relative;}
+.slot-cell.overseas-hl::before{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(45deg,rgba(124,58,237,.22) 0 3px,transparent 3px 6px);pointer-events:none;}
+/* ---------- 按鈕（補齊：原檔缺 .btn 定義，儲存鍵原本無樣式） ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;min-height:44px;}
+.btn-primary{background:var(--c-primary);color:#fff;}
+.btn-primary:hover{background:var(--c-primary-dark);}
+.btn-outline{background:#fff;border:1px solid var(--c-border);color:var(--c-text);}
+.btn-outline:hover{background:var(--c-bg);}
+.btn-danger{background:#fff;border:1px solid #F5B0A6;color:#B42318;}
+.btn-danger:hover{background:#FBE5E1;}
+.btn:disabled{background:var(--c-border)!important;color:#98A2B3!important;cursor:not-allowed;border-color:var(--c-border)!important;}
+.btn-block{width:100%;}
+/* ---------- 團體聊天室場次：建立／編輯小表單（v2 新增） ---------- */
+.hidden{display:none!important;}
+.sheet-overlay{position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.sheet-overlay.hidden{display:none;}
+.sheet{background:#fff;width:100%;max-width:460px;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0));max-height:86vh;overflow-y:auto;animation:sheetUp .18s ease-out;}
+@keyframes sheetUp{from{transform:translateY(16px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+.sheet-handle{width:36px;height:4px;background:var(--c-border);border-radius:4px;margin:0 auto 14px;}
+.sheet h3{margin:0 0 4px;font-size:16px;}
+@media(min-width:640px){.sheet-overlay{align-items:center;}.sheet{border-radius:16px;}}
+.sheet-sec{margin-bottom:14px;}
+.sheet-sec .lbl{font-size:12px;font-weight:700;color:var(--c-muted);margin-bottom:6px;}
+.field-input,.field-select{width:100%;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:inherit;color:var(--c-text);background:#fff;}
+.field-static{font-size:13px;color:var(--c-muted);background:var(--c-bg);border-radius:var(--radius-sm);padding:9px 12px;}
+.stack{display:flex;flex-direction:column;gap:10px;}
+/* ---------- 團體聊天室場次列表（v2 新增） ---------- */
+.session-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:12px;}
+.session-card + .session-card{margin-top:8px;}
+.session-card .s-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+.session-card .s-title{font-weight:700;font-size:14px;}
+.session-card .s-meta{font-size:12px;color:var(--c-muted);margin-top:4px;line-height:1.7;}
+.session-card .s-actions{display:flex;gap:8px;margin-top:10px;}
+.session-card .s-actions button{flex:1;}
+.session-empty{font-size:13px;color:var(--c-muted);padding:6px 0;}
 </style>
 </head>
 <body>
@@ -133,6 +180,24 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         </ul>
       </div>
 
+      <div class="banner banner-info" style="margin-top:12px;">
+        <b>雙時區與海外學員可約區間</b>
+        <span class="demo-tag" style="margin-left:6px;">示範畫面，資料為模擬數字</span>
+        <ul>
+          <li>時段格左側刻度同步顯示台北時間與所選海外廠區當地時間，跨日以「（前一天）」「（隔天）」標示</li>
+          <li>取消時限以企業慣用時區（合約設定）計算；本頁時段格以台北時間為主、海外廠區當地時間為輔並列顯示</li>
+          <li>海外對照時間以台北當週對應星期換算，實際跨星期對應以正式排課邏輯為準</li>
+        </ul>
+      </div>
+
+      <div class="plant-row">
+        <span class="pr-label">海外廠區時區對照</span>
+        <select class="plant-select" id="plantSelect" onchange="onPlantChange(this.value)" aria-label="海外廠區時區">
+          <option value="us">美國廠區（美國西部時間，UTC-7）</option>
+          <option value="jp">日本廠區（日本時間，UTC+9）</option>
+        </select>
+      </div>
+
       <div class="top-controls">
         <div class="repeat-toggle">
           <span>重複每週</span>
@@ -142,20 +207,40 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <span>標記可帶直播班</span>
           <label class="switch"><input type="checkbox" id="flexMarkSwitch"><span class="track"></span></label>
         </div>
+        <div class="repeat-toggle">
+          <span>開團體聊天室場次</span>
+          <label class="switch"><input type="checkbox" id="chatMarkSwitch"><span class="track"></span></label>
+        </div>
+        <div class="repeat-toggle">
+          <span>顯示海外學員可約區間</span>
+          <label class="switch"><input type="checkbox" id="overseasToggle" onchange="onOverseasToggle(this.checked)"><span class="track"></span></label>
+        </div>
       </div>
-      <div class="small muted" id="flexMarkHint" style="margin:-4px 0 12px;">切換為開啟後，點擊「已開放」時段可標記／取消標記為可帶 彈性團體直播班。</div>
+      <div class="small muted" id="flexMarkHint" style="margin:-4px 0 4px;">切換為開啟後，點擊「已開放」時段可標記／取消標記為可帶 彈性團體直播班。</div>
+      <div class="small muted" id="chatMarkHint" style="margin:0 0 12px;">切換為開啟後，點擊「已開放」時段可建立團體聊天室場次（30 分鐘，TLI 老師帶，由機構授權學生或全平台學生報名）；點擊已建立的場次可編輯或取消。</div>
 
       <div class="legend">
         <span><i class="open"></i>已開放</span>
         <span><i class="closed"></i>未開放</span>
         <span><i class="locked"></i>已被預約（鎖定）</span>
         <span><i class="flexmark"></i>可帶直播班</span>
+        <span><i class="chatmark"></i>團體聊天室場次</span>
+        <span><i class="overseas-swatch"></i>海外學員下班後可約區間（示範）</span>
       </div>
 
       <div class="grid-wrap">
         <div class="avail-grid" id="availGrid"></div>
       </div>
       <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="saveAvailability()">儲存</button>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px;">
+        <div class="section-title" style="font-size:15px;font-weight:700;margin:0;">團體聊天室場次列表</div>
+        <span class="demo-tag">示範畫面，資料為模擬數字</span>
+      </div>
+      <p class="small muted" style="margin:4px 0 12px;">團體聊天室（30 分鐘，TLI 老師帶）；名額由後台另行設定，此處顯示為待定。</p>
+      <div id="sessionList"></div>
     </div>
   </main>
 
@@ -168,6 +253,34 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </nav>
 </div>
 
+<div class="sheet-overlay hidden" id="chatFormOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 id="chatFormTitle">建立團體聊天室場次</h3>
+    <p class="small muted" id="chatFormSlotLabel" style="margin:2px 0 14px;">—</p>
+    <div class="sheet-sec">
+      <div class="lbl">主題</div>
+      <input type="text" class="field-input" id="chatFormTopic" placeholder="如：日常對話練習" maxlength="30">
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">名額</div>
+      <div class="field-static">待定（由後台另行設定，此處不開放教師填寫）</div>
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">面向</div>
+      <select class="field-select" id="chatFormAudience">
+        <option value="inst">機構學生（範例州立大學）</option>
+        <option value="all">全部（全平台開放）</option>
+      </select>
+    </div>
+    <div class="stack">
+      <button class="btn btn-primary btn-block" id="chatFormSubmitBtn" onclick="submitChatForm()">建立場次</button>
+      <button class="btn btn-danger btn-block hidden" id="chatFormCancelBtn" onclick="cancelChatSession()">取消場次</button>
+      <button class="btn btn-outline btn-block" onclick="closeChatForm()">關閉</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast hidden" id="toast"></div>
 
 <script>
@@ -178,6 +291,28 @@ document.addEventListener('click',function(e){
 
 var days = ['一','二','三','四','五','六','日'];
 var times = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+
+/* ================= B2B 雙時區刻度／海外學員可約區間（v2 新增，資料為模擬數字） ================= */
+var PLANTS = {
+  us:{label:'美國廠區',tzLabel:'美國西部時間（UTC-7）',offsetFromTaipei:-15,highlightHours:['09:00','10:00','11:00','13:00']},
+  jp:{label:'日本廠區',tzLabel:'日本時間（UTC+9）',offsetFromTaipei:1,highlightHours:['17:00','18:00','19:00']}
+};
+var currentPlant='us';
+var rowLabelEls=[];
+function shiftTime(timeStr, offsetHours){
+  var parts=timeStr.split(':');
+  var totalMin = parseInt(parts[0],10)*60 + parseInt(parts[1],10) + offsetHours*60;
+  var dayShift = Math.floor(totalMin/1440);
+  var mod = ((totalMin%1440)+1440)%1440;
+  var hh=Math.floor(mod/60), mm=mod%60;
+  return {time:String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0'), dayShift:dayShift};
+}
+function rowLabelHtml(t){
+  var plant=PLANTS[currentPlant];
+  var local=shiftTime(t, plant.offsetFromTaipei);
+  var dayTag = local.dayShift<0 ? '<span class="cross-day">（前一天）</span>' : (local.dayShift>0 ? '<span class="cross-day">（隔天）</span>' : '');
+  return '<div class="rt-taipei">'+t+'</div><div class="rt-local">'+plant.label+' '+local.time+dayTag+'</div>';
+}
 // 預先鎖定的時段（day index, time index）：字串代表學生縮寫
 var locked = {
   '0-0':'王', '0-1':'陳', '1-0':'王', '3-0':'王', '3-6':'陳',
@@ -191,6 +326,12 @@ var openState = {
 };
 // 已標記可帶 彈性團體直播班的時段（僅限已開放時段）
 var flexMarked = {'1-4':1,'2-5':1};
+/* ---------- 團體聊天室場次（v2 改版：老師開場次、看名單、出席勾選，資料為模擬數字） ---------- */
+// key（日-時段索引）對應已建立的團體聊天室場次；chatMarked 由此物件的 key 集合推導，維持與既有格子渲染邏輯相容
+var chatSessions = {
+  '2-6':{topic:'日常對話練習', audience:'inst', registered:4}
+};
+function chatMarkedKeys(){ return Object.keys(chatSessions); }
 
 var grid = document.getElementById('availGrid');
 // header row
@@ -204,10 +345,11 @@ days.forEach(function(d){
 times.forEach(function(t, ti){
   var lbl = document.createElement('div');
   lbl.className='gcell rowlabel';
-  lbl.textContent=t;
-  lbl.title='點擊選取整列（'+t+'）';
+  lbl.innerHTML=rowLabelHtml(t);
+  lbl.title='點擊選取整列（'+t+'・台北時間）';
   lbl.onclick = function(){ toggleRow(ti); };
   grid.appendChild(lbl);
+  rowLabelEls[ti]=lbl;
   days.forEach(function(d, di){
     var key = di+'-'+ti;
     var cell = document.createElement('div');
@@ -220,10 +362,12 @@ times.forEach(function(t, ti){
         showToast('此時段已被學生預約，如需調整請至「請假／代課」申請，需經顧問確認');
       };
     }else{
-      cell.className='slot-cell'+(openState[key] ? ' open':'')+(flexMarked[key] ? ' flexmark':'');
+      cell.className='slot-cell'+(openState[key] ? ' open':'')+(flexMarked[key] ? ' flexmark':'')+(chatSessions[key] ? ' chatmark':'');
       cell.textContent = openState[key] ? '開' : '';
+      if(chatSessions[key]) cell.title = '團體聊天室場次：'+chatSessions[key].topic;
       cell.onclick = function(){
         var flexMode = document.getElementById('flexMarkSwitch').checked;
+        var chatMode = document.getElementById('chatMarkSwitch').checked;
         if(flexMode){
           if(!this.classList.contains('open')){
             showToast('請先開放此時段，才能標記可帶直播班');
@@ -231,10 +375,28 @@ times.forEach(function(t, ti){
           }
           this.classList.toggle('flexmark');
           showToast(this.classList.contains('flexmark') ? '已標記可帶直播班' : '已取消標記可帶直播班');
+        }else if(chatMode){
+          if(!this.classList.contains('open')){
+            showToast('請先開放此時段，才能建立團體聊天室場次');
+            return;
+          }
+          openChatForm(this.dataset.key, this);
         }else{
+          var willClose = this.classList.contains('open');
+          if(willClose && chatSessions[key] && !confirmCancelSession(key)){
+            return; // 有報名者且未二次確認取消，保留原狀不關閉時段
+          }
           this.classList.toggle('open');
           this.textContent = this.classList.contains('open') ? '開' : '';
-          if(!this.classList.contains('open')) this.classList.remove('flexmark');
+          if(!this.classList.contains('open')){
+            this.classList.remove('flexmark');
+            if(chatSessions[key]){
+              delete chatSessions[key];
+              this.classList.remove('chatmark');
+              this.removeAttribute('title');
+              renderSessionList();
+            }
+          }
         }
       };
     }
@@ -261,18 +423,175 @@ function toggleRow(ti){
   showToast(anyClosed ? '已整列開放此時段' : '已整列關閉此時段');
 }
 
+function onPlantChange(plantKey){
+  currentPlant=plantKey;
+  rowLabelEls.forEach(function(el, ti){ el.innerHTML=rowLabelHtml(times[ti]); });
+  if(document.getElementById('overseasToggle').checked){
+    applyOverseasHighlight(true);
+  }
+  showToast('已切換對照廠區為「'+PLANTS[currentPlant].label+'」（'+PLANTS[currentPlant].tzLabel+'）');
+}
+
+function applyOverseasHighlight(on){
+  var plant=PLANTS[currentPlant];
+  times.forEach(function(t, ti){
+    var isHl = plant.highlightHours.indexOf(t)>-1;
+    var rowCells = grid.querySelectorAll('.slot-cell[data-key$="-'+ti+'"]');
+    rowCells.forEach(function(c){
+      if(c.classList.contains('locked')) return;
+      c.classList.toggle('overseas-hl', on && isHl);
+    });
+  });
+}
+
+function onOverseasToggle(checked){
+  applyOverseasHighlight(checked);
+  showToast(checked ? '已顯示海外學員（'+PLANTS[currentPlant].label+'）下班後可約區間' : '已關閉海外學員可約區間顯示');
+}
+
 document.getElementById('repeatSwitch').addEventListener('change', function(){
   showToast(this.checked ? '已設定為：每週重複套用' : '已設定為：僅套用本週');
 });
 
+/* 20260909 修正：兩種標記模式互斥，避免同時開啟造成點擊時段格行為衝突——開一個要自動關掉另一個並提示 */
 document.getElementById('flexMarkSwitch').addEventListener('change', function(){
-  showToast(this.checked ? '標記模式已開啟：點擊已開放時段可標記可帶直播班' : '已回到一般開放／關閉模式');
+  if(this.checked && document.getElementById('chatMarkSwitch').checked){
+    document.getElementById('chatMarkSwitch').checked=false;
+    showToast('已自動關閉「團體聊天室建立模式」，切換為：點擊已開放時段可標記可帶直播班');
+  }else{
+    showToast(this.checked ? '標記模式已開啟：點擊已開放時段可標記可帶直播班' : '已回到一般開放／關閉模式');
+  }
+});
+
+document.getElementById('chatMarkSwitch').addEventListener('change', function(){
+  if(this.checked && document.getElementById('flexMarkSwitch').checked){
+    document.getElementById('flexMarkSwitch').checked=false;
+    showToast('已自動關閉「彈性團體直播班標記模式」，切換為：點擊已開放時段可建立團體聊天室場次');
+  }else{
+    showToast(this.checked ? '建立模式已開啟：點擊已開放時段可建立團體聊天室場次；點擊已建立的場次可編輯或取消' : '已回到一般開放／關閉模式');
+  }
 });
 
 function saveAvailability(){
   var flexCount = grid.querySelectorAll('.slot-cell.flexmark').length;
-  showToast('已儲存可授課時段設定（可帶直播班時段：'+flexCount+'）');
+  var chatCount = Object.keys(chatSessions).length;
+  showToast('已儲存可授課時段設定（可帶直播班時段：'+flexCount+'，團體聊天室場次：'+chatCount+'）');
 }
+
+/* ---------- 團體聊天室場次：建立／編輯／取消（v2 新增） ---------- */
+function slotLabel(key){
+  var parts = key.split('-');
+  var di = parseInt(parts[0],10), ti = parseInt(parts[1],10);
+  return '週'+days[di]+'・'+times[ti]+'（台北時間）';
+}
+
+var chatFormKey = null;
+function openChatForm(key, cellEl){
+  chatFormKey = key;
+  var session = chatSessions[key];
+  document.getElementById('chatFormSlotLabel').textContent = slotLabel(key);
+  document.getElementById('chatFormTitle').textContent = session ? '編輯團體聊天室場次' : '建立團體聊天室場次';
+  document.getElementById('chatFormTopic').value = session ? session.topic : '';
+  document.getElementById('chatFormAudience').value = session ? session.audience : 'inst';
+  document.getElementById('chatFormSubmitBtn').textContent = session ? '儲存變更' : '建立場次';
+  document.getElementById('chatFormCancelBtn').classList.toggle('hidden', !session);
+  document.getElementById('chatFormOverlay').classList.remove('hidden');
+}
+function closeChatForm(){
+  document.getElementById('chatFormOverlay').classList.add('hidden');
+  chatFormKey = null;
+}
+function submitChatForm(){
+  if(!chatFormKey) return;
+  var topic = document.getElementById('chatFormTopic').value.trim();
+  if(!topic){
+    showToast('請先填寫主題，才能建立場次');
+    return;
+  }
+  var audience = document.getElementById('chatFormAudience').value;
+  var existing = chatSessions[chatFormKey];
+  chatSessions[chatFormKey] = {topic:topic, audience:audience, registered: existing ? existing.registered : 0};
+  var cell = grid.querySelector('.slot-cell[data-key="'+chatFormKey+'"]');
+  if(cell){
+    cell.classList.add('chatmark');
+    cell.title = '團體聊天室場次：'+topic;
+  }
+  showToast(existing ? '已儲存場次變更' : '已建立團體聊天室場次');
+  renderSessionList();
+  closeChatForm();
+}
+// 有報名者取消需二次確認；回傳 true 代表可以取消（無報名者或已確認）
+function confirmCancelSession(key){
+  var session = chatSessions[key];
+  if(!session) return true;
+  if(session.registered > 0){
+    return confirm('此場次「'+session.topic+'」已有 '+session.registered+' 位學生報名，取消後將通知已報名學生，確定要取消嗎？');
+  }
+  return true;
+}
+function cancelChatSession(){
+  if(!chatFormKey) return;
+  if(!confirmCancelSession(chatFormKey)) return;
+  var key = chatFormKey;
+  delete chatSessions[key];
+  var cell = grid.querySelector('.slot-cell[data-key="'+key+'"]');
+  if(cell){
+    cell.classList.remove('chatmark');
+    cell.removeAttribute('title');
+  }
+  showToast('已取消團體聊天室場次');
+  renderSessionList();
+  closeChatForm();
+}
+function renderSessionList(){
+  var wrap = document.getElementById('sessionList');
+  var keys = Object.keys(chatSessions);
+  if(keys.length === 0){
+    wrap.innerHTML = '<div class="session-empty">尚未建立團體聊天室場次。開啟上方「開團體聊天室場次」後點擊已開放的時段即可建立。</div>';
+    return;
+  }
+  keys.sort(function(a,b){
+    var pa=a.split('-').map(Number), pb=b.split('-').map(Number);
+    return pa[0]-pb[0] || pa[1]-pb[1];
+  });
+  wrap.innerHTML = '';
+  keys.forEach(function(key){
+    var s = chatSessions[key];
+    var card = document.createElement('div');
+    card.className = 'session-card';
+    var audienceLabel = s.audience === 'inst' ? '機構學生・範例州立大學' : '全部・全平台開放';
+    card.innerHTML =
+      '<div class="s-top"><div class="s-title">'+s.topic+'</div></div>'+
+      '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額待定<br>面向：'+audienceLabel+'</div>'+
+      '<div class="s-actions"></div>';
+    var actions = card.querySelector('.s-actions');
+    var editBtn = document.createElement('button');
+    editBtn.className = 'btn btn-outline';
+    editBtn.textContent = '編輯';
+    editBtn.onclick = function(){
+      var cell = grid.querySelector('.slot-cell[data-key="'+key+'"]');
+      openChatForm(key, cell);
+    };
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'btn btn-danger';
+    cancelBtn.textContent = '取消場次';
+    cancelBtn.onclick = function(){
+      if(!confirmCancelSession(key)) return;
+      delete chatSessions[key];
+      var cell = grid.querySelector('.slot-cell[data-key="'+key+'"]');
+      if(cell){ cell.classList.remove('chatmark'); cell.removeAttribute('title'); }
+      showToast('已取消團體聊天室場次');
+      renderSessionList();
+    };
+    actions.appendChild(editBtn);
+    actions.appendChild(cancelBtn);
+    wrap.appendChild(card);
+  });
+}
+document.getElementById('chatFormOverlay').addEventListener('click', function(e){
+  if(e.target.id === 'chatFormOverlay') closeChatForm();
+});
+renderSessionList();
 
 var toastTimer=null;
 function showToast(msg){
