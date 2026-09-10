@@ -77,6 +77,12 @@ border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
 border-radius:6px;}
 .crosslink{display:block;font-size:11.5px;color:var(--g500);margin:6px 0 10px;}
 .crosslink a{color:var(--navy);}
+.btn.small2{padding:5px 10px;font-size:12px;}
+/* ==== 規則欄位來源徽章（20260910b 新增） ==== */
+.src-badge-wrap{display:inline-flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.src-badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;}
+.src-badge.inherit{background:var(--g200);color:var(--g500);}
+.src-badge.override{background:#FCE9DA;color:var(--orange);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
 .kv span:first-child{color:var(--g500);}
@@ -346,6 +352,16 @@ html,body{overflow-x:hidden;}
 <div style="text-align:right"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployees()">送出邀請</button></div>
 </div></div>
 
+<!-- 新增／編輯廠區 modal（2026-09-10 新增：示範畫面，資料為模擬數字） -->
+<div class="modal-mask" id="campusModal"><div class="modal">
+<h3 id="campusModalTitle">新增廠區</h3>
+<div class="formrow"><label>名稱</label><input type="text" id="campusName" placeholder="例：美國廠區"></div>
+<div class="formrow"><label>國家地區</label><select id="campusCountry"></select></div>
+<div class="formrow"><label>時區</label><select id="campusTz"></select></div>
+<div class="hint">員工數依「所屬廠區」自動計算，不需手動輸入。</div>
+<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('campusModal')">取消</button> <button class="btn" onclick="saveCampus()">儲存廠區</button></div>
+</div></div>
+
 <!-- 產生本月請款單 modal -->
 <div class="modal-mask" id="invoiceGenModal"><div class="modal wide">
 <h3>產生本月請款單</h3>
@@ -417,6 +433,44 @@ var ENT_TYPE_OVERRIDE = {
   9: {type:'institution', name:'範例州立大學 分校A'}
 };
 var ENT_TYPE_LABELS = {general:'一般企業', institution:'機構授權', agent:'代理商'};
+/* 包含上課型態與聊天室報名模式（20260910f 新增）：與 a04_packages.html 的 COURSE_TYPE_OPTIONS 為同一組列舉，
+   決定此合約下的員工／學生能否看到並報名聊天室場次；chatRegMode 決定報名方式是全員開放還是白名單（見 h02／u02） */
+var COURSE_TYPE_OPTIONS = ['一對一','團體直播','團體聊天室','自學影音'];
+
+/* 廠區／據點（2026-09-10 新增）：每家一般企業可設多個廠區，各自綁定國家地區與時區，
+   員工學員綁定廠區後，取消時限與扣時數判定可依員工所屬廠區時區計算（見合約參數「時區判定基準」）。
+   國家地區與時區分開兩個下拉：國家地區只列國家／地區名稱（不寫城市）；時區列 IANA 時區代碼，
+   顯示中文名稱＋UTC 偏移，兩者由顧問各自選擇，不強制連動。 */
+var CAMPUS_COUNTRY_LIST = ['台灣','美國','日本','新加坡','越南','中國大陸','英國','澳洲'];
+var CAMPUS_TZ_LIST = [
+  {tz:'Asia/Taipei', label:'台灣時間（UTC+8）'},
+  {tz:'America/Los_Angeles', label:'美國太平洋時間（UTC-8，夏令 UTC-7）'},
+  {tz:'America/New_York', label:'美國東岸時間（UTC-5，夏令 UTC-4）'},
+  {tz:'Asia/Tokyo', label:'日本時間（UTC+9）'},
+  {tz:'Asia/Singapore', label:'新加坡時間（UTC+8）'},
+  {tz:'Asia/Ho_Chi_Minh', label:'越南時間（UTC+7）'},
+  {tz:'Asia/Shanghai', label:'中國大陸時間（UTC+8）'},
+  {tz:'Europe/London', label:'英國時間（UTC+0，夏令 UTC+1）'},
+  {tz:'Australia/Sydney', label:'澳洲東岸時間（UTC+10，夏令 UTC+11）'}
+];
+function campusTzLabel(tz){
+  var found = CAMPUS_TZ_LIST.find(function(x){return x.tz===tz;});
+  return found ? found.label : tz;
+}
+/* 示範用廠區組合：每家一般企業固定含「台灣廠區」作為總部，第二廠區依索引輪替，
+   確保跨企業廠區時區不同，供 h02／m02／m07／t02 等頁面示範雙時區情境 */
+var CAMPUS_SECOND_POOL = [
+  {name:'美國廠區', country:'美國', tz:'America/Los_Angeles'},
+  {name:'日本廠區', country:'日本', tz:'Asia/Tokyo'},
+  {name:'東南亞廠區', country:'新加坡', tz:'Asia/Singapore'}
+];
+function makeCampuses(i){
+  var second = CAMPUS_SECOND_POOL[i % CAMPUS_SECOND_POOL.length];
+  return [
+    {id:'camp'+i+'_0', name:'台灣廠區', country:'台灣', tz:'Asia/Taipei', status:'啟用'},
+    {id:'camp'+i+'_1', name:second.name, country:second.country, tz:second.tz, status:'啟用'}
+  ];
+}
 
 var CONNREQ_SYSTEM_NAMES = ['人資資訊系統（HRIS）','差勤系統','薪資系統','教育訓練管理系統（LMS）','單一登入（SSO）系統'];
 var CONNREQ_SYNC_DATA = ['出勤紀錄','學習時數','課程進度','部門異動','帳號異動'];
@@ -574,6 +628,7 @@ function makeEnterprise(i){
   var end = addDays(start, 365);
   var invoiceStatus = ['待開立','已開立','已收款'][Math.floor(r4*3)];
   var deptList = DEPTS.slice(0, 3+Math.floor(r*3));
+  var campuses = entType==='general' ? makeCampuses(i) : [];
   var employees = [];
   var empSeed = i*97;
   for (var e=0;e<Math.min(empCount, 9+Math.floor(r2*6));e++){
@@ -585,7 +640,10 @@ function makeEnterprise(i){
       status: seededRand(empSeed+e*7) < 0.9 ? '在學' : '停用',
       attendance: 60 + Math.floor(seededRand(empSeed+e*11)*40),
       progress: 20 + Math.floor(seededRand(empSeed+e*13)*80),
-      avgScore: 55 + Math.floor(seededRand(empSeed+e*17)*45)
+      avgScore: 55 + Math.floor(seededRand(empSeed+e*17)*45),
+      /* 廠區歸屬（2026-09-10 新增）：員工依序輪流分派廠區，確保每個廠區都有員工，
+         員工數（自動計）以此欄位即時統計，不另外維護計數 */
+      campusId: campuses.length ? campuses[e % campuses.length].id : ''
     });
   }
   var contractParamsSet = r6 > 0.35;
@@ -600,20 +658,39 @@ function makeEnterprise(i){
     monthlyFreeCancel: 1 + Math.floor(r*3),
     rescheduleMaxTimes: 2 + Math.floor(r2*3),
     rescheduleWindowHours: 12,
-    overageLeavePolicy: r5 > 0.15 ? 'appeal' : 'noappeal',
-    timezone: ['Asia/Taipei','Asia/Tokyo','America/Los_Angeles','America/New_York','UTC'][i % 5],
+    /* 超額請假處理規則（20260910c 修正）：與 a17 LEAVE_RULE_OVERAGE_OPTIONS 同一組枚舉，appeal 為預設值，示範資料偏向 appeal */
+    overageLeavePolicy: ['appeal','appeal','deduct','noleave'][Math.floor(r5*4)],
+    /* 取消時限與扣時數判定基準（2026-09-10 修改：原「企業慣用時區」單一時區改為兩種判定基準）：
+       'campus' = 依員工所屬廠區時區（預設，一般企業有廠區時才可選）；'contract' = 統一用合約指定時區。
+       沒有廠區資料的客戶類型（機構授權／代理商）固定只能用 contract 基準。 */
+    tzBasis: (campuses.length && i % 5 !== 0) ? 'campus' : 'contract',
+    timezone: CAMPUS_TZ_LIST[i % CAMPUS_TZ_LIST.length].tz,
     poolTotal: 500 + Math.floor(r3*2000),
     poolExpiry: end,
     deptQuota: deptList.map(function(d, di){ return {dept:d, quota: 50 + di*20}; }),
     tieredPricing: {type: r4 > 0.5 ? 'accounts' : 'hours', tiers:[{from:1,to:50},{from:51,to:200},{from:201,to:''}]},
     renewalExtension: {days:'', requireApproval: true, maxTimes:''},
+    /* 取消／請假審核模式與成效紀錄（20260910b 新增）：預設值＝企業員工類型預設，
+       reviewMode 依索引輪替製造覆寫示範；未覆寫時應等於 ENT_TYPE_DEFAULTS 對應值 */
+    reviewMode: ['self','self','hrApproval','rescheduleOnly'][i % 4],
+    recordEnabled: (i % 6 !== 3),
+    consecutiveAbsentNotifyN: '', // 連續缺席／取消達 N 次通知門檻，待 TLI 拍板
     /* v2 新增：付款方式與計價單位（2026-09-09 拍板：合約付款方式需支援分期／月結／預付款倒扣） */
     paymentMethod: ['installment','monthly','prepaid'][Math.floor(seededRand(i*401+199)*3)],
     pricingUnit: pricingUnit,
     prepaidAmount: prepaidAmount,
     prepaidDeductUnit: '', // 每堂倒扣單價待定，由 TLI 拍板
     prepaidBalance: Math.floor(prepaidAmount * (0.3 + seededRand(i*421+227)*0.6)),
-    prepaidThreshold: '' // 低於門檻提醒之門檻值待定，由 TLI 拍板，不由固定比例試算
+    prepaidThreshold: '', // 低於門檻提醒之門檻值待定，由 TLI 拍板，不由固定比例試算
+    /* 包含上課型態：一般企業／機構授權示範資料中，除 i%3===2 外都含團體聊天室（index 5「範例州立大學」固定含，
+       以對齊 t04／u02／m14 的示範情境）；chatRegMode 預設全員開放，index 0 示範白名單模式供 h02 對照 */
+    courseTypes: (function(){
+      var base = ['一對一','團體直播'];
+      if (i % 3 !== 2 || i === 5) base.push('團體聊天室');
+      if (i % 4 === 0) base.push('自學影音');
+      return base;
+    })(),
+    chatRegMode: (i === 0) ? 'whitelist' : 'open'
   };
   var discountRate = 5 + Math.floor(r2*20);
   var planName = SALES_PLAN_NAMES[i % SALES_PLAN_NAMES.length];
@@ -625,7 +702,7 @@ function makeEnterprise(i){
     empCount:finalEmpCount, contractStart:start, contractEnd:end, manager:mgr,
     advisor: ENT_ADVISORS[i % ENT_ADVISORS.length], attendance: 65 + Math.floor(r*30),
     invoiceStatus:invoiceStatus, payMethod: r>0.5 ? '月結' : '一次付清',
-    taxId: padNum((10000000+(i*53)%89999999),8), depts:deptList, employees:employees,
+    taxId: padNum((10000000+(i*53)%89999999),8), depts:deptList, employees:employees, campuses:campuses,
     discountRate: discountRate, scheduleMonthly: r3 > 0.5,
     invoices: [
       {period:addDays(end,-95).slice(0,7), amount: 80000+Math.floor(r*400000), status:'已收款'},
@@ -890,18 +967,76 @@ function renderOrgTab(e){
   var html = '<div class="kv"><span>企業管理者</span><span>'+e.manager.name+'（'+e.manager.title+'）</span></div>' +
     '<div class="kv"><span>統一編號</span><span>'+e.taxId+'</span></div>' +
     '<div class="kv"><span>對應顧問</span><span>'+e.advisor+'</span></div>' +
+    (e.campuses.length ? renderCampusSection(e) : '') +
     '<div style="text-align:right;margin:10px 0"><button class="btn ghost" onclick="openInviteModal()">邀請員工</button></div>' +
     '<div class="orgtree">';
   e.depts.forEach(function(d){
     var emps = e.employees.filter(function(em){ return em.dept===d; });
     html += '<div class="orgdept">'+d+'（'+emps.length+' 人）</div>';
     emps.forEach(function(em){
-      html += '<div class="orgemp"><span>'+em.name+'　<span class="small">'+em.email+'</span>　'+statusBadgeEnt(em.status)+'</span>' +
+      var campusName = campusById(e, em.campusId);
+      html += '<div class="orgemp"><span>'+em.name+'　<span class="small">'+em.email+'</span>　'+(campusName?'<span class="badge grey">'+campusName+'</span>　':'')+statusBadgeEnt(em.status)+'</span>' +
         '<span class="oe-actions"><button onclick="transferEmployee(\''+em.id+'\')">轉移</button><button onclick="toggleEmployeeStatus(\''+em.id+'\')">'+(em.status==='在學'?'停用':'恢復')+'</button></span></div>';
     });
   });
   html += '</div>';
   return html;
+}
+/* ================= 廠區／據點（2026-09-10 新增） ================= */
+function campusById(e, campusId){
+  var c = (e.campuses||[]).find(function(x){return x.id===campusId;});
+  return c ? c.name : '';
+}
+function campusEmpCount(e, campusId){
+  return e.employees.filter(function(em){ return em.campusId===campusId; }).length;
+}
+function campusStatusBadge(s){ return s==='啟用' ? '<span class="badge green">啟用</span>' : '<span class="badge grey">停用</span>'; }
+function renderCampusSection(e){
+  var rows = e.campuses.map(function(c){
+    return '<tr><td>'+c.name+'</td><td>'+c.country+'</td><td>'+campusTzLabel(c.tz)+'</td><td>'+campusEmpCount(e,c.id)+'</td><td>'+campusStatusBadge(c.status)+'</td>' +
+      '<td><button class="btn ghost" onclick="openCampusModal(\'edit\',\''+c.id+'\')">編輯</button> <button class="btn ghost" onclick="toggleCampusStatus(\''+c.id+'\')">'+(c.status==='啟用'?'停用':'啟用')+'</button></td></tr>';
+  }).join('');
+  return '<div class="sectiontitle">廠區／據點<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+    '<div class="tablewrap"><table><tr><th>名稱</th><th>國家地區</th><th>時區</th><th>員工數</th><th>狀態</th><th>動作</th></tr>'+rows+'</table></div>' +
+    '<div style="text-align:right;margin:8px 0 14px"><button class="btn ghost" onclick="openCampusModal(\'new\')">＋ 新增廠區</button></div>';
+}
+var campusModalState = {mode:'new', id:null};
+function openCampusModal(mode, id){
+  campusModalState = {mode:mode, id:id||null};
+  var e = entById(currentEntId);
+  var c = mode==='edit' ? e.campuses.find(function(x){return x.id===id;}) : null;
+  document.getElementById('campusModalTitle').textContent = mode==='edit' ? '編輯廠區' : '新增廠區';
+  document.getElementById('campusName').value = c ? c.name : '';
+  document.getElementById('campusCountry').innerHTML = CAMPUS_COUNTRY_LIST.map(function(co){
+    return '<option'+(c&&c.country===co?' selected':'')+'>'+co+'</option>';
+  }).join('');
+  document.getElementById('campusTz').innerHTML = CAMPUS_TZ_LIST.map(function(t){
+    return '<option value="'+t.tz+'"'+(c&&c.tz===t.tz?' selected':'')+'>'+t.label+'</option>';
+  }).join('');
+  document.getElementById('campusModal').classList.add('open');
+}
+function saveCampus(){
+  var e = entById(currentEntId);
+  var name = document.getElementById('campusName').value.trim();
+  if (!name){ toast('請輸入廠區名稱'); return; }
+  var country = document.getElementById('campusCountry').value;
+  var tz = document.getElementById('campusTz').value;
+  if (campusModalState.mode==='edit'){
+    var c = e.campuses.find(function(x){return x.id===campusModalState.id;});
+    c.name = name; c.country = country; c.tz = tz;
+  } else {
+    e.campuses.push({id:'camp'+currentEntId+'_'+Date.now(), name:name, country:country, tz:tz, status:'啟用'});
+  }
+  closeModal('campusModal');
+  renderEntDrawerBody(e);
+  toast('已儲存廠區「'+name+'」');
+}
+function toggleCampusStatus(id){
+  var e = entById(currentEntId);
+  var c = e.campuses.find(function(x){return x.id===id;});
+  c.status = c.status==='啟用' ? '停用' : '啟用';
+  renderEntDrawerBody(e);
+  toast('已將廠區「'+c.name+'」設為'+c.status);
 }
 function statusBadgeEnt(s){ return s==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>'; }
 function transferEmployee(empId){ toast('已開啟轉移流程（示範）：可將此員工學員轉移至同企業其他部門或子公司'); }
@@ -928,7 +1063,8 @@ function doInviteEmployees(){
   lines.forEach(function(email, idx){
     e.employees.push({
       id:'empnew'+Date.now()+idx, name:'（待接受邀請）', dept:dept, email:email.trim(),
-      status:'在學', attendance:0, progress:0, avgScore:0
+      status:'在學', attendance:0, progress:0, avgScore:0,
+      campusId: e.campuses.length ? e.campuses[0].id : ''
     });
   });
   e.empCount = e.employees.length;
@@ -1065,12 +1201,51 @@ function saveCopiedContract(){
   toast('已另存新合約版本「'+newVersion+'」');
 }
 
+/* ================= 規則欄位來源徽章（20260910b 新增） =================
+   對照 a17「請假與取消規則組」的「企業員工」類型預設列；合約層數值與類型預設相同時視為繼承，
+   不同則視為已覆寫，可一鍵還原。cancelWindowHours／monthlyFreeCancel／rescheduleMaxTimes 的類型
+   預設為空字串（a17 該列尚待拍板），故本合約已填入示範數字時一律顯示「已覆寫」，符合現況。 */
+var ENT_TYPE_DEFAULTS = {
+  cancelWindowHours: '', monthlyFreeCancel: '', rescheduleMaxTimes: '',
+  overageLeavePolicy: 'appeal', reviewMode: 'self', recordEnabled: true
+};
+var ENT_TYPE_FIELD_LABELS = {
+  cancelWindowHours:'取消時限', monthlyFreeCancel:'每月免扣次數', rescheduleMaxTimes:'每堂改期上限',
+  overageLeavePolicy:'超額處理', reviewMode:'審核模式', recordEnabled:'成效紀錄'
+};
+function cpBadgeHtml(field){
+  var e = entById(currentEntId);
+  var val = e.contractParams[field];
+  var def = ENT_TYPE_DEFAULTS[field];
+  var isDefault = (val === def) || (val === undefined) || (val === null);
+  var inner = isDefault
+    ? '<span class="src-badge inherit">繼承自：企業員工類型預設</span>'
+    : '<span class="src-badge override">已覆寫</span><button type="button" class="btn ghost small2" onclick="restoreCpDefault(\''+field+'\')">還原為類型預設</button>';
+  return '<span class="src-badge-wrap" id="badge_'+field+'">'+inner+'</span>';
+}
+function onCpBadgeField(field, val){
+  var e = entById(currentEntId);
+  e.contractParams[field] = val;
+  renderEntDrawerBody(e);
+}
+function onCpBadgeToggle(field, el){
+  var e = entById(currentEntId);
+  e.contractParams[field] = el.checked;
+  renderEntDrawerBody(e);
+}
+function restoreCpDefault(field){
+  var e = entById(currentEntId);
+  e.contractParams[field] = ENT_TYPE_DEFAULTS[field];
+  renderEntDrawerBody(e);
+  toast('已將「'+ENT_TYPE_FIELD_LABELS[field]+'」還原為企業員工類型預設');
+}
 /* ================= 合約參數（v2 新增：示範畫面，資料為模擬數字） ================= */
 function renderContractParamsTab(e){
   var cp = e.contractParams;
   var cancelDisabled = cp.followC2CDefault ? 'disabled' : '';
-  var tzOptions = ['Asia/Taipei','Asia/Tokyo','America/Los_Angeles','America/New_York','UTC'].map(function(tz){
-    return '<option value="'+tz+'"'+(cp.timezone===tz?' selected':'')+'>'+tz+'</option>';
+  var hasCampuses = e.campuses && e.campuses.length>0;
+  var tzOptions = CAMPUS_TZ_LIST.map(function(t){
+    return '<option value="'+t.tz+'"'+(cp.timezone===t.tz?' selected':'')+'>'+t.label+'</option>';
   }).join('');
   var deptRows = cp.deptQuota.map(function(dq, idx){
     return '<div class="pickrow"><span class="pname">'+dq.dept+'</span><input type="number" min="0" value="'+dq.quota+'" style="width:100px" onchange="onDeptQuotaChange('+idx+',this.value)"><span class="small">小時</span></div>';
@@ -1080,8 +1255,24 @@ function renderContractParamsTab(e){
       '<td><input type="number" value="'+t.to+'" style="width:80px" placeholder="不限" onchange="onEntTierField('+idx+',\'to\',this.value)"></td>' +
       '<td class="small">由 TLI 拍板</td></tr>';
   }).join('');
+  cp.courseTypes = cp.courseTypes || [];
+  var courseTypeBoxes = COURSE_TYPE_OPTIONS.map(function(ct){
+    var checked = cp.courseTypes.indexOf(ct) > -1 ? 'checked' : '';
+    return '<label style="display:inline-block;margin:0 18px 8px 0;font-size:13.5px"><input type="checkbox" class="chk" value="'+ct+'" '+checked+' onchange="onEntCourseTypeToggle(this)"> '+ct+'</label>';
+  }).join('');
+  var hasChatRoom = cp.courseTypes.indexOf('團體聊天室') > -1;
+  var chatRegModeHtml = hasChatRoom ? (
+    '<div class="formrow" style="margin-top:10px"><label>聊天室報名模式</label>' +
+    '<label style="margin-right:20px;font-size:13px"><input type="radio" name="chatRegMode-'+e.id+'" value="open" '+(cp.chatRegMode!=='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 全員開放（預設）</label>' +
+    '<label style="font-size:13px"><input type="radio" name="chatRegMode-'+e.id+'" value="whitelist" '+(cp.chatRegMode==='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 白名單</label>' +
+    '<div class="hint" style="margin-top:4px">白名單模式由企業 HR／學校窗口在其後台維護名單；全員開放則所有在學員工／學生皆可自主報名，兩者皆受名額上限管控。</div></div>'
+  ) : '';
   return '<div class="note">示範畫面，資料為模擬數字，實際合約參數於正式合約簽署後由顧問設定。</div>' +
-   '<div class="crosslink">預設值來自<a href="a17_master_data.html#params">基礎資料設定 → 參數設定</a>，此處僅供本合約覆寫。</div>' +
+   '<div class="crosslink">請假與取消規則之類型預設值來自<a href="a17_master_data.html#params-leaverules">基礎資料設定 → 參數設定 → 請假與取消規則組</a>，此處僅供本合約覆寫；其餘參數預設值來自<a href="a17_master_data.html#params">參數設定</a>。</div>' +
+   '<div class="sectiontitle">包含上課型態與聊天室報名</div>' +
+   '<div class="formrow"><label>包含上課型態</label><div>'+courseTypeBoxes+'</div>' +
+   '<div class="hint">勾選此合約涵蓋的上課型態；勾選「團體聊天室」後，本企業員工／學校學生才能在會員區看到並報名聊天室場次。</div></div>' +
+   '<div id="chatRegModeWrap-'+e.id+'">'+chatRegModeHtml+'</div>' +
    '<div class="sectiontitle">付款方式與計價單位</div>' +
    '<div class="grid2">' +
    '<div class="formrow"><label>付款方式</label><select onchange="onCpField(\'paymentMethod\',this.value)">' +
@@ -1098,18 +1289,36 @@ function renderContractParamsTab(e){
    '<div class="switchrow" style="margin-top:10px"><span class="small">沿用 C2C 預設（取消時限 12 小時）。企業合約層規則只套用於本企業員工學員，不影響 C2C 個人學員的既有規則。</span><label class="switch"><input type="checkbox" '+(cp.followC2CDefault?'checked':'')+' onchange="onFollowC2CToggle(this)"><span class="slider"></span></label></div>' +
    '<div class="sectiontitle">取消與改期</div>' +
    '<div class="grid2">' +
-   '<div class="formrow"><label>取消時限（小時）</label><input type="number" min="0" value="'+cp.cancelWindowHours+'" '+cancelDisabled+' onchange="onCpField(\'cancelWindowHours\',Number(this.value)||0)"></div>' +
-   '<div class="formrow"><label>每月免扣次數</label><input type="number" min="0" value="'+cp.monthlyFreeCancel+'" onchange="onCpField(\'monthlyFreeCancel\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>取消時限（小時）</label><input type="number" min="0" value="'+cp.cancelWindowHours+'" '+cancelDisabled+' onchange="onCpBadgeField(\'cancelWindowHours\',Number(this.value)||0)">'+cpBadgeHtml('cancelWindowHours')+'</div>' +
+   '<div class="formrow"><label>每月免扣次數</label><input type="number" min="0" value="'+cp.monthlyFreeCancel+'" onchange="onCpBadgeField(\'monthlyFreeCancel\',Number(this.value)||0)">'+cpBadgeHtml('monthlyFreeCancel')+'</div>' +
    '</div>' +
    '<div class="grid2">' +
-   '<div class="formrow"><label>改期規則－允許次數</label><input type="number" min="0" value="'+cp.rescheduleMaxTimes+'" onchange="onCpField(\'rescheduleMaxTimes\',Number(this.value)||0)"></div>' +
+   '<div class="formrow"><label>改期規則－允許次數（每堂改期上限）</label><input type="number" min="0" value="'+cp.rescheduleMaxTimes+'" onchange="onCpBadgeField(\'rescheduleMaxTimes\',Number(this.value)||0)">'+cpBadgeHtml('rescheduleMaxTimes')+'</div>' +
    '<div class="formrow"><label>改期規則－時限（小時）</label><input type="number" min="0" value="'+cp.rescheduleWindowHours+'" onchange="onCpField(\'rescheduleWindowHours\',Number(this.value)||0)"></div>' +
    '</div>' +
-   '<div class="formrow"><label>超額請假處理規則</label><select onchange="onCpField(\'overageLeavePolicy\',this.value)">' +
-   '<option value="appeal"'+(cp.overageLeavePolicy==='appeal'?' selected':'')+'>扣時數，可申訴覆核（預設）</option>' +
-   '<option value="noappeal"'+(cp.overageLeavePolicy==='noappeal'?' selected':'')+'>直接扣時數，不開放申訴</option>' +
-   '</select><div class="hint" style="margin-top:4px">申訴由 HR 或顧問覆核，通過改記請假不扣。</div></div>' +
-   '<div class="formrow"><label>企業慣用時區（取消時限與扣時數的判定基準）</label><select onchange="onCpField(\'timezone\',this.value)">'+tzOptions+'</select></div>' +
+   '<div class="formrow"><label>超額請假處理規則</label><select onchange="onCpBadgeField(\'overageLeavePolicy\',this.value)">' +
+   '<option value="appeal"'+(cp.overageLeavePolicy==='appeal'?' selected':'')+'>扣時數，可申訴（預設）</option>' +
+   '<option value="deduct"'+(cp.overageLeavePolicy==='deduct'?' selected':'')+'>直接扣，不可申訴</option>' +
+   '<option value="noleave"'+(cp.overageLeavePolicy==='noleave'?' selected':'')+'>不可取消，只能改期</option>' +
+   '</select><div class="hint" style="margin-top:4px">與 a17「請假與取消規則組」同一組枚舉；申訴由 HR 或顧問覆核，通過改記請假不扣。</div>'+cpBadgeHtml('overageLeavePolicy')+'</div>' +
+   '<div class="sectiontitle">取消／請假審核模式<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="formrow"><label>審核模式</label><select onchange="onCpBadgeField(\'reviewMode\',this.value)">' +
+   '<option value="self"'+(cp.reviewMode==='self'?' selected':'')+'>自主（員工自行取消／請假，不需審核）</option>' +
+   '<option value="hrApproval"'+(cp.reviewMode==='hrApproval'?' selected':'')+'>需 HR 核准</option>' +
+   '<option value="rescheduleOnly"'+(cp.reviewMode==='rescheduleOnly'?' selected':'')+'>只能改期，不開放取消</option>' +
+   '</select><div class="hint" style="margin-top:4px">企業合約下員工的取消／請假是否需 HR 審核，避免員工自行取消影響企業已付費之學習成效。</div>'+cpBadgeHtml('reviewMode')+'</div>' +
+   '<div class="switchrow"><span class="small">成效紀錄：將取消／請假／缺席／遲到記入員工學習成效報表，供 HR 掌握出勤狀況</span><label class="switch"><input type="checkbox" '+(cp.recordEnabled?'checked':'')+' onchange="onCpBadgeToggle(\'recordEnabled\',this)"><span class="slider"></span></label></div>' +
+   cpBadgeHtml('recordEnabled') +
+   '<div class="formrow" style="margin-top:10px"><label>連續缺席／取消達 N 次通知 HR 與顧問</label><input type="number" min="0" value="'+cp.consecutiveAbsentNotifyN+'" placeholder="待定" onchange="onCpField(\'consecutiveAbsentNotifyN\',this.value)"><div class="hint" style="margin-top:4px">達門檻時觸發 <a href="a15_notifications.html">通知範本與系統參數 → 事件通知設定</a>「連續缺席達門檻」事件，即時通知 HR 與顧問。</div></div>' +
+   '<div class="sectiontitle">取消時限與扣時數的判定基準</div>' +
+   (hasCampuses ?
+     '<div class="formrow"><label><input type="radio" name="tzBasis" value="campus" style="width:auto;display:inline-block;vertical-align:middle" '+(cp.tzBasis==='campus'?'checked':'')+' onchange="onTzBasisChange(this.value)"> 依員工所屬廠區時區（預設）</label>' +
+     '<label style="margin-top:8px"><input type="radio" name="tzBasis" value="contract" style="width:auto;display:inline-block;vertical-align:middle" '+(cp.tzBasis==='contract'?'checked':'')+' onchange="onTzBasisChange(this.value)"> 統一用合約指定時區：</label>' +
+     '<select style="margin-top:6px" '+(cp.tzBasis!=='contract'?'disabled':'')+' onchange="onCpField(\'timezone\',this.value)">'+tzOptions+'</select>' +
+     '<div class="hint">依員工所屬廠區時區時，各廠區的取消時限與扣時數以該廠區當地時間判定；選擇合約指定時區則不分廠區，一律以下拉的單一時區為準。</div></div>'
+     :
+     '<div class="formrow"><label>本企業尚無廠區資料，統一用合約指定時區</label><select onchange="onCpField(\'timezone\',this.value)">'+tzOptions+'</select></div>'
+   ) +
    '<div class="sectiontitle">企業共用時數池</div>' +
    '<div class="grid2">' +
    '<div class="formrow"><label>時數池總量（小時）</label><input type="number" min="0" value="'+cp.poolTotal+'" onchange="onCpField(\'poolTotal\',Number(this.value)||0)"></div>' +
@@ -1165,6 +1374,21 @@ function onFollowC2CToggle(el){
 }
 function onCpField(field, val){
   entById(currentEntId).contractParams[field] = val;
+}
+function onEntCourseTypeToggle(el){
+  var cp = entById(currentEntId).contractParams;
+  cp.courseTypes = cp.courseTypes || [];
+  if (el.checked){ if (cp.courseTypes.indexOf(el.value)===-1) cp.courseTypes.push(el.value); }
+  else { cp.courseTypes = cp.courseTypes.filter(function(t){ return t !== el.value; }); }
+  renderEntDrawerBody(entById(currentEntId));
+}
+function onChatRegModeChange(val){
+  entById(currentEntId).contractParams.chatRegMode = val;
+}
+function onTzBasisChange(val){
+  var e = entById(currentEntId);
+  e.contractParams.tzBasis = val;
+  renderEntDrawerBody(e);
 }
 function addDeptQuotaRow(){
   var e = entById(currentEntId);

@@ -133,6 +133,10 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 .concernitem .ci-val{font-size:13px;font-weight:600;flex-shrink:0;}
 .concernitem .ci-arrow{color:var(--g500);flex-shrink:0;}
 .emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
+.hidden{display:none!important;}
+.fchip-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.fchip{padding:6px 14px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--g900);}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .fbsum-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
 .fbsum-head h2{margin:0;}
 .fbsum-head a{font-size:12.5px;text-decoration:none;white-space:nowrap;}
@@ -218,7 +222,14 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 <div id="panel-students" style="display:none">
 <div class="card">
 <div class="desc" style="margin-bottom:12px;font-size:12.5px;color:var(--g500)">以下為透過您推薦成立的學生名單（化名顯示）；需在歸屬有效期內完成付費，才計入已付費轉換。</div>
+<div class="fchip-bar" id="stuStatusChips">
+<button type="button" class="fchip active" data-v="" onclick="setMyStuFilter('')">全部</button>
+<button type="button" class="fchip" data-v="已註冊" onclick="setMyStuFilter('已註冊')">已註冊</button>
+<button type="button" class="fchip" data-v="已付費" onclick="setMyStuFilter('已付費')">已付費</button>
+<button type="button" class="fchip" data-v="已到期" onclick="setMyStuFilter('已到期')">已到期</button>
+</div>
 <div class="tablewrap"><table id="studentTable"></table></div>
+<p class="emptylist hidden" id="stuTableEmpty">這個狀態下沒有學生。</p>
 </div>
 </div>
 
@@ -226,6 +237,7 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 <div class="card">
 <div class="desc" style="margin-bottom:12px;font-size:12.5px;color:var(--g500)">佣金比例與結算週期由 TLI 統一拍板；以下報表僅供查詢，實際入帳金額與時間請以 TLI 結算通知為準。</div>
 <div class="tablewrap"><table id="commissionTable"></table></div>
+<p class="emptylist hidden" id="commissionEmpty">目前沒有佣金紀錄。</p>
 </div>
 </div>
 
@@ -306,14 +318,24 @@ function studentStatusBadge(s){
   if (s==='已到期') return '<span class="badge grey">已到期</span>';
   return '<span class="badge blue">已註冊</span>';
 }
+var myStuFilter = '';
+function setMyStuFilter(v){
+  myStuFilter = v;
+  document.querySelectorAll('#stuStatusChips .fchip').forEach(function(b){ b.classList.toggle('active', b.dataset.v===v); });
+  renderStudentTable();
+}
 function renderStudentTable(){
   var t = document.getElementById('studentTable');
   t.innerHTML = '<tr><th>學生（化名）</th><th>註冊日</th><th>狀態</th><th>歸屬有效期至</th></tr>';
-  MY_STUDENTS.forEach(function(s){
+  /* 依註冊日新到舊排序，方便看最新推薦成果 */
+  var rows = MY_STUDENTS.filter(function(s){ return !myStuFilter || s.status===myStuFilter; })
+    .slice().sort(function(a,b){ return a.registered < b.registered ? 1 : -1; });
+  rows.forEach(function(s){
     var tr = document.createElement('tr');
     tr.innerHTML = '<td>' + s.alias + '</td><td>' + s.registered + '</td><td>' + studentStatusBadge(s.status) + '</td><td>' + s.validUntil + '</td>';
     t.appendChild(tr);
   });
+  document.getElementById('stuTableEmpty').classList.toggle('hidden', rows.length>0);
 }
 
 /* ================= 佣金報表（唯讀） ================= */
@@ -326,11 +348,14 @@ function commissionStatusBadge(s){ return s==='已結算' ? '<span class="badge 
 function renderCommissionTable(){
   var t = document.getElementById('commissionTable');
   t.innerHTML = '<tr><th>期間</th><th>成交筆數</th><th>佣金比例</th><th>狀態</th></tr>';
-  MY_COMMISSIONS.forEach(function(c){
+  /* 依期間新到舊排序，最新一期在最上方 */
+  var rows = MY_COMMISSIONS.slice().sort(function(a,b){ return b.period.localeCompare(a.period); });
+  rows.forEach(function(c){
     var tr = document.createElement('tr');
     tr.innerHTML = '<td>' + c.period + '</td><td>' + c.dealCount + '</td><td>由 TLI 拍板（待公布）</td><td>' + commissionStatusBadge(c.status) + '</td>';
     t.appendChild(tr);
   });
+  document.getElementById('commissionEmpty').classList.toggle('hidden', rows.length>0);
 }
 
 renderOverview();

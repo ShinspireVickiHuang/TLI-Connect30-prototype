@@ -139,6 +139,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .session-card .s-actions{display:flex;gap:8px;margin-top:10px;}
 .session-card .s-actions button{flex:1;}
 .session-empty{font-size:13px;color:var(--c-muted);padding:6px 0;}
+/* ---------- 面向權益群組徽章（20260910f 新增） ---------- */
+.aud-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;background:var(--c-bg);color:var(--c-muted);border:1px solid var(--c-border);}
+.aud-badge.all{background:#E4F5F0;color:#0B6B52;border-color:#BFE6D8;}
+.aud-badge.ent{background:#E6EEF8;color:var(--c-primary);border-color:#C7DAF0;}
+.aud-badge.inst{background:#FCEBDC;color:var(--c-accent-dark);border-color:#F3D3B0;}
 </style>
 </head>
 <body>
@@ -239,7 +244,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <div class="section-title" style="font-size:15px;font-weight:700;margin:0;">團體聊天室場次列表</div>
         <span class="demo-tag">示範畫面，資料為模擬數字</span>
       </div>
-      <p class="small muted" style="margin:4px 0 12px;">團體聊天室（30 分鐘，TLI 老師帶）；名額由後台另行設定，此處顯示為待定。</p>
+      <p class="small muted" style="margin:4px 0 12px;">團體聊天室（30 分鐘，TLI 老師帶）；名額上限由「基礎資料設定 → 上課型態設定」決定，開場次時可在上限內下修，不可上修。</p>
       <div id="sessionList"></div>
     </div>
   </main>
@@ -264,14 +269,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     </div>
     <div class="sheet-sec">
       <div class="lbl">名額</div>
-      <div class="field-static">待定（由後台另行設定，此處不開放教師填寫）</div>
+      <input type="number" class="field-input" id="chatFormCapacity" min="1" oninput="clampChatCapacity(this)">
+      <div class="small muted" id="chatFormCapHint" style="margin-top:4px;">—</div>
     </div>
     <div class="sheet-sec">
-      <div class="lbl">面向</div>
-      <select class="field-select" id="chatFormAudience">
-        <option value="inst">機構學生（範例州立大學）</option>
-        <option value="all">全部（全平台開放）</option>
+      <div class="lbl">面向（權益群組）</div>
+      <select class="field-select" id="chatFormAudienceGroup" onchange="onChatAudienceGroupChange(this.value)">
+        <option value="all">全部有權益者</option>
+        <option value="enterprise">指定企業</option>
+        <option value="institution">指定學校</option>
       </select>
+      <select class="field-select hidden" id="chatFormAudienceTarget" style="margin-top:8px"></select>
+      <div class="small muted" style="margin-top:4px;">全部有權益者：合約／方案含團體聊天室型態者皆可報名；指定企業／學校僅該企業員工或學校學生可報名。</div>
     </div>
     <div class="stack">
       <button class="btn btn-primary btn-block" id="chatFormSubmitBtn" onclick="submitChatForm()">建立場次</button>
@@ -328,8 +337,24 @@ var openState = {
 var flexMarked = {'1-4':1,'2-5':1};
 /* ---------- 團體聊天室場次（v2 改版：老師開場次、看名單、出席勾選，資料為模擬數字） ---------- */
 // key（日-時段索引）對應已建立的團體聊天室場次；chatMarked 由此物件的 key 集合推導，維持與既有格子渲染邏輯相容
+/* 名額上限與可加入身分取自 a17 基礎資料設定→上課型態設定→團體聊天室（示範值 30，尚未拍板） */
+var CHAT_TYPE_CAP = 30;
+/* 面向＝權益群組（20260910f 改版）：全部有權益者／指定企業／指定學校，取代舊版 general/enterprise/institution/all 四選一。
+   企業名單與 a04_packages.html、a19_b2b_enterprise.html 的示範企業名一致，不自創名稱；學校僅一個示範對象。 */
+var CHAT_ENT_NAMES = ['和霖科技股份有限公司','裕發國際貿易有限公司','瑞新金融顧問股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司'];
+var CHAT_INST_NAMES = ['合作大學（示範）'];
+function chatAudienceLabel(session){
+  if (session.audienceGroup === 'enterprise') return '指定企業：'+(session.audienceTarget||'（未指定）');
+  if (session.audienceGroup === 'institution') return '指定學校：'+(session.audienceTarget||'（未指定）');
+  return '全部有權益者';
+}
+function chatAudienceBadgeClass(session){
+  if (session.audienceGroup === 'enterprise') return 'ent';
+  if (session.audienceGroup === 'institution') return 'inst';
+  return 'all';
+}
 var chatSessions = {
-  '2-6':{topic:'日常對話練習', audience:'inst', registered:4}
+  '2-6':{topic:'日常對話練習', audienceGroup:'institution', audienceTarget:CHAT_INST_NAMES[0], registered:4, capacity:20}
 };
 function chatMarkedKeys(){ return Object.keys(chatSessions); }
 
@@ -485,6 +510,21 @@ function slotLabel(key){
   return '週'+days[di]+'・'+times[ti]+'（台北時間）';
 }
 
+/* 面向下拉：依群組動態列出目標選項（企業名單／學校名單），並依 session 現有資料回填 */
+function populateChatAudienceTarget(group, selected){
+  var targetSel = document.getElementById('chatFormAudienceTarget');
+  if (group === 'all'){
+    targetSel.classList.add('hidden');
+    targetSel.innerHTML = '';
+    return;
+  }
+  var names = group === 'enterprise' ? CHAT_ENT_NAMES : CHAT_INST_NAMES;
+  targetSel.innerHTML = names.map(function(n){ return '<option value="'+n+'"'+(n===selected?' selected':'')+'>'+n+'</option>'; }).join('');
+  targetSel.classList.remove('hidden');
+}
+function onChatAudienceGroupChange(val){
+  populateChatAudienceTarget(val, null);
+}
 var chatFormKey = null;
 function openChatForm(key, cellEl){
   chatFormKey = key;
@@ -492,7 +532,13 @@ function openChatForm(key, cellEl){
   document.getElementById('chatFormSlotLabel').textContent = slotLabel(key);
   document.getElementById('chatFormTitle').textContent = session ? '編輯團體聊天室場次' : '建立團體聊天室場次';
   document.getElementById('chatFormTopic').value = session ? session.topic : '';
-  document.getElementById('chatFormAudience').value = session ? session.audience : 'inst';
+  var group = session ? (session.audienceGroup || 'all') : 'all';
+  document.getElementById('chatFormAudienceGroup').value = group;
+  populateChatAudienceTarget(group, session ? session.audienceTarget : null);
+  var capEl = document.getElementById('chatFormCapacity');
+  capEl.max = CHAT_TYPE_CAP;
+  capEl.value = session ? session.capacity : CHAT_TYPE_CAP;
+  document.getElementById('chatFormCapHint').textContent = '型態上限 '+CHAT_TYPE_CAP+'（待定）・可視需求下修，不可超過上限';
   document.getElementById('chatFormSubmitBtn').textContent = session ? '儲存變更' : '建立場次';
   document.getElementById('chatFormCancelBtn').classList.toggle('hidden', !session);
   document.getElementById('chatFormOverlay').classList.remove('hidden');
@@ -501,6 +547,13 @@ function closeChatForm(){
   document.getElementById('chatFormOverlay').classList.add('hidden');
   chatFormKey = null;
 }
+function clampChatCapacity(el){
+  var v = parseInt(el.value,10);
+  if(!isNaN(v) && v>CHAT_TYPE_CAP){
+    el.value = CHAT_TYPE_CAP;
+    showToast('名額不可超過型態上限 '+CHAT_TYPE_CAP);
+  }
+}
 function submitChatForm(){
   if(!chatFormKey) return;
   var topic = document.getElementById('chatFormTopic').value.trim();
@@ -508,9 +561,15 @@ function submitChatForm(){
     showToast('請先填寫主題，才能建立場次');
     return;
   }
-  var audience = document.getElementById('chatFormAudience').value;
+  var audienceGroup = document.getElementById('chatFormAudienceGroup').value;
+  var audienceTargetEl = document.getElementById('chatFormAudienceTarget');
+  var audienceTarget = (audienceGroup !== 'all') ? audienceTargetEl.value : null;
+  var capEl = document.getElementById('chatFormCapacity');
+  var capacity = parseInt(capEl.value,10);
+  if(isNaN(capacity) || capacity<1) capacity = CHAT_TYPE_CAP;
+  if(capacity>CHAT_TYPE_CAP) capacity = CHAT_TYPE_CAP;
   var existing = chatSessions[chatFormKey];
-  chatSessions[chatFormKey] = {topic:topic, audience:audience, registered: existing ? existing.registered : 0};
+  chatSessions[chatFormKey] = {topic:topic, audienceGroup:audienceGroup, audienceTarget:audienceTarget, capacity:capacity, registered: existing ? existing.registered : 0};
   var cell = grid.querySelector('.slot-cell[data-key="'+chatFormKey+'"]');
   if(cell){
     cell.classList.add('chatmark');
@@ -559,10 +618,10 @@ function renderSessionList(){
     var s = chatSessions[key];
     var card = document.createElement('div');
     card.className = 'session-card';
-    var audienceLabel = s.audience === 'inst' ? '機構學生・範例州立大學' : '全部・全平台開放';
+    var audBadgeHtml = '<span class="aud-badge '+chatAudienceBadgeClass(s)+'">'+chatAudienceLabel(s)+'</span>';
     card.innerHTML =
       '<div class="s-top"><div class="s-title">'+s.topic+'</div></div>'+
-      '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額待定<br>面向：'+audienceLabel+'</div>'+
+      '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額 '+s.capacity+'（型態上限 '+CHAT_TYPE_CAP+'，待定）<br>面向：'+audBadgeHtml+'</div>'+
       '<div class="s-actions"></div>';
     var actions = card.querySelector('.s-actions');
     var editBtn = document.createElement('button');

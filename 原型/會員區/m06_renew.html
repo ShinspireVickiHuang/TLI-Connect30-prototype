@@ -123,6 +123,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
+/* ---------- 空狀態 ---------- */
+.empty-state{text-align:center;padding:40px 16px;color:var(--c-muted);}
+.empty-state .e-icon{width:52px;height:52px;margin:0 auto 14px;color:var(--c-border);}
+.empty-state h4{color:var(--c-text);font-size:15px;margin:0 0 6px;}
+.empty-state p{font-size:13px;margin:0 0 16px;}
+/* ---------- 示範用：會員狀態切換（僅供內部展示，非正式功能） ---------- */
+.demo-switch{border-style:dashed;color:var(--c-accent-dark);font-weight:700;max-width:90px;}
+@media(max-width:400px){.demo-switch{max-width:64px;padding:4px 3px;font-size:10.5px;}}
+.demo-note{font-weight:400;color:var(--c-muted);margin-left:6px;}
 </style>
 </head>
 <body>
@@ -132,6 +141,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
@@ -151,6 +161,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
+      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
+        <option value="default">有課程學員</option>
+        <option value="new">新學員</option>
+        <option value="expired">已到期學員</option>
+      </select>
       <select class="mini-select" id="currencySelect" aria-label="語言與幣別" onchange="setCurrency(this.value)">
         <option value="zh-TW">繁體中文・TWD</option>
         <option value="zh-CN">简体中文・CNY</option>
@@ -170,6 +185,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </header>
 
   <main class="content">
+  <div id="viewDefault">
     <p class="page-sub" id="renewSub" data-i18n-zh="選擇方案並確認付款方式。" data-i18n-en="Choose a plan and confirm payment.">選擇方案並確認付款方式。</p>
 
     <div id="mainForm">
@@ -301,6 +317,36 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== 新學員（尚無任何方案，無可續費項目）空狀態：網址帶 ?new=1 顯示 ===== -->
+  <div id="viewNew" class="hidden">
+    <div class="card">
+      <div class="empty-state" style="padding:28px 16px 8px;">
+        <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.6 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+        <h4>還沒有可續費的方案</h4>
+        <p>先選一個方案開始上課，之後才會出現在這裡<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+        <button class="btn btn-primary" onclick="location.href='../公開網站/p03_course_detail.html'">查看課程方案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 已到期學員（方案已到期，可重新購買）情境：網址帶 ?expired=1 顯示 ===== -->
+  <div id="viewExpired" class="hidden">
+    <p class="page-sub" style="margin:0 0 14px;">你目前沒有進行中的方案，以下是已到期方案，可再次購買延續學習<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+    <div class="card">
+      <div id="expiredList"></div>
+      <div class="empty-state hidden" id="expiredEmpty" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">目前沒有已到期的方案紀錄。</p>
+      </div>
+      <div class="hidden" id="expiredMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="showMoreExpired()">載入更多（還有 <span id="expiredMoreCount">0</span> 筆）</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-outline" onclick="location.href='../公開網站/p03_course_detail.html'">看看其他課程方案</button>
+    </div>
+  </div>
   </main>
 
   <nav class="bottom-nav">
@@ -508,6 +554,88 @@ function finishPayment(channelLabel, invNo){
 }
 updateTotal();
 updateChannelSummary();
+
+// 續費頁狀態切換（示範用）：依網址參數決定顯示「有課程學員／新學員／已到期學員」畫面
+function getMemberState(){
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('expired')==='1') return 'expired';
+  if(params.get('new')==='1') return 'new';
+  return 'default';
+}
+function renderMemberState(state){
+  var views={default:'viewDefault',new:'viewNew',expired:'viewExpired'};
+  Object.keys(views).forEach(function(key){
+    document.getElementById(views[key]).classList.toggle('hidden', key!==state);
+  });
+  var sel=document.getElementById('demoStateSwitch');
+  if(sel) sel.value=state;
+}
+function handleDemoStateChange(sel){
+  var val=sel.value;
+  var url='m06_renew.html';
+  if(val==='new') url+='?new=1';
+  else if(val==='expired') url+='?expired=1';
+  location.href=url;
+}
+function rebuyExpiredPlan(planId){
+  location.href='m06_renew.html?plan='+planId;
+}
+
+/* ===== 已到期方案列表（示範資料，依到期日新到舊排序＋預設 10 筆＋載入更多） ===== */
+var EXPIRED_PLANS=[
+  {id:'A',name:'中文一對一 50 分・30 堂方案',expiredAt:'2026-06-30',note:'尚餘 0 堂'},
+  {id:'B',name:'TLI 彈性團體直播・中級會話直播班',expiredAt:'2026-05-31',note:''},
+  {id:'A',name:'中文一對一 50 分・20 堂方案',expiredAt:'2026-03-15',note:'尚餘 2 堂・逾期未使用'},
+  {id:'C',name:'發音基礎 20 講（自學課程）',expiredAt:'2026-02-20',note:'已完成 14／20 講'},
+  {id:'B',name:'TLI 彈性團體直播・初級會話直播班',expiredAt:'2025-12-31',note:''},
+  {id:'A',name:'中文一對一 50 分・10 堂方案',expiredAt:'2025-10-05',note:'尚餘 0 堂'},
+  {id:'C',name:'商務華語情境 16 講（自學課程）',expiredAt:'2025-08-18',note:'已完成 6／16 講'},
+  {id:'B',name:'TLI 彈性團體直播・日常會話直播班',expiredAt:'2025-06-30',note:''},
+  {id:'A',name:'中文一對一 50 分・30 堂方案（首購）',expiredAt:'2025-04-12',note:'尚餘 0 堂'},
+  {id:'C',name:'旅遊華語會話 12 講（自學課程）',expiredAt:'2025-02-01',note:'已完成 12／12 講'},
+  {id:'A',name:'中文一對一 25 分・20 堂方案',expiredAt:'2024-11-20',note:'尚餘 0 堂'},
+  {id:'B',name:'TLI 彈性團體直播・體驗場加購包',expiredAt:'2024-08-15',note:''}
+].sort(function(a,b){ return new Date(b.expiredAt) - new Date(a.expiredAt); });
+var EXPIRED_PAGE_SIZE=10;
+var expiredShown=EXPIRED_PAGE_SIZE;
+function renderExpiredList(){
+  var wrap=document.getElementById('expiredList');
+  var empty=document.getElementById('expiredEmpty');
+  var moreWrap=document.getElementById('expiredMoreWrap');
+  if(EXPIRED_PLANS.length===0){
+    wrap.innerHTML='';
+    empty.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  var shown=EXPIRED_PLANS.slice(0,expiredShown);
+  wrap.innerHTML=shown.map(function(p,i){
+    return '<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>'+
+      '<div class="body"><h4>'+p.name+'</h4><p>效期已於 '+p.expiredAt+' 到期'+(p.note?'・'+p.note:'')+'</p></div>'+
+      '<div class="trail"><button class="btn btn-primary btn-sm" onclick="rebuyExpiredPlan(\''+p.id+'\')">重新購買</button></div>'+
+    '</div>';
+  }).join('');
+  var remain=EXPIRED_PLANS.length-shown.length;
+  if(remain>0){
+    moreWrap.classList.remove('hidden');
+    document.getElementById('expiredMoreCount').textContent=remain;
+  }else{
+    moreWrap.classList.add('hidden');
+  }
+}
+function showMoreExpired(){
+  expiredShown+=EXPIRED_PAGE_SIZE;
+  renderExpiredList();
+}
+renderExpiredList();
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var preselect=params.get('plan');
+  if(preselect && PLANS[preselect]){ selectPlan(preselect); }
+})();
+renderMemberState(getMemberState());
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

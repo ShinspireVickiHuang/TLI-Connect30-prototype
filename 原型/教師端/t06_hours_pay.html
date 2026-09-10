@@ -222,6 +222,7 @@ tbody tr.row-detail.hidden{display:none;}
           <tbody id="detailBody"></tbody>
         </table>
       </div>
+      <p class="small muted hidden" id="detailEmpty" style="text-align:center;padding:14px 0;">這個月尚無授課紀錄。</p>
     </div>
 
     <div class="card">
@@ -370,6 +371,7 @@ function render(){
     detailBody.appendChild(tr);
     detailBody.appendChild(detailTr);
   });
+  document.getElementById('detailEmpty').classList.toggle('hidden', m.detail.length>0);
 }
 function changeMonth(dir){
   idx = Math.max(0, Math.min(months.length-1, idx+dir));

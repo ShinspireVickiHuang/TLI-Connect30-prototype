@@ -97,6 +97,9 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
 .plan-includes{margin-bottom:18px;}
 .plan-includes li{font-size:12.5px;color:var(--c-muted);margin-bottom:6px;padding-left:16px;position:relative;}
 .plan-includes li:before{content:"•";position:absolute;left:2px;color:var(--c-secondary);}
+.plan-sales-mode{font-size:11px;color:var(--c-muted);margin-bottom:14px;}
+.plan-card.demo-custom{background:#F2F4F7;border-style:dashed;}
+.plan-card.demo-custom .plan-price{color:var(--c-muted);}
 
 .site-footer{background:#101828;color:#CBD3DE;padding:44px 24px 24px;}
 .footer-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;}
@@ -275,7 +278,7 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
 
     <section>
       <div class="section-title" data-i18n="p03_section_title">銷售方案</div>
-      <div class="section-sub" data-i18n="p03_section_sub">以下方案由顧問依學員程度與需求提供正式報價，實際內容以顧問確認之訂單為準</div>
+      <div class="section-sub" data-i18n="p03_section_sub">價格公開，線上直接購買；購買後顧問會主動聯繫規劃學習計畫</div>
       <div class="plan-grid">
         <div class="plan-card">
           <div class="plan-audience" data-i18n="p03_plan_audience_general">適用對象：一般學員</div>
@@ -286,12 +289,13 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
             <li data-i18n="p03_plan_inc_test">免費入班程度測試</li>
             <li data-i18n="p03_plan_inc_nomaterial">不含教材</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note1">線上課程，價格依堂數與方案而定</small></div>
-          <a class="btn btn-outline btn-block" data-i18n="btn_trial" href="p06_trial.html?type=trial&course=zh-1on1">預約試聽</a>
+          <div class="plan-price"><span data-i18n="p03_1on1_plan1_price">NT$12,000</span><small data-i18n="p03_plan_price_demo_note">示範價，實際依參數設定</small></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_direct">銷售模式：線上直購</div>
+          <a class="btn btn-outline btn-block" data-i18n="p03_btn_buy_trial_slot" href="p06_trial.html?plan=trial">選時段購買體驗課</a>
         </div>
         <div class="plan-card featured">
           <div class="plan-badge" data-i18n="p03_plan_badge_popular">最多學員選擇</div>
-          <div class="plan-audience" data-i18n="p03_plan_audience_mixed">適用對象：一般學員／企業方案學員</div>
+          <div class="plan-audience" data-i18n="p03_plan_audience_mixed">適用對象：一般學員</div>
           <h3 data-i18n="p03_plan_standard_h">標準方案</h3>
           <p class="plan-desc" data-i18n="p03_1on1_plan2_desc">30 堂課程搭配指定教材，適合規劃三個月以上的學習計畫。</p>
           <ul class="plan-includes">
@@ -299,20 +303,21 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
             <li data-i18n="p03_plan_inc_material">含分級指定教材一套</li>
             <li data-i18n="p03_1on1_plan2_inc3">可申請簽證所需之上課證明</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note1">線上課程，價格依堂數與方案而定</small></div>
+          <div class="plan-price"><span data-i18n="p03_1on1_plan2_price">NT$33,000</span><small data-i18n="p03_plan_price_demo_note">示範價，實際依參數設定</small></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_direct">銷售模式：線上直購</div>
           <a class="btn btn-accent btn-block" data-i18n="p03_btn_login_purchase" href="../會員區/m13_checkout.html?plan=1on1">登入後購買</a>
         </div>
-        <div class="plan-card">
-          <div class="plan-audience" data-i18n="p03_plan_audience_enterprise">適用對象：企業方案學員</div>
-          <h3 data-i18n="p03_1on1_plan3_h">企業包班方案</h3>
+        <div class="plan-card demo-custom">
+          <h3 data-i18n="p03_plan_custom_h">客製方案（企業／長期規劃）</h3>
           <p class="plan-desc" data-i18n="p03_1on1_plan3_desc">依企業員工人數與學習目標客製化排課，線上進行、可分批分時段上課。</p>
           <ul class="plan-includes">
             <li data-i18n="p03_plan_inc_bycontract">堂數與教材依合約約定</li>
             <li data-i18n="p03_plan_inc_cert">可對應 TLI-CPT、HSK、TOCFL 檢定準備</li>
             <li data-i18n="p03_plan_inc_invoice">提供企業月結發票</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note2">線上課程，價格依合約規模而定</small></div>
-          <a class="btn btn-outline btn-block" data-i18n="p03_btn_contact_enterprise" href="p06_trial.html?type=consult">洽詢企業方案</a>
+          <div class="plan-price"><span data-i18n="p03_plan_price_advisor">顧問報價</span></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_advisor">銷售模式：顧問報價</div>
+          <a class="btn btn-outline btn-block" data-i18n="p03_btn_book_consult" href="p06_trial.html?type=consult">預約諮詢</a>
         </div>
       </div>
     </section>
@@ -374,7 +379,7 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
 
     <section>
       <div class="section-title" data-i18n="p03_section_title">銷售方案</div>
-      <div class="section-sub" data-i18n="p03_section_sub">以下方案由顧問依學員程度與需求提供正式報價，實際內容以顧問確認之訂單為準</div>
+      <div class="section-sub" data-i18n="p03_section_sub">價格公開，線上直接購買；購買後顧問會主動聯繫規劃學習計畫</div>
       <div class="plan-grid">
         <div class="plan-card">
           <div class="plan-audience" data-i18n="p03_plan_audience_general">適用對象：一般學員</div>
@@ -385,12 +390,13 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
             <li data-i18n="p03_plan_inc_test">免費入班程度測試</li>
             <li data-i18n="p03_plan_inc_nomaterial">不含教材</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note1">線上課程，價格依堂數與方案而定</small></div>
-          <a class="btn btn-outline btn-block" data-i18n="btn_trial" href="p06_trial.html?type=trial&course=flex-zh">預約試聽</a>
+          <div class="plan-price"><span data-i18n="p03_flex_plan1_price">NT$3,600</span><small data-i18n="p03_plan_price_demo_note">示範價，實際依參數設定</small></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_direct">銷售模式：線上直購</div>
+          <a class="btn btn-outline btn-block" data-i18n="p03_btn_buy_trial_slot" href="p06_trial.html?plan=trial">選時段購買體驗課</a>
         </div>
         <div class="plan-card featured">
           <div class="plan-badge" data-i18n="p03_plan_badge_popular">最多學員選擇</div>
-          <div class="plan-audience" data-i18n="p03_plan_audience_mixed">適用對象：一般學員／企業方案學員</div>
+          <div class="plan-audience" data-i18n="p03_plan_audience_mixed">適用對象：一般學員</div>
           <h3 data-i18n="p03_plan_standard_h">標準方案</h3>
           <p class="plan-desc" data-i18n="p03_flex_plan2_desc">12 堂一期搭配指定教材，跟隨固定梯次同儕一起完成整期課程。</p>
           <ul class="plan-includes">
@@ -398,20 +404,21 @@ main{max-width:1120px;margin:0 auto;padding:16px 20px 60px;}
             <li data-i18n="p03_plan_inc_material">含分級指定教材一套</li>
             <li data-i18n="p03_flex_plan2_inc3">提供課程回放（若當期開放）</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note1">線上課程，價格依堂數與方案而定</small></div>
+          <div class="plan-price"><span data-i18n="p03_flex_plan2_price">NT$9,600</span><small data-i18n="p03_plan_price_demo_note">示範價，實際依參數設定</small></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_direct">銷售模式：線上直購</div>
           <a class="btn btn-accent btn-block" data-i18n="p03_btn_login_purchase" href="../會員區/m13_checkout.html?plan=flex_group">登入後購買</a>
         </div>
-        <div class="plan-card">
-          <div class="plan-audience" data-i18n="p03_plan_audience_enterprise">適用對象：企業方案學員</div>
-          <h3 data-i18n="p03_flex_plan3_h">企業團班方案</h3>
+        <div class="plan-card demo-custom">
+          <h3 data-i18n="p03_plan_custom_h">客製方案（企業／長期規劃）</h3>
           <p class="plan-desc" data-i18n="p03_flex_plan3_desc">為企業員工開設專屬直播梯次，固定時段線上團體上課。</p>
           <ul class="plan-includes">
             <li data-i18n="p03_flex_plan_inc_bycontract">梯次時段與堂數依合約約定</li>
             <li data-i18n="p03_plan_inc_cert">可對應 TLI-CPT、HSK、TOCFL 檢定準備</li>
             <li data-i18n="p03_plan_inc_invoice">提供企業月結發票</li>
           </ul>
-          <div class="plan-price"><span data-i18n="p03_plan_price">由顧問報價</span><small data-i18n="p03_plan_price_note2">線上課程，價格依合約規模而定</small></div>
-          <a class="btn btn-outline btn-block" data-i18n="p03_btn_contact_enterprise" href="p06_trial.html?type=consult">洽詢企業方案</a>
+          <div class="plan-price"><span data-i18n="p03_plan_price_advisor">顧問報價</span></div>
+          <div class="plan-sales-mode" data-i18n="p03_plan_sales_mode_advisor">銷售模式：顧問報價</div>
+          <a class="btn btn-outline btn-block" data-i18n="p03_btn_book_consult" href="p06_trial.html?type=consult">預約諮詢</a>
         </div>
       </div>
     </section>
@@ -675,7 +682,7 @@ var I18N_PAGE = {
   p03_plan_trial_h: '體驗方案', p03_plan_standard_h: '標準方案',
   p03_plan_badge_popular: '最多學員選擇',
   p03_plan_audience_general: '適用對象：一般學員',
-  p03_plan_audience_mixed: '適用對象：一般學員／企業方案學員',
+  p03_plan_audience_mixed: '適用對象：一般學員',
   p03_plan_audience_enterprise: '適用對象：企業方案學員',
   p03_plan_inc_test: '免費入班程度測試', p03_plan_inc_nomaterial: '不含教材',
   p03_plan_inc_material: '含分級指定教材一套',
@@ -683,9 +690,15 @@ var I18N_PAGE = {
   p03_flex_plan_inc_bycontract: '梯次時段與堂數依合約約定',
   p03_plan_inc_cert: '可對應 TLI-CPT、HSK、TOCFL 檢定準備',
   p03_plan_inc_invoice: '提供企業月結發票',
-  p03_plan_price: '由顧問報價',
+  p03_plan_price_advisor: '顧問報價',
   p03_plan_price_note1: '線上課程，價格依堂數與方案而定',
   p03_plan_price_note2: '線上課程，價格依合約規模而定',
+  p03_plan_price_demo_note: '示範價，實際依參數設定',
+  p03_plan_sales_mode_direct: '銷售模式：線上直購', p03_plan_sales_mode_advisor: '銷售模式：顧問報價',
+  p03_btn_buy_trial_slot: '選時段購買體驗課', p03_btn_book_consult: '預約諮詢',
+  p03_plan_custom_h: '客製方案（企業／長期規劃）',
+  p03_1on1_plan1_price: 'NT$12,000', p03_1on1_plan2_price: 'NT$33,000',
+  p03_flex_plan1_price: 'NT$3,600', p03_flex_plan2_price: 'NT$9,600',
   p03_btn_login_purchase: '登入後購買', p03_btn_contact_enterprise: '洽詢企業方案',
   p03_1on1_nick: '老師陪我練・線上一對一', p03_1on1_title: '中文一對一線上課',
   p03_1on1_fact1_k: '單堂時長', p03_1on1_fact1_v: '50 分鐘',
@@ -751,7 +764,7 @@ en: {
   p03_plan_trial_h: 'Trial Plan', p03_plan_standard_h: 'Standard Plan',
   p03_plan_badge_popular: 'Most Popular',
   p03_plan_audience_general: 'For: Individual Learners',
-  p03_plan_audience_mixed: 'For: Individual & Corporate Learners',
+  p03_plan_audience_mixed: 'For: Individual Learners',
   p03_plan_audience_enterprise: 'For: Corporate Learners',
   p03_plan_inc_test: 'Free Level Placement Test', p03_plan_inc_nomaterial: 'Materials not included',
   p03_plan_inc_material: 'Includes one set of level-based course materials',
@@ -759,9 +772,15 @@ en: {
   p03_flex_plan_inc_bycontract: 'Cohort schedule and lesson count per contract',
   p03_plan_inc_cert: 'Can prepare you for TLI-CPT, HSK, and TOCFL exams',
   p03_plan_inc_invoice: 'Monthly corporate invoicing available',
-  p03_plan_price: 'Quoted by your advisor',
+  p03_plan_price_advisor: 'Advisor Quote',
   p03_plan_price_note1: 'Online course; price depends on lesson count and plan',
   p03_plan_price_note2: 'Online course; price depends on contract scale',
+  p03_plan_price_demo_note: 'Demo price — actual price depends on configured parameters',
+  p03_plan_sales_mode_direct: 'Sales Mode: Direct Online Purchase', p03_plan_sales_mode_advisor: 'Sales Mode: Advisor Quote',
+  p03_btn_buy_trial_slot: 'Pick a Slot & Buy Trial', p03_btn_book_consult: 'Book a Consultation',
+  p03_plan_custom_h: 'Custom Plan (Corporate / Long-Term)',
+  p03_1on1_plan1_price: 'NT$12,000', p03_1on1_plan2_price: 'NT$33,000',
+  p03_flex_plan1_price: 'NT$3,600', p03_flex_plan2_price: 'NT$9,600',
   p03_btn_login_purchase: 'Log In to Purchase', p03_btn_contact_enterprise: 'Ask About Corporate Plans',
   p03_1on1_nick: 'Practice One-on-One with a Teacher', p03_1on1_title: 'Chinese 1-on-1 Online',
   p03_1on1_fact1_k: 'Lesson Length', p03_1on1_fact1_v: '50 minutes',
@@ -827,7 +846,7 @@ ja: {
   p03_plan_trial_h: '体験プラン', p03_plan_standard_h: 'スタンダードプラン',
   p03_plan_badge_popular: '一番人気',
   p03_plan_audience_general: '対象：個人受講生',
-  p03_plan_audience_mixed: '対象：個人・法人受講生',
+  p03_plan_audience_mixed: '対象：個人受講生',
   p03_plan_audience_enterprise: '対象：法人受講生',
   p03_plan_inc_test: '無料レベル診断テスト', p03_plan_inc_nomaterial: '教材は含まれません',
   p03_plan_inc_material: 'レベル別指定教材一式込み',
@@ -835,9 +854,15 @@ ja: {
   p03_flex_plan_inc_bycontract: '開講スケジュール・レッスン回数は契約内容によります',
   p03_plan_inc_cert: 'TLI-CPT、HSK、TOCFL試験対策にも対応',
   p03_plan_inc_invoice: '法人向け月締め請求書に対応',
-  p03_plan_price: 'アドバイザーが見積りをご案内',
+  p03_plan_price_advisor: 'アドバイザー見積り',
   p03_plan_price_note1: 'オンラインコース、料金はレッスン回数・プランにより異なります',
   p03_plan_price_note2: 'オンラインコース、料金は契約規模により異なります',
+  p03_plan_price_demo_note: 'デモ価格・実際の料金は設定条件により異なります',
+  p03_plan_sales_mode_direct: '販売方式：オンライン直接購入', p03_plan_sales_mode_advisor: '販売方式：アドバイザー見積り',
+  p03_btn_buy_trial_slot: '時間帯を選んで体験を購入', p03_btn_book_consult: '相談を予約する',
+  p03_plan_custom_h: 'カスタムプラン（法人・長期プラン）',
+  p03_1on1_plan1_price: 'NT$12,000', p03_1on1_plan2_price: 'NT$33,000',
+  p03_flex_plan1_price: 'NT$3,600', p03_flex_plan2_price: 'NT$9,600',
   p03_btn_login_purchase: 'ログインして購入', p03_btn_contact_enterprise: '法人プランについて問い合わせる',
   p03_1on1_nick: '先生とマンツーマン練習・オンライン1対1', p03_1on1_title: '中国語 1対1 オンライン',
   p03_1on1_fact1_k: '1回のレッスン時間', p03_1on1_fact1_v: '50分',

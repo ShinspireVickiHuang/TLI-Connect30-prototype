@@ -88,6 +88,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 .badge.green{background:#E4F5EE;color:var(--teal);}
 .badge.orange{background:#FCE9DA;color:var(--orange);}
 .badge.grey{background:var(--g200);color:var(--g500);}
+.badge.red{background:#FBE7E7;color:#C0392B;}
 .note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;border-radius:6px;}
 .small{font-size:12px;color:var(--g500);}
 .hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
@@ -126,6 +127,16 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .skillbox .sk-val{font-size:12px;color:var(--g900);margin-top:5px;font-weight:600;}
 .feedbackbox{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.7;}
 .feedbackbox .fb-lbl{font-size:11.5px;color:var(--g500);margin-bottom:4px;font-weight:600;}
+/* ---- 出勤治理統計（20260910b 新增） ---- */
+.govgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px;}
+.govbox{border:1px solid var(--g200);border-radius:8px;padding:10px 12px;}
+.govbox .gv-lbl{font-size:11px;color:var(--g500);margin-bottom:4px;}
+.govbox .gv-val{font-size:16px;font-weight:700;color:var(--g900);}
+.deptgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.deptbox{border:1px solid var(--g200);border-radius:8px;padding:12px 14px;}
+.deptbox .db-name{font-size:13px;font-weight:600;margin-bottom:8px;}
+.deptbox .db-row{display:flex;justify-content:space-between;font-size:12px;color:var(--g500);padding:2px 0;}
+.deptbox .db-row b{color:var(--g900);font-weight:600;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -137,6 +148,8 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .tb-search{display:none;}
 .skillgrid{grid-template-columns:1fr 1fr;}
 .rh-mid{gap:10px 16px;}
+.govgrid{grid-template-columns:repeat(2,1fr);}
+.deptgrid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -151,7 +164,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <a data-nav="h03" class="active" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
 <a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
 <a data-nav="h05" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
-<a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>申訴覆核</span></a>
+<a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>請假與申訴審核</span></a>
 </nav>
 <div class="sidebar-user" id="sidebarUser">
 <div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar">陳</span><span class="su-info"><span class="su-name">陳雅婷 Sarah Chen</span><span class="su-roletag">企業管理者</span></span>
@@ -191,6 +204,12 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <div class="note" style="margin-bottom:14px">
 出勤率計算方式：實到堂數／應到堂數。免扣次數範圍內的請假不計入應到分母，也不列入缺席；超過免扣次數的請假記為缺席並扣時數，員工可提出申訴，經 HR 或顧問覆核通過後改記為請假、不扣時數。
+</div>
+
+<div class="card">
+<h2>部門出勤治理彙總<span class="small" style="margin-left:8px;font-weight:400;">示範畫面，資料為模擬數字</span></h2>
+<div class="cardesc">彙總各部門本期取消／請假／缺席／遲到次數與平均出勤率，供 HR 掌握部門整體出勤狀況。</div>
+<div class="deptgrid" id="deptSummaryGrid"></div>
 </div>
 
 <div class="card">
@@ -241,6 +260,12 @@ function makeEmployee(i){
   var hours = 20 + Math.floor(r3*140);
   var emailName = name.toLowerCase().replace(/[^a-z]/g,'').slice(0,10);
   var email = (siteIdx===0 && emailName ? emailName : 'emp'+i) + '@example-semi.com';
+  /* 出勤治理統計：取消／請假／缺席／遲到次數為本期示範數字；連續缺席門檻為示範值 3 次，正式門檻待定 */
+  var cancelCount = Math.floor(seededRand(i*41+23)*4);
+  var leaveCount = Math.floor(seededRand(i*43+29)*5);
+  var absentCount = Math.floor(seededRand(i*47+31)*4);
+  var lateCount = Math.floor(seededRand(i*53+37)*3);
+  var consecutiveAbsent = i % 9 === 0 ? 3 + Math.floor(seededRand(i*59+41)*2) : Math.floor(seededRand(i*59+41)*2);
   return {
     id:'emp'+i, name:name, email:email, dept:dept, site:site.name, tz:site.tz,
     status:status, hours:hours, attendance:attendance,
@@ -249,11 +274,36 @@ function makeEmployee(i){
              read:30+Math.floor(seededRand(i*9+6)*65), write:30+Math.floor(seededRand(i*15+8)*65) },
     score:55+Math.floor(seededRand(i*19+10)*45),
     feedback: FEEDBACK_POOL[i % FEEDBACK_POOL.length],
-    feedbackDate: addDays('2026-09-08', -Math.floor(seededRand(i*31+21)*21))
+    feedbackDate: addDays('2026-09-08', -Math.floor(seededRand(i*31+21)*21)),
+    cancelCount:cancelCount, leaveCount:leaveCount, absentCount:absentCount, lateCount:lateCount,
+    consecutiveAbsent:consecutiveAbsent, lowFlag: consecutiveAbsent>=3
   };
 }
 var EMP_COUNT = 26;
 var EMPLOYEES = []; for (var ii=0; ii<EMP_COUNT; ii++) EMPLOYEES.push(makeEmployee(ii));
+
+/* ===== 部門出勤治理彙總 ===== */
+function renderDeptSummary(){
+  var grid = document.getElementById('deptSummaryGrid');
+  var html = DEPTS.map(function(d){
+    var list = EMPLOYEES.filter(function(e){ return e.dept===d; });
+    var avgAtt = list.length ? Math.round(list.reduce(function(a,e){return a+e.attendance;},0)/list.length) : 0;
+    var cancelSum = list.reduce(function(a,e){return a+e.cancelCount;},0);
+    var leaveSum = list.reduce(function(a,e){return a+e.leaveCount;},0);
+    var absentSum = list.reduce(function(a,e){return a+e.absentCount;},0);
+    var lateSum = list.reduce(function(a,e){return a+e.lateCount;},0);
+    var lowCount = list.filter(function(e){return e.lowFlag;}).length;
+    return '<div class="deptbox"><div class="db-name">'+d+'<span class="small" style="margin-left:6px;font-weight:400;">（'+list.length+' 人）</span></div>'+
+      '<div class="db-row"><span>平均出勤率</span><b>'+avgAtt+'%</b></div>'+
+      '<div class="db-row"><span>取消次數合計</span><b>'+cancelSum+'</b></div>'+
+      '<div class="db-row"><span>請假次數合計</span><b>'+leaveSum+'</b></div>'+
+      '<div class="db-row"><span>缺席次數合計</span><b>'+absentSum+'</b></div>'+
+      '<div class="db-row"><span>遲到次數合計</span><b>'+lateSum+'</b></div>'+
+      (lowCount>0 ? '<div class="db-row"><span>連續缺席達門檻人數</span><b style="color:#C0392B">'+lowCount+'</b></div>' : '')+
+      '</div>';
+  }).join('');
+  grid.innerHTML = html;
+}
 
 /* ===== 篩選部門下拉 ===== */
 (function initFilterOptions(){
@@ -279,7 +329,14 @@ function renderReportTable(){
     var isOpen = e.id === openRowId;
     var body = '';
     if (isOpen){
-      body = '<div class="skillgrid">'+
+      body = '<div class="govgrid">'+
+        '<div class="govbox"><div class="gv-lbl">出勤率</div><div class="gv-val">'+e.attendance+'%</div></div>'+
+        '<div class="govbox"><div class="gv-lbl">取消次數</div><div class="gv-val">'+e.cancelCount+'</div></div>'+
+        '<div class="govbox"><div class="gv-lbl">請假次數</div><div class="gv-val">'+e.leaveCount+'</div></div>'+
+        '<div class="govbox"><div class="gv-lbl">缺席次數</div><div class="gv-val">'+e.absentCount+'</div></div>'+
+        '<div class="govbox"><div class="gv-lbl">遲到次數</div><div class="gv-val">'+e.lateCount+'</div></div>'+
+        '</div>'+
+        '<div class="skillgrid">'+
         skillBar('聽', e.skills.listen)+skillBar('說', e.skills.speak)+skillBar('讀', e.skills.read)+skillBar('寫', e.skills.write)+
         '</div>'+
         '<div class="rh-mid" style="margin-bottom:12px">'+
@@ -292,7 +349,7 @@ function renderReportTable(){
     }
     return '<div class="reprow'+(isOpen?' open':'')+'" id="row_'+e.id+'">'+
       '<div class="rephead'+(isOpen && e.id===getQueryEmp() ? ' highlight':'')+'" onclick="toggleRow(\''+e.id+'\')">'+
-      '<span class="rh-main"><span class="rh-name">'+e.name+'</span><span class="rh-sub">'+e.dept+'｜'+e.site+'</span></span>'+
+      '<span class="rh-main"><span class="rh-name">'+e.name+(e.lowFlag?' <span class="badge red">連續缺席達門檻</span>':'')+'</span><span class="rh-sub">'+e.dept+'｜'+e.site+'</span></span>'+
       '<span class="rh-mid"><span>出勤率 <b>'+e.attendance+'%</b></span><span>累計時數 <b>'+e.hours+'</b></span><span>評量 <b>'+e.score+' 分</b></span></span>'+
       '<span class="rh-chevron"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span>'+
       '</div><div class="repbody">'+body+'</div></div>';
@@ -312,6 +369,7 @@ function doExportCsv(){ toast('已產生 CSV 檔案，欄位依上方清單排�
 
 /* ===== 初始化：若從儀表板帶入 emp 參數，自動展開對應人員 ===== */
 (function initReport(){
+  renderDeptSummary();
   var empId = getQueryEmp();
   if (empId && EMPLOYEES.some(function(e){ return e.id===empId; })){ openRowId = empId; }
   renderReportTable();

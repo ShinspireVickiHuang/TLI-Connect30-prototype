@@ -234,6 +234,47 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
+
+/* ---------- 我的方案：三型態並列子卡 ---------- */
+.plan-subcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+@media(max-width:700px){.plan-subcards{grid-template-columns:1fr;}}
+.plan-mini-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-bg);padding:12px;display:flex;flex-direction:column;}
+.plan-type-desc{margin:0 0 8px;font-size:11.5px;color:var(--c-muted);display:flex;align-items:center;flex-wrap:wrap;gap:6px;line-height:1.4;}
+.plan-mini-card h4{margin:0 0 6px;font-size:13.5px;line-height:1.35;}
+.plan-mini-card .pm-meta{font-size:12px;color:var(--c-muted);margin:0 0 4px;}
+.plan-mini-card .pm-actions{display:flex;gap:8px;margin-top:10px;}
+.plan-mini-card .pm-actions .btn{flex:1;}
+
+/* ---------- 待辦：規則驅動列表 ---------- */
+.todo-info-btn{width:20px;height:20px;border-radius:50%;border:1px solid var(--c-border);background:#fff;display:inline-flex;align-items:center;justify-content:center;color:var(--c-muted);cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;flex:none;line-height:1;padding:0;}
+.todo-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;}
+.todo-icon svg{width:17px;height:17px;}
+.todo-icon.c-danger{background:#FBEAEA;color:#B42318;}
+.todo-icon.c-warn{background:#FCEBDC;color:var(--c-accent-dark);}
+.todo-icon.c-info{background:#E6EEF8;color:var(--c-primary);}
+.todo-icon.c-ok{background:#E4F5F0;color:#0B6B52;}
+.todo-icon.c-purple{background:#F3E8FD;color:#6B21A8;}
+.todo-icon.c-muted{background:var(--c-bg);color:var(--c-muted);}
+.todo-row{cursor:default;}
+.todo-row.merged{cursor:pointer;}
+.todo-row.overdue .body h4{color:#B42318;}
+.todo-row-detail{display:none;padding:2px 0 6px 50px;}
+.todo-row-detail.open{display:block;}
+.todo-row-detail .list-row{padding:8px 0;border-top:1px dashed var(--c-border);}
+.todo-row-detail .list-row:first-child{border-top:none;}
+.todo-drawer-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--c-border);}
+.todo-drawer-item:first-child{border-top:none;}
+.todo-drawer-item .body{flex:1;min-width:0;}
+.todo-drawer-item .body h4{margin:0;font-size:13.5px;font-weight:700;}
+.todo-drawer-item .body p{margin:2px 0 0;font-size:12px;color:var(--c-muted);}
+
+/* ---------- 示範用：會員狀態切換（僅供內部展示，非正式功能） ---------- */
+.demo-switch{border-style:dashed;color:var(--c-accent-dark);font-weight:700;max-width:90px;}
+@media(max-width:400px){.demo-switch{max-width:64px;padding:4px 3px;font-size:10.5px;}}
+.welcome-card h3{margin:0 0 4px;font-size:17px;}
+.welcome-card p{margin:0;font-size:13px;color:var(--c-muted);}
+.step-row .icon-box.done{background:#E4F5F0;color:#0B6B52;}
+.demo-note{font-weight:400;color:var(--c-muted);margin-left:6px;}
 </style>
 </head>
 <body>
@@ -243,6 +284,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link active" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
@@ -258,6 +300,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
+      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
+        <option value="default">有課程學員</option>
+        <option value="new">新學員</option>
+        <option value="university">機構學生</option>
+        <option value="enterprise">企業員工</option>
+      </select>
       <select class="mini-select" id="langSelect" aria-label="語言與幣別" onchange="handleLangCurrency(this)">
         <option value="zh-TW">繁體中文・TWD</option><option value="zh-CN">简体中文・CNY</option><option value="en">English・USD</option><option value="ja">日本語・JPY</option><option value="de">Deutsch・EUR</option>
       </select>
@@ -274,9 +322,30 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </header>
 
   <main class="content">
+  <div id="viewDefault">
     <p class="page-sub" style="margin-top:2px;" data-i18n-zh="早安，Emma，這是妳今天的學習概況。" data-i18n-en="Good morning, Emma. Here’s today’s overview.">早安，Emma，這是妳今天的學習概況。</p>
 
-    <div class="card next-class-card">
+    <div class="section-title first" style="display:flex;align-items:center;gap:6px;">
+      待辦
+      <button class="todo-info-btn" onclick="toggleTodoInfo('todoInfoCard')" aria-label="待辦怎麼產生" title="待辦怎麼產生">i</button>
+    </div>
+    <div class="card hidden" id="todoInfoCard" style="margin-bottom:12px;">
+      <p class="small" style="margin:0 0 6px;font-weight:700;">待辦怎麼產生</p>
+      <p class="small muted" style="margin:0 0 4px;">1. 依到期日與狀態自動出現／消失，逾期項目以紅色置頂。</p>
+      <p class="small muted" style="margin:0 0 4px;">2. 排序：逾期→金流→結果通知→回饋→測驗→到期提醒。</p>
+      <p class="small muted" style="margin:0;">3. 同類型多筆自動合併顯示一列，最多顯示 5 列，其餘可查看全部。</p>
+    </div>
+    <div class="card">
+      <div id="todoList"></div>
+      <div class="empty-state hidden" id="todoEmptyState" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">目前沒有待辦事項，做得好！</p>
+      </div>
+      <div class="hidden" id="todoMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="openTodoDrawer()">查看全部（<span id="todoMoreCount">0</span>）</button>
+      </div>
+    </div>
+
+    <div class="card next-class-card" style="margin-top:12px;">
       <div class="nc-top">
         <div>
           <span class="badge badge-info">下一堂課</span>
@@ -291,7 +360,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <span><strong>上課方式：</strong>線上教室（開課前 15 分鐘開放進入）</span>
       </div>
       <div class="flex-between" style="gap:10px;">
-        <button class="btn btn-primary btn-block" id="enterClassBtn" disabled onclick="openClassroomModal('中文一對一－會話進階','杜老師','明天（08/26，三）14:00–14:50')">進入線上教室</button>
+        <div class="small muted" id="enterClassNotice" style="flex:1;">開課前 15 分鐘開放進入・距開課 <span id="enterClassCountdown">計算中…</span></div>
+        <button class="btn btn-primary btn-block hidden" id="enterClassBtn" onclick="openClassroomModal('中文一對一－會話進階','杜老師','明天（08/26，三）14:00–14:50')">進入線上教室</button>
         <button class="btn btn-outline" id="leaveQuickBtn" onclick="location.href='m05_leave.html?class=tomorrow'">請假</button>
       </div>
     </div>
@@ -301,38 +371,52 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <h3 style="margin:0;font-size:15px;">我的方案</h3>
         <a href="m04_course_detail.html" class="small muted">查看詳情 ›</a>
       </div>
-      <div class="flex-between" style="margin:12px 0 2px;">
-        <span style="font-size:13px;color:var(--c-muted);">中文一對一 50 分・30 堂方案</span>
-        <span class="badge badge-info">預約制</span>
-      </div>
-      <div class="flex-between" style="margin-bottom:8px;">
-        <span style="font-size:26px;font-weight:800;">8 <span style="font-size:14px;font-weight:400;color:var(--c-muted);">／ 30 堂剩餘</span></span>
-        <span class="badge badge-warn">效期剩 14 天</span>
-      </div>
-      <div class="progress warn"><div style="width:27%;"></div></div>
-      <div class="flex-between" style="margin-top:8px;">
-        <span class="small muted">效期至 2026-09-08</span>
-        <button class="btn btn-accent btn-sm" onclick="location.href='m06_renew.html'">續費</button>
-      </div>
-      <div class="divider" style="margin:14px 0 12px;"></div>
-      <div class="flex-between" style="margin-bottom:2px;">
-        <span style="font-size:13px;color:var(--c-muted);">TLI 彈性團體直播・中級會話團體班</span>
-        <span class="badge badge-live">直播制</span>
-      </div>
-      <div class="flex-between" style="margin-top:6px;">
-        <span class="small muted">固定班表：每週二、四 19:00・下次直播 08/27（四）</span>
-        <button class="btn btn-outline btn-sm" onclick="location.href='m04_course_detail.html#flex'">查看班表</button>
+      <div class="plan-subcards">
+        <div class="plan-mini-card">
+          <p class="plan-type-desc">自己選老師與時間，一堂一堂預約<span class="badge badge-info">預約制</span></p>
+          <h4>中文一對一 50 分・30 堂方案</h4>
+          <div class="flex-between" style="margin-bottom:4px;">
+            <span style="font-size:22px;font-weight:800;">8 <span style="font-size:12px;font-weight:400;color:var(--c-muted);">／ 30 堂剩餘</span></span>
+            <span class="badge badge-warn">效期剩 14 天</span>
+          </div>
+          <div class="progress warn"><div style="width:27%;"></div></div>
+          <p class="pm-meta" style="margin-top:6px;">效期至 2026-09-08</p>
+          <div class="pm-actions">
+            <button class="btn btn-outline btn-sm" onclick="location.href='m02_booking.html'">預約</button>
+            <button class="btn btn-accent btn-sm" onclick="location.href='m06_renew.html'">續費</button>
+          </div>
+        </div>
+        <div class="plan-mini-card">
+          <p class="plan-type-desc">固定班表，報名後照表上課<span class="badge badge-live">直播制</span></p>
+          <h4>TLI 彈性團體直播・中級會話直播班</h4>
+          <p class="pm-meta">林老師・本期第 4／12 週</p>
+          <p class="pm-meta">下次上課：08/25（二）19:00</p>
+          <div class="pm-actions">
+            <button class="btn btn-outline btn-sm" onclick="location.href='m03_schedule.html?class=flex-group'">查看班表</button>
+            <button class="btn btn-outline btn-sm" onclick="location.href='m05_leave.html?class=flex-group'">請假</button>
+          </div>
+        </div>
+        <div class="plan-mini-card">
+          <p class="plan-type-desc">隨時看，進度自動記錄<span class="badge badge-muted">自學</span></p>
+          <h4>發音基礎 20 講</h4>
+          <p class="pm-meta">已完成 12／20 講</p>
+          <div class="progress"><div style="width:60%;"></div></div>
+          <p class="pm-meta" style="margin-top:6px;">上次觀看 08/23</p>
+          <div class="pm-actions">
+            <button class="btn btn-outline btn-sm btn-block" onclick="location.href='m08_self_paced.html?course=c1&lesson=12'">繼續學習</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="card" style="margin-top:12px;">
       <div class="flex-between">
-        <h3 style="margin:0;font-size:15px;">自學課程</h3>
-        <a href="m08_self_paced.html" class="small muted">查看全部 ›</a>
+        <h3 style="margin:0;font-size:15px;">繼續學習</h3>
+        <a href="m08_self_paced.html" class="small muted">前往自學課程 ›</a>
       </div>
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='m08_self_paced.html'">
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m08_self_paced.html?course=c1&lesson=12'">
         <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg></div>
-        <div class="body"><h4>發音基礎 20 講</h4><p>已完成 12／20 講・上次觀看 08/23</p></div>
+        <div class="body"><h4>發音基礎 20 講・第 12 講</h4><p>已完成 12／20 講・上次觀看 08/23</p></div>
         <div class="trail"><span class="badge badge-ok">進行中</span></div>
       </div>
     </div>
@@ -349,51 +433,167 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
     </div>
 
-    <div class="section-title">待辦</div>
+  </div>
+
+  <!-- ===== 新學員（尚無任何課程）預設畫面：網址帶 ?new=1 顯示 ===== -->
+  <div id="viewNew" class="hidden">
+    <div class="card welcome-card">
+      <h3>嗨，Alex，歡迎加入 TLI Connect</h3>
+      <p>三步開始你的第一堂課</p>
+    </div>
+
+    <div class="section-title first">待辦</div>
     <div class="card">
-      <div class="list-row">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
-        <div class="body"><h4>分期尾款未繳</h4><p><span data-money="3000">NT$3,000</span>・繳費期限 2026-08-31</p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m07_profile.html'">前往繳費</button></div>
-      </div>
-      <div class="list-row" id="todoFeedbackRow">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20l9-9-9-9-9 9 9 9z" opacity="0"/><path d="M4 4h16v16H4z" opacity="0"/><path d="M12 17l-5-5 1.4-1.4L12 14.2l3.6-3.6L17 12z"/><circle cx="12" cy="12" r="9"/></svg></div>
-        <div class="body"><h4>上週三課程未填課後回饋</h4><p>08/20 中文一對一・杜老師</p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m09_assessment.html'">前往填寫</button></div>
-      </div>
-      <div class="list-row">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <div class="body"><h4>待完成測驗 2 份</h4><p>本期課程配套測驗尚未完成</p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m11_quiz.html'">前往測驗</button></div>
-      </div>
-      <div class="empty-state hidden" id="todoAllDoneState" style="padding:12px 0;">
-        <p class="small muted" style="margin:0;">目前沒有待辦事項，做得好！</p>
+      <div class="empty-state" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">目前沒有待辦事項，完成下方三步驟後這裡會顯示提醒</p>
       </div>
     </div>
 
-    <div class="section-title">快速動作</div>
-    <div class="grid-4">
-      <a class="card" style="text-align:center;padding:14px 8px;" href="m02_booking.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0 auto 6px;color:var(--c-primary);"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>
-        <div class="small" style="font-weight:700;">預約</div>
-      </a>
-      <a class="card" style="text-align:center;padding:14px 8px;" href="m03_schedule.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0 auto 6px;color:var(--c-primary);"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <div class="small" style="font-weight:700;">課表</div>
-      </a>
-      <a class="card" style="text-align:center;padding:14px 8px;" href="m05_leave.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0 auto 6px;color:var(--c-primary);"><path d="M4 4v16M4 4h13l-2.5 4L17 12H4"/></svg>
-        <div class="small" style="font-weight:700;">請假</div>
-      </a>
-      <a class="card" style="text-align:center;padding:14px 8px;" href="m06_renew.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0 auto 6px;color:var(--c-primary);"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.6 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
-        <div class="small" style="font-weight:700;">加購</div>
-      </a>
-      <a class="card" style="text-align:center;padding:14px 8px;" href="m11_quiz.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0 auto 6px;color:var(--c-primary);"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/></svg>
-        <div class="small" style="font-weight:700;">測驗</div>
-      </a>
+    <div class="section-title">開始上課三步驟<span class="small demo-note">示範畫面，資料為模擬數字</span></div>
+    <div class="card">
+      <div class="stack">
+        <div class="list-row step-row">
+          <div class="icon-box done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+          <div class="body"><h4>① 完成 15 分鐘分級測驗 <span class="badge badge-ok">已完成</span></h4><p>系統已依測驗結果推薦適合的起始課程</p></div>
+          <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m09_assessment.html'">查看測驗結果</button></div>
+        </div>
+        <div class="list-row step-row">
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg></div>
+          <div class="body"><h4>② 預約免費試聽</h4><p>與老師線上見面，體驗真實上課節奏</p></div>
+          <div class="trail"><button class="btn btn-primary btn-sm" onclick="location.href='../公開網站/p06_trial.html'">預約試聽</button></div>
+        </div>
+        <div class="list-row step-row">
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.6 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg></div>
+          <div class="body"><h4>③ 選擇方案</h4><p>依學習目標挑選一對一或團體課程方案</p></div>
+          <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='../公開網站/p03_course_detail.html'">查看方案</button></div>
+        </div>
+      </div>
     </div>
+
+    <div class="section-title">先逛逛<span class="small demo-note">示範畫面，資料為模擬數字</span></div>
+    <div class="card">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">免費試看影音</h3>
+        <a href="m08_self_paced.html" class="small muted">查看全部 ›</a>
+      </div>
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m08_self_paced.html'">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg></div>
+        <div class="body"><h4>發音基礎 20 講・第 1 講：聲調總覽</h4><p>5:20・免費試看</p></div>
+        <div class="trail"><span class="badge badge-info">試看</span></div>
+      </div>
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m08_self_paced.html'">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg></div>
+        <div class="body"><h4>商務華語情境 16 講・第 1 講：機場入境</h4><p>5:40・免費試看</p></div>
+        <div class="trail"><span class="badge badge-info">試看</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">近期線上活動</h3>
+        <a href="m10_events.html" class="small muted">查看全部 ›</a>
+      </div>
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m10_events.html?event=flex-open-house'">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg></div>
+        <div class="body"><h4>彈性團體直播 公開體驗場－日文情境會話</h4><p>08/29（六）10:00・免費</p></div>
+        <div class="trail"><span class="badge badge-ok">免費</span></div>
+      </div>
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m10_events.html?event=culture-midautumn'">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg></div>
+        <div class="body"><h4>中文文化直播－中秋節茶道與詩詞賞析</h4><p>09/03（四）19:00・免費</p></div>
+        <div class="trail"><span class="badge badge-ok">免費</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">團體聊天室</h3>
+        <a href="m14_chat_booking.html" class="small muted">了解更多 ›</a>
+      </div>
+      <p class="small muted" style="margin:8px 0 0;">由老師帶領的口說練習場次，購買課程方案後開放報名，實際規則依方案內容而定。</p>
+    </div>
+
+    <div class="section-title">有問題找顧問</div>
+    <div class="card">
+      <div class="list-row">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+        <div class="body"><h4>林顧問・學習顧問</h4><p>平日 09:00–18:00 線上服務</p></div>
+      </div>
+      <div class="flex-between" style="gap:10px;margin-top:10px;">
+        <button class="btn btn-outline btn-block" onclick="showToast('已為您開啟 LINE 對話（示範畫面）')">加 LINE 詢問</button>
+        <button class="btn btn-outline btn-block" onclick="showToast('已複製顧問 Email：advisor.lin@tli.com.tw')">寄 Email 詢問</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 機構學生（如交換學程學生）預設畫面：網址帶 ?activated=university 顯示 ===== -->
+  <div id="viewUniversity" class="hidden">
+    <div class="card welcome-card">
+      <h3>〈範例州立大學〉學期資源已開通</h3>
+      <p>開始使用學校提供的華語學習資源</p>
+    </div>
+
+    <div class="section-title first" style="display:flex;align-items:center;gap:6px;">
+      待辦
+      <button class="todo-info-btn" onclick="toggleTodoInfo('todoInfoCardUni')" aria-label="待辦怎麼產生" title="待辦怎麼產生">i</button>
+    </div>
+    <div class="card hidden" id="todoInfoCardUni" style="margin-bottom:12px;">
+      <p class="small" style="margin:0 0 6px;font-weight:700;">待辦怎麼產生</p>
+      <p class="small muted" style="margin:0 0 4px;">1. 依到期日與狀態自動出現／消失，逾期項目以紅色置頂。</p>
+      <p class="small muted" style="margin:0;">2. 最多顯示 5 列，其餘可查看全部。</p>
+    </div>
+    <div class="card">
+      <div id="todoListUni"></div>
+      <div class="empty-state hidden" id="todoEmptyStateUni" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">目前沒有待辦事項，做得好！</p>
+      </div>
+      <div class="hidden" id="todoMoreWrapUni" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="openTodoDrawer()">查看全部（<span id="todoMoreCountUni">0</span>）</button>
+      </div>
+    </div>
+
+    <div class="section-title">開始使用三步驟<span class="small demo-note">示範畫面，資料為模擬數字</span></div>
+    <div class="card">
+      <div class="stack">
+        <div class="list-row step-row">
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+          <div class="body"><h4>① 看本週課程</h4><p>查看本學期已排定的課程與直播時段</p></div>
+          <div class="trail"><button class="btn btn-primary btn-sm" onclick="location.href='m03_schedule.html'">查看課表</button></div>
+        </div>
+        <div class="list-row step-row">
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+          <div class="body"><h4>② 報名團體聊天室</h4><p>加入老師帶領的團體口說練習場次</p></div>
+          <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m14_chat_booking.html'">前往報名</button></div>
+        </div>
+        <div class="list-row step-row">
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg></div>
+          <div class="body"><h4>③ 開始自學影音</h4><p>依自己的步調複習課程內容</p></div>
+          <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m08_self_paced.html'">前往自學課程</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">近期線上活動<span class="small demo-note">示範畫面，資料為模擬數字</span></div>
+    <div class="card">
+      <div class="list-row" style="cursor:pointer;" onclick="location.href='m10_events.html?event=cert-info'">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg></div>
+        <div class="body"><h4>2026 TLI 國際華語教師認證線上說明會</h4><p>08/27（四）20:00・免費</p></div>
+        <div class="trail"><span class="badge badge-ok">免費</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">有問題找顧問</div>
+    <div class="card">
+      <div class="list-row">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+        <div class="body"><h4>林顧問・學習顧問</h4><p>平日 09:00–18:00 線上服務</p></div>
+      </div>
+      <div class="flex-between" style="gap:10px;margin-top:10px;">
+        <button class="btn btn-outline btn-block" onclick="showToast('已為您開啟 LINE 對話（示範畫面）')">加 LINE 詢問</button>
+        <button class="btn btn-outline btn-block" onclick="showToast('已複製顧問 Email：advisor.lin@tli.com.tw')">寄 Email 詢問</button>
+      </div>
+    </div>
+  </div>
   </main>
 
   <nav class="bottom-nav">
@@ -436,6 +636,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <button class="btn btn-outline btn-block" onclick="closeZoomModal()">關閉</button>
     </div>
     <p class="cr-note" id="crFooterNote" style="text-align:center;margin-top:10px;">教室採註冊制個人入口，需以與會員相同的 Email 登入 Zoom；入口一次有效、不可轉傳</p>
+  </div>
+</div>
+
+<div class="sheet-overlay hidden" id="todoDrawerOverlay">
+  <div class="sheet" style="max-width:560px;">
+    <div class="sheet-handle"></div>
+    <h3>全部待辦</h3>
+    <div class="chip-row" id="todoDrawerFilters" style="margin-top:10px;"></div>
+    <div id="todoDrawerList" style="max-height:52vh;overflow-y:auto;"></div>
+    <button class="btn btn-outline btn-block" style="margin-top:14px;" onclick="closeTodoDrawer()">關閉</button>
   </div>
 </div>
 
@@ -568,21 +778,251 @@ var CLASS_END = new Date(2026,7,26,14,50,0);
   var msDiff = CLASS_START - NOW;
   var enterOk = (NOW >= new Date(CLASS_START.getTime()-15*60000)) && (NOW <= CLASS_END);
   var btn = document.getElementById('enterClassBtn');
-  if(enterOk){btn.disabled=false;}
+  var notice = document.getElementById('enterClassNotice');
   var hrs = Math.floor(msDiff/3600000);
   var mins = Math.floor((msDiff%3600000)/60000);
+  if(enterOk){
+    btn.classList.remove('hidden');
+    notice.classList.add('hidden');
+  } else {
+    btn.classList.add('hidden');
+    notice.classList.remove('hidden');
+    document.getElementById('enterClassCountdown').textContent = hrs+' 小時 '+mins+' 分';
+  }
   document.getElementById('countdownText').textContent = enterOk ? '開課中，可進入教室' : (hrs+' 小時 '+mins+' 分後開始');
 })();
 
-// 課後回饋待辦：若已在「學習評量與回饋」頁完成該堂回饋（前端以 localStorage 模擬跨頁狀態），首頁待辦列表移除該筆
-(function(){
-  var done=false;
-  try{ done = localStorage.getItem('tli_todo_feedback_done')==='1'; }catch(e){}
-  if(done){
-    document.getElementById('todoFeedbackRow').classList.add('hidden');
-    document.getElementById('todoAllDoneState').classList.remove('hidden');
+// ================= 待辦：規則驅動（資料常數＋規則函式） =================
+// 課後回饋是否已填，讀取「學習評量與回饋」頁寫入的 localStorage（跨頁模擬狀態）
+function getFeedbackDone(){
+  try{ return localStorage.getItem('tli_todo_feedback_done')==='1'; }catch(e){ return false; }
+}
+var TODO_META = {
+  billing:{cls:'c-warn', icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/>'},
+  reminder:{cls:'c-info', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'},
+  result:{cls:'c-info', icon:'<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/>'},
+  feedback:{cls:'c-ok', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 17l-5-5 1.4-1.4L12 14.2l3.6-3.6L17 12z"/>'},
+  quiz:{cls:'c-info', icon:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/>'},
+  expiring:{cls:'c-warn', icon:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>'},
+  enterprise:{cls:'c-purple', icon:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>'},
+  institution:{cls:'c-purple', icon:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/>'}
+};
+var TODO_TYPE_LABEL = {billing:'金流',reminder:'課程提醒',result:'結果通知',feedback:'回饋',quiz:'測驗',expiring:'到期提醒',enterprise:'企業',institution:'機構'};
+var TODO_MERGEABLE = {feedback:true, quiz:true}; // 只有「重複性同任務」才合併成一列；金流／逾期一律逐筆顯示
+function todoWeight(item){
+  // 排序：逾期→金流→課程提醒→結果通知→回饋→測驗→到期提醒→企業／機構專屬
+  if(item.type==='billing') return item.overdue ? 0 : 1;
+  if(item.type==='reminder') return 2;
+  if(item.type==='result') return 3;
+  if(item.type==='feedback') return 4;
+  if(item.type==='quiz') return 5;
+  if(item.type==='expiring') return 6;
+  return 7;
+}
+function fmtDue(d){
+  if(!d) return '';
+  var mm=d.getMonth()+1, dd=d.getDate();
+  return (mm<10?'0'+mm:mm)+'/'+(dd<10?'0'+dd:dd);
+}
+function todoIconSvg(type){
+  var m = TODO_META[type] || TODO_META.result;
+  return '<div class="todo-icon '+m.cls+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+m.icon+'</svg></div>';
+}
+
+// 各身分的待辦原始資料（示範用，資料為模擬數字）
+function getTodosByRole(role){
+  var feedbackDone = getFeedbackDone();
+  var list = [];
+  if(role==='default'){
+    list = [
+      {type:'billing',overdue:true,title:'註冊費尾款逾期未繳',sub:'NT$1,500・原到期日 2026-08-22',due:new Date(2026,7,22),action:{label:'前往繳費',href:'m07_profile.html'}},
+      {type:'billing',overdue:false,title:'分期尾款未繳',sub:'NT$3,000・繳費期限 2026-08-31',due:new Date(2026,7,31),action:{label:'前往繳費',href:'m07_profile.html'}},
+      {type:'reminder',title:'明天 14:00 中文一對一・杜老師',sub:'會話進階・課前教材可先下載',due:new Date(2026,7,26,14,0),action:{label:'查看課表',href:'m03_schedule.html'}},
+      {type:'result',title:'改期申請已核准',sub:'08/13 已改至 08/06 14:00',due:new Date(2026,7,26),action:{label:'查看',href:'m04_course_detail.html?tab=1on1'}},
+      {type:'quiz',title:'單元測驗：聲調與拼音',sub:'課程配套測驗・開放中',due:new Date(2026,7,28),action:{label:'前往測驗',href:'m11_quiz.html'}},
+      {type:'quiz',title:'單元測驗：日常會話',sub:'課程配套測驗・開放中',due:new Date(2026,8,2),action:{label:'前往測驗',href:'m11_quiz.html'}},
+      {type:'quiz',title:'單元測驗：情境對話',sub:'課程配套測驗・開放中',due:new Date(2026,8,4),action:{label:'前往測驗',href:'m11_quiz.html'}},
+      {type:'expiring',title:'一對一方案效期即將到期',sub:'30 堂方案・效期剩 14 天（剩 8 堂）',due:new Date(2026,8,8),action:{label:'續費',href:'m06_renew.html'}},
+      {type:'expiring',title:'團體直播班本期即將結束',sub:'中級會話直播班・本期剩 2 週（第 10／12 週）',due:new Date(2026,8,10),action:{label:'查看班表',href:'m03_schedule.html?class=flex-group'}}
+    ];
+    if(!feedbackDone){
+      list.push(
+        {type:'feedback',title:'08/20（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,23),action:{label:'前往填寫',href:'m09_assessment.html'}},
+        {type:'feedback',title:'08/13（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,20),action:{label:'前往填寫',href:'m09_assessment.html'}},
+        {type:'feedback',title:'08/06（四）中文一對一課後回饋未填',sub:'陳老師・發音矯正',due:new Date(2026,7,13),action:{label:'前往填寫',href:'m09_assessment.html'}}
+      );
+    }
+  } else if(role==='enterprise'){
+    list = [
+      {type:'enterprise',title:'本月免扣取消次數已用完',sub:'企業方案本月 2 次免扣額度已用完，之後取消將扣抵堂數',due:new Date(2026,7,25),action:{label:'查看規則',href:'m04_course_detail.html?tab=1on1'}},
+      {type:'reminder',title:'今天 16:00 商務會話・杜老師',sub:'可先預習教材',due:new Date(2026,7,25,16,0),action:{label:'查看課表',href:'m03_schedule.html'}},
+      {type:'result',title:'取消申請已受理',sub:'08/25（二）13:00 取消已生效，已扣抵本月額度',due:new Date(2026,7,25),action:{label:'查看',href:'m03_schedule.html'}},
+      {type:'quiz',title:'單元測驗：商務會話',sub:'課程配套測驗・開放中',due:new Date(2026,7,29),action:{label:'前往測驗',href:'m11_quiz.html'}}
+    ];
+    if(!feedbackDone){
+      list.push(
+        {type:'feedback',title:'08/20（四）商務會話課後回饋未填',sub:'杜老師',due:new Date(2026,7,23),action:{label:'前往填寫',href:'m09_assessment.html'}},
+        {type:'feedback',title:'08/13（四）商務會話課後回饋未填',sub:'杜老師',due:new Date(2026,7,20),action:{label:'前往填寫',href:'m09_assessment.html'}}
+      );
+    }
+  } else if(role==='institution'){
+    list = [
+      {type:'institution',title:'本週團體聊天室尚未報名',sub:'本週場次 08/29（六）20:00 前完成報名',due:new Date(2026,7,29),action:{label:'前往報名',href:'m14_chat_booking.html'}},
+      {type:'institution',title:'學期資源即將到期',sub:'期程剩 14 天，請於到期前完成學習',due:new Date(2026,8,8),action:{label:'查看課表',href:'m03_schedule.html'}}
+    ];
   }
-})();
+  return list;
+}
+
+// 依規則分組：只有 feedback／quiz 這類「重複性同任務」會合併成一列，其餘（含金流／逾期）逐筆顯示
+function buildTodoRows(rawList){
+  var byType={}, order=[];
+  rawList.forEach(function(item){
+    if(TODO_MERGEABLE[item.type]){
+      if(!byType[item.type]){ byType[item.type]=[]; order.push({type:item.type,merge:true}); }
+      byType[item.type].push(item);
+    } else {
+      order.push({type:item.type,merge:false,item:item});
+    }
+  });
+  var rows = order.map(function(o){
+    if(o.merge){
+      var items = byType[o.type].slice().sort(function(a,b){return a.due-b.due;});
+      return {type:o.type, items:items, isGroup:items.length>1, weight:todoWeight(items[0]), due:items[0].due};
+    }
+    return {type:o.type, items:[o.item], isGroup:false, weight:todoWeight(o.item), due:o.item.due};
+  });
+  rows.sort(function(a,b){ return a.weight-b.weight || (a.due-b.due); });
+  return rows;
+}
+function toggleTodoDetail(id){ document.getElementById(id).classList.toggle('open'); }
+function toggleTodoInfo(id){ document.getElementById(id).classList.toggle('hidden'); }
+
+function renderTodoRows(rows, ids){
+  var wrap = document.getElementById(ids.list);
+  var html = '';
+  var shown = rows.slice(0,5);
+  shown.forEach(function(row,idx){
+    var rowId = ids.list+'-row-'+idx;
+    var first = row.items[0];
+    var overdue = (first.type==='billing' && first.overdue);
+    var titleText, subText, actionHtml;
+    if(row.isGroup){
+      var label = row.type==='feedback' ? '待填課後回饋' : '待完成測驗';
+      var unit = row.type==='feedback' ? '筆' : '份';
+      titleText = label+' '+row.items.length+' '+unit;
+      subText = '最早期限 '+fmtDue(row.due);
+      actionHtml = '<button class="btn btn-outline btn-sm" onclick="toggleTodoDetail(\''+rowId+'\')">展開明細</button>';
+    } else {
+      titleText = first.title;
+      subText = first.sub;
+      actionHtml = '<button class="btn btn-outline btn-sm" onclick="location.href=\''+first.action.href+'\'">'+first.action.label+'</button>';
+    }
+    html += '<div class="list-row todo-row'+(row.isGroup?' merged':'')+(overdue?' overdue':'')+'">'+
+      todoIconSvg(row.type)+
+      '<div class="body"'+(row.isGroup?' style="cursor:pointer;" onclick="toggleTodoDetail(\''+rowId+'\')"':'')+'><h4>'+titleText+'</h4><p>'+subText+'</p></div>'+
+      '<div class="trail">'+actionHtml+'</div>'+
+    '</div>';
+    if(row.isGroup){
+      html += '<div class="todo-row-detail" id="'+rowId+'">' + row.items.map(function(it){
+        return '<div class="list-row"><div class="body"><h4 style="font-size:13px;">'+it.title+'</h4><p>'+it.sub+'</p></div><div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href=\''+it.action.href+'\'">'+it.action.label+'</button></div></div>';
+      }).join('') + '</div>';
+    }
+  });
+  wrap.innerHTML = html;
+  document.getElementById(ids.empty).classList.toggle('hidden', rows.length>0);
+  var moreWrap = document.getElementById(ids.moreWrap);
+  if(rows.length>5){
+    var rawTotal = rows.reduce(function(s,r){return s+r.items.length;},0);
+    moreWrap.classList.remove('hidden');
+    document.getElementById(ids.moreCount).textContent = rawTotal;
+  } else {
+    moreWrap.classList.add('hidden');
+  }
+}
+
+// 「查看全部」側抽屜：列出目前身分的全部待辦明細，可依類型 chip 篩選
+var _todoDrawerRaw = [];
+function openTodoDrawer(){
+  document.getElementById('todoDrawerOverlay').classList.remove('hidden');
+  renderTodoDrawerFilters();
+  renderTodoDrawerList('all');
+}
+function closeTodoDrawer(){ document.getElementById('todoDrawerOverlay').classList.add('hidden'); }
+function renderTodoDrawerFilters(){
+  var types=[];
+  _todoDrawerRaw.forEach(function(i){ if(types.indexOf(i.type)===-1) types.push(i.type); });
+  var html = '<button class="chip selected" onclick="filterTodoDrawer(\'all\',this)">全部</button>';
+  types.forEach(function(t){
+    html += '<button class="chip" onclick="filterTodoDrawer(\''+t+'\',this)">'+(TODO_TYPE_LABEL[t]||t)+'</button>';
+  });
+  document.getElementById('todoDrawerFilters').innerHTML = html;
+}
+function filterTodoDrawer(type, btn){
+  document.querySelectorAll('#todoDrawerFilters .chip').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+  renderTodoDrawerList(type);
+}
+function renderTodoDrawerList(type){
+  var list = _todoDrawerRaw.slice().sort(function(a,b){return a.due-b.due;});
+  if(type!=='all') list = list.filter(function(i){return i.type===type;});
+  var wrap = document.getElementById('todoDrawerList');
+  if(list.length===0){ wrap.innerHTML='<p class="small muted" style="padding:16px 0;text-align:center;">沒有符合的待辦</p>'; return; }
+  wrap.innerHTML = list.map(function(it){
+    var overdue = it.type==='billing' && it.overdue;
+    return '<div class="todo-drawer-item">'+
+      todoIconSvg(it.type)+
+      '<div class="body"><h4'+(overdue?' style="color:#B42318;"':'')+'>'+it.title+'</h4><p>'+it.sub+'・'+fmtDue(it.due)+'</p></div>'+
+      '<div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href=\''+it.action.href+'\'">'+it.action.label+'</button></div>'+
+    '</div>';
+  }).join('');
+}
+
+function initTodos(state){
+  if(state==='default'){
+    var role = (getDemoRole()==='enterprise') ? 'enterprise' : 'default';
+    var raw = getTodosByRole(role);
+    renderTodoRows(buildTodoRows(raw), {list:'todoList',empty:'todoEmptyState',moreWrap:'todoMoreWrap',moreCount:'todoMoreCount'});
+    _todoDrawerRaw = raw;
+  } else if(state==='university'){
+    var raw2 = getTodosByRole('institution');
+    renderTodoRows(buildTodoRows(raw2), {list:'todoListUni',empty:'todoEmptyStateUni',moreWrap:'todoMoreWrapUni',moreCount:'todoMoreCountUni'});
+    _todoDrawerRaw = raw2;
+  }
+  // state==='new'：新學員待辦區固定為空狀態文字，不需規則渲染
+}
+
+// 首頁狀態切換（示範用）：依網址參數決定顯示「有課程學員／新學員／機構學生」畫面
+function getMemberState(){
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('activated')==='university') return 'university';
+  if(params.get('new')==='1') return 'new';
+  return 'default';
+}
+// 身分角色（僅影響待辦資料）：一般會員／企業員工，機構學生已由 getMemberState 的 university 狀態涵蓋
+function getDemoRole(){
+  var params = new URLSearchParams(window.location.search);
+  return params.get('role')==='b2b' ? 'enterprise' : 'default';
+}
+function renderMemberState(state){
+  var views={default:'viewDefault',new:'viewNew',university:'viewUniversity'};
+  Object.keys(views).forEach(function(key){
+    document.getElementById(views[key]).classList.toggle('hidden', key!==state);
+  });
+  var sel=document.getElementById('demoStateSwitch');
+  if(sel) sel.value = (state==='default' && getDemoRole()==='enterprise') ? 'enterprise' : state;
+}
+function handleDemoStateChange(sel){
+  var val=sel.value;
+  var url='m01_home.html';
+  if(val==='new') url+='?new=1';
+  else if(val==='university') url+='?activated=university';
+  else if(val==='enterprise') url+='?role=b2b';
+  location.href=url;
+}
+var _memberState = getMemberState();
+renderMemberState(_memberState);
+initTodos(_memberState);
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

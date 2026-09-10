@@ -81,6 +81,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .enthead .entname{font-size:17px;font-weight:700;}
 .enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
 .statgrid4{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:14px 0 4px;}
+.statgrid6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:14px 0 4px;}
 .statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;}
 .statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
 .statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
@@ -97,6 +98,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .main{padding:16px 16px 40px;}
 .topbar{padding:0 16px;margin:-16px -16px 18px;}
 .statgrid4{grid-template-columns:1fr 1fr;}
+.statgrid6{grid-template-columns:1fr 1fr;}
 .chartgrid{grid-template-columns:1fr;}
 }
 </style>
@@ -138,14 +140,14 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div><h1>使用報表</h1><div class="desc">依資源類型統計近 30 天使用量，可匯出 CSV 供學校內部彙整。</div></div>
 <button class="btn" onclick="exportCsv()">匯出 CSV</button>
 </div>
-<div class="statgrid4" id="usageKpiGrid"></div>
+<div class="statgrid6" id="usageKpiGrid"></div>
 </div>
 
 <div class="card">
 <h2>各資源類型使用量（近 30 天）</h2>
 <div class="tablewrap">
 <table>
-<thead><tr><th>資源類型</th><th>使用學生數</th><th>總使用次數／時數</th><th>平均每人使用量</th><th>出席率</th></tr></thead>
+<thead><tr><th>資源類型</th><th>使用學生數</th><th>總使用次數／時數</th><th>平均每人使用量</th><th>出席率</th><th>未出席（no-show）率</th></tr></thead>
 <tbody id="usageTbody"></tbody>
 </table>
 </div>
@@ -156,20 +158,21 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <script>
 var USAGE_ROWS = [
-  {type:'自學影片', users:132, total:'2,480 分鐘', avg:'18.8 分鐘／人', attend:'－'},
-  {type:'自學音檔', users:98, total:'1,140 分鐘', avg:'11.6 分鐘／人', attend:'－'},
-  {type:'自我測驗', users:110, total:'356 次', avg:'3.2 次／人', attend:'－'},
-  {type:'團體聊天室', users:76, total:'142 場次', avg:'1.9 場／人', attend:'87%'}
+  {type:'自學影片', users:132, total:'2,480 分鐘', avg:'18.8 分鐘／人', attend:'－', noshow:'－'},
+  {type:'自學音檔', users:98, total:'1,140 分鐘', avg:'11.6 分鐘／人', attend:'－', noshow:'－'},
+  {type:'自我測驗', users:110, total:'356 次', avg:'3.2 次／人', attend:'－', noshow:'－'},
+  {type:'團體聊天室', users:76, total:'142 場次', avg:'1.9 場／人', attend:'87%', noshow:'13%'}
 ];
 document.getElementById('usageKpiGrid').innerHTML = [
   {num:'124', lbl:'本學期已開通'},
   {num:'132', lbl:'近 30 天曾使用影片'},
   {num:'76', lbl:'近 30 天曾用聊天室'},
   {num:'68%', lbl:'整體資源使用率'},
-  {num:'87%', lbl:'聊天室出席率（近 30 天）'}
+  {num:'87%', lbl:'聊天室出席率（近 30 天）'},
+  {num:'13%', lbl:'聊天室未出席率（近 30 天）'}
 ].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
 document.getElementById('usageTbody').innerHTML = USAGE_ROWS.map(function(r){
-  return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td></tr>';
+  return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td></tr>';
 }).join('');
 function exportCsv(){ toast('已產生使用報表 CSV（示範畫面，不會實際下載檔案）'); }
 

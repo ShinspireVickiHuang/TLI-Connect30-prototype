@@ -118,12 +118,21 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .fchip{padding:5px 12px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--g900);}
 .fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .pagerbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:var(--g500);flex-wrap:wrap;gap:10px;}
+.emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
 .pagerbtns{display:flex;gap:6px;align-items:center;}
 .pagerbtns button{padding:5px 10px;border:1px solid var(--g200);background:#fff;border-radius:6px;font-size:12.5px;cursor:pointer;font-family:inherit;}
 .pagerbtns button:disabled{color:var(--g200);cursor:not-allowed;}
 .csvpanel{display:none;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:14px;margin-top:10px;font-size:12.5px;line-height:1.8;}
 .csvpanel.open{display:block;}
 .csvpanel code{background:#fff;border:1px solid var(--g200);border-radius:4px;padding:1px 5px;font-size:11.5px;}
+/* ---- 聊天室報名設定（20260910f 新增） ---- */
+.modewrap{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
+.modewrap label{font-size:13.5px;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.wl-toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap;}
+.wl-list{max-height:280px;overflow-y:auto;border:1px solid var(--g200);border-radius:8px;padding:4px 10px;}
+.wl-row{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px dashed var(--g200);font-size:13px;}
+.wl-row:last-child{border-bottom:none;}
+.wl-row .wl-name{flex:1;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -181,6 +190,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="tr-left">
 <div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="empSearch" placeholder="搜尋姓名或 Email" oninput="onEmpSearch(this.value)"></div>
 <div class="chipbar" id="deptChips"></div>
+<div class="chipbar" id="statusChips"></div>
 </div>
 <div class="tr-right">
 <button class="btn ghost" onclick="toggleCsvPanel()">批次匯入 CSV</button>
@@ -190,7 +200,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="csvpanel" id="csvPanel">
 <strong>批次匯入格式說明</strong><br>
 上傳 UTF-8 編碼的 CSV 檔，第一列為欄位標題，欄位順序如下：<br>
-<code>員工姓名</code>、<code>Email</code>、<code>部門</code>、<code>廠區時區</code>（填入「美國廠區」或「日本廠區」）<br>
+<code>員工姓名</code>、<code>Email</code>、<code>部門</code>、<code>所屬廠區</code>（填入「美國廠區」或「日本廠區」，系統會依廠區自動帶出時區）<br>
 每次匯入上限 500 筆，Email 重複的資料列會被略過並列在匯入結果中。
 <div style="margin-top:10px"><button class="btn ghost" onclick="simulateCsvImport()">選擇檔案並匯入（示範）</button></div>
 </div>
@@ -205,6 +215,11 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div></div>
 </div>
 
+<div class="card" id="chatSettingCard">
+<h2>聊天室報名設定</h2>
+<div id="chatSettingBody"></div>
+</div>
+
 </div>
 </div>
 
@@ -214,7 +229,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="formrow"><label>員工 Email</label><input type="email" id="inviteEmail" placeholder="name@company.com"></div>
 <div class="formrow"><label>姓名</label><input type="text" id="inviteName" placeholder="員工姓名"></div>
 <div class="formrow"><label>部門</label><select id="inviteDept"></select></div>
-<div class="formrow"><label>廠區時區</label><select id="inviteSite"></select></div>
+<div class="formrow"><label>所屬廠區</label><select id="inviteSite" onchange="onInviteSiteChange(this)"></select><div class="hint" id="inviteSiteTz" style="margin-top:4px"></div></div>
 <div class="hint">邀請送出後，系統會寄送設定密碼連結至員工 Email，員工完成設定後即可登入預約課程。</div>
 <div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployee()">送出邀請</button></div>
 </div></div>
@@ -232,7 +247,7 @@ function addDays(baseStr, days){ var d=new Date(baseStr+'T00:00:00'); d.setDate(
 
 /* ===== 企業與員工示範資料（與 h01、h03 共用同一組產生邏輯，確保跨頁資料一致） ===== */
 var SITE_LIST = [
-  {id:'us', name:'美國廠區', tz:'UTC-7（美國西部時間）'},
+  {id:'us', name:'美國廠區', tz:'UTC-7（美國太平洋時間，夏令）'},
   {id:'jp', name:'日本廠區', tz:'UTC+9（日本標準時間）'}
 ];
 var DEPTS = ['廠務部','設備工程部','品保部','資訊部','人資部'];
@@ -273,12 +288,25 @@ var EMP_COUNT = 26;
 var EMPLOYEES = []; for (var ii=0; ii<EMP_COUNT; ii++) EMPLOYEES.push(makeEmployee(ii));
 var nextEmpSeq = EMP_COUNT;
 
-/* ===== 部門篩選 chip ===== */
-var empState = {search:'', dept:'', page:1, pageSize:10};
+/* ===== 部門／狀態篩選 chip ===== */
+var empState = {search:'', dept:'', status:'在學', page:1, pageSize:10};
 function renderDeptChips(){
   document.getElementById('deptChips').innerHTML = DEPTS.map(function(d){
     return '<button type="button" class="fchip'+(empState.dept===d?' active':'')+'" onclick="toggleDeptChip(\''+d+'\')">'+d+'</button>';
   }).join('');
+}
+function renderStatusChips(){
+  /* 預設先看在學員工，停用帳號另外切換查看，避免與現職員工混排 */
+  var opts = [{v:'在學',l:'在學'},{v:'停用',l:'已停用'},{v:'',l:'全部'}];
+  document.getElementById('statusChips').innerHTML = opts.map(function(o){
+    return '<button type="button" class="fchip'+(empState.status===o.v?' active':'')+'" onclick="toggleStatusChip(\''+o.v+'\')">'+o.l+'</button>';
+  }).join('');
+}
+function toggleStatusChip(v){
+  empState.status = v;
+  empState.page = 1;
+  renderStatusChips();
+  renderEmpTable();
 }
 function toggleDeptChip(d){
   empState.dept = (empState.dept===d) ? '' : d;
@@ -293,6 +321,7 @@ function empFiltered(){
   return EMPLOYEES.filter(function(e){
     if (term && e.name.toLowerCase().indexOf(term)===-1 && e.email.toLowerCase().indexOf(term)===-1) return false;
     if (empState.dept && e.dept!==empState.dept) return false;
+    if (empState.status && e.status!==empState.status) return false;
     return true;
   });
 }
@@ -308,16 +337,21 @@ function renderEmpTable(){
   var startIdx = (empState.page-1)*empState.pageSize;
   var pageRows = filtered.slice(startIdx, startIdx+empState.pageSize);
   var t = document.getElementById('empTable');
-  t.innerHTML = '<tr><th>姓名</th><th>Email</th><th>部門</th><th>廠區時區</th><th>狀態</th><th>累計時數</th><th>出勤率</th><th></th></tr>';
+  t.innerHTML = '<tr><th>姓名</th><th>Email</th><th>部門</th><th>所屬廠區（時區）</th><th>狀態</th><th>累計時數</th><th>出勤率</th><th></th></tr>';
   pageRows.forEach(function(e){
     var tr = document.createElement('tr');
     var actionBtn = e.status==='在學'
       ? '<button class="btn ghost" onclick="openDisableModal(\''+e.id+'\')">停用</button>'
       : '<span class="small">已停用</span>';
-    tr.innerHTML = '<td>'+e.name+'</td><td>'+e.email+'</td><td>'+e.dept+'</td><td>'+e.site+'</td>'+
+    tr.innerHTML = '<td>'+e.name+'</td><td>'+e.email+'</td><td>'+e.dept+'</td><td>'+e.site+'（'+e.tz+'）</td>'+
       '<td>'+statusBadge(e.status)+'</td><td>'+e.hours+' 小時</td><td>'+e.attendance+'%</td><td>'+actionBtn+'</td>';
     t.appendChild(tr);
   });
+  if (total===0){
+    var etr = document.createElement('tr');
+    etr.innerHTML = '<td colspan="8" class="emptylist">找不到符合條件的員工。</td>';
+    t.appendChild(etr);
+  }
   var startLabel = total===0 ? 0 : startIdx+1;
   var endLabel = Math.min(startIdx+empState.pageSize, total);
   document.getElementById('empPagerLabel').textContent = '第 '+startLabel+'–'+endLabel+' 筆／共 '+total+' 筆';
@@ -338,6 +372,11 @@ function openInviteModal(){
   var ssel = document.getElementById('inviteSite');
   ssel.innerHTML = SITE_LIST.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('');
   document.getElementById('inviteModal').classList.add('open');
+  onInviteSiteChange(ssel);
+}
+function onInviteSiteChange(sel){
+  var site = SITE_LIST.find(function(s){ return s.id===sel.value; });
+  document.getElementById('inviteSiteTz').textContent = site ? '時區：'+site.tz+'（自動帶出，不可編輯）' : '';
 }
 function doInviteEmployee(){
   var email = document.getElementById('inviteEmail').value.trim();
@@ -379,9 +418,81 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 function toggleCsvPanel(){ document.getElementById('csvPanel').classList.toggle('open'); }
 function simulateCsvImport(){ toast('示範畫面：實際上線後將解析 CSV 並批次建立員工帳號'); }
 
+/* ===== 聊天室報名設定（20260910f 新增）=====
+   本企業合約是否含「團體聊天室」上課型態，實際應由 a19_b2b_enterprise.html 的合約參數決定；
+   此處以常數示範「已含」的情境，若合約未含則顯示提示文字取代設定區。
+   模式：open＝全員開放（預設，在學員工皆可自主報名，受名額上限管控）；whitelist＝白名單（僅白名單內員工可報名）。 */
+var COMPANY_HAS_CHATROOM = true;
+var chatRegMode = 'open';
+var chatWhitelist = {}; // { empId: true }
+var chatWlSearch = '';
+function renderChatSettingCard(){
+  var body = document.getElementById('chatSettingBody');
+  if (!COMPANY_HAS_CHATROOM){
+    body.innerHTML = '<div class="small">目前合約未含團體聊天室，如需開通請聯繫顧問。</div>';
+    return;
+  }
+  var html = '<div class="small" style="margin-bottom:10px">團體聊天室（30 分鐘、TLI 老師帶）之報名方式，名額上限依 TLI 型態設定（待定），兩種模式皆受此上限管控。</div>' +
+    '<div class="modewrap">' +
+    '<label><input type="radio" name="chatRegMode" value="open" '+(chatRegMode==='open'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 全員開放（預設）</label>' +
+    '<label><input type="radio" name="chatRegMode" value="whitelist" '+(chatRegMode==='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 白名單</label>' +
+    '</div>';
+  if (chatRegMode === 'whitelist'){
+    var checkedCount = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+    var list = EMPLOYEES.filter(function(e){
+      if (!chatWlSearch) return true;
+      var term = chatWlSearch.toLowerCase();
+      return e.name.toLowerCase().indexOf(term)>-1 || e.email.toLowerCase().indexOf(term)>-1;
+    });
+    html += '<div class="wl-toolrow">' +
+      '<div class="searchbox" style="max-width:280px"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="chatWlSearchInput" placeholder="搜尋姓名或 Email" oninput="onChatWlSearch(this.value)"></div>' +
+      '<div class="small">已勾選 <b id="chatWlCount">'+checkedCount+'</b> 人</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="btn ghost" onclick="chatWlBatch(true)">全選（本頁篩選結果）</button>' +
+      '<button class="btn ghost" onclick="chatWlBatch(false)">全部取消</button>' +
+      '</div></div>' +
+      '<div class="wl-list" id="chatWlList">' +
+      (list.length ? list.map(function(e){
+        var checked = chatWhitelist[e.id] ? 'checked' : '';
+        return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatWlToggle(\''+e.id+'\',this.checked)"><span class="wl-name">'+e.name+'（'+e.email+'）</span><span class="small">'+e.dept+'</span></div>';
+      }).join('') : '<div class="emptylist">找不到符合條件的員工。</div>') +
+      '</div>';
+  }
+  html += '<div style="text-align:right;margin-top:12px"><button class="btn" onclick="saveChatSetting()">儲存</button></div>';
+  body.innerHTML = html;
+}
+function onChatRegModeChange(val){
+  chatRegMode = val;
+  renderChatSettingCard();
+}
+function onChatWlSearch(val){ chatWlSearch = val; renderChatSettingCard(); }
+function onChatWlToggle(empId, checked){
+  chatWhitelist[empId] = checked;
+  var countEl = document.getElementById('chatWlCount');
+  if (countEl) countEl.textContent = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+}
+function chatWlBatch(checkAll){
+  var term = chatWlSearch.toLowerCase();
+  EMPLOYEES.forEach(function(e){
+    if (term && e.name.toLowerCase().indexOf(term)===-1 && e.email.toLowerCase().indexOf(term)===-1) return;
+    chatWhitelist[e.id] = checkAll;
+  });
+  renderChatSettingCard();
+}
+function saveChatSetting(){
+  if (chatRegMode === 'whitelist'){
+    var n = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+    toast('已儲存聊天室報名設定：白名單模式，共 '+n+' 人可報名');
+  } else {
+    toast('已儲存聊天室報名設定：全員開放報名');
+  }
+}
+
 /* ===== 初始化 ===== */
 renderDeptChips();
+renderStatusChips();
 renderEmpTable();
+renderChatSettingCard();
 
 /* ===== 共用：側欄／頂欄／通知／登出／toast ===== */
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }

@@ -41,6 +41,9 @@ a{color:inherit;text-decoration:none;}img{max-width:100%;display:block;}ul{margi
 
 main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-content:center;}
 .auth-wrap{width:100%;max-width:420px;}
+.next-banner{background:#EAF1F9;border:1px solid #CBDCF0;border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:12.5px;color:var(--c-primary-dark);line-height:1.6;}
+.next-banner strong{font-weight:700;}
+.hidden{display:none!important;}
 .tabs{display:flex;background:#fff;border:1px solid var(--c-border);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;}
 .tab{flex:1;text-align:center;padding:14px;font-size:14.5px;font-weight:700;color:var(--c-muted);cursor:pointer;background:#fff;border:none;font-family:inherit;border-bottom:2px solid transparent;}
 .tab.active{color:var(--c-primary);border-bottom:2px solid var(--c-primary);background:var(--c-bg);}
@@ -72,6 +75,40 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
 .refcode-row{display:flex;gap:8px;}
 .refcode-input{flex:1;background:var(--c-bg);color:var(--c-muted);}
 .refcode-note{font-size:12px;color:var(--c-muted);margin-top:6px;}
+
+/* 必填標示與欄位驗證 */
+.req-mark{color:#D92D20;margin-left:2px;}
+.field-required-note{font-size:12px;color:var(--c-muted);margin-bottom:16px;}
+.field-error{display:none;font-size:12px;color:#D92D20;margin-top:5px;line-height:1.5;}
+.field-error.show{display:block;}
+.field input.invalid,.field select.invalid{border-color:#D92D20;}
+.phone-row{display:flex;gap:8px;}
+.phone-row select{flex:0 0 128px;}
+.phone-row input{flex:1;min-width:0;}
+.field-checkbox .checkbox-label{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--c-text);cursor:pointer;}
+.field-checkbox .checkbox-label input{margin-top:3px;flex:none;width:16px;height:16px;}
+.field-checkbox .checkbox-label a{color:var(--c-primary);font-weight:600;}
+.field-checkbox .checkbox-label a:hover{text-decoration:underline;}
+.email-dup-note{display:none;font-size:12.5px;background:#FEF3F2;border:1px solid #FECDCA;color:#B42318;border-radius:6px;padding:10px 12px;margin-top:8px;}
+.email-dup-note.show{display:block;}
+.email-dup-note button{margin-top:8px;}
+.social-step-title{font-size:14.5px;font-weight:800;margin-bottom:4px;}
+.social-step-sub{font-size:12.5px;color:var(--c-muted);margin-bottom:16px;line-height:1.6;}
+.social-prefill{background:var(--c-bg);color:var(--c-muted);}
+
+/* 條款示範 modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(16,24,40,.45);display:none;align-items:center;justify-content:center;z-index:300;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:#fff;border-radius:12px;max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--c-border);}
+.modal-head h3{font-size:15px;font-weight:800;}
+.modal-close-btn{background:none;border:none;cursor:pointer;color:var(--c-muted);padding:6px;flex:none;}
+.modal-close-btn:hover{color:var(--c-text);}
+.modal-body{padding:18px 20px;overflow-y:auto;font-size:13px;color:var(--c-muted);line-height:1.8;}
+.modal-body h4{font-size:13.5px;color:var(--c-text);margin:14px 0 6px;}
+.modal-body h4:first-child{margin-top:0;}
+.modal-body p{margin-bottom:8px;}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--c-border);text-align:right;}
 
 .role-switch{display:flex;gap:8px;margin-bottom:12px;}
 .role-pill{flex:1;border:1px solid var(--c-border);background:#fff;border-radius:8px;padding:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--c-muted);min-height:42px;}
@@ -202,6 +239,7 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
 
 <main>
   <div class="auth-wrap">
+    <div class="next-banner hidden" id="nextBanner"></div>
     <div class="role-switch" id="roleSwitch">
       <button type="button" class="role-pill active" data-role="student" onclick="setRole('student')" data-i18n="p07_role_student">我是學生</button>
       <button type="button" class="role-pill" data-role="teacher" onclick="setRole('teacher')" data-i18n="p07_role_teacher">我是老師</button>
@@ -235,30 +273,49 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
 
       <div class="panel" id="panelRegister">
         <div class="social-row">
-          <button class="social-btn" onclick="fakeLogin()"><span class="social-badge badge-g">G</span><span data-i18n="p07_social_google_register">使用 Google 註冊</span></button>
-          <button class="social-btn" onclick="fakeLogin()"><span class="social-badge badge-line">L</span><span data-i18n="p07_social_line_register">使用 LINE 註冊</span></button>
+          <button class="social-btn" onclick="startSocialRegister('google')"><span class="social-badge badge-g">G</span><span data-i18n="p07_social_google_register">使用 Google 註冊</span></button>
+          <button class="social-btn" onclick="startSocialRegister('line')"><span class="social-badge badge-line">L</span><span data-i18n="p07_social_line_register">使用 LINE 註冊</span></button>
         </div>
         <div class="divider" data-i18n="p07_divider_email_register">或使用 Email 註冊</div>
-        <form onsubmit="return fakeLogin(event)">
+        <div class="field-required-note"><span class="req-mark">*</span><span data-i18n="p07_required_note"> 為必填欄位</span></div>
+        <form id="registerForm" onsubmit="return submitRegister(event)" novalidate>
           <div class="field">
-            <label data-i18n="p07_label_name">姓名</label>
-            <input type="text" placeholder="請輸入姓名" required data-i18n-ph="p07_ph_name">
+            <label><span data-i18n="p07_label_name">姓名</span><span class="req-mark">*</span></label>
+            <input type="text" id="regName" placeholder="請輸入姓名" data-i18n-ph="p07_ph_name" onblur="validateName()">
+            <div class="field-error" id="err_regName"></div>
           </div>
           <div class="field">
-            <label data-i18n="p07_label_email">Email</label>
-            <input type="email" placeholder="請輸入 Email" required data-i18n-ph="p07_ph_email">
+            <label><span data-i18n="p07_label_email">Email</span><span class="req-mark">*</span></label>
+            <input type="email" id="regEmail" placeholder="請輸入 Email" data-i18n-ph="p07_ph_email" onblur="validateEmail()">
+            <div class="field-error" id="err_regEmail"></div>
+            <div class="email-dup-note" id="regEmailDupNote">
+              <div data-i18n="p07_email_dup_msg">此 Email 已有帳號，請直接登入</div>
+              <button type="button" class="btn btn-outline btn-sm" onclick="goToLoginWithEmail()" data-i18n="p07_email_dup_gotologin">前往登入</button>
+            </div>
+            <div class="refcode-note" data-i18n="p07_email_helper">Email 是你的帳號，之後登入與通知都用它</div>
           </div>
           <div class="field">
-            <label data-i18n="p07_label_phone">手機</label>
-            <input type="tel" placeholder="請輸入手機號碼" required data-i18n-ph="p07_ph_phone">
+            <label><span data-i18n="p07_label_phone">手機</span><span class="req-mark">*</span></label>
+            <div class="phone-row">
+              <select id="regPhoneCc" aria-label="國碼" data-i18n="p07_phone_cc_aria" data-i18n-attr="aria-label"></select>
+              <input type="tel" id="regPhone" placeholder="請輸入手機號碼" data-i18n-ph="p07_ph_phone" onblur="validatePhone()">
+            </div>
+            <div class="field-error" id="err_regPhone"></div>
           </div>
           <div class="field">
-            <label data-i18n="p07_label_password">密碼</label>
-            <input type="password" placeholder="請設定密碼" required data-i18n-ph="p07_ph_password_set">
+            <label><span data-i18n="p07_label_password">密碼</span><span class="req-mark">*</span></label>
+            <input type="password" id="regPassword" placeholder="請設定密碼" data-i18n-ph="p07_ph_password_set" onblur="validatePassword()">
+            <div class="field-error" id="err_regPassword"></div>
+            <div class="refcode-note" data-i18n="p07_password_hint">至少 8 碼，需包含英文字母與數字</div>
           </div>
           <div class="field">
-            <label data-i18n="p07_label_goal">學習目標</label>
-            <select required>
+            <label><span data-i18n="p07_label_timezone">所在時區</span><span class="req-mark">*</span></label>
+            <select id="regTimezone" onchange="validateTimezone()"></select>
+            <div class="field-error" id="err_regTimezone"></div>
+          </div>
+          <div class="field">
+            <label><span data-i18n="p07_label_goal">學習目標</span><span class="req-mark">*</span></label>
+            <select id="regGoal" onchange="validateGoal()">
               <option value="" data-i18n="p07_goal_placeholder">請選擇主要學習目標</option>
               <option data-i18n="p07_goal_daily">生活會話</option>
               <option data-i18n="p07_goal_business">商用／職場溝通</option>
@@ -266,6 +323,11 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
               <option data-i18n="p07_goal_visa">簽證所需上課證明</option>
               <option data-i18n="p07_goal_other">其他</option>
             </select>
+            <div class="field-error" id="err_regGoal"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="p07_label_nativelang">母語／介面語言</label>
+            <select id="regNativeLang"></select>
           </div>
           <div class="field" id="refCodeField" style="display:none;">
             <label data-i18n="p07_label_refcode">推薦代碼</label>
@@ -275,9 +337,71 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
             </div>
             <div class="refcode-note" data-i18n="p07_refcode_note">示範畫面，資料為模擬數字</div>
           </div>
+          <div class="field field-checkbox">
+            <label class="checkbox-label">
+              <input type="checkbox" id="regTerms" onchange="validateTerms()">
+              <span class="checkbox-label-text">
+                <span data-i18n="p07_terms_pre">我已閱讀並同意</span>
+                <a href="#" onclick="openTermsModal();return false;" data-i18n="p07_terms_link">服務條款與個資蒐集告知</a><span class="req-mark">*</span>
+              </span>
+            </label>
+            <div class="field-error" id="err_regTerms"></div>
+          </div>
           <button type="submit" class="btn btn-accent btn-block" data-i18n="p07_btn_submit_register">完成註冊</button>
         </form>
         <div class="switch-note"><span data-i18n="p07_switch_to_login_text">已經有帳號？</span><a href="#" onclick="switchTab('login');return false;" data-i18n="p07_switch_to_login_link">前往登入</a></div>
+      </div>
+
+      <div class="panel" id="panelSocialComplete">
+        <div class="social-step-title" data-i18n="p07_social_step_title">補齊必要資訊</div>
+        <div class="social-step-sub" data-i18n="p07_social_step_sub">已從社群帳號取得姓名與 Email，請完成以下必填資訊即可完成註冊。</div>
+        <div class="field">
+          <label data-i18n="p07_label_name">姓名</label>
+          <input type="text" id="socialName" class="social-prefill" readonly>
+        </div>
+        <div class="field">
+          <label data-i18n="p07_label_email">Email</label>
+          <input type="email" id="socialEmail" class="social-prefill" readonly>
+        </div>
+        <form id="socialCompleteForm" onsubmit="return submitSocialRegister(event)" novalidate>
+          <div class="field">
+            <label><span data-i18n="p07_label_phone">手機</span><span class="req-mark">*</span></label>
+            <div class="phone-row">
+              <select id="regPhoneCcSocial" aria-label="國碼" data-i18n="p07_phone_cc_aria" data-i18n-attr="aria-label"></select>
+              <input type="tel" id="regPhoneSocial" placeholder="請輸入手機號碼" data-i18n-ph="p07_ph_phone" onblur="validatePhoneSocial()">
+            </div>
+            <div class="field-error" id="err_regPhoneSocial"></div>
+          </div>
+          <div class="field">
+            <label><span data-i18n="p07_label_timezone">所在時區</span><span class="req-mark">*</span></label>
+            <select id="regTimezoneSocial" onchange="validateTimezoneSocial()"></select>
+            <div class="field-error" id="err_regTimezoneSocial"></div>
+          </div>
+          <div class="field">
+            <label><span data-i18n="p07_label_goal">學習目標</span><span class="req-mark">*</span></label>
+            <select id="regGoalSocial" onchange="validateGoalSocial()">
+              <option value="" data-i18n="p07_goal_placeholder">請選擇主要學習目標</option>
+              <option data-i18n="p07_goal_daily">生活會話</option>
+              <option data-i18n="p07_goal_business">商用／職場溝通</option>
+              <option data-i18n="p07_goal_exam">檢定考試準備（如 TOCFL／HSK／TOEIC）</option>
+              <option data-i18n="p07_goal_visa">簽證所需上課證明</option>
+              <option data-i18n="p07_goal_other">其他</option>
+            </select>
+            <div class="field-error" id="err_regGoalSocial"></div>
+          </div>
+          <div class="field field-checkbox">
+            <label class="checkbox-label">
+              <input type="checkbox" id="regTermsSocial" onchange="validateTermsSocial()">
+              <span class="checkbox-label-text">
+                <span data-i18n="p07_terms_pre">我已閱讀並同意</span>
+                <a href="#" onclick="openTermsModal();return false;" data-i18n="p07_terms_link">服務條款與個資蒐集告知</a><span class="req-mark">*</span>
+              </span>
+            </label>
+            <div class="field-error" id="err_regTermsSocial"></div>
+          </div>
+          <button type="submit" class="btn btn-accent btn-block" data-i18n="p07_btn_submit_register">完成註冊</button>
+        </form>
+        <div class="switch-note"><a href="#" onclick="backToRegisterForm();return false;" data-i18n="p07_social_back_link">返回，改用 Email 註冊</a></div>
       </div>
 
       <div class="panel" id="panelRegisterTeacherNote">
@@ -296,6 +420,19 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
     <div class="staff-login-link"><a href="../顧問工作台/c01_today.html" data-i18n="p07_staff_login_link">後台人員登入</a></div>
   </div>
 </main>
+
+<div class="modal-overlay" id="termsModalOverlay" onclick="if(event.target===this) closeTermsModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 data-i18n="p07_terms_modal_title">服務條款與個資蒐集告知（示範內容）</h3>
+      <button class="modal-close-btn" onclick="closeTermsModal()" aria-label="關閉" data-i18n="p07_close_aria" data-i18n-attr="aria-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="termsModalBody"></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-primary btn-sm" onclick="closeTermsModal()" data-i18n="p07_terms_close_btn">我已閱讀</button>
+    </div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <div class="footer-inner">
@@ -369,6 +506,65 @@ function clearRefCode(){
   showToast('已清除推薦代碼，將以一般會員身分註冊');
 }
 
+/* ===================== next 導向：登入／註冊成功後回到來源頁（如活動報名） ===================== */
+/* 從網址 ?next= 讀取登入成功後要導向的目標頁（例如活動詳情頁的報名接續），優先於 ref／new 規則 */
+var nextParam = null;
+try{
+  var __nextParam = new URLSearchParams(window.location.search).get('next');
+  if(__nextParam) nextParam = __nextParam;
+}catch(e){}
+/* 只允許站內相對路徑，避免示範頁被當開放轉址使用 */
+function isSafeNextUrl(url){
+  if(!url) return false;
+  var lower = url.toLowerCase();
+  if(lower.indexOf('http://') === 0 || lower.indexOf('https://') === 0) return false;
+  if(lower.indexOf('//') === 0) return false;
+  return true;
+}
+/* 活動標題對照（僅供 next 提示文字顯示用，與 p09_events.html 的示範活動資料同步） */
+var TLI_NEXT_EVENT_TITLES = {
+  'cert-info': {'zh-TW':'2026 TLI 國際華語教師認證線上說明會', en:'2026 TLI International Chinese Teacher Certification Online Info Session', ja:'2026年 TLI国際中国語教師認定 オンライン説明会'},
+  'flex-open-house': {'zh-TW':'彈性團體直播 公開體驗場－日文情境會話', en:'Flexible Group Livestream Open House — Japanese Situational Conversation', ja:'グループライブ配信 体験会－日本語会話（シチュエーション別）'},
+  'culture-midautumn': {'zh-TW':'中文文化直播－中秋節茶道與詩詞賞析', en:'Chinese Culture Livestream — Mid-Autumn Tea Ceremony & Poetry Appreciation', ja:'中国語文化ライブ配信－中秋節の茶道と詩歌鑑賞'},
+  'culture-calligraphy': {'zh-TW':'中文文化線上課－毛筆書法入門體驗', en:'Chinese Culture Online Class — Introduction to Brush Calligraphy', ja:'中国語文化オンライン講座－毛筆書道入門体験'},
+  'biz-webinar': {'zh-TW':'企業線上培訓說明會－員工華語計畫怎麼規劃', en:'Corporate Online Training Info Session — Planning an Employee Chinese Program', ja:'企業向けオンライン研修説明会－社員向け中国語プランの立て方'},
+  'flex-mock-exam': {'zh-TW':'TLI-CPT 模擬檢定線上診斷會', en:'TLI-CPT Mock Test Online Diagnostic Session', ja:'TLI-CPT模擬検定 オンライン診断会'},
+  'physical-open-day': {'zh-TW':'士林校區體驗營（實體開放日）', en:'Shilin Campus Experience Day (On-site Open House)', ja:'士林キャンパス体験デー（対面オープンデー）'},
+  'physical-taichung-fair': {'zh-TW':'台中校區語言學習博覽會（實體）', en:'Taichung Campus Language Learning Fair (In-Person)', ja:'台中キャンパス語学学習フェア（対面）'}
+};
+/* 依 next 目標網址推導一個易讀的顯示名稱：活動報名頁優先顯示活動名稱，其餘給頁面層級的通用說明 */
+function getNextTargetLabel(url){
+  var dict = tliDict();
+  var qIndex = url.indexOf('?');
+  var path = qIndex > -1 ? url.slice(0, qIndex) : url;
+  var query = qIndex > -1 ? url.slice(qIndex + 1) : '';
+  var params = {};
+  query.split('&').forEach(function(pair){
+    if(!pair) return;
+    var kv = pair.split('=');
+    params[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1]||'').replace(/\+/g,' '));
+  });
+  if(path.indexOf('p09_events.html') > -1 && params.event){
+    var titles = TLI_NEXT_EVENT_TITLES[params.event];
+    var lang = window.TLI_CURRENT_LANG;
+    if(titles) return titles[lang] || titles['zh-TW'];
+  }
+  if(path.indexOf('m13_checkout.html') > -1) return dict.p07_next_target_checkout;
+  if(path.indexOf('m10_events.html') > -1) return dict.p07_next_target_myevents;
+  return dict.p07_next_target_generic;
+}
+function updateNextBanner(){
+  var el = document.getElementById('nextBanner');
+  if(!el) return;
+  if(nextParam && isSafeNextUrl(nextParam)){
+    var dict = tliDict();
+    el.innerHTML = tliFmt(dict.p07_next_banner, {target: '<strong>'+getNextTargetLabel(nextParam)+'</strong>'});
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
 function setRole(role){
   authRole = role;
   document.querySelectorAll('.role-pill').forEach(function(b){ b.classList.toggle('active', b.dataset.role===role); });
@@ -385,24 +581,48 @@ function switchTab(name){
   document.getElementById('panelRegister').classList.toggle('active', showRegisterForm);
   document.getElementById('panelRegister').style.display = showRegisterForm ? 'block':'none';
   document.getElementById('panelRegisterTeacherNote').style.display = showTeacherNote ? 'block':'none';
+  /* 離開註冊分頁時一併收起「補齊必要資訊」步驟，回到一般 Email 註冊表單 */
+  document.getElementById('panelSocialComplete').classList.remove('active');
+  document.getElementById('panelSocialComplete').style.display = 'none';
   if(showRegisterForm) updateRefCodeUi();
 }
+/* 登入／註冊共用的成功流程；isRegisterFlow 用來區分導向規則（見 showAuthSuccess 內註解） */
 function fakeLogin(e){
+  return showAuthSuccess(e, false);
+}
+function showAuthSuccess(e, isRegisterFlow){
   if(e && e.preventDefault) e.preventDefault();
   document.getElementById('panelLogin').classList.remove('active');
   document.getElementById('panelRegister').classList.remove('active');
+  document.getElementById('panelSocialComplete').classList.remove('active');
   document.getElementById('panelLogin').style.display = 'none';
   document.getElementById('panelRegister').style.display = 'none';
+  document.getElementById('panelSocialComplete').style.display = 'none';
   document.getElementById('panelRegisterTeacherNote').style.display = 'none';
   document.getElementById('successCard').classList.add('show');
   var isTeacher = authRole === 'teacher';
   var dict = tliDict();
   var successLink = document.getElementById('successCardLink');
+  /* 學生（非老師）登入／註冊成功即視為已登入會員，寫入 sessionStorage 供其他公開頁（如 p09 活動）判斷登入狀態 */
+  if(!isTeacher){
+    try{ sessionStorage.setItem('tliLoggedIn', '1'); }catch(err){}
+  }
   if(isTeacher){
     successLink.href = '../教師端/t01_today.html';
+  } else if(nextParam && isSafeNextUrl(nextParam)){
+    /* next 優先於 ref／new 規則：有帶推薦碼時仍附加在 next 網址上，讓轉介歸屬延續 */
+    var nextHref = nextParam;
+    if(referralCode){
+      nextHref += (nextHref.indexOf('?') > -1 ? '&' : '?') + 'ref=' + encodeURIComponent(referralCode);
+    }
+    successLink.href = nextHref;
   } else if(referralCode){
-    /* 有推薦碼時，帶著實際讀到的 ref 值導向會員區結帳頁，讓轉介歸屬自動延續 */
+    /* 有推薦碼時，帶著實際讀到的 ref 值導向會員區結帳頁，讓轉介歸屬自動延續（登入與註冊皆同） */
     successLink.href = '../會員區/m13_checkout.html?ref=' + encodeURIComponent(referralCode);
+  } else if(isRegisterFlow){
+    /* 一般註冊成功、無推薦碼時，導向新學員空狀態首頁（m01_home.html?new=1，該畫面由其他同事製作中）；
+       登入（既有會員）成功則維持進一般會員首頁，不帶 new=1。機構學生走 p11，不經過本頁。 */
+    successLink.href = '../會員區/m01_home.html?new=1';
   } else {
     successLink.href = '../會員區/m01_home.html';
   }
@@ -418,7 +638,268 @@ function onLangApplied(lang){
     document.getElementById('successCardText').textContent = isTeacher ? dict.p07_success_text_teacher : dict.p07_success_text_student;
     document.getElementById('successCardBtnText').textContent = isTeacher ? dict.p07_success_btn_teacher : dict.p07_success_btn_student;
   }
+  rebuildRegisterDynamicSelects();
+  updateNextBanner();
 }
+
+/* ===================== 註冊表單：必填標示、即時驗證、Email 主鍵、社群補資訊 ===================== */
+
+/* 國碼／時區／母語介面語言下拉選項（純前端 demo，依當前語系顯示對應名稱） */
+var TLI_COUNTRY_CODES = {
+'zh-TW':[['+886','台灣 +886'],['+86','中國 +86'],['+852','香港 +852'],['+853','澳門 +853'],['+81','日本 +81'],['+82','韓國 +82'],['+65','新加坡 +65'],['+60','馬來西亞 +60'],['+66','泰國 +66'],['+84','越南 +84'],['+62','印尼 +62'],['+63','菲律賓 +63'],['+1','美國／加拿大 +1'],['+44','英國 +44'],['+61','澳洲 +61'],['+49','德國 +49']],
+en:[['+886','Taiwan +886'],['+86','China +86'],['+852','Hong Kong +852'],['+853','Macau +853'],['+81','Japan +81'],['+82','South Korea +82'],['+65','Singapore +65'],['+60','Malaysia +60'],['+66','Thailand +66'],['+84','Vietnam +84'],['+62','Indonesia +62'],['+63','Philippines +63'],['+1','US / Canada +1'],['+44','UK +44'],['+61','Australia +61'],['+49','Germany +49']],
+ja:[['+886','台湾 +886'],['+86','中国 +86'],['+852','香港 +852'],['+853','マカオ +853'],['+81','日本 +81'],['+82','韓国 +82'],['+65','シンガポール +65'],['+60','マレーシア +60'],['+66','タイ +66'],['+84','ベトナム +84'],['+62','インドネシア +62'],['+63','フィリピン +63'],['+1','米国／カナダ +1'],['+44','英国 +44'],['+61','オーストラリア +61'],['+49','ドイツ +49']]
+};
+var TLI_TIMEZONES = {
+'zh-TW':[['Asia/Taipei','台北（UTC+8）'],['Asia/Shanghai','上海（UTC+8）'],['Asia/Hong_Kong','香港（UTC+8）'],['Asia/Tokyo','東京（UTC+9）'],['Asia/Seoul','首爾（UTC+9）'],['Asia/Singapore','新加坡（UTC+8）'],['Asia/Kuala_Lumpur','吉隆坡（UTC+8）'],['Asia/Bangkok','曼谷（UTC+7）'],['Asia/Jakarta','雅加達（UTC+7）'],['Asia/Ho_Chi_Minh','胡志明市（UTC+7）'],['Asia/Manila','馬尼拉（UTC+8）'],['America/Los_Angeles','美國西岸（UTC-8）'],['America/New_York','美國東岸（UTC-5）'],['Europe/London','倫敦（UTC+0）'],['Europe/Berlin','柏林（UTC+1）'],['Australia/Sydney','雪梨（UTC+10）']],
+en:[['Asia/Taipei','Taipei (UTC+8)'],['Asia/Shanghai','Shanghai (UTC+8)'],['Asia/Hong_Kong','Hong Kong (UTC+8)'],['Asia/Tokyo','Tokyo (UTC+9)'],['Asia/Seoul','Seoul (UTC+9)'],['Asia/Singapore','Singapore (UTC+8)'],['Asia/Kuala_Lumpur','Kuala Lumpur (UTC+8)'],['Asia/Bangkok','Bangkok (UTC+7)'],['Asia/Jakarta','Jakarta (UTC+7)'],['Asia/Ho_Chi_Minh','Ho Chi Minh City (UTC+7)'],['Asia/Manila','Manila (UTC+8)'],['America/Los_Angeles','US Pacific (UTC-8)'],['America/New_York','US Eastern (UTC-5)'],['Europe/London','London (UTC+0)'],['Europe/Berlin','Berlin (UTC+1)'],['Australia/Sydney','Sydney (UTC+10)']],
+ja:[['Asia/Taipei','台北（UTC+8）'],['Asia/Shanghai','上海（UTC+8）'],['Asia/Hong_Kong','香港（UTC+8）'],['Asia/Tokyo','東京（UTC+9）'],['Asia/Seoul','ソウル（UTC+9）'],['Asia/Singapore','シンガポール（UTC+8）'],['Asia/Kuala_Lumpur','クアラルンプール（UTC+8）'],['Asia/Bangkok','バンコク（UTC+7）'],['Asia/Jakarta','ジャカルタ（UTC+7）'],['Asia/Ho_Chi_Minh','ホーチミン（UTC+7）'],['Asia/Manila','マニラ（UTC+8）'],['America/Los_Angeles','米国西海岸（UTC-8）'],['America/New_York','米国東海岸（UTC-5）'],['Europe/London','ロンドン（UTC+0）'],['Europe/Berlin','ベルリン（UTC+1）'],['Australia/Sydney','シドニー（UTC+10）']]
+};
+var TLI_NATIVE_LANGS = {
+'zh-TW':[['','請選擇（選填）'],['zh','中文'],['en','英文'],['ja','日文'],['ko','韓文'],['vi','越南文'],['th','泰文'],['id','印尼文'],['de','德文'],['other','其他']],
+en:[['','Select (optional)'],['zh','Chinese'],['en','English'],['ja','Japanese'],['ko','Korean'],['vi','Vietnamese'],['th','Thai'],['id','Indonesian'],['de','German'],['other','Other']],
+ja:[['','選択してください（任意）'],['zh','中国語'],['en','英語'],['ja','日本語'],['ko','韓国語'],['vi','ベトナム語'],['th','タイ語'],['id','インドネシア語'],['de','ドイツ語'],['other','その他']]
+};
+function buildSelectOptions(selectEl, list, fallbackValue){
+  if(!selectEl) return;
+  var prev = selectEl.value || fallbackValue || '';
+  selectEl.innerHTML = '';
+  list.forEach(function(pair){
+    var opt = document.createElement('option');
+    opt.value = pair[0];
+    opt.textContent = pair[1];
+    selectEl.appendChild(opt);
+  });
+  if(prev && list.some(function(p){ return p[0]===prev; })) selectEl.value = prev;
+}
+function detectTimezoneValue(){
+  try{
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if(TLI_TIMEZONES['zh-TW'].some(function(p){ return p[0]===tz; })) return tz;
+  }catch(e){}
+  return 'Asia/Taipei';
+}
+function rebuildRegisterDynamicSelects(){
+  var lang = window.TLI_CURRENT_LANG;
+  var ccList = TLI_COUNTRY_CODES[lang] || TLI_COUNTRY_CODES['zh-TW'];
+  var tzList = TLI_TIMEZONES[lang] || TLI_TIMEZONES['zh-TW'];
+  var nlList = TLI_NATIVE_LANGS[lang] || TLI_NATIVE_LANGS['zh-TW'];
+  ['regPhoneCc','regPhoneCcSocial'].forEach(function(id){
+    buildSelectOptions(document.getElementById(id), ccList, '+886');
+  });
+  ['regTimezone','regTimezoneSocial'].forEach(function(id){
+    buildSelectOptions(document.getElementById(id), tzList, detectTimezoneValue());
+  });
+  buildSelectOptions(document.getElementById('regNativeLang'), nlList, '');
+}
+
+var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var PASSWORD_RE = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+var DEMO_TAKEN_EMAIL = 'demo@example.com';
+
+function fieldSetError(errId, msgKey){
+  var el = document.getElementById(errId);
+  if(!el) return;
+  var dict = tliDict();
+  el.textContent = dict[msgKey] || '';
+  el.classList.add('show');
+}
+function fieldClearError(errId){
+  var el = document.getElementById(errId);
+  if(!el) return;
+  el.textContent = '';
+  el.classList.remove('show');
+}
+function markInvalid(inputEl, invalid){
+  if(inputEl) inputEl.classList.toggle('invalid', !!invalid);
+}
+function validateRequiredText(inputId, errId, minDigits){
+  var input = document.getElementById(inputId);
+  var v = input.value.trim();
+  if(minDigits){
+    var digits = v.replace(/[^0-9]/g,'');
+    if(!v || digits.length < minDigits){ fieldSetError(errId,'p07_err_phone'); markInvalid(input,true); return false; }
+  } else if(!v){
+    fieldSetError(errId,'p07_err_required'); markInvalid(input,true); return false;
+  }
+  fieldClearError(errId); markInvalid(input,false); return true;
+}
+function validateRequiredSelect(inputId, errId){
+  var input = document.getElementById(inputId);
+  if(!input.value){ fieldSetError(errId,'p07_err_required'); markInvalid(input,true); return false; }
+  fieldClearError(errId); markInvalid(input,false); return true;
+}
+function validateRequiredCheckbox(inputId, errId){
+  var input = document.getElementById(inputId);
+  if(!input.checked){ fieldSetError(errId,'p07_err_terms'); return false; }
+  fieldClearError(errId); return true;
+}
+function validateName(){ return validateRequiredText('regName','err_regName'); }
+function validateEmail(){
+  var input = document.getElementById('regEmail');
+  var dup = document.getElementById('regEmailDupNote');
+  var v = input.value.trim();
+  dup.classList.remove('show');
+  if(!v){ fieldSetError('err_regEmail','p07_err_required'); markInvalid(input,true); return false; }
+  if(!EMAIL_RE.test(v)){ fieldSetError('err_regEmail','p07_err_email_format'); markInvalid(input,true); return false; }
+  if(v.toLowerCase() === DEMO_TAKEN_EMAIL){
+    /* Email 為帳號主鍵：示範一組已被使用的 Email，導引直接去登入而非重複註冊 */
+    fieldClearError('err_regEmail');
+    markInvalid(input,true);
+    dup.classList.add('show');
+    return false;
+  }
+  fieldClearError('err_regEmail'); markInvalid(input,false); return true;
+}
+function goToLoginWithEmail(){
+  var email = document.getElementById('regEmail').value.trim();
+  switchTab('login');
+  var loginEmailInput = document.querySelector('#panelLogin input[type=email]');
+  if(loginEmailInput) loginEmailInput.value = email;
+}
+function validatePhone(){ return validateRequiredText('regPhone','err_regPhone',6); }
+function validatePassword(){
+  var input = document.getElementById('regPassword');
+  var v = input.value;
+  if(!v){ fieldSetError('err_regPassword','p07_err_required'); markInvalid(input,true); return false; }
+  if(!PASSWORD_RE.test(v)){ fieldSetError('err_regPassword','p07_err_password_weak'); markInvalid(input,true); return false; }
+  fieldClearError('err_regPassword'); markInvalid(input,false); return true;
+}
+function validateTimezone(){ return validateRequiredSelect('regTimezone','err_regTimezone'); }
+function validateGoal(){ return validateRequiredSelect('regGoal','err_regGoal'); }
+function validateTerms(){ return validateRequiredCheckbox('regTerms','err_regTerms'); }
+function validatePhoneSocial(){ return validateRequiredText('regPhoneSocial','err_regPhoneSocial',6); }
+function validateTimezoneSocial(){ return validateRequiredSelect('regTimezoneSocial','err_regTimezoneSocial'); }
+function validateGoalSocial(){ return validateRequiredSelect('regGoalSocial','err_regGoalSocial'); }
+function validateTermsSocial(){ return validateRequiredCheckbox('regTermsSocial','err_regTermsSocial'); }
+
+function runChecksAndSubmit(checks, e, isRegisterFlow){
+  var firstInvalidEl = null;
+  var allOk = true;
+  checks.forEach(function(c){
+    var ok = c.fn();
+    if(!ok){
+      allOk = false;
+      if(!firstInvalidEl) firstInvalidEl = document.getElementById(c.input);
+    }
+  });
+  if(!allOk){
+    if(firstInvalidEl){
+      firstInvalidEl.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(function(){ try{ firstInvalidEl.focus(); }catch(err){} }, 250);
+    }
+    return false;
+  }
+  return showAuthSuccess(e, isRegisterFlow);
+}
+function submitRegister(e){
+  e.preventDefault();
+  return runChecksAndSubmit([
+    {input:'regName', fn:validateName},
+    {input:'regEmail', fn:validateEmail},
+    {input:'regPhone', fn:validatePhone},
+    {input:'regPassword', fn:validatePassword},
+    {input:'regTimezone', fn:validateTimezone},
+    {input:'regGoal', fn:validateGoal},
+    {input:'regTerms', fn:validateTerms}
+  ], e, true);
+}
+function submitSocialRegister(e){
+  e.preventDefault();
+  return runChecksAndSubmit([
+    {input:'regPhoneSocial', fn:validatePhoneSocial},
+    {input:'regTimezoneSocial', fn:validateTimezoneSocial},
+    {input:'regGoalSocial', fn:validateGoalSocial},
+    {input:'regTermsSocial', fn:validateTermsSocial}
+  ], e, true);
+}
+
+/* 社群註冊：示範帶入姓名／Email（唯讀），改走「補齊必要資訊」步驟 */
+var SOCIAL_REGISTER_DEMO = {
+  google: {name:'王小明', email:'demo.google@example.com'},
+  line: {name:'陳雅婷', email:'demo.line@example.com'}
+};
+function startSocialRegister(provider){
+  var demo = SOCIAL_REGISTER_DEMO[provider] || SOCIAL_REGISTER_DEMO.google;
+  document.getElementById('socialName').value = demo.name;
+  document.getElementById('socialEmail').value = demo.email;
+  document.getElementById('panelRegister').classList.remove('active');
+  document.getElementById('panelRegister').style.display = 'none';
+  document.getElementById('panelSocialComplete').classList.add('active');
+  document.getElementById('panelSocialComplete').style.display = 'block';
+  rebuildRegisterDynamicSelects();
+}
+function backToRegisterForm(){
+  document.getElementById('panelSocialComplete').classList.remove('active');
+  document.getElementById('panelSocialComplete').style.display = 'none';
+  document.getElementById('panelRegister').classList.add('active');
+  document.getElementById('panelRegister').style.display = 'block';
+}
+/* ========================================================================
+   共用條款文字 2026-09-10，改一處要三處同步
+   （會員區/m13_checkout.html、公開網站/p07_login_register.html、公開網站/p11_university.html）
+   內容為草稿，正式版待 TLI 法務確認；本區塊為純資料與通用渲染函式，三檔逐字相同，
+   若需修改條款文字，三個檔案都要一併更新，避免內容不一致。
+   ======================================================================== */
+var TLI_SHARED_TERMS = {
+  draftNote: '草稿，正式版待 TLI 法務確認',
+  tos: {
+    title: '服務條款',
+    items: [
+      '帳號與識別：會員以註冊時填寫之 Email 作為帳號唯一識別（主鍵），同一 Email 僅能建立一個會員帳號，Email 變更須經身分驗證程序。',
+      '課程型態：本平台提供之課程分為一對一預約制、團體直播制、自學影音，以及透過企業或學校取得授權之機構授權課程，各型態之上課方式與規則詳見各課程頁面說明。',
+      '預約與取消（一對一）：一對一課程如需取消或改期，須於課程開始前 12 小時提出，逾時取消視同已上課，不予退還堂數或時數。',
+      '預約與取消（團體班）：團體直播班之取消與退班規則依各班別開課簡章（班規）辦理，開課簡章公告之規則與本條款不一致時，以開課簡章為準。',
+      '聊天室報名：透過線上客服／聊天室完成之課程報名，其成立時點與資料留存方式與網頁表單報名相同，報名資訊將併入會員帳號課程紀錄。',
+      '上課方式與錄影：課程得以實體、線上直播或錄影課程等形式進行；直播課程若提供課後錄影，僅供原報名學員於效期內回放，不得下載、轉錄或轉散。',
+      '智慧財產：教材依授權層級分為「公開通用教材」與「企業／機構專屬教材」；專屬教材僅供該企業或機構所屬學員於在學期間使用，離職或畢業後之使用權限依合約另行規範。',
+      '個人資料之提供對象：學員之學習紀錄（如出席、進度、測驗結果）於企業客戶方案下，得提供予付費企業之 HR 窗口；於機構授權方案下，得提供予合作學校之窗口；提供範圍以完成課程管理所需為限。',
+      '教師評語之揭露層級：教師針對學員之課堂評語分為「學員本人可見」與「提供予企業 HR 或學校窗口參考」兩層，評語內容涉及學習表現而非人身評價。',
+      '帳號停用與終止：會員得申請停用帳號；平台如發現會員有違反本條款、代他人上課、盜用帳號等情事，得逕行停權或終止服務，並保留相關紀錄。',
+      '準據法與爭議處理：本條款之解釋與適用另依 TLI 法務確認後之正式版本為準，本頁內容為草稿，尚未定案。'
+    ]
+  },
+  refund: {
+    title: '退費規則',
+    items: [
+      '一對一課程包－未開課：課程包購買後尚未使用任何堂數者，得依規定申請退費。',
+      '一對一課程包－部分使用（效期內）：已使用部分堂數但仍在課程效期內者，得就未使用堂數依比例申請退費。',
+      '一對一課程包－已逾效期：課程包超過效期未使用之堂數，原則上不予退費；因不可歸責於學員之事由（如天災）逾期者，得依賸餘課程比例辦理。',
+      '團體直播班－開課前：團體班尚未開課前申請退費者，依開課簡章公告之退費比例辦理。',
+      '團體直播班－開課後：團體班開課後申請退費者，依已上課堂數與開課簡章公告之比例計算，未上課部分依比例退還。',
+      '自學影音課程：自學影音課程一經開通觀看權限，即視為已提供服務內容，不予退費；未開通者得依規定申請退費。',
+      '體驗課：體驗課性質為試聽，原則不收費亦不涉及退費；如另有收費之體驗課方案，退費依該方案公告條件辦理。',
+      '機構授權與企業合約：透過機構授權或企業合約取得之課程權益，其退費條件另依平台與該機構或企業簽訂之合約辦理，不適用本規則之個人退費比例。',
+      '退費申請流程：會員得於會員區提出退費申請並填寫退費原因；平台審核後於工作天內（天數待 TLI 訂定公告）處理退款。',
+      '代辦費用：因代辦（如報名、行政作業）所生之費用，於符合退費條件時應全額退還，不受課程費用退費比例限制。',
+      '適用原則：本規則以短期補習班相關法規之退費精神為原則擬定，實際執行以主管機關現行規定為準；如平台名義或契約型態變更，退費規定得配合調整並另行公告。'
+    ]
+  }
+};
+function renderTliTermsBody(bodyEl, sectionKey){
+  if(!bodyEl) return;
+  var section = TLI_SHARED_TERMS[sectionKey];
+  if(!section) return;
+  var html = '<p style="color:#9A4A0F;background:#FFF8EE;border:1px solid #F3DFB8;border-radius:8px;padding:8px 12px;font-weight:700;">'+TLI_SHARED_TERMS.draftNote+'</p>';
+  html += '<ol style="margin:12px 0 0;padding-left:20px;">';
+  section.items.forEach(function(item){
+    html += '<li style="margin-bottom:10px;">'+item+'</li>';
+  });
+  html += '</ol>';
+  bodyEl.innerHTML = html;
+}
+
+function openTermsModal(){ renderTliTermsBody(document.getElementById('termsModalBody'), 'tos'); document.getElementById('termsModalOverlay').classList.add('show'); }
+function closeTermsModal(){ document.getElementById('termsModalOverlay').classList.remove('show'); }
+
+/* 使用者修正欄位內容時，先清掉舊的錯誤狀態，避免修正後仍顯示紅字 */
+document.querySelectorAll('#registerForm input, #registerForm select, #socialCompleteForm input, #socialCompleteForm select').forEach(function(el){
+  el.addEventListener('input', function(){
+    fieldClearError('err_' + el.id);
+    markInvalid(el, false);
+    if(el.id === 'regEmail'){ document.getElementById('regEmailDupNote').classList.remove('show'); }
+  });
+});
 </script>
 
 <button class="ai-fab" onclick="aiOpen('fab')" aria-label="開啟線上諮詢" data-i18n="ai_fab_aria" data-i18n-attr="aria-label"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
@@ -638,7 +1119,37 @@ var I18N_PAGE = {
   p07_success_text_student: '即將帶您前往會員區首頁，開始瀏覽課表與方案。',
   p07_success_text_teacher: '即將帶您前往教師端首頁，開始查看今日課表。',
   p07_success_btn_student: '進入會員區', p07_success_btn_teacher: '進入教師端',
-  p07_staff_login_link: '後台人員登入'
+  p07_staff_login_link: '後台人員登入',
+  p07_required_note: '為必填欄位',
+  p07_err_required: '此欄位為必填',
+  p07_err_email_format: '請輸入正確的 Email 格式',
+  p07_err_phone: '請輸入有效的手機號碼',
+  p07_err_password_weak: '密碼至少 8 碼，需包含英文字母與數字',
+  p07_err_terms: '請詳閱並勾選同意服務條款與個資告知',
+  p07_email_dup_msg: '此 Email 已有帳號，請直接登入',
+  p07_email_dup_gotologin: '前往登入',
+  p07_email_helper: 'Email 是你的帳號，之後登入與通知都用它',
+  p07_password_hint: '至少 8 碼，需包含英文字母與數字',
+  p07_label_timezone: '所在時區',
+  p07_label_nativelang: '母語／介面語言',
+  p07_phone_cc_aria: '國碼',
+  p07_close_aria: '關閉',
+  p07_terms_pre: '我已閱讀並同意',
+  p07_terms_link: '服務條款與個資蒐集告知',
+  p07_terms_modal_title: '服務條款與個資蒐集告知（示範內容）',
+  p07_terms_h1: '服務條款',
+  p07_terms_p1: '本平台提供語言課程預約、學習紀錄與繳費服務，會員應提供正確且最新的個人資料，並妥善保管帳號密碼。',
+  p07_terms_h2: '個人資料蒐集與利用告知',
+  p07_terms_p2: '我們蒐集之姓名、Email、手機、時區等資料，僅用於課程安排、帳號驗證與必要通知，不會提供第三方行銷使用。',
+  p07_terms_p3: '本頁為原型示範內容，正式條款以 TLI 官方公告版本為準。',
+  p07_terms_close_btn: '我已閱讀',
+  p07_social_step_title: '補齊必要資訊',
+  p07_social_step_sub: '已從社群帳號取得姓名與 Email，請完成以下必填資訊即可完成註冊。',
+  p07_social_back_link: '返回，改用 Email 註冊',
+  p07_next_banner: '登入後將回到：{target}',
+  p07_next_target_checkout: '結帳頁',
+  p07_next_target_myevents: '我的活動',
+  p07_next_target_generic: '您稍早瀏覽的頁面'
 },
 en: {
   meta_title: 'TLI Connect | Log In / Sign Up',
@@ -669,7 +1180,37 @@ en: {
   p07_success_text_student: 'Taking you to your member home page, where you can browse your schedule and plans.',
   p07_success_text_teacher: 'Taking you to your teacher dashboard, where you can view today’s schedule.',
   p07_success_btn_student: 'Go to Member Area', p07_success_btn_teacher: 'Go to Teacher Dashboard',
-  p07_staff_login_link: 'Staff login'
+  p07_staff_login_link: 'Staff login',
+  p07_required_note: 'Required field',
+  p07_err_required: 'This field is required',
+  p07_err_email_format: 'Please enter a valid email address',
+  p07_err_phone: 'Please enter a valid phone number',
+  p07_err_password_weak: 'Password must be at least 8 characters, including letters and numbers',
+  p07_err_terms: 'Please read and agree to the Terms of Service and Privacy Notice',
+  p07_email_dup_msg: 'This email already has an account — please log in instead',
+  p07_email_dup_gotologin: 'Go to Log In',
+  p07_email_helper: 'Your email is your account — you’ll use it to log in and receive notifications',
+  p07_password_hint: 'At least 8 characters, including letters and numbers',
+  p07_label_timezone: 'Time Zone',
+  p07_label_nativelang: 'Native Language / Interface Language',
+  p07_phone_cc_aria: 'Country code',
+  p07_close_aria: 'Close',
+  p07_terms_pre: 'I have read and agree to the',
+  p07_terms_link: 'Terms of Service and Privacy Notice',
+  p07_terms_modal_title: 'Terms of Service and Privacy Notice (Sample Content)',
+  p07_terms_h1: 'Terms of Service',
+  p07_terms_p1: 'This platform provides course booking, learning records, and payment services. Members must provide accurate, up-to-date personal information and keep their account credentials secure.',
+  p07_terms_h2: 'Personal Data Collection and Use Notice',
+  p07_terms_p2: 'The name, email, phone number, and time zone we collect are used only for course scheduling, account verification, and essential notifications — never for third-party marketing.',
+  p07_terms_p3: 'This page is prototype sample content; the official terms are those published by TLI.',
+  p07_terms_close_btn: 'Got it',
+  p07_social_step_title: 'Complete Your Information',
+  p07_social_step_sub: 'We’ve pulled your name and email from your social account. Complete the required fields below to finish signing up.',
+  p07_social_back_link: 'Back — sign up with email instead',
+  p07_next_banner: 'After signing in, you’ll return to: {target}',
+  p07_next_target_checkout: 'Checkout',
+  p07_next_target_myevents: 'My Events',
+  p07_next_target_generic: 'the page you were on'
 },
 ja: {
   meta_title: 'TLI Connect｜ログイン／登録',
@@ -700,7 +1241,37 @@ ja: {
   p07_success_text_student: 'まもなく会員エリアのホームへ移動します。時間割やプランをご覧いただけます。',
   p07_success_text_teacher: 'まもなく講師専用ページのホームへ移動します。本日の授業を確認できます。',
   p07_success_btn_student: '会員エリアへ進む', p07_success_btn_teacher: '講師専用ページへ進む',
-  p07_staff_login_link: 'スタッフログイン'
+  p07_staff_login_link: 'スタッフログイン',
+  p07_required_note: '必須項目です',
+  p07_err_required: 'この項目は必須です',
+  p07_err_email_format: '正しいメールアドレスの形式で入力してください',
+  p07_err_phone: '有効な電話番号を入力してください',
+  p07_err_password_weak: 'パスワードは英数字を含む8文字以上で設定してください',
+  p07_err_terms: '利用規約とプライバシー告知に同意してください',
+  p07_email_dup_msg: 'このメールアドレスは登録済みです。ログインしてください',
+  p07_email_dup_gotologin: 'ログインへ',
+  p07_email_helper: 'メールアドレスはアカウントIDです。ログインや通知に使用します',
+  p07_password_hint: '英数字を含む8文字以上',
+  p07_label_timezone: 'タイムゾーン',
+  p07_label_nativelang: '母語／表示言語',
+  p07_phone_cc_aria: '国番号',
+  p07_close_aria: '閉じる',
+  p07_terms_pre: '以下の内容を読み、同意します：',
+  p07_terms_link: '利用規約とプライバシー告知',
+  p07_terms_modal_title: '利用規約とプライバシー告知（サンプル内容）',
+  p07_terms_h1: '利用規約',
+  p07_terms_p1: '本プラットフォームは語学コースの予約、学習記録、お支払いサービスを提供します。会員は正確かつ最新の個人情報をご提供いただき、アカウント情報を適切に管理してください。',
+  p07_terms_h2: '個人情報の収集・利用に関する告知',
+  p07_terms_p2: '収集した氏名・メール・電話番号・タイムゾーンなどの情報は、授業手配、本人確認、必要な通知にのみ使用し、第三者のマーケティングには使用しません。',
+  p07_terms_p3: '本ページはプロトタイプのサンプル内容です。正式な規約はTLI公式発表版をご確認ください。',
+  p07_terms_close_btn: '確認しました',
+  p07_social_step_title: '必須情報を入力してください',
+  p07_social_step_sub: 'ソーシャルアカウントから氏名とメールアドレスを取得しました。以下の必須項目を入力すると登録が完了します。',
+  p07_social_back_link: '戻ってメールで登録する',
+  p07_next_banner: 'ログイン後は次のページに戻ります：{target}',
+  p07_next_target_checkout: '決済ページ',
+  p07_next_target_myevents: 'マイイベント',
+  p07_next_target_generic: '以前ご覧になっていたページ'
 }
 };
 

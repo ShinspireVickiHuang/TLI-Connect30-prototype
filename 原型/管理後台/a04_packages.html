@@ -260,6 +260,12 @@ html,body{overflow-x:hidden;}
   <option value="pkg">銷售方案</option>
   <option value="bundle">組合包</option>
 </select>
+<label style="font-size:12.5px;color:var(--g500)">銷售模式篩選：</label>
+<select id="salesModeFilter" onchange="renderMainTable()">
+  <option value="all">全部</option>
+  <option value="direct">線上直購</option>
+  <option value="advisor">顧問報價</option>
+</select>
 </div>
 
 <div class="card" id="trialPlanCard">
@@ -313,6 +319,16 @@ var SKUS = [
 var AUD_ALL = ['B','G','C','BIP'];
 var CHANNEL_ALL = ['公開網站','顧問建訂單','企業專案'];
 var WEEKDAYS = ['一','二','三','四','五','六','日'];
+/* 包含上課型態（20260910f 新增）：方案是否含團體聊天室型態，決定學員能否看到並報名聊天室場次（見 m14_chat_booking.html）；
+   與 SKU 的 deliveryMode（預約制／直播制…）是各自獨立的欄位，一個方案可同時勾選多種上課型態 */
+var COURSE_TYPE_OPTIONS = ['一對一','團體直播','團體聊天室','自學影音'];
+function courseTypeBadgeHtml(list){
+  list = list || [];
+  if (!list.length) return '<span class="small">未設定</span>';
+  return list.map(function(t){
+    return '<span class="badge'+(t==='團體聊天室'?' orange':' grey')+'">'+t+'</span>';
+  }).join(' ');
+}
 
 /* ---- 專案型方案用假資料（20260909 新增，示範畫面，資料為模擬數字）
    企業名稱一律沿用 a19_b2b_enterprise.html 的 ENT_NAMES 清單，避免各頁自建名單造成企業名稱不一致 ---- */
@@ -337,6 +353,8 @@ var PROJECT_CONTRACT_HISTORY = {
 
 var PACKAGES = [
  {id:'pk1', name:'中文一對一線上課 20 堂方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'direct', requireLogin:true,
+  courseTypes:['一對一'],
   items:[{sku:'skuC01',qty:20}],
   audiences:['C','BIP'], prices:{C:20000,BIP:19000}, consultantQuote:{},
   discountRules:[
@@ -350,6 +368,8 @@ var PACKAGES = [
   creditRule:{type:'once', totalQty:20, monthlyQty:0, resetDay:1, carryOver:false},
   status:'上架'},
  {id:'pk2', name:'中文彈性團體直播班 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'direct', requireLogin:true,
+  courseTypes:['團體直播','團體聊天室'],
   items:[{sku:'skuC03',qty:1}],
   audiences:['B','G','C','BIP'], prices:{B:9800,G:9500,C:10800,BIP:10200}, consultantQuote:{B:true,G:false},
   discountRules:[
@@ -363,6 +383,8 @@ var PACKAGES = [
   creditRule:{type:'monthly_reset', monthlyQty:8, resetDay:1, carryOver:false},
   status:'上架'},
  {id:'pk3', name:'自學影音課程包（中文基礎）方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'direct', requireLogin:true,
+  courseTypes:['自學影音'],
   items:[{sku:'skuC05',qty:1}],
   audiences:['C','BIP'], prices:{C:2400,BIP:2200}, consultantQuote:{},
   discountRules:[], promoCodes:[],
@@ -371,6 +393,8 @@ var PACKAGES = [
   creditRule:{type:'once', totalQty:1, monthlyQty:0, resetDay:1, carryOver:false},
   status:'上架'},
  {id:'pk4', name:'企業華語線上培訓方案（企業專案）', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'advisor', requireLogin:false,
+  courseTypes:['團體直播'],
   items:[{sku:'skuC07',qty:1}],
   audiences:['B','G'], prices:{}, consultantQuote:{B:true,G:true},
   discountRules:[], promoCodes:[],
@@ -379,6 +403,8 @@ var PACKAGES = [
   creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
   status:'下架'},
  {id:'pk5', name:'中文一對一 30 堂＋教材＋註冊費', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'direct', requireLogin:true,
+  courseTypes:['一對一'],
   items:[{sku:'sku01',qty:30},{sku:'sku03',qty:1},{sku:'sku04',qty:1}],
   audiences:['C','BIP'], prices:{C:32000,BIP:30500}, consultantQuote:{},
   discountRules:[], promoCodes:[],
@@ -387,6 +413,8 @@ var PACKAGES = [
   creditRule:{type:'once', totalQty:30, monthlyQty:0, resetDay:1, carryOver:false},
   status:'上架'},
  {id:'pk6', name:'學期班 Lv.5–8 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
+  salesMode:'direct', requireLogin:true,
+  courseTypes:[],
   items:[{sku:'sku02',qty:1},{sku:'sku03',qty:1},{sku:'sku04',qty:1}],
   audiences:['B','G','C','BIP'], prices:{B:34000,G:33500,C:36000,BIP:35000}, consultantQuote:{B:true,G:false},
   discountRules:[
@@ -400,6 +428,8 @@ var PACKAGES = [
   creditRule:{type:'once', totalQty:32, monthlyQty:0, resetDay:1, carryOver:false},
   status:'上架'},
  {id:'pk7', name:'客製化企業華語專案方案（示範）', type:'pkg', nameEn:'', nameJa:'', desc:'依企業客戶需求由顧問自組課程項目之專案型方案，價格另議。示範畫面，資料為模擬數字。',
+  salesMode:'advisor', requireLogin:false,
+  courseTypes:['團體直播'],
   items:[],
   audiences:['B'], prices:{}, consultantQuote:{B:true},
   discountRules:[], promoCodes:[],
@@ -419,8 +449,8 @@ var PACKAGES = [
   status:'草稿'}
 ];
 var BUNDLES = [
- {id:'bd1', name:'新生開學組合', type:'bundle', packages:['pk1','pk2'], discountPct:10, discountValuesByAud:{}, audiences:['C','BIP'], channel:['公開網站'], periodStart:'2026-09-01', periodEnd:'2027-02-28', status:'上架'},
- {id:'bd2', name:'企業培訓組合（不顯示於前台）', type:'bundle', packages:['pk4','pk2'], discountPct:15, discountValuesByAud:{B:20,G:15}, audiences:['B','G'], channel:['企業專案'], periodStart:'', periodEnd:'', status:'上架'}
+ {id:'bd1', name:'新生開學組合', type:'bundle', salesMode:'direct', packages:['pk1','pk2'], discountPct:10, discountValuesByAud:{}, audiences:['C','BIP'], channel:['公開網站'], periodStart:'2026-09-01', periodEnd:'2027-02-28', status:'上架'},
+ {id:'bd2', name:'企業培訓組合（不顯示於前台）', type:'bundle', salesMode:'advisor', packages:['pk4','pk2'], discountPct:15, discountValuesByAud:{B:20,G:15}, audiences:['B','G'], channel:['企業專案'], periodStart:'', periodEnd:'', status:'上架'}
 ];
 
 function skuById(id){ return SKUS.find(function(s){return s.id===id;}); }
@@ -428,8 +458,13 @@ function pkgById(id){ return PACKAGES.find(function(p){return p.id===id;}); }
 function bundleById(id){ return BUNDLES.find(function(b){return b.id===id;}); }
 function fmt(n){ return 'NT$ '+Number(n).toLocaleString(); }
 
+function salesModeBadge(mode){
+  if (mode === 'advisor') return '<span class="badge orange">顧問報價</span>';
+  return '<span class="badge blue">線上直購</span>';
+}
 function pkgPriceLabel(p){
   if (p.planType === 'project') return '<span class="small">待定（專案報價，綁定客戶：'+(p.projectClient||'尚未綁定')+'）</span>';
+  if (p.salesMode === 'advisor') return '<span class="small">顧問報價，公開頁不顯示價格</span>';
   var vals = p.audiences.map(function(a){return p.prices[a];}).filter(function(v){return v!=null;});
   if (!p.items.length) return '未設定組成，暫不定價';
   if (!vals.length) return '尚未輸入售價';
@@ -501,14 +536,16 @@ function creditRuleLabel(p){
 
 function renderMainTable(){
   var filter = document.getElementById('typeFilter').value;
+  var smFilter = document.getElementById('salesModeFilter').value;
   var t = document.getElementById('mainTable');
-  t.innerHTML = '<tr><th>名稱</th><th>類型</th><th>上課方式</th><th>組成</th><th>堂數規則</th><th>適用對象</th><th>價格</th><th>銷售渠道</th><th>期間</th><th>狀態</th></tr>';
+  t.innerHTML = '<tr><th>名稱</th><th>類型</th><th>銷售模式</th><th>上課方式</th><th>包含上課型態</th><th>組成</th><th>堂數規則</th><th>適用對象</th><th>價格</th><th>銷售渠道</th><th>期間</th><th>狀態</th></tr>';
   var rows = [];
   if (filter === 'all' || filter === 'pkg'){
     PACKAGES.forEach(function(p){
       var isProject = p.planType === 'project';
-      rows.push({type:'pkg', id:p.id, name:p.name, isProject:isProject,
+      rows.push({type:'pkg', id:p.id, name:p.name, isProject:isProject, salesMode: p.salesMode || 'direct',
         delivery: pkgDeliveryBadgeHtml(p),
+        courseTypesCell: courseTypeBadgeHtml(p.courseTypes),
         compose: isProject ? ((p.projectItems||[]).length + ' 項課程（專案自組）') : (p.items.length + ' 項課程'),
         credit: creditRuleLabel(p),
         aud: audBadges(p.audiences), price: pkgPriceLabel(p),
@@ -519,8 +556,12 @@ function renderMainTable(){
   }
   if (filter === 'all' || filter === 'bundle'){
     BUNDLES.forEach(function(b){
-      rows.push({type:'bundle', id:b.id, name:b.name,
+      var bundlePkgs = b.packages.map(pkgById).filter(Boolean);
+      var bundleCourseTypes = [];
+      bundlePkgs.forEach(function(p){ (p.courseTypes||[]).forEach(function(t){ if (bundleCourseTypes.indexOf(t)===-1) bundleCourseTypes.push(t); }); });
+      rows.push({type:'bundle', id:b.id, name:b.name, salesMode: b.salesMode || 'direct',
         delivery: bundleDeliveryBadge(b),
+        courseTypesCell: courseTypeBadgeHtml(bundleCourseTypes),
         compose: b.packages.length + ' 個方案',
         credit: '<span class="small">依組成方案</span>',
         aud: audBadges(b.audiences), price: bundlePriceLabel(b),
@@ -528,13 +569,16 @@ function renderMainTable(){
         status: b.status});
     });
   }
+  if (smFilter !== 'all'){
+    rows = rows.filter(function(r){ return r.salesMode === smFilter; });
+  }
   rows.forEach(function(r){
     var tr = document.createElement('tr');
     tr.className = 'rowlink';
     tr.onclick = function(){ r.type === 'pkg' ? openPkgDetail(r.id) : openBundleDetail(r.id); };
     var typeBadge = r.type === 'pkg' ? '<span class="badge blue">銷售方案</span>' : '<span class="badge orange">組合包</span>';
     if (r.isProject) typeBadge += ' <span class="badge red">專案型（不進公開方案清單）</span>';
-    tr.innerHTML = '<td>'+r.name+'</td><td>'+typeBadge+'</td><td>'+r.delivery+'</td><td>'+r.compose+'</td><td>'+r.credit+'</td><td>'+r.aud+'</td><td>'+r.price+'</td><td>'+r.ch+'</td><td class="small">'+r.period+'</td><td>'+statusBadge(r.status)+'</td>';
+    tr.innerHTML = '<td>'+r.name+'</td><td>'+typeBadge+'</td><td>'+salesModeBadge(r.salesMode)+'</td><td>'+r.delivery+'</td><td>'+r.courseTypesCell+'</td><td>'+r.compose+'</td><td>'+r.credit+'</td><td>'+r.aud+'</td><td>'+r.price+'</td><td>'+r.ch+'</td><td class="small">'+r.period+'</td><td>'+statusBadge(r.status)+'</td>';
     t.appendChild(tr);
   });
 }
@@ -706,8 +750,12 @@ function onComposeQty(pid, el){
 }
 
 function renderPkgBasicPanel(p){
-  p.nameEn = p.nameEn || ''; p.nameJa = p.nameJa || ''; p.desc = p.desc || '';
+  p.nameEn = p.nameEn || ''; p.nameJa = p.nameJa || ''; p.desc = p.desc || ''; p.courseTypes = p.courseTypes || [];
   var modes = pkgDeliveryModes(p);
+  var courseTypeBoxes = COURSE_TYPE_OPTIONS.map(function(ct){
+    var checked = p.courseTypes.indexOf(ct) > -1 ? 'checked' : '';
+    return '<label style="display:inline-block;margin:0 18px 8px 0;font-size:13.5px"><input type="checkbox" class="chk" value="'+ct+'" '+checked+' onchange="onCourseTypeToggle(\''+p.id+'\',this)"> '+ct+'</label>';
+  }).join('');
   var scheduleHtml = '';
   if (modes.indexOf('直播制') > -1){
     var sc = p.schedule || {weekdays:[], time:'', weeks:'', capacity:''};
@@ -735,8 +783,30 @@ function renderPkgBasicPanel(p){
     '<div class="formrow"><label>多語名稱（日文）</label><input type="text" value="'+p.nameJa+'" onchange="onPkgField(\''+p.id+'\',\'nameJa\',this.value)"></div>' +
     '</div>' +
     '<div class="formrow"><label>方案說明</label><textarea rows="3" onchange="onPkgField(\''+p.id+'\',\'desc\',this.value)">'+p.desc+'</textarea></div>' +
+    '<div class="formrow"><label>銷售模式</label><select onchange="onSalesModeChange(\''+p.id+'\',this.value)">' +
+      '<option value="direct"'+(p.salesMode!=='advisor'?' selected':'')+'>線上直購</option>' +
+      '<option value="advisor"'+(p.salesMode==='advisor'?' selected':'')+'>顧問報價</option>' +
+    '</select>' +
+    '<div class="hint">線上直購：公開網站顯示公開價格，可直接登入購買；顧問報價：公開頁不顯示價格，CTA 改為「預約諮詢」，實際金額由顧問另行報價。</div></div>' +
+    '<div class="formrow" id="requireLoginRow-'+p.id+'" style="'+(p.salesMode==='advisor'?'display:none':'')+'"><label>是否需登入才能購買</label>' +
+      '<label class="small"><input type="checkbox" class="chk" '+(p.requireLogin?'checked':'')+' onchange="onPkgField(\''+p.id+'\',\'requireLogin\',this.checked)"> 需登入（未登入導向註冊／登入頁再結帳）</label></div>' +
     '<div class="formrow"><label>上課方式</label><div class="static">'+pkgDeliveryBadgeHtml(p)+'　<span class="small">由組成課程帶出，此處唯讀；若組成含多種上課方式則全部列出。</span></div></div>' +
+    '<div class="formrow"><label>包含上課型態</label><div>'+courseTypeBoxes+'</div>' +
+    '<div class="hint">勾選此方案涵蓋的上課型態；勾選「團體聊天室」的方案，購買後才會在會員區看到並可報名聊天室場次。一個方案可勾選多種型態。</div></div>' +
     '</div>' + scheduleHtml;
+}
+function onCourseTypeToggle(pid, el){
+  var p = pkgById(pid);
+  p.courseTypes = p.courseTypes || [];
+  if (el.checked){ if (p.courseTypes.indexOf(el.value)===-1) p.courseTypes.push(el.value); }
+  else { p.courseTypes = p.courseTypes.filter(function(t){ return t !== el.value; }); }
+}
+function onSalesModeChange(pid, val){
+  var p = pkgById(pid);
+  p.salesMode = val;
+  var row = document.getElementById('requireLoginRow-'+pid);
+  if (row) row.style.display = (val === 'advisor') ? 'none' : '';
+  renderPkgTypeBadge(p);
 }
 function onPkgField(pid, field, val){
   var p = pkgById(pid);
@@ -1533,6 +1603,7 @@ function saveTrialPlan(){
 function createNewPackage(){
   var id = 'pkNew' + Date.now();
   var p = {id:id, name:'新方案（未命名）', type:'pkg', nameEn:'', nameJa:'', desc:'',
+    courseTypes:[],
     items:[], audiences:[], prices:{}, consultantQuote:{},
     discountRules:[], promoCodes:[],
     channel:[], periodStart:'', periodEnd:'',

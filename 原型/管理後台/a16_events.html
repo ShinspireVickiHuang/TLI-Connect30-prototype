@@ -357,6 +357,12 @@ border-radius:8px;padding:9px 14px;margin-bottom:10px;font-size:13px;flex-wrap:w
 .zoomrow .zlbl{font-size:13px;color:var(--g900);font-weight:600;min-width:170px;}
 .zoomrow .zdesc{font-size:11.5px;color:var(--g500);margin-top:2px;max-width:420px;}
 .masked{font-family:monospace;letter-spacing:1px;}
+.switch{position:relative;display:inline-block;width:38px;height:22px;vertical-align:middle;}
+.switch input{opacity:0;width:0;height:0;position:absolute;}
+.switch .slider{position:absolute;inset:0;background:var(--g200);border-radius:22px;cursor:pointer;transition:.15s;}
+.switch .slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+.switch input:checked+.slider{background:var(--teal);}
+.switch input:checked+.slider:before{transform:translateX(16px);}
 </style>
 <style>
 /* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
@@ -464,6 +470,7 @@ var EVENTS = [
   intro:'邀請專業茶藝師示範中式茶道流程，適合已修習基礎中文的學員參加，全程中文導覽並附英文講義。',
   speaker:'陳美惠 老師', format:'實體', date:'2026-09-12', time:'14:00', location:'羅斯福校 3F 茶道教室',
   fee:'付費', skuId:'sku07', capacity:20, audiences:['C','BIP'], regDeadline:'2026-09-10', status:'已發佈',
+  regCloseHours:48, cancelCloseHours:24, waitlistEnabled:false, noShowTrack:true, refundPolicy:'依退費規則', refundNote:'',
   zoom:null,
   attendees:[
    {name:'王小明', tier:'C', regTime:'2026-08-20 10:12', pay:'已付款', attend:'－'},
@@ -477,6 +484,7 @@ var EVENTS = [
   intro:'針對職場情境設計的商務華語密集工作坊，涵蓋會議發言、談判用語與商業書信寫作，全程線上直播互動。',
   speaker:'Michael Turner 老師', format:'線上', date:'2026-09-20', time:'19:30', location:'',
   fee:'付費', skuId:'sku13', capacity:30, audiences:['B','G','C','BIP'], regDeadline:'2026-09-18', status:'已發佈',
+  regCloseHours:'', cancelCloseHours:12, waitlistEnabled:true, noShowTrack:true, refundPolicy:'不退', refundNote:'',
   zoom:{password:'TLI-8823', beforeMin:15, afterMin:50, waitingRoom:true, autoAttendance:true},
   attendees:[
    {name:'洪佳蓉', tier:'C', regTime:'2026-08-18 09:02', pay:'已付款', attend:'－'},
@@ -492,12 +500,14 @@ var EVENTS = [
   intro:'四校同步開放秋季班學生參與，提供茶點與跨校交流機會，現場並有課程顧問駐點諮詢。',
   speaker:'各校顧問團隊', format:'實體', date:'2026-09-05', time:'18:00', location:'士林校 1F 多功能廳',
   fee:'免費', skuId:'', capacity:50, audiences:['B','G','C','BIP'], regDeadline:'2026-09-03', status:'草稿',
+  regCloseHours:'', cancelCloseHours:'', waitlistEnabled:true, noShowTrack:false, refundPolicy:'依退費規則', refundNote:'',
   zoom:null,
   attendees:[]},
  {id:'ev4', name:'中文能力線上分享會',
   intro:'邀請歷屆學員分享學習歷程與應考經驗，並開放現場提問，活動全程錄影供未報名學員回放。',
   speaker:'校友分享團', format:'線上', date:'2026-08-10', time:'19:00', location:'',
   fee:'免費', skuId:'', capacity:100, audiences:['C','BIP'], regDeadline:'2026-08-09', status:'已結束',
+  regCloseHours:'', cancelCloseHours:'', waitlistEnabled:false, noShowTrack:false, refundPolicy:'依退費規則', refundNote:'',
   zoom:{password:'TLI-2210', beforeMin:15, afterMin:50, waitingRoom:true, autoAttendance:true},
   attendees:[
    {name:'周宜靜', tier:'C', regTime:'2026-08-01 10:00', pay:'已付款', attend:'已出席'},
@@ -529,6 +539,10 @@ function evFeeLabel(ev){
 }
 function evAudBadges(list){
   return (list||[]).map(function(a){ return '<span class="badge blue">'+a+'</span>'; }).join(' ') || '<span class="small">未設定</span>';
+}
+function evCancelCutoffLabel(ev){
+  if (ev.cancelCloseHours === '' || ev.cancelCloseHours === null || typeof ev.cancelCloseHours === 'undefined') return '<span class="small">－沿用參數設定</span>';
+  return '開始前 '+ev.cancelCloseHours+' 小時';
 }
 
 /* ================= 篩選／搜尋／分頁 ================= */
@@ -576,13 +590,13 @@ function renderEventTable(){
   var pageRows = filtered.slice(start, start+evPageSize);
 
   var t = document.getElementById('eventTable');
-  t.innerHTML = '<tr><th>名稱</th><th>形式</th><th>日期</th><th>費用</th><th>名額／已報名</th><th>狀態</th></tr>';
+  t.innerHTML = '<tr><th>名稱</th><th>形式</th><th>日期</th><th>費用</th><th>名額／已報名</th><th>取消截止</th><th>狀態</th></tr>';
   pageRows.forEach(function(ev){
     var tr = document.createElement('tr');
     tr.className = 'rowlink';
     tr.onclick = function(){ openEvDetail(ev.id); };
     tr.innerHTML = '<td>'+ev.name+'</td><td>'+evFormatBadge(ev.format)+'</td><td class="small">'+ev.date+' '+ev.time+'</td>' +
-      '<td>'+evFeeLabel(ev)+'</td><td>'+ev.capacity+' 人／已報名 '+ev.attendees.length+'</td><td>'+evStatusBadge(ev.status)+'</td>';
+      '<td>'+evFeeLabel(ev)+'</td><td>'+ev.capacity+' 人／已報名 '+ev.attendees.length+'</td><td class="small">'+evCancelCutoffLabel(ev)+'</td><td>'+evStatusBadge(ev.status)+'</td>';
     t.appendChild(tr);
   });
 
@@ -647,6 +661,16 @@ function newEventFormHtml(){
     '<div class="formrow" style="max-width:180px"><label>名額</label><input type="number" id="ne_capacity" min="1" value="20"></div>' +
     '<div class="formrow"><label>適用對象</label>'+audBoxes+'</div>' +
     '<div class="formrow" style="max-width:220px"><label>報名截止日</label><input type="date" id="ne_deadline"></div>' +
+    '<div style="font-weight:600;font-size:13.5px;margin:18px 0 8px">報名與取消規則</div>' +
+    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為情境示範用途填入之示範值。</div>' +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ne_regCloseHours" min="0" placeholder="待定" style="width:100px"><span class="small">小時</span></div></div>' +
+    '<div class="formrow"><label>取消報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ne_cancelCloseHours" min="0" placeholder="待定" style="width:100px"><span class="small">小時</span></div></div>' +
+    '</div>' +
+    '<div class="formrow"><label>名額與候補</label><label class="switch"><input type="checkbox" id="ne_waitlist"><span class="slider"></span></label> <span class="small">名額額滿後開放候補登記</span></div>' +
+    '<div class="formrow"><label>逾期未取消記為未出席（No-show）</label><label class="switch"><input type="checkbox" id="ne_noshow" checked><span class="slider"></span></label></div>' +
+    '<div class="formrow"><label>付費活動退費規則</label><select id="ne_refundPolicy" onchange="onNeRefundChange(this)"><option value="依退費規則">依退費規則</option><option value="不退">不退</option><option value="自訂說明">自訂說明</option></select></div>' +
+    '<div id="ne_refundNoteWrap"></div>' +
     '<div class="formrow"><label>發佈</label><label style="font-size:13px"><input type="checkbox" id="ne_publish"> 立即發佈（不勾選則存為草稿）</label></div>' +
     '<div style="text-align:right;margin-top:16px;padding-top:14px;border-top:1px solid var(--g200)">' +
     '<button class="btn ghost" onclick="closeEvDrawer()">取消</button> ' +
@@ -657,6 +681,16 @@ function renderNewEventForm(){
   document.getElementById('ev_body').innerHTML = newEventFormHtml();
   onNeFormatChange(document.getElementById('ne_format'));
   onNeFeeChange(document.querySelector('input[name=ne_fee]:checked'));
+  onNeRefundChange(document.getElementById('ne_refundPolicy'));
+}
+function onNeRefundChange(el){
+  var wrap = document.getElementById('ne_refundNoteWrap');
+  if (!wrap) return;
+  if (el && el.value === '自訂說明'){
+    wrap.innerHTML = '<div class="formrow"><label>自訂退費說明</label><textarea id="ne_refundNote" rows="2" placeholder="請說明退費條件與方式"></textarea></div>';
+  } else {
+    wrap.innerHTML = '';
+  }
 }
 function onNeFormatChange(el){
   var wrap = document.getElementById('ne_formatFields');
@@ -688,6 +722,10 @@ function saveNewEvent(){
   var audBoxes = document.querySelectorAll('#ev_body input[type=checkbox].chk');
   var audiencesChecked = Array.from(audBoxes).filter(function(c){return c.checked;}).map(function(c){return c.value;});
   var publish = document.getElementById('ne_publish').checked;
+  var regCloseVal = document.getElementById('ne_regCloseHours').value;
+  var cancelCloseVal = document.getElementById('ne_cancelCloseHours').value;
+  var refundPolicyVal = document.getElementById('ne_refundPolicy').value;
+  var refundNoteVal = refundPolicyVal==='自訂說明' && document.getElementById('ne_refundNote') ? document.getElementById('ne_refundNote').value : '';
 
   var ev = {
     id: 'ev'+nextEventSeq, name: name,
@@ -702,6 +740,12 @@ function saveNewEvent(){
     audiences: audiencesChecked,
     regDeadline: document.getElementById('ne_deadline').value || '',
     status: publish ? '已發佈' : '草稿',
+    regCloseHours: regCloseVal===''?'':Number(regCloseVal),
+    cancelCloseHours: cancelCloseVal===''?'':Number(cancelCloseVal),
+    waitlistEnabled: document.getElementById('ne_waitlist').checked,
+    noShowTrack: document.getElementById('ne_noshow').checked,
+    refundPolicy: refundPolicyVal,
+    refundNote: refundNoteVal,
     zoom: format === '線上' ? {password:'TLI-'+Math.floor(1000+Math.random()*8999), beforeMin:15, afterMin:50, waitingRoom:true, autoAttendance:true} : null,
     attendees: []
   };
@@ -839,8 +883,28 @@ function renderContentPanel(){
     '<div class="formrow" style="max-width:180px"><label>名額</label><input type="number" id="ec_capacity" min="1" value="'+ev.capacity+'"></div>' +
     '<div class="formrow"><label>適用對象</label>'+audBoxes+'</div>' +
     '<div class="formrow" style="max-width:220px"><label>報名截止日</label><input type="date" id="ec_deadline" value="'+(ev.regDeadline||'')+'"></div>' +
+    '<div style="font-weight:600;font-size:13.5px;margin:18px 0 8px">報名與取消規則</div>' +
+    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為情境示範用途填入之示範值。</div>' +
+    '<div class="grid2">' +
+    '<div class="formrow"><label>報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ec_regCloseHours" min="0" placeholder="待定" style="width:100px" value="'+(ev.regCloseHours===''||ev.regCloseHours==null?'':ev.regCloseHours)+'"><span class="small">小時</span></div></div>' +
+    '<div class="formrow"><label>取消報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ec_cancelCloseHours" min="0" placeholder="待定" style="width:100px" value="'+(ev.cancelCloseHours===''||ev.cancelCloseHours==null?'':ev.cancelCloseHours)+'"><span class="small">小時</span></div></div>' +
+    '</div>' +
+    '<div class="formrow"><label>名額與候補</label><label class="switch"><input type="checkbox" id="ec_waitlist" '+(ev.waitlistEnabled?'checked':'')+'><span class="slider"></span></label> <span class="small">名額額滿後開放候補登記</span></div>' +
+    '<div class="formrow"><label>逾期未取消記為未出席（No-show）</label><label class="switch"><input type="checkbox" id="ec_noshow" '+(ev.noShowTrack?'checked':'')+'><span class="slider"></span></label></div>' +
+    '<div class="formrow"><label>付費活動退費規則</label><select id="ec_refundPolicy" onchange="onEcRefundChange(this)"><option value="依退費規則"'+(ev.refundPolicy==='依退費規則'?' selected':'')+'>依退費規則</option><option value="不退"'+(ev.refundPolicy==='不退'?' selected':'')+'>不退</option><option value="自訂說明"'+(ev.refundPolicy==='自訂說明'?' selected':'')+'>自訂說明</option></select></div>' +
+    '<div id="ec_refundNoteWrap">'+(ev.refundPolicy==='自訂說明' ? '<div class="formrow"><label>自訂退費說明</label><textarea id="ec_refundNote" rows="2">'+(ev.refundNote||'')+'</textarea></div>' : '')+'</div>' +
     '<div class="formrow"><label>狀態</label><select id="ec_status"><option'+(ev.status==='草稿'?' selected':'')+'>草稿</option><option'+(ev.status==='已發佈'?' selected':'')+'>已發佈</option><option'+(ev.status==='已結束'?' selected':'')+'>已結束</option></select></div>' +
     '<div style="text-align:right;margin-top:14px;padding-top:14px;border-top:1px solid var(--g200)"><button class="btn" onclick="saveEventContent()">儲存活動內容</button></div>';
+}
+function onEcRefundChange(el){
+  var wrap = document.getElementById('ec_refundNoteWrap');
+  if (!wrap) return;
+  if (el && el.value === '自訂說明'){
+    var ev = eventById(evDrawerId);
+    wrap.innerHTML = '<div class="formrow"><label>自訂退費說明</label><textarea id="ec_refundNote" rows="2">'+(ev&&ev.refundNote?ev.refundNote:'')+'</textarea></div>';
+  } else {
+    wrap.innerHTML = '';
+  }
 }
 function saveEventContent(){
   var ev = eventById(evDrawerId);
@@ -853,6 +917,14 @@ function saveEventContent(){
   if (ev.fee==='付費' && document.getElementById('ec_sku')) ev.skuId = document.getElementById('ec_sku').value;
   ev.capacity = Number(document.getElementById('ec_capacity').value) || ev.capacity;
   ev.audiences = Array.from(document.querySelectorAll('.ec-aud:checked')).map(function(c){return c.value;});
+  var ecRegClose = document.getElementById('ec_regCloseHours').value;
+  var ecCancelClose = document.getElementById('ec_cancelCloseHours').value;
+  ev.regCloseHours = ecRegClose===''? '': Number(ecRegClose);
+  ev.cancelCloseHours = ecCancelClose===''? '': Number(ecCancelClose);
+  ev.waitlistEnabled = document.getElementById('ec_waitlist').checked;
+  ev.noShowTrack = document.getElementById('ec_noshow').checked;
+  ev.refundPolicy = document.getElementById('ec_refundPolicy').value;
+  ev.refundNote = ev.refundPolicy==='自訂說明' && document.getElementById('ec_refundNote') ? document.getElementById('ec_refundNote').value : '';
   ev.regDeadline = document.getElementById('ec_deadline').value;
   ev.status = document.getElementById('ec_status').value;
   document.getElementById('ev_title').textContent = ev.name;

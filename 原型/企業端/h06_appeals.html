@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<title>申訴覆核｜TLI Connect 3.0 企業管理後台</title>
+<title>請假與申訴審核｜TLI Connect 3.0 企業管理後台</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 :root{--navy:#1B4E8C;--navy-dark:#123a68;--orange:#E8792B;--teal:#0F9B79;
@@ -135,6 +135,17 @@ display:flex;flex-direction:column;}
 .filterrow .ff{min-width:160px;flex:1;}
 .filterrow .ff label{display:block;font-size:11.5px;color:var(--g500);margin-bottom:4px;}
 .filterrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+/* ---- 分頁（請假核准／申訴覆核） ---- */
+.tabbar{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;}
+.tabbtn{background:none;border:none;padding:10px 4px;margin-right:22px;font-size:14px;color:var(--g500);cursor:pointer;font-family:inherit;
+border-bottom:2px solid transparent;position:relative;top:1px;}
+.tabbtn.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy);}
+.tabbtn .tabcount{display:inline-block;background:var(--orange);color:#fff;font-size:11px;font-weight:700;border-radius:9px;
+padding:0 6px;margin-left:6px;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+.rowactions{display:flex;gap:8px;flex-wrap:wrap;}
+.rowactions .btn{padding:5px 10px;font-size:12px;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -159,7 +170,7 @@ display:flex;flex-direction:column;}
 <a data-nav="h03" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
 <a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
 <a data-nav="h05" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
-<a data-nav="h06" class="active" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>申訴覆核</span></a>
+<a data-nav="h06" class="active" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>請假與申訴審核</span></a>
 </nav>
 <div class="sidebar-user" id="sidebarUser">
 <div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar">陳</span><span class="su-info"><span class="su-name">陳雅婷 Sarah Chen</span><span class="su-roletag">企業管理者</span></span>
@@ -171,7 +182,7 @@ display:flex;flex-direction:column;}
 <div class="main">
 <div class="topbar">
 <button class="hamburger" onclick="toggleSidebar()" aria-label="開啟選單"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5.5" x2="17" y2="5.5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14.5" x2="17" y2="14.5"/></svg></button>
-<div class="tb-title">申訴覆核</div>
+<div class="tb-title">請假與申訴審核</div>
 <div class="tb-actions">
 <div class="tb-search"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg><input type="text" placeholder="搜尋員工"></div>
 <button class="tb-bellbtn" onclick="toggleNotif(event)" aria-label="通知"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5c-2.2 0-4 1.8-4 4v2.3c0 .6-.2 1.2-.6 1.7L4 12.5h12l-1.4-2c-.4-.5-.6-1.1-.6-1.7V6.5c0-2.2-1.8-4-4-4z"/><path d="M8.2 15.5a1.8 1.8 0 0 0 3.6 0"/></svg><span class="tb-dot" id="tbDot"></span></button>
@@ -185,8 +196,41 @@ display:flex;flex-direction:column;}
 <div class="note" style="margin-bottom:14px">示範畫面，資料為模擬數字，非實際企業資料。</div>
 
 <div class="pagehead">
-<div><h1>申訴覆核</h1><div class="desc">超過每月免扣次數的請假，系統預設記為缺席並扣時數；員工可提出申訴，經 HR 或顧問覆核通過後改記為請假、不扣時數。</div></div>
+<div><h1>請假與申訴審核</h1><div class="desc">「請假核准」處理需 HR 事前核准的請假申請；「申訴覆核」處理員工對超額請假扣時數判定提出的申訴。兩者為不同流程，各自獨立審核。</div></div>
 </div>
+
+<div class="tabbar">
+<button class="tabbtn active" id="tabbtn-leave" onclick="switchTab('leave')">請假核准<span class="tabcount" id="leaveTabCount" style="display:none"></span></button>
+<button class="tabbtn" id="tabbtn-appeal" onclick="switchTab('appeal')">申訴覆核<span class="tabcount" id="appealTabCount" style="display:none"></span></button>
+</div>
+
+<!-- ===== 分頁一：請假核准 ===== -->
+<div class="tabpanel active" id="panel-leave">
+
+<div class="note" style="margin-bottom:14px">貴公司合約設定為每筆請假需 HR 核准；未核准前請假不生效、暫不計入出勤率。此設定可於「合約與時數池」頁的合約參數調整。</div>
+
+<div class="card">
+<div class="filterrow">
+<div class="ff"><label>狀態</label><select id="fLeaveStatus" onchange="renderLeaveTable()">
+<option value="">全部狀態</option><option value="pending">待核准</option><option value="approved">已核准</option><option value="rejected">已退回</option>
+</select></div>
+<div class="ff"><label>部門</label><select id="fLeaveDept" onchange="renderLeaveTable()"><option value="">全部部門</option></select></div>
+</div>
+</div>
+
+<div class="card">
+<h2>請假申請清單</h2>
+<div class="cardesc">員工送出請假申請後，須經 HR 核准才會生效；退回後該堂課維持原排課，員工可重新申請或改期。</div>
+<div class="tablewrap"><table>
+<thead><tr><th>員工</th><th>部門</th><th>課堂</th><th>時間</th><th>原因</th><th>送出時間</th><th>狀態</th><th>操作／覆核意見</th></tr></thead>
+<tbody id="leaveTbody"></tbody>
+</table></div>
+</div>
+
+</div>
+
+<!-- ===== 分頁二：申訴覆核 ===== -->
+<div class="tabpanel" id="panel-appeal">
 
 <div class="card">
 <div class="filterrow">
@@ -204,6 +248,8 @@ display:flex;flex-direction:column;}
 <thead><tr><th>員工</th><th>部門</th><th>課堂日期</th><th>原判定</th><th>申訴原因分類</th><th>說明</th><th>送出時間</th><th>狀態</th></tr></thead>
 <tbody id="appealTbody"></tbody>
 </table></div>
+</div>
+
 </div>
 
 </div>
@@ -229,6 +275,14 @@ display:flex;flex-direction:column;}
 <h3>轉顧問覆核</h3>
 <div class="note" style="margin-bottom:14px">轉出後本件將由 TLI 顧問處理，HR 端不可再直接通過或駁回，如需追回請聯繫顧問。</div>
 <div style="text-align:right;margin-top:8px"><button class="btn ghost" onclick="closeModal('toConsultantModal')">取消</button> <button class="btn teal" onclick="confirmToConsultant()">確認轉出</button></div>
+</div></div>
+
+<!-- 請假核准決定 modal（核准／退回皆走此二次確認） -->
+<div class="modal-mask" id="leaveDecisionModal"><div class="modal">
+<h3 id="leaveDecisionTitle">請假核准決定</h3>
+<div class="note" id="leaveDecisionNote" style="margin-bottom:14px"></div>
+<div class="formrow"><label>覆核意見（必填）</label><textarea id="leaveDecisionNoteInput" placeholder="請簡述核准或退回依據"></textarea></div>
+<div style="text-align:right;margin-top:8px"><button class="btn ghost" onclick="closeModal('leaveDecisionModal')">取消</button> <button class="btn" id="leaveDecisionConfirmBtn" onclick="confirmLeaveDecision()">確認</button></div>
 </div></div>
 
 <script>
@@ -283,7 +337,100 @@ var STATUS_META = {
 (function initFilterOptions(){
   var dsel = document.getElementById('fDept');
   DEPTS.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d; dsel.appendChild(o); });
+  var ldsel = document.getElementById('fLeaveDept');
+  DEPTS.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d; ldsel.appendChild(o); });
 })();
+
+/* ===== 請假核准示範資料（合約設定為需 HR 核准時才會有此清單） ===== */
+var CLASS_POOL = ['中文一對一－商務會話','中文一對一－聽力加強','中文一對一－閱讀寫作','中文一對一－會話進階'];
+var LEAVE_REASON_POOL = ['臨時加班，無法配合上課時段','身體不適，需請假就醫','出差在外，網路不穩定','小孩臨時生病需照顧'];
+var LEAVE_STATUS_PLAN = ['pending','pending','approved','approved','rejected'];
+function makeLeaveRequest(i){
+  var siteIdx = i % 2;
+  var pool = siteIdx===0 ? US_NAMES : JP_NAMES;
+  var name = pool[(Math.floor(i/2)+3) % pool.length];
+  var dept = DEPTS[(i+2) % DEPTS.length];
+  var status = LEAVE_STATUS_PLAN[i % LEAVE_STATUS_PLAN.length];
+  var classDate = addDays('2026-09-10', Math.floor(seededRand(i*23+5)*10));
+  var submitted = addDays(classDate, -Math.floor(seededRand(i*29+7)*3)-1);
+  var rec = {
+    id:'lv'+i, name:name, dept:dept, site:SITE_LIST[siteIdx].name,
+    classInfo: CLASS_POOL[i % CLASS_POOL.length],
+    classTime: classDate+' '+(9+Math.floor(seededRand(i*31+11)*8))+':00',
+    reason: LEAVE_REASON_POOL[i % LEAVE_REASON_POOL.length],
+    submittedAt: submitted+' '+(9+Math.floor(seededRand(i*37+13)*8))+':'+(seededRand(i*41+17)<0.5?'00':'30'),
+    status: status, note:null, reviewer:null, reviewedAt:null
+  };
+  if (status==='approved'){ rec.note='已核准，該堂課改記為請假。'; rec.reviewer='HR 陳雅婷'; rec.reviewedAt=addDays(submitted,1); }
+  if (status==='rejected'){ rec.note='與部門主管確認後，該時段仍需到班，請改期或另約時間。'; rec.reviewer='HR 陳雅婷'; rec.reviewedAt=addDays(submitted,1); }
+  return rec;
+}
+var LEAVE_REQUESTS = []; for (var li=0; li<LEAVE_STATUS_PLAN.length; li++) LEAVE_REQUESTS.push(makeLeaveRequest(li));
+var LEAVE_STATUS_META = {
+  pending:{lbl:'待核准', cls:'orange'},
+  approved:{lbl:'已核准', cls:'green'},
+  rejected:{lbl:'已退回', cls:'red'}
+};
+function renderLeaveTable(){
+  var fs = document.getElementById('fLeaveStatus').value, fd = document.getElementById('fLeaveDept').value;
+  var rows = LEAVE_REQUESTS.filter(function(r){ return (!fs || r.status===fs) && (!fd || r.dept===fd); });
+  var tbody = document.getElementById('leaveTbody');
+  if (!rows.length){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--g500);white-space:normal">目前沒有符合篩選條件的請假申請</td></tr>';
+    updateTabCounts();
+    return;
+  }
+  tbody.innerHTML = rows.map(function(r){
+    var meta = LEAVE_STATUS_META[r.status];
+    var actionCell;
+    if (r.status==='pending'){
+      actionCell = '<div class="rowactions"><button class="btn teal" onclick="openLeaveDecision(\''+r.id+'\',\'approve\')">核准</button>'+
+        '<button class="btn danger" onclick="openLeaveDecision(\''+r.id+'\',\'reject\')">退回</button></div>';
+    } else {
+      actionCell = '<span class="small">'+r.note+'<br>'+r.reviewer+'　'+r.reviewedAt+'</span>';
+    }
+    return '<tr><td>'+r.name+'</td><td>'+r.dept+'</td><td>'+r.classInfo+'</td><td>'+r.classTime+'</td>'+
+      '<td class="wrap-cell">'+r.reason+'</td><td>'+r.submittedAt+'</td>'+
+      '<td><span class="badge '+meta.cls+'">'+meta.lbl+'</span></td>'+
+      '<td class="wrap-cell">'+actionCell+'</td></tr>';
+  }).join('');
+  updateTabCounts();
+}
+var leaveDecisionId = null, leaveDecisionKind = null;
+function openLeaveDecision(id, kind){
+  leaveDecisionId = id; leaveDecisionKind = kind;
+  document.getElementById('leaveDecisionTitle').textContent = kind==='approve' ? '確認核准請假' : '確認退回請假';
+  document.getElementById('leaveDecisionNote').textContent = kind==='approve'
+    ? '核准後，該堂課將記為「請假」並生效，不計入出勤率分母缺席。'
+    : '退回後，該堂課維持原排課，員工可重新申請請假或改期。';
+  document.getElementById('leaveDecisionNoteInput').value = '';
+  document.getElementById('leaveDecisionModal').classList.add('open');
+}
+function confirmLeaveDecision(){
+  var note = document.getElementById('leaveDecisionNoteInput').value.trim();
+  if (!note){ toast('請先填寫覆核意見'); return; }
+  var r = LEAVE_REQUESTS.find(function(x){return x.id===leaveDecisionId;});
+  if (!r) return;
+  r.status = leaveDecisionKind==='approve' ? 'approved' : 'rejected';
+  r.note = note; r.reviewer = 'HR 陳雅婷'; r.reviewedAt = '2026-09-10';
+  closeModal('leaveDecisionModal');
+  renderLeaveTable();
+  toast(leaveDecisionKind==='approve' ? '已核准請假，該堂課已改記為請假' : '已退回請假申請');
+}
+function updateTabCounts(){
+  var pendingLeave = LEAVE_REQUESTS.filter(function(r){return r.status==='pending';}).length;
+  var pendingAppeal = APPEALS.filter(function(a){return a.status==='pending';}).length;
+  var lc = document.getElementById('leaveTabCount'), ac = document.getElementById('appealTabCount');
+  if (pendingLeave){ lc.style.display='inline-block'; lc.textContent=pendingLeave; } else { lc.style.display='none'; }
+  if (pendingAppeal){ ac.style.display='inline-block'; ac.textContent=pendingAppeal; } else { ac.style.display='none'; }
+}
+function switchTab(name){
+  document.getElementById('tabbtn-leave').classList.toggle('active', name==='leave');
+  document.getElementById('tabbtn-appeal').classList.toggle('active', name==='appeal');
+  document.getElementById('panel-leave').classList.toggle('active', name==='leave');
+  document.getElementById('panel-appeal').classList.toggle('active', name==='appeal');
+}
+renderLeaveTable();
 
 function renderTable(){
   var fs = document.getElementById('fStatus').value, fd = document.getElementById('fDept').value;
@@ -293,6 +440,7 @@ function renderTable(){
   var tbody = document.getElementById('appealTbody');
   if (!rows.length){
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--g500);white-space:normal">目前沒有符合篩選條件的申訴案件</td></tr>';
+    if (typeof updateTabCounts==='function') updateTabCounts();
     return;
   }
   tbody.innerHTML = rows.map(function(a){
@@ -305,6 +453,7 @@ function renderTable(){
       '<td>'+a.submittedAt+'</td>'+
       '<td><span class="badge '+meta.cls+'">'+meta.lbl+'</span></td></tr>';
   }).join('');
+  if (typeof updateTabCounts==='function') updateTabCounts();
 }
 
 /* ===== 詳情抽屜 ===== */

@@ -334,6 +334,7 @@ html,body{overflow-x:hidden;}
 </div>
 
 <div class="tablewrap"><table id="orderTable"></table></div>
+<p class="small" id="orderEmpty" style="display:none;text-align:center;padding:16px 0;">找不到符合條件的訂單。</p>
 
 <div class="pagerbar">
 <span id="pagerLabel"></span>
@@ -788,6 +789,8 @@ function renderTable(){
     tr.addEventListener('click', function(){ openOrderDrawer(o.id); });
     t.appendChild(tr);
   });
+
+  document.getElementById('orderEmpty').style.display = total ? 'none' : '';
 
   var selChk = document.getElementById('selectAllChk');
   var pageIds = pageRows.map(function(o){return o.id;});

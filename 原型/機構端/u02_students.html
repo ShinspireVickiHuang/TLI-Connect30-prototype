@@ -74,6 +74,12 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 .badge.orange{background:#FCEBDC;color:var(--orange);}
 .note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;border-radius:6px;}
 .small{font-size:12px;color:var(--g500);}
+.hidden{display:none!important;}
+.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.filterbar input,.filterbar select{padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;color:var(--g900);}
+.fchip{padding:6px 14px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--g900);}
+.fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
 background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
 opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-align:center;}
@@ -89,6 +95,18 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .charthead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .charthead .ctitle{font-size:13.5px;font-weight:600;}
 .charthead .cval{font-size:12.5px;color:var(--g500);}
+/* ---- 聊天室報名設定（20260910f 新增） ---- */
+.modewrap{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
+.modewrap label{font-size:13.5px;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.wl-toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap;}
+.wl-list{max-height:280px;overflow-y:auto;border:1px solid var(--g200);border-radius:8px;padding:4px 10px;}
+.wl-row{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px dashed var(--g200);font-size:13px;}
+.wl-row:last-child{border-bottom:none;}
+.wl-row .wl-name{flex:1;}
+.searchbox{position:relative;max-width:280px;flex:1;min-width:180px;}
+.searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;box-sizing:border-box;}
+.searchbox .sicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--g500);}
+.emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -135,14 +153,22 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <div class="card">
 <div class="pagehead">
-<div><h1>學生名單</h1><div class="desc">僅供查看在學學生的開通與權益到期狀況，無法於此修改或收款。</div></div>
+<div><h1>學生名單</h1><div class="desc">僅供查看在學學生的開通、權益到期狀況與聊天室出席情形，無法於此修改或收款。</div></div>
+</div>
+<div class="filterbar">
+<input type="text" id="stuSearch" placeholder="搜尋學生姓名" oninput="renderStudentList()">
+<select id="stuTerm" onchange="renderStudentList()"><option value="">全部學期</option></select>
+<button type="button" class="fchip active" data-status="" onclick="setStuStatusFilter(this,'')">全部狀態</button>
+<button type="button" class="fchip" data-status="在學" onclick="setStuStatusFilter(this,'在學')">在學</button>
+<button type="button" class="fchip" data-status="已到期" onclick="setStuStatusFilter(this,'已到期')">已到期</button>
 </div>
 <div class="tablewrap">
 <table>
-<thead><tr><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>資源完成率</th><th>狀態</th></tr></thead>
+<thead><tr><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>出席次數</th><th>未出席（no-show）次數</th><th>資源完成率</th><th>狀態</th></tr></thead>
 <tbody id="studentTbody"></tbody>
 </table>
 </div>
+<p class="emptylist hidden" id="stuEmpty">找不到符合條件的學生。</p>
 </div>
 
 <div class="card" id="reconcileCard">
@@ -163,6 +189,13 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 </div>
 
+<div class="card" id="chatSettingCard">
+<div class="pagehead">
+<div><h1 style="font-size:16px;">聊天室報名設定</h1></div>
+</div>
+<div id="chatSettingBody"></div>
+</div>
+
 </div>
 </div>
 
@@ -179,13 +212,40 @@ function makeStudent(i){
   var status = r2 < 0.85 ? '在學' : '已到期';
   var chatCount = Math.floor(r3*8);
   var completion = Math.floor(30+r4*65);
-  return {name:name, term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, completion:completion};
+  /* 聊天室出席／未出席（no-show）次數：示範資料，兩者合計不超過報名次數 */
+  var noshowCount = chatCount>0 ? Math.min(chatCount, Math.floor(seededRand(i*61+43)*3)) : 0;
+  var attendCount = chatCount - noshowCount;
+  return {id:'stu'+i, name:name, term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, attendCount:attendCount, noshowCount:noshowCount, completion:completion};
 }
 var STUDENTS = []; for (var i=0;i<24;i++) STUDENTS.push(makeStudent(i));
-document.getElementById('studentTbody').innerHTML = STUDENTS.map(function(s){
-  var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
-  return '<tr><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
-}).join('');
+var stuStatusFilter = '';
+function setStuStatusFilter(btn, v){
+  stuStatusFilter = v;
+  document.querySelectorAll('.filterbar .fchip').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderStudentList();
+}
+(function initStuTermOptions(){
+  var terms = [];
+  STUDENTS.forEach(function(s){ if (terms.indexOf(s.term)===-1) terms.push(s.term); });
+  document.getElementById('stuTerm').innerHTML = '<option value="">全部學期</option>' + terms.map(function(t){ return '<option>'+t+'</option>'; }).join('');
+})();
+function renderStudentList(){
+  var term = document.getElementById('stuSearch').value.trim().toLowerCase();
+  var termFilter = document.getElementById('stuTerm').value;
+  var rows = STUDENTS.filter(function(s){
+    if (term && s.name.toLowerCase().indexOf(term)===-1) return false;
+    if (termFilter && s.term!==termFilter) return false;
+    if (stuStatusFilter && s.status!==stuStatusFilter) return false;
+    return true;
+  });
+  document.getElementById('studentTbody').innerHTML = rows.map(function(s){
+    var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
+    return '<tr><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.attendCount+' 次</td><td>'+(s.noshowCount>0?'<span class="badge orange">'+s.noshowCount+' 次</span>':'0 次')+'</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
+  }).join('');
+  document.getElementById('stuEmpty').classList.toggle('hidden', rows.length>0);
+}
+renderStudentList();
 
 /* ===== 人頭對帳：資金流為學生繳學費給大學、大學依本期確認人頭數支付 TLI 授權費與人頭費（20260909f 新增） =====
    基準人頭數 186 對齊 u01 期程卡「開通」人頭數；本表列出部分開通名單樣本供學校逐筆確認／提出異議，
@@ -247,6 +307,77 @@ function confirmHeadcount(){
   toast('已回覆 TLI，人頭數 '+liveHeadcount());
 }
 renderReconcile();
+
+/* ===== 聊天室報名設定（20260910f 新增）=====
+   本校合約是否含「團體聊天室」上課型態，實際應由 a19_b2b_enterprise.html 的合約參數決定；
+   此處以常數示範「已含」的情境，若合約未含則顯示提示文字取代設定區。
+   資金流：學生付學費給學校，學校付授權費與人頭費給 TLI；聊天室報名設定不涉及金流，僅決定誰能報名。
+   模式：open＝全員開放（預設，在學學生皆可自主報名，受名額上限管控）；whitelist＝白名單（僅白名單內學生可報名）。 */
+var SCHOOL_HAS_CHATROOM = true;
+var chatRegMode = 'open';
+var chatWhitelist = {}; // { studentId: true }
+var chatWlSearch = '';
+function renderChatSettingCard(){
+  var body = document.getElementById('chatSettingBody');
+  if (!SCHOOL_HAS_CHATROOM){
+    body.innerHTML = '<div class="small">目前合約未含團體聊天室，如需開通請聯繫顧問。</div>';
+    return;
+  }
+  var html = '<div class="small" style="margin-bottom:10px">團體聊天室（30 分鐘、TLI 老師帶）之報名方式，名額上限依 TLI 型態設定（待定），兩種模式皆受此上限管控；學生付學費給學校，學校付授權費與人頭費給 TLI，此設定不涉及金流。</div>' +
+    '<div class="modewrap">' +
+    '<label><input type="radio" name="chatRegMode" value="open" '+(chatRegMode==='open'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 全員開放（預設）</label>' +
+    '<label><input type="radio" name="chatRegMode" value="whitelist" '+(chatRegMode==='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 白名單</label>' +
+    '</div>';
+  if (chatRegMode === 'whitelist'){
+    var checkedCount = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+    var list = STUDENTS.filter(function(s){
+      if (!chatWlSearch) return true;
+      return s.name.toLowerCase().indexOf(chatWlSearch.toLowerCase())>-1;
+    });
+    html += '<div class="wl-toolrow">' +
+      '<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="chatWlSearchInput" placeholder="搜尋學生姓名" oninput="onChatWlSearch(this.value)"></div>' +
+      '<div class="small">已勾選 <b id="chatWlCount">'+checkedCount+'</b> 人</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="btn ghost" onclick="chatWlBatch(true)">全選（本頁篩選結果）</button>' +
+      '<button class="btn ghost" onclick="chatWlBatch(false)">全部取消</button>' +
+      '</div></div>' +
+      '<div class="wl-list" id="chatWlList">' +
+      (list.length ? list.map(function(s){
+        var checked = chatWhitelist[s.id] ? 'checked' : '';
+        return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatWlToggle(\''+s.id+'\',this.checked)"><span class="wl-name">'+s.name+'</span><span class="small">'+s.term+'</span></div>';
+      }).join('') : '<div class="emptylist">找不到符合條件的學生。</div>') +
+      '</div>';
+  }
+  html += '<div style="text-align:right;margin-top:12px"><button class="btn" onclick="saveChatSetting()">儲存</button></div>';
+  body.innerHTML = html;
+}
+function onChatRegModeChange(val){
+  chatRegMode = val;
+  renderChatSettingCard();
+}
+function onChatWlSearch(val){ chatWlSearch = val; renderChatSettingCard(); }
+function onChatWlToggle(studentId, checked){
+  chatWhitelist[studentId] = checked;
+  var countEl = document.getElementById('chatWlCount');
+  if (countEl) countEl.textContent = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+}
+function chatWlBatch(checkAll){
+  var term = chatWlSearch.toLowerCase();
+  STUDENTS.forEach(function(s){
+    if (term && s.name.toLowerCase().indexOf(term)===-1) return;
+    chatWhitelist[s.id] = checkAll;
+  });
+  renderChatSettingCard();
+}
+function saveChatSetting(){
+  if (chatRegMode === 'whitelist'){
+    var n = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+    toast('已儲存聊天室報名設定：白名單模式，共 '+n+' 人可報名');
+  } else {
+    toast('已儲存聊天室報名設定：全員開放報名');
+  }
+}
+renderChatSettingCard();
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }

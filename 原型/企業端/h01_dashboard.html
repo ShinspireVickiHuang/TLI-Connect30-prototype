@@ -167,7 +167,7 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 <a data-nav="h03" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
 <a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
 <a data-nav="h05" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
-<a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>申訴覆核</span></a>
+<a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>請假與申訴審核</span></a>
 </nav>
 <div class="sidebar-user" id="sidebarUser">
 <div class="su-row" onclick="toggleSuMenu(event)"><span class="su-avatar">陳</span><span class="su-info"><span class="su-name">陳雅婷 Sarah Chen</span><span class="su-roletag">企業管理者</span></span>
@@ -370,10 +370,17 @@ function renderCharts(kpi){
 
 /* ===== 近期需關注 ===== */
 var PENDING_APPEALS_COUNT = 3;
+var PENDING_LEAVE_COUNT = 2; /* 與 h06「請假核准」分頁待核准件數對應（示範資料） */
 function renderConcernList(kpi){
   var low = EMPLOYEES.filter(function(e){ return e.status==='在學' && e.attendance < 70; })
     .sort(function(a,b){ return a.attendance-b.attendance; }).slice(0,3);
   var items = [];
+  if (PENDING_LEAVE_COUNT > 0){
+    items.push('<a class="concernitem" href="h06_appeals.html">'+
+      '<span class="ci-main"><span class="ci-name">待核准請假 '+PENDING_LEAVE_COUNT+' 件</span><span class="ci-sub">合約設定需 HR 核准，未核准前請假不生效</span></span>'+
+      '<span class="ci-val" style="color:var(--orange)">'+PENDING_LEAVE_COUNT+' 件</span>'+
+      '<span class="ci-arrow"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span></a>');
+  }
   if (PENDING_APPEALS_COUNT > 0){
     items.push('<a class="concernitem" href="h06_appeals.html">'+
       '<span class="ci-main"><span class="ci-name">待覆核申訴 '+PENDING_APPEALS_COUNT+' 件</span><span class="ci-sub">員工對缺席扣時數提出申訴，待 HR 或顧問覆核</span></span>'+
@@ -429,19 +436,41 @@ function closeSidebar(){ document.getElementById('sidebar').classList.remove('op
 function toggleSuMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); closePanel('avatarMenu'); document.getElementById('suMenu').classList.toggle('open'); }
 function closePanel(id){ var el=document.getElementById(id); if (el) el.classList.remove('open'); }
 document.addEventListener('click', function(){ closePanel('suMenu'); closePanel('notifPanel'); closePanel('avatarMenu'); });
+/* ===== 通知中心：即時事件清單（示範畫面，資料為模擬數字） =====
+   涵蓋事件類型：員工請假送出／申訴送出／免扣次數用完／時數池餘額低／對帳待確認 */
 var NOTIFS = [
-  {t:'王大明尚未完成本月「廠務部」出勤率確認', time:'1 小時前', unread:true},
-  {t:'「資料串接」申請已受理，TLI 顧問將於 3 個工作日內與您聯繫', time:'今天 08:40', unread:true},
-  {t:'系統已產生上月學習報告 PDF，可至「學習報告」下載', time:'昨天', unread:false}
+  {t:'王小明已送出請假申請，待 HR 核准', time:'10 分鐘前', unread:true, link:'h06_appeals.html'},
+  {t:'林雅婷對缺席扣時數判定提出申訴，待覆核', time:'1 小時前', unread:true, link:'h06_appeals.html'},
+  {t:'陳建宏本月免扣次數已用完，下次請假將直接記缺席扣時數', time:'今天 08:40', unread:true, link:'h03_reports.html'},
+  {t:'企業時數池餘額低於門檻（門檻由合約參數設定），請留意領用速度', time:'昨天', unread:false, link:'h05_contract.html'},
+  {t:'本期時數對帳待確認，請至合約頁核對用量', time:'2 天前', unread:false, link:'h05_contract.html'}
 ];
 function renderNotifPanel(){
   var panel = document.getElementById('notifPanel'); if (!panel) return;
   var unread = NOTIFS.filter(function(n){return n.unread;}).length;
   var dot = document.getElementById('tbDot'); if (dot) dot.style.display = unread ? 'block' : 'none';
-  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span><a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></div>'+
-    NOTIFS.map(function(n){ return '<div class="tb-notifitem'+(n.unread?' unread':'')+'">'+n.t+'<div class="tn-t">'+n.time+'</div></div>'; }).join('');
+  panel.innerHTML = '<div class="tn-head"><span>通知（'+unread+' 則未讀）</span>'+
+    '<span><a href="javascript:void(0)" onclick="simulateNewEvent(event)" style="margin-right:10px">模擬新事件</a>'+
+    '<a href="javascript:void(0)" onclick="markAllRead(event)">全部標為已讀</a></span></div>'+
+    NOTIFS.map(function(n){ return '<a href="'+n.link+'" class="tb-notifitem'+(n.unread?' unread':'')+'" style="display:block;text-decoration:none;color:inherit">'+n.t+'<div class="tn-t">'+n.time+'</div></a>'; }).join('');
 }
 function markAllRead(ev){ if (ev) ev.stopPropagation(); NOTIFS.forEach(function(n){n.unread=false;}); renderNotifPanel(); }
+/* ===== 模擬新事件：示範鈴鐺即時通知（點擊後立即新增一則未讀通知，數字即時 +1） ===== */
+var SIMULATE_EVENT_POOL = [
+  {t:'黃詩涵已送出請假申請，待 HR 核准', link:'h06_appeals.html'},
+  {t:'吳承翰對缺席扣時數判定提出申訴，待覆核', link:'h06_appeals.html'},
+  {t:'張淑芬本月免扣次數已用完，下次請假將直接記缺席扣時數', link:'h03_reports.html'},
+  {t:'企業時數池餘額持續下降，請留意領用速度', link:'h05_contract.html'}
+];
+var simulateEventIdx = 0;
+function simulateNewEvent(ev){
+  if (ev) ev.stopPropagation();
+  var pick = SIMULATE_EVENT_POOL[simulateEventIdx % SIMULATE_EVENT_POOL.length];
+  simulateEventIdx++;
+  NOTIFS.unshift({t:pick.t, time:'剛剛', unread:true, link:pick.link});
+  renderNotifPanel();
+  toast('已模擬 1 則新事件通知，鈴鐺未讀數 +1');
+}
 function toggleNotif(ev){ ev.stopPropagation(); closePanel('avatarMenu'); closePanel('suMenu'); var p=document.getElementById('notifPanel'); p.classList.toggle('open'); if (p.classList.contains('open')) renderNotifPanel(); }
 function toggleAvatarMenu(ev){ ev.stopPropagation(); closePanel('notifPanel'); closePanel('suMenu'); document.getElementById('avatarMenu').classList.toggle('open'); }
 function doLogout(){ location.href = '../公開網站/p07_login_register.html'; }

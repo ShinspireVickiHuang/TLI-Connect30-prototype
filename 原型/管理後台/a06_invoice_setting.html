@@ -167,7 +167,7 @@ border-radius:6px;font-size:12px;font-family:inherit;color:var(--g900);}
 }
 .mapgrid{display:grid;grid-template-columns:110px 1fr;gap:10px 16px;align-items:center;}
 .mapgrid select{padding:7px 9px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;}
-/* ---- v2 新增：海外開票主體參數化（示範畫面，資料為模擬數字） ---- */
+/* ---- 海外開票主體參數化（示範畫面，資料為模擬數字） ---- */
 .modal.wide{width:640px;max-width:92vw;}
 .sectiontitle{font-size:13px;font-weight:600;margin:16px 0 8px;color:var(--g900);}
 .sectiontitle:first-child{margin-top:0;}
@@ -273,7 +273,7 @@ html,body{overflow-x:hidden;}
 </div>
 
 <div class="card">
-<h2>主體間服務費對帳（v2 新增）</h2>
+<h2>主體間服務費對帳</h2>
 <div id="settleSettingsBody"></div>
 </div>
 </div>
@@ -352,7 +352,7 @@ html,body{overflow-x:hidden;}
 <div class="formrow"><label>負責人</label><input type="text" id="ef_owner"></div>
 <div class="formrow"><label><input type="checkbox" id="ef_default"> 設為該校區預設主體</label></div>
 </div>
-<div class="sectiontitle">主體參數（v2 新增，示範畫面，資料為模擬數字）</div>
+<div class="sectiontitle">主體參數（示範畫面，資料為模擬數字）</div>
 <div class="grid2">
 <div class="formrow"><label>主體類型</label><select id="ef_entitytype" onchange="onEfEntityTypeChange(this.value)"></select></div>
 <div class="formrow"><label>收款渠道</label><select id="ef_paymentchannel" onchange="onEfPaymentChannelChange()"></select></div>
@@ -366,7 +366,7 @@ html,body{overflow-x:hidden;}
 <div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="closeModal('entityFormModal')">取消</button> <button class="btn" onclick="saveEntity()">儲存</button></div>
 </div></div>
 
-<!-- v2 新增：單據範本預覽 modal -->
+<!-- 單據範本預覽 modal -->
 <div class="modal-mask" id="templatePreviewModal"><div class="modal">
 <h3 id="templatePreviewTitle">單據範本預覽</h3>
 <div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。</div>
@@ -565,7 +565,7 @@ function saveEntity(){
   toast('已儲存開票主體「'+name+'」');
 }
 
-/* ================= v2 新增：單據範本預覽（示範畫面，資料為模擬數字） ================= */
+/* ================= 單據範本預覽（示範畫面，資料為模擬數字） ================= */
 function openTemplatePreview(){
   var regimeEl = document.getElementById('ef_taxregime');
   var regime = regimeEl ? regimeEl.value : '統一發票（Ezpay）';
@@ -579,7 +579,7 @@ function openTemplatePreview(){
   document.getElementById('templatePreviewModal').classList.add('open');
 }
 
-/* ================= v2 新增：主體間服務費對帳設定（示範畫面，資料為模擬數字） ================= */
+/* ================= 主體間服務費對帳設定（示範畫面，資料為模擬數字） ================= */
 var SETTLE_SETTINGS = {basis:'hours', ratio:''};
 function renderSettleSettings(){
   var el = document.getElementById('settleSettingsBody');

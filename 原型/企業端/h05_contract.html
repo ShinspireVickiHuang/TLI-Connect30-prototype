@@ -207,9 +207,15 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="kv"><span>每月免扣次數</span><span>每位員工每月 2 次，範圍內請假不計入缺席、不扣時數</span></div>
 <div class="kv"><span>超額請假處理規則</span><span>超過每月免扣次數的請假記為缺席並扣時數；員工可提出申訴，經 HR 或顧問覆核通過後改記為請假、不扣時數</span></div>
 <div class="kv"><span>改期規則</span><span>比照個人學員改期流程，本合約上限每堂課改期 2 次</span></div>
-<div class="kv"><span>企業慣用時區（取消時限與扣時數的判定基準）</span><span>美國山地時間（美國廠區）／日本標準時間（日本廠區）；為取消時限與扣時數計算的唯一判定基準，報表口徑亦依此計算；學員個人課表仍依瀏覽器時區顯示</span></div>
+<div class="kv"><span>取消時限與扣時數的判定基準</span><span id="tzBasisTxt">—</span></div>
 <div class="kv"><span>階梯計價規則</span><span>依帳號數與總時數階梯計價，由顧問報價</span></div>
 <div class="kv"><span>付款方式</span><span id="paymentMethodTxt">預付款倒扣</span></div>
+</div>
+
+<div class="card">
+<h2>廠區／據點</h2>
+<div class="cardesc">廠區由 TLI 顧問於後台建立與調整；員工邀請時選擇所屬廠區後，課表雙時區顯示與取消時限判定即依廠區時區計算。</div>
+<div class="tablewrap"><table id="campusTable"></table></div>
 </div>
 
 <div class="card">
@@ -278,6 +284,35 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <script>
 function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
 function fmtNum(n){ return n.toLocaleString('zh-Hant'); }
+
+/* ===== 廠區／據點與取消判定基準（2026-09-10 新增：與 h02 員工管理共用同一組廠區清單，確保跨頁資料一致） ===== */
+var SITE_LIST = [
+  {id:'us', name:'美國廠區', country:'美國', tz:'America/Los_Angeles', tzLabel:'美國太平洋時間（UTC-7，夏令）'},
+  {id:'jp', name:'日本廠區', country:'日本', tz:'Asia/Tokyo', tzLabel:'日本標準時間（UTC+9）'}
+];
+var EMP_COUNT_FOR_SITE = 26; /* 與 h02 EMPLOYEES 示範筆數一致，員工依序輪流分派廠區 */
+function siteEmpCount(siteIdx){
+  var c = 0;
+  for (var i=0;i<EMP_COUNT_FOR_SITE;i++){ if (i%2===siteIdx) c++; }
+  return c;
+}
+var CONTRACT_TZ_BASIS = 'campus'; /* 'campus'＝依員工所屬廠區時區（預設）；'contract'＝統一用合約指定時區，兩者皆由 TLI 顧問於 a19 後台設定 */
+var CONTRACT_TZ_OVERRIDE = 'Asia/Taipei';
+function renderTzBasis(){
+  var el = document.getElementById('tzBasisTxt');
+  if (CONTRACT_TZ_BASIS === 'campus'){
+    el.textContent = '依員工所屬廠區時區：' + SITE_LIST.map(function(s){ return s.tzLabel+'（'+s.name+'）'; }).join('／') +
+      '；為取消時限與扣時數計算的判定基準，報表口徑亦依此計算，學員個人課表仍依瀏覽器時區顯示。';
+  } else {
+    el.textContent = '統一用合約指定時區：'+CONTRACT_TZ_OVERRIDE+'；不分廠區，為取消時限與扣時數計算的唯一判定基準。';
+  }
+}
+function renderCampusTable(){
+  var t = document.getElementById('campusTable');
+  t.innerHTML = '<tr><th>名稱</th><th>時區</th><th>員工數</th></tr>' + SITE_LIST.map(function(s, idx){
+    return '<tr><td>'+s.name+'</td><td>'+s.tzLabel+'</td><td>'+siteEmpCount(idx)+'</td></tr>';
+  }).join('');
+}
 
 /* ===== 時數池與部門配額示範資料 ===== */
 var DEPTS = ['廠務部','設備工程部','品保部','資訊部','人資部'];
@@ -396,6 +431,8 @@ renderPool();
 renderPrepay();
 renderBillingUnit();
 renderQuotaTable();
+renderTzBasis();
+renderCampusTable();
 
 /* ===== 共用：側欄／頂欄／通知／登出／toast ===== */
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }

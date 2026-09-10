@@ -132,6 +132,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .privacy-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .hr-list{margin:4px 0 0 18px;padding:0;}
 .hr-list li{margin-bottom:2px;}
+/* ---------- 篩選 chips（訂單／合約等清單通用，v2 新增） ---------- */
+.chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;margin-bottom:12px;}
+.chip-row::-webkit-scrollbar{height:0;}
+.chip{flex:none;padding:8px 14px;border-radius:20px;border:1px solid var(--c-border);background:#fff;font-size:12.5px;font-weight:700;cursor:pointer;min-height:36px;font-family:inherit;color:var(--c-muted);}
+.chip.selected{border-color:var(--c-primary);background:#E6EEF8;color:var(--c-primary);}
+.empty-state{text-align:center;padding:28px 16px;color:var(--c-muted);}
+.empty-state h4{color:var(--c-text);font-size:14px;margin:0 0 4px;}
+.empty-state p{font-size:12.5px;margin:0;}
+.list-group-label{font-size:11.5px;font-weight:700;color:var(--c-muted);margin:14px 0 4px;}
+.list-group-label:first-child{margin-top:0;}
 </style>
 </head>
 <body>
@@ -141,6 +151,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
@@ -199,10 +210,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
       <div class="divider"></div>
       <div class="stack" style="gap:6px;">
-        <div class="small"><strong>企業名稱：</strong><span id="orgCompanyName">範例半導體股份有限公司</span></div>
+        <div class="small"><strong>企業名稱：</strong><span id="orgCompanyName">和霖科技股份有限公司</span></div>
         <div class="small"><strong>部門：</strong><span id="orgDept">研發部</span></div>
-        <div class="small"><strong>廠區：</strong><span id="orgSite">美國廠區</span></div>
-        <div class="small"><strong>廠區時區：</strong><span id="orgSiteTz">美國西部時間（UTC-7）</span></div>
+        <div class="small"><strong>所屬廠區：</strong><span id="orgSite">美國廠區</span></div>
+        <div class="small"><strong>廠區時區：</strong><span id="orgSiteTz">美國太平洋時間（UTC-7，夏令）</span></div>
         <div class="small"><strong>合約期間：</strong><span id="orgContractPeriod">2026-01-01～2026-12-31</span></div>
         <div class="small"><strong>HR 聯絡窗口：</strong><span id="orgHrContact">企業 HR 服務信箱（hr-support@example.com，示範）</span></div>
       </div>
@@ -214,7 +225,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         </div>
         <div class="seg" id="tzDisplaySeg">
           <button class="active" onclick="setDisplayTz('taipei')">台北時間</button>
-          <button onclick="setDisplayTz('local')">廠區當地</button>
+          <button onclick="setDisplayTz('local')">美國廠區當地</button>
         </div>
       </div>
       <p class="small muted" style="margin:8px 0 0;">此偏好只影響本頁與課表時間顯示方式，不影響出席與扣時數判定；判定一律以企業合約設定的基準時區為準。</p>
@@ -235,16 +246,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     </div>
 
     <div class="section-title">訂單與付款</div>
+    <div class="chip-row" id="orderFilterChips">
+      <button class="chip selected" onclick="setOrderFilter('all',this)">全部</button>
+      <button class="chip" onclick="setOrderFilter('unpaid',this)">待繳款</button>
+    </div>
     <div class="card">
-      <div class="list-row">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
-        <div class="body"><h4>ORD-2026-0210</h4><p>中文一對一 50 分・30 堂方案・<span data-money="27000">NT$27,000</span></p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="openOrder('o1')">詳情</button></div>
+      <div id="orderListWrap"></div>
+      <div class="empty-state hidden" id="orderEmpty" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">沒有符合條件的訂單紀錄。</p>
       </div>
-      <div class="list-row">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
-        <div class="body"><h4>分期尾款</h4><p>到期 2026-08-31・<span data-money="3000">NT$3,000</span>・<span style="color:#B42318;">未繳</span></p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="openOrder('o2')">詳情</button></div>
+      <div class="hidden" id="orderMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="showMoreOrders()">載入更多（還有 <span id="orderMoreCount">0</span> 筆）</button>
       </div>
     </div>
 
@@ -269,12 +281,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
     <div class="section-title">合約</div>
     <div class="card">
-      <div class="list-row">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>
-        <div class="body"><h4>課程合約 CT-2026-0210</h4><p>簽署日 2026-02-10・生效中</p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="toggleDoc('contractDetail')">檢視</button></div>
+      <div id="contractListWrap"></div>
+      <div class="empty-state hidden" id="contractEmpty" style="padding:12px 0;">
+        <p class="small muted" style="margin:0;">目前沒有合約紀錄。</p>
       </div>
-      <div class="doc-detail" id="contractDetail">合約內容：中文一對一 50 分・30 堂方案，效期至 2026-09-08，簽署人 Emma Johnson。</div>
+      <div class="hidden" id="contractMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="showMoreContracts()">載入更多（還有 <span id="contractMoreCount">0</span> 筆）</button>
+      </div>
     </div>
 
     <div class="section-title">通知設定</div>
@@ -534,8 +547,8 @@ function setDisplayTz(mode){
   document.querySelectorAll('#tzDisplaySeg button').forEach(function(b,i){
     b.classList.toggle('active', (mode==='taipei'&&i===0)||(mode==='local'&&i===1));
   });
-  document.getElementById('tzDisplayHint').textContent = mode==='local' ? '目前顯示：廠區當地（美國西部時間）' : '目前顯示：台北時間';
-  showToast(mode==='local' ? '顯示時區已切換為廠區當地（僅影響顯示，不影響扣時數判定）' : '顯示時區已切換為台北時間（僅影響顯示，不影響扣時數判定）');
+  document.getElementById('tzDisplayHint').textContent = mode==='local' ? '目前顯示：美國廠區當地（美國太平洋時間）' : '目前顯示：台北時間';
+  showToast(mode==='local' ? '顯示時區已切換為美國廠區當地（僅影響顯示，不影響扣時數判定）' : '顯示時區已切換為台北時間（僅影響顯示，不影響扣時數判定）');
 }
 function openHrInfoModal(){ document.getElementById('hrInfoOverlay').classList.remove('hidden'); }
 
@@ -545,12 +558,65 @@ document.addEventListener('click',function(e){
 });
 function toggleDoc(id){document.getElementById(id).classList.toggle('open');}
 
-var ORDERS={
-  o1:{title:'ORD-2026-0210',date:'2026-02-10',item:'中文一對一 50 分・30 堂方案',amountTWD:27000,payment:'分期（3 期）',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345678'},
-  o2:{title:'分期尾款帳單',date:'到期 2026-08-31',item:'中文一對一 50 分・30 堂方案（第 2 期）',amountTWD:3000,payment:'分期（3 期）',channel:'－（尚未付款）',invoice:'待收款完成後開立'}
-};
+/* ===== 訂單與付款（示範資料，依日期新到舊排序＋狀態篩選＋預設 10 筆＋載入更多） ===== */
+var ORDERS_LIST=[
+  {id:'o2',title:'分期尾款帳單',sortDate:'2026-08-31',date:'到期 2026-08-31',item:'中文一對一 50 分・30 堂方案（第 2 期）',amountTWD:3000,payment:'分期（3 期）',channel:'－（尚未付款）',invoice:'待收款完成後開立',unpaid:true},
+  {id:'o1',title:'ORD-2026-0210',sortDate:'2026-02-10',date:'2026-02-10',item:'中文一對一 50 分・30 堂方案',amountTWD:27000,payment:'分期（3 期）',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345678',unpaid:false},
+  {id:'o3',title:'ORD-2026-0210（第 3 期尾款）',sortDate:'2026-09-30',date:'到期 2026-09-30',item:'中文一對一 50 分・30 堂方案（第 3 期）',amountTWD:3000,payment:'分期（3 期）',channel:'－（尚未付款）',invoice:'待收款完成後開立',unpaid:true},
+  {id:'o4',title:'ORD-2026-0728',sortDate:'2026-07-28',date:'2026-07-28',item:'商務華語情境 16 講（自學課程）',amountTWD:6800,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345512',unpaid:false},
+  {id:'o5',title:'ORD-2026-0701',sortDate:'2026-07-01',date:'2026-07-01',item:'TLI 彈性團體直播・中級會話直播班',amountTWD:14400,payment:'一次付清',channel:'藍新金流・ATM 虛擬帳號',invoice:'已開立 AB-12345399',unpaid:false},
+  {id:'o6',title:'ORD-2026-0510',sortDate:'2026-05-10',date:'2026-05-10',item:'中文一對一 50 分・20 堂方案（續費）',amountTWD:18000,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345201',unpaid:false},
+  {id:'o7',title:'ORD-2026-0322',sortDate:'2026-03-22',date:'2026-03-22',item:'發音基礎 20 講（自學課程）',amountTWD:4200,payment:'一次付清',channel:'藍新金流・超商代碼',invoice:'已開立 AB-12345087',unpaid:false},
+  {id:'o8',title:'ORD-2026-0210b',sortDate:'2026-02-10',date:'2026-02-10',item:'教材加購包',amountTWD:1200,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345020',unpaid:false},
+  {id:'o9',title:'ORD-2025-1115',sortDate:'2025-11-15',date:'2025-11-15',item:'中文一對一 25 分・20 堂方案',amountTWD:15000,payment:'訂金＋尾款',channel:'藍新金流・信用卡',invoice:'已開立 AB-12344711',unpaid:false},
+  {id:'o10',title:'ORD-2025-0830',sortDate:'2025-08-30',date:'2025-08-30',item:'TLI 彈性團體直播・初級會話直播班',amountTWD:12800,payment:'一次付清',channel:'Stripe・海外信用卡',invoice:'已開立 AB-12344305',unpaid:false},
+  {id:'o11',title:'ORD-2025-0412',sortDate:'2025-04-12',date:'2025-04-12',item:'中文一對一 50 分・30 堂方案（首購）',amountTWD:27000,payment:'分期（6 期）',channel:'藍新金流・信用卡',invoice:'已開立 AB-12343820',unpaid:false},
+  {id:'o12',title:'ORD-2025-0108',sortDate:'2025-01-08',date:'2025-01-08',item:'入學分級測驗報名費',amountTWD:500,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12343102',unpaid:false}
+].sort(function(a,b){ return new Date(b.sortDate) - new Date(a.sortDate); });
+var ORDER_PAGE_SIZE=10;
+var orderFilter='all', orderShown=ORDER_PAGE_SIZE;
+function setOrderFilter(f,btn){
+  orderFilter=f;
+  orderShown=ORDER_PAGE_SIZE;
+  document.querySelectorAll('#orderFilterChips .chip').forEach(function(c){c.classList.remove('selected');});
+  btn.classList.add('selected');
+  renderOrderList();
+}
+function filteredOrders(){
+  return ORDERS_LIST.filter(function(o){ return orderFilter==='all' || (orderFilter==='unpaid' && o.unpaid); });
+}
+function renderOrderList(){
+  var list=filteredOrders();
+  var wrap=document.getElementById('orderListWrap');
+  var empty=document.getElementById('orderEmpty');
+  var moreWrap=document.getElementById('orderMoreWrap');
+  if(list.length===0){
+    wrap.innerHTML='';
+    empty.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  var shown=list.slice(0,orderShown);
+  wrap.innerHTML=shown.map(function(o){
+    return '<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>'+
+      '<div class="body"><h4>'+o.title+'</h4><p>'+o.item+'・<span data-money="'+o.amountTWD+'">'+tliFmt(o.amountTWD,CURRENT_CURRENCY)+'</span>'+(o.unpaid?'・<span style="color:#B42318;">未繳</span>':'')+'</p></div>'+
+      '<div class="trail"><button class="btn btn-outline btn-sm" onclick="openOrder(\''+o.id+'\')">詳情</button></div>'+
+    '</div>';
+  }).join('');
+  var remain=list.length-shown.length;
+  if(remain>0){
+    moreWrap.classList.remove('hidden');
+    document.getElementById('orderMoreCount').textContent=remain;
+  }else{
+    moreWrap.classList.add('hidden');
+  }
+}
+function showMoreOrders(){ orderShown+=ORDER_PAGE_SIZE; renderOrderList(); }
 function openOrder(id){
-  var o=ORDERS[id];
+  var o=ORDERS_LIST.filter(function(x){return x.id===id;})[0];
+  if(!o) return;
   document.getElementById('oTitle').textContent=o.title;
   document.getElementById('oDate').textContent=o.date;
   document.getElementById('oItem').textContent=o.item;
@@ -560,6 +626,64 @@ function openOrder(id){
   document.getElementById('oInvoice').textContent=o.invoice;
   document.getElementById('orderOverlay').classList.remove('hidden');
 }
+
+/* ===== 合約（示範資料，生效中優先分組、組內依簽署日新到舊排序＋預設 10 筆＋載入更多） ===== */
+var CONTRACTS_LIST=[
+  {id:'ct1',no:'CT-2026-0210',signedAt:'2026-02-10',active:true,detail:'合約內容：中文一對一 50 分・30 堂方案，效期至 2026-09-08，簽署人 Emma Johnson。'},
+  {id:'ct2',no:'CT-2026-0701',signedAt:'2026-07-01',active:true,detail:'合約內容：TLI 彈性團體直播・中級會話直播班，本期 12 週，簽署人 Emma Johnson。'},
+  {id:'ct3',no:'CT-2025-1115',signedAt:'2025-11-15',active:false,detail:'合約內容：中文一對一 25 分・20 堂方案，效期已於 2026-03-15 到期，簽署人 Emma Johnson。'},
+  {id:'ct4',no:'CT-2025-0830',signedAt:'2025-08-30',active:false,detail:'合約內容：TLI 彈性團體直播・初級會話直播班，已於 2025-12-31 期滿，簽署人 Emma Johnson。'},
+  {id:'ct5',no:'CT-2025-0412',signedAt:'2025-04-12',active:false,detail:'合約內容：中文一對一 50 分・30 堂方案（首購），效期已於 2025-10-05 到期，簽署人 Emma Johnson。'},
+  {id:'ct6',no:'CT-2025-0108',signedAt:'2025-01-08',active:false,detail:'合約內容：入學分級測驗服務條款，已於測驗完成後失效，簽署人 Emma Johnson。'},
+  {id:'ct7',no:'CT-2024-1105',signedAt:'2024-11-05',active:false,detail:'合約內容：發音基礎 20 講（自學課程）授權條款，已於 2025-02-20 到期，簽署人 Emma Johnson。'},
+  {id:'ct8',no:'CT-2024-0820',signedAt:'2024-08-20',active:false,detail:'合約內容：商務華語情境 16 講（自學課程）授權條款，已於 2025-08-18 到期，簽署人 Emma Johnson。'},
+  {id:'ct9',no:'CT-2024-0615',signedAt:'2024-06-15',active:false,detail:'合約內容：TLI 彈性團體直播・日常會話直播班，已於 2025-06-30 期滿，簽署人 Emma Johnson。'},
+  {id:'ct10',no:'CT-2024-0210',signedAt:'2024-02-10',active:false,detail:'合約內容：中文一對一 50 分・10 堂方案，效期已於 2024-08-15 到期，簽署人 Emma Johnson。'},
+  {id:'ct11',no:'CT-2023-1101',signedAt:'2023-11-01',active:false,detail:'合約內容：旅遊華語會話 12 講（自學課程）授權條款，已於 2024-02-01 到期，簽署人 Emma Johnson。'},
+  {id:'ct12',no:'CT-2023-0605',signedAt:'2023-06-05',active:false,detail:'合約內容：初次入學註冊服務條款，已於課程結束後失效，簽署人 Emma Johnson。'}
+].sort(function(a,b){
+  if(a.active!==b.active) return a.active ? -1 : 1;
+  return new Date(b.signedAt) - new Date(a.signedAt);
+});
+var CONTRACT_PAGE_SIZE=10;
+var contractShown=CONTRACT_PAGE_SIZE;
+function renderContractList(){
+  var wrap=document.getElementById('contractListWrap');
+  var empty=document.getElementById('contractEmpty');
+  var moreWrap=document.getElementById('contractMoreWrap');
+  if(CONTRACTS_LIST.length===0){
+    wrap.innerHTML='';
+    empty.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  var shown=CONTRACTS_LIST.slice(0,contractShown);
+  var html='';
+  var lastGroup=null;
+  shown.forEach(function(c){
+    var group=c.active?'生效中':'已到期';
+    if(group!==lastGroup){
+      html+='<div class="list-group-label">'+group+'</div>';
+      lastGroup=group;
+    }
+    html+='<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>'+
+      '<div class="body"><h4>課程合約 '+c.no+'</h4><p>簽署日 '+c.signedAt+'・'+(c.active?'生效中':'已到期')+'</p></div>'+
+      '<div class="trail"><button class="btn btn-outline btn-sm" onclick="toggleDoc(\'contractDetail-'+c.id+'\')">檢視</button></div>'+
+    '</div>'+
+    '<div class="doc-detail" id="contractDetail-'+c.id+'">'+c.detail+'</div>';
+  });
+  wrap.innerHTML=html;
+  var remain=CONTRACTS_LIST.length-shown.length;
+  if(remain>0){
+    moreWrap.classList.remove('hidden');
+    document.getElementById('contractMoreCount').textContent=remain;
+  }else{
+    moreWrap.classList.add('hidden');
+  }
+}
+function showMoreContracts(){ contractShown+=CONTRACT_PAGE_SIZE; renderContractList(); }
 function doLogout(){
   location.href='../公開網站/p07_login_register.html';
 }
@@ -799,6 +923,8 @@ renderProfile();
 renderPaymentMethods();
 renderInvoiceDefault();
 renderZoomBindStatus();
+renderOrderList();
+renderContractList();
 </script>
 </body>
 </html>

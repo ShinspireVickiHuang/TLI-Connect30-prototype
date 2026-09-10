@@ -57,6 +57,7 @@ tr.rowlink:hover{background:#F8FAFD;}
 border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
 .small{font-size:12px;color:var(--g500);}
 .hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
+.hidden{display:none!important;}
 .matrix td,.matrix th{text-align:center;}
 .matrix td:first-child,.matrix th:first-child{text-align:left;}
 .chk{transform:scale(1.15);cursor:pointer;}
@@ -257,6 +258,11 @@ html,body{overflow-x:hidden;}
 <button class="btn ghost" onclick="renderLogs()">查詢</button>
 </div>
 <div class="tablewrap"><table id="logTable"></table></div>
+<p class="empty-hint small hidden" id="logEmpty" style="text-align:center;padding:18px 0;">找不到符合條件的紀錄。</p>
+<div class="loadmorebar" style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+<span class="small" id="logCountLabel"></span>
+<button class="btn ghost" id="logLoadMoreBtn" onclick="loadMoreLogs()">載入更多</button>
+</div>
 </div>
 </div>
 
@@ -466,28 +472,50 @@ var LOGS = [
  {t:'2026-08-24 17:55', who:'李美玲', role:'校區主管', action:'新增', detail:'新增會員「莊慧君」'},
  {t:'2026-08-24 15:22', who:'黃志成', role:'財務', action:'匯出', detail:'匯出 8 月發票開立明細'},
  {t:'2026-08-23 11:05', who:'陳俊宏', role:'校區主管', action:'刪除', detail:'刪除已取消訂單草稿 ORD-DRAFT-0012'},
+ {t:'2026-08-20 08:50', who:'顧問 B', role:'顧問', action:'登入', detail:'從台中校前台登入'},
+ {t:'2026-08-19 16:10', who:'李美玲', role:'校區主管', action:'編輯', detail:'調整士林校教室代號 A106 可容納人數'},
+ {t:'2026-08-18 13:35', who:'黃志成', role:'財務', action:'編輯', detail:'新增藍新金流商店設定'},
+ {t:'2026-08-16 09:05', who:'陳俊宏', role:'校區主管', action:'新增', detail:'新增老師帳號「林老師」'},
+ {t:'2026-08-14 19:22', who:'顧問 C', role:'顧問', action:'登出', detail:'手動登出'},
  {t:'2026-08-11 14:20', who:'顧問 D', role:'顧問', action:'登出', detail:'手動登出'},
  {t:'2026-06-11 09:30', who:'顧問 D', role:'顧問', action:'登入', detail:'最後一次登入（帳號已停用）'}
 ];
+var LOG_PAGE_SIZE = 10;
+var logShown = LOG_PAGE_SIZE;
 function renderLogs(){
+  logShown = LOG_PAGE_SIZE;
+  drawLogs();
+}
+function drawLogs(){
   var role = document.getElementById('log_role').value;
   var action = document.getElementById('log_action').value;
   var from = document.getElementById('log_from').value;
   var to = document.getElementById('log_to').value;
   var t = document.getElementById('logTable');
   t.innerHTML = '<tr><th>時間</th><th>操作人</th><th>角色</th><th>類型</th><th>內容</th></tr>';
-  LOGS.filter(function(l){
+  /* 依時間新到舊排序，確保近期紀錄在最上方 */
+  var filtered = LOGS.filter(function(l){
     if (role && l.role !== role) return false;
     if (action && l.action !== action) return false;
     var d = l.t.slice(0,10);
     if (from && d < from) return false;
     if (to && d > to) return false;
     return true;
-  }).forEach(function(l){
+  }).sort(function(a,b){ return a.t < b.t ? 1 : -1; });
+  filtered.slice(0, logShown).forEach(function(l){
     var tr = document.createElement('tr');
     tr.innerHTML = '<td class="small">'+l.t+'</td><td>'+l.who+'</td><td><span class="badge blue">'+l.role+'</span></td><td>'+l.action+'</td><td class="small">'+l.detail+'</td>';
     t.appendChild(tr);
   });
+  document.getElementById('logEmpty').classList.toggle('hidden', filtered.length>0);
+  var loadMoreBtn = document.getElementById('logLoadMoreBtn');
+  var shownCount = Math.min(logShown, filtered.length);
+  document.getElementById('logCountLabel').textContent = filtered.length ? ('顯示 '+shownCount+' ／ 共 '+filtered.length+' 筆') : '';
+  loadMoreBtn.style.display = (filtered.length > logShown) ? '' : 'none';
+}
+function loadMoreLogs(){
+  logShown += LOG_PAGE_SIZE;
+  drawLogs();
 }
 function initLogFilters(){
   document.getElementById('log_role').innerHTML = '<option value="">全部角色</option>' + ROLES.map(function(r){return '<option>'+r+'</option>';}).join('');

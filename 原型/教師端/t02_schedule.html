@@ -192,7 +192,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <span><i class="chatroom"></i>團體聊天室（30 分鐘，TLI 老師帶）</span>
         <span><i class="enterprise"></i>企業學員（雙時區顯示）<span class="demo-tag">示範畫面，資料為模擬數字</span></span>
       </div>
-      <p class="small muted" style="margin:6px 0 0;">取消時限以企業慣用時區（合約設定）計算；課表以台北時間為主、廠區當地時間為輔並列顯示。</p>
+      <p class="small muted" style="margin:6px 0 0;">取消時限以學員所屬廠區時區（合約設定之判定基準）計算；課表以台北時間為主、廠區當地時間為輔並列顯示。</p>
       <div class="fchip-bar" id="scheduleFilterBar">
         <button class="fchip active" data-filter="all" onclick="setScheduleFilter('all')">全部</button>
         <button class="fchip" data-filter="enterprise" onclick="setScheduleFilter('enterprise')">企業學員</button>
@@ -402,18 +402,18 @@ function setScheduleFilter(f){
 }
 
 var lessons = {
-  M1:{title:'王小明・個人班', meta:'08/24（一）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 3 課（進度正常）', materialHistory:'已完成：第 1–2 課；本次：第 3 課；下堂預計：第 4 課。', note:'上次練習「把」字句造句，發音需加強聲調。', status:'past', recordId:'L1', mode:'onetoone', enterprise:'企業學員・範例半導體 美國廠區・廠區當地（前一日）18:00–18:50（跨日）',
+  M1:{title:'王小明・個人班', meta:'08/24（一）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 3 課（進度正常）', materialHistory:'已完成：第 1–2 課；本次：第 3 課；下堂預計：第 4 課。', note:'上次練習「把」字句造句，發音需加強聲調。', status:'past', recordId:'L1', mode:'onetoone', enterprise:'企業學員・和霖科技股份有限公司・美國廠區・廠區當地（前一日）18:00–18:50（跨日）',
       attendance:[{name:'王小明', time:'09:00 進入・已出席'}]},
   M2:{title:'中級小組班（3 人）', meta:'08/24（一）10:30–11:20・士林校區 A203', roster:[['陳雅婷','中級 2'],['周文正','中級 2'],['林詩涵','中級 1']], material:'《NPC》第 5 冊 第 2 課（進度正常）', materialHistory:'已完成：第 1 課；本次：第 2 課；下堂預計：第 3 課。', note:'整體口說進度良好，周文正需加強聽力練習。', status:'past', recordId:'L2', mode:'flex',
       flexInfo:'入班名單：3 位・本期第 4／12 堂・教材單元：《NPC》第 5 冊 第 2 課',
       attendance:[{name:'陳雅婷', time:'10:31 進入・已出席'},{name:'周文正', time:'10:29 進入・已出席'},{name:'林詩涵', time:'10:33 進入・已出席'}]},
-  T1:{title:'王小明・個人班', meta:'08/25（二）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 4 課', materialHistory:'已完成：第 1–3 課；本次：第 4 課；下堂預計：第 5 課。', note:'延續上次「把」字句練習，本次加入情境對話。', mode:'onetoone', enterprise:'企業學員・範例半導體 美國廠區・廠區當地（前一日）18:00–18:50（跨日）'},
+  T1:{title:'王小明・個人班', meta:'08/25（二）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 4 課', materialHistory:'已完成：第 1–3 課；本次：第 4 課；下堂預計：第 5 課。', note:'延續上次「把」字句練習，本次加入情境對話。', mode:'onetoone', enterprise:'企業學員・和霖科技股份有限公司・美國廠區・廠區當地（前一日）18:00–18:50（跨日）'},
   T2:{title:'學期班 Lv.5–8（首堂）', meta:'08/25（二）15:00–15:50・羅斯福校區', roster:[['共 12 位學生','學期班名單於現場點名']], material:'《NICD》第 1 冊 第 1 課（開課）', materialHistory:'新開班，尚無歷史進度紀錄。', note:'新開班，尚無歷史紀錄。', rule:'首堂課由資深教師任教（規則：需累積 600 小時以上）。', mode:'flex',
       flexInfo:'入班名單：12 位・本期第 1／12 堂・教材單元：《NICD》第 1 冊 第 1 課'},
   W1:{title:'初級小組班（4 人）', meta:'08/26（三）14:00–14:50・士林校區 A106', roster:[['張家豪','初級 3'],['李佳融','初級 3'],['黃思穎','初級 2'],['吳冠廷','初級 3']], material:'《NPC》第 2 冊 第 8 課（進度正常）', materialHistory:'已完成：第 1–7 課；本次：第 8 課；下堂預計：第 9 課。', note:'黃思穎進度稍慢，已安排加強練習。', mode:'flex',
       flexInfo:'入班名單：4 位・本期第 9／12 堂・教材單元：《NPC》第 2 冊 第 8 課'},
-  R1:{title:'王小明・個人班', meta:'08/27（四）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 4 課', materialHistory:'已完成：第 1–3 課；本次：第 4 課；下堂預計：第 5 課。', note:'同上次進度，持續練習情境對話。', mode:'onetoone', enterprise:'企業學員・範例半導體 美國廠區・廠區當地（前一日）18:00–18:50（跨日）'},
-  R2:{title:'陳雅婷（線上）・個人班', meta:'08/27（四）16:00–17:30・Zoom・90 分鐘', roster:[['陳雅婷','高級 1']], material:'《NICD》第 3 冊 第 6 課（進度警戒：已累計 12 堂，建議留意學習節奏）', materialHistory:'已完成：第 1–5 課；本次：第 6 課；已累計 12 堂，建議與顧問確認續約規劃。', note:'口語表達進步明顯，寫作待加強。', mode:'onetoone', enterprise:'企業學員・晶采科技 日本廠區・廠區當地 17:00–18:30'},
+  R1:{title:'王小明・個人班', meta:'08/27（四）09:00–09:50・士林校區 A203', roster:[['王小明','中級 2']], material:'《NPC》第 5 冊 第 4 課', materialHistory:'已完成：第 1–3 課；本次：第 4 課；下堂預計：第 5 課。', note:'同上次進度，持續練習情境對話。', mode:'onetoone', enterprise:'企業學員・和霖科技股份有限公司・美國廠區・廠區當地（前一日）18:00–18:50（跨日）'},
+  R2:{title:'陳雅婷（線上）・個人班', meta:'08/27（四）16:00–17:30・Zoom・90 分鐘', roster:[['陳雅婷','高級 1']], material:'《NICD》第 3 冊 第 6 課（進度警戒：已累計 12 堂，建議留意學習節奏）', materialHistory:'已完成：第 1–5 課；本次：第 6 課；已累計 12 堂，建議與顧問確認續約規劃。', note:'口語表達進步明顯，寫作待加強。', mode:'onetoone', enterprise:'企業學員・瑞新金融顧問股份有限公司・日本廠區・廠區當地 17:00–18:30'},
   S1:{title:'學期班 Lv.5–8', meta:'08/29（六）10:00–10:50・羅斯福校區', roster:[['共 12 位學生','學期班名單於現場點名']], material:'《NICD》第 1 冊 第 3 課（進度正常）', materialHistory:'已完成：第 1–2 課；本次：第 3 課；下堂預計：第 4 課。', note:'班級整體出席穩定。', mode:'flex',
       flexInfo:'入班名單：12 位・本期第 2／12 堂・教材單元：《NICD》第 1 冊 第 3 課'}
 };

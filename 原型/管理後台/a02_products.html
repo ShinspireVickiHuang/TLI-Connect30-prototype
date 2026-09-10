@@ -396,7 +396,11 @@ html,body{overflow-x:hidden;}
 </div>
 <div class="formrow"><label>教材冊別（僅教材類需填）</label><input type="text" id="ns_material" placeholder="例：新實用華語（上冊）"></div>
 <div class="formrow"><label>上課方式 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label><select id="ns_delivery"><option value="">請選擇</option><option value="預約制">預約制</option><option value="直播制">直播制</option><option value="隨選">隨選</option><option value="實體（舊網站）">實體（舊網站）</option></select></div>
-<div class="hint" style="margin-bottom:10px">收費類目決定免稅／應稅與日後訂單的發票分張；學費、註冊費為免稅，其餘為應稅（選「活動」會自動帶出應稅）。上課方式為課程本身的屬性，需逐筆選擇。此頁不設定價格，售價於「銷售方案設定」中組成方案時填入。</div>
+<div class="grid2">
+<div class="formrow"><label>上課型態 <a href="a17_master_data.html#classformat" class="fieldlink">管理選項 →</a></label><select id="ns_classFormat" onchange="onNsClassFormatChange()"></select></div>
+<div class="formrow"><label>本班名額</label><input type="number" id="ns_classCap" min="1" oninput="validateNsClassCap()"><div class="hint" id="ns_classCapHint">—</div></div>
+</div>
+<div class="hint" style="margin-bottom:10px">收費類目決定免稅／應稅與日後訂單的發票分張；學費、註冊費為免稅，其餘為應稅（選「活動」會自動帶出應稅）。上課方式為課程本身的屬性，需逐筆選擇。上課型態決定名額上限，本班名額不得超過型態上限。此頁不設定價格，售價於「銷售方案設定」中組成方案時填入。</div>
 <div style="text-align:right">
 <button class="btn ghost" onclick="closeNewSku()">取消</button>
 <button class="btn" onclick="saveNewSku()">儲存</button>
@@ -432,6 +436,10 @@ html,body{overflow-x:hidden;}
 <label>上課方式 <a href="a17_master_data.html" class="fieldlink">管理選項 →</a></label>
 <select id="es_delivery"><option value="">請選擇</option><option value="預約制">預約制</option><option value="直播制">直播制</option><option value="隨選">隨選</option><option value="實體（舊網站）">實體（舊網站）</option></select>
 <div class="hint">上課方式決定學生端如何預約或入班；銷售方案會自動帶出組成課程的上課方式。</div>
+</div>
+<div class="grid2">
+<div class="formrow"><label>上課型態 <a href="a17_master_data.html#classformat" class="fieldlink">管理選項 →</a></label><select id="es_classFormat" onchange="onEsClassFormatChange()"></select></div>
+<div class="formrow"><label>本班名額</label><input type="number" id="es_classCap" min="1" oninput="validateEsClassCap()"><div class="hint" id="es_classCapHint">—</div></div>
 </div>
 <div class="formrow"><label>狀態</label><select id="es_status"><option value="上架">上架</option><option value="下架">下架</option></select></div>
 <div style="text-align:right;margin-top:10px">
@@ -632,29 +640,82 @@ function closeModalId(id){ document.getElementById(id).classList.remove('open');
 document.addEventListener('click', function(){ document.querySelectorAll('.moremenu.open').forEach(function(m){m.classList.remove('open');}); });
 
 var SKUS = [
- {id:'skuC01', name:'中文一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'skuC02', name:'英語一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'skuC03', name:'中文彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC04', name:'英語彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC05', name:'自學影音課程包（中文基礎）', line:'Connect（線上）', system:'自學影音課', unit:'套', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'隨選', status:'上架'},
- {id:'skuC06', name:'文化主題線上工作坊－茶道體驗', line:'Connect（線上）', system:'文化主題線上課', unit:'場', duration:'90 分鐘', cat:'活動', tax:'應稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC07', name:'企業華語線上培訓（團體班）', line:'Connect（線上）', system:'企業線上培訓', unit:'期', duration:'依合約', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC08', name:'線上華語師資認證班 24 小時', line:'Connect（線上）', system:'線上師資認證', unit:'期', duration:'24 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku01', name:'中文一對一 50 分鐘 1 堂', line:'中文', system:'中文一對一', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku02', name:'學期班 Lv.5–8 一期', line:'中文', system:'學期班', unit:'期', duration:'16 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku03', name:'教材《新實用華語》上冊', line:'中文', system:'學期班', unit:'冊', duration:'－', cat:'教材', tax:'應稅', material:'新實用華語（上冊）', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku04', name:'入學註冊費', line:'中文', system:'學期班', unit:'次', duration:'－', cat:'註冊費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku05', name:'小組班（4 人）90 分鐘 1 堂', line:'中文', system:'小組班', unit:'堂', duration:'90 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku06', name:'線上課 60 分鐘 1 堂', line:'中文', system:'線上課', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku07', name:'文化體驗活動－茶道體驗', line:'中文', system:'文化課', unit:'場', duration:'2 小時', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku08', name:'英語一對一 50 分鐘 1 堂', line:'外文', system:'英語課程', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku09', name:'日語學期班 一期', line:'外文', system:'日語課程', unit:'期', duration:'12 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku10', name:'華語師資培訓認證班 32 小時', line:'師資班', system:'師資認證班', unit:'期', duration:'32 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku11', name:'師培教材包', line:'師資班', system:'師資認證班', unit:'套', duration:'－', cat:'教材', tax:'應稅', material:'師培教材包', deliveryMode:'直播制', status:'上架'},
- {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架'}
+ {id:'skuC01', name:'中文一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架', classFormat:'1v1', classCap:1},
+ {id:'skuC02', name:'英語一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架', classFormat:'1v1', classCap:1},
+ {id:'skuC03', name:'中文彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'skuC04', name:'英語彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'skuC05', name:'自學影音課程包（中文基礎）', line:'Connect（線上）', system:'自學影音課', unit:'套', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'隨選', status:'上架', classFormat:'', classCap:''},
+ {id:'skuC06', name:'文化主題線上工作坊－茶道體驗', line:'Connect（線上）', system:'文化主題線上課', unit:'場', duration:'90 分鐘', cat:'活動', tax:'應稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'event', classCap:''},
+ {id:'skuC07', name:'企業華語線上培訓（團體班）', line:'Connect（線上）', system:'企業線上培訓', unit:'期', duration:'依合約', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'skuC08', name:'線上華語師資認證班 24 小時', line:'Connect（線上）', system:'線上師資認證', unit:'期', duration:'24 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'sku01', name:'中文一對一 50 分鐘 1 堂', line:'中文', system:'中文一對一', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架', classFormat:'1v1', classCap:1},
+ {id:'sku02', name:'學期班 Lv.5–8 一期', line:'中文', system:'學期班', unit:'期', duration:'16 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku03', name:'教材《新實用華語》上冊', line:'中文', system:'學期班', unit:'冊', duration:'－', cat:'教材', tax:'應稅', material:'新實用華語（上冊）', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku04', name:'入學註冊費', line:'中文', system:'學期班', unit:'次', duration:'－', cat:'註冊費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku05', name:'小組班（4 人）90 分鐘 1 堂', line:'中文', system:'小組班', unit:'堂', duration:'90 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku06', name:'線上課 60 分鐘 1 堂', line:'中文', system:'線上課', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架', classFormat:'1v1', classCap:1},
+ {id:'sku07', name:'文化體驗活動－茶道體驗', line:'中文', system:'文化課', unit:'場', duration:'2 小時', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku08', name:'英語一對一 50 分鐘 1 堂', line:'外文', system:'英語課程', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架', classFormat:'1v1', classCap:1},
+ {id:'sku09', name:'日語學期班 一期', line:'外文', system:'日語課程', unit:'期', duration:'12 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'sku10', name:'華語師資培訓認證班 32 小時', line:'師資班', system:'師資認證班', unit:'期', duration:'32 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架', classFormat:'grouplive', classCap:5},
+ {id:'sku11', name:'師培教材包', line:'師資班', system:'師資認證班', unit:'套', duration:'－', cat:'教材', tax:'應稅', material:'師培教材包', deliveryMode:'直播制', status:'上架', classFormat:'', classCap:''},
+ {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
+ {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架', classFormat:'', classCap:''}
 ];
 // 課程主檔（與 a03、a04 共用同一份清單）；上課方式為課程自身屬性，逐筆填寫，不再跟隨產品系統
+// 上課型態（20260910e 新增）：對應 a17 基礎資料設定→上課型態設定的四種型態；舊網站課程（實體（舊網站））尚未納入新型態框架，維持未設定
+/* 型態上限與 a17_master_data.html 的 CLASS_FORMATS 示範值同步：一對一 1、團體直播 5（示範）、團體聊天室 30（示範）、線上活動依活動（待定） */
+var CLASS_FORMAT_OPTIONS = [
+ {v:'1v1', l:'一對一', cap:1},
+ {v:'grouplive', l:'團體直播', cap:5},
+ {v:'groupchat', l:'團體聊天室', cap:30},
+ {v:'event', l:'線上活動', cap:''}
+];
+function classFormatCap(v){
+  var f = CLASS_FORMAT_OPTIONS.find(function(o){return o.v===v;});
+  return f ? f.cap : '';
+}
+function classFormatLabel(v){
+  var f = CLASS_FORMAT_OPTIONS.find(function(o){return o.v===v;});
+  return f ? f.l : '';
+}
+function classFormatBadgeHtml(v){
+  if (!v) return '<span class="small">未設定</span>';
+  return '<span class="badge blue">'+classFormatLabel(v)+'</span>';
+}
+function classCapCellHtml(s){
+  if (!s.classFormat) return '<span class="small">—</span>';
+  var cap = classFormatCap(s.classFormat);
+  var val = (s.classCap===undefined || s.classCap==='') ? '' : s.classCap;
+  if (val==='') return '<span class="small">'+(cap===''?'依活動（待定）':'待定')+'</span>';
+  var over = (cap!=='' && Number(val) > Number(cap));
+  return over ? '<span style="color:#C0392B;font-weight:700">'+val+'（超過型態上限 '+cap+'）</span>' : (val+' 人');
+}
+function classFormatOptionsHtml(selected){
+  return '<option value=""'+(!selected?' selected':'')+'>未設定</option>' +
+    CLASS_FORMAT_OPTIONS.map(function(o){ return '<option value="'+o.v+'"'+(selected===o.v?' selected':'')+'>'+o.l+'</option>'; }).join('');
+}
+function classCapHintText(v){
+  if (!v) return '請先選擇上課型態，本班名額不得超過型態上限。';
+  var cap = classFormatCap(v);
+  return '型態上限 '+(cap===''?'依活動（待定）':cap)+'；本班名額不得超過型態上限，可在上限內另設較低名額。';
+}
+var skuClassFilter = 'all';
+function filterSkusByClass(list){
+  if (skuClassFilter==='all') return list;
+  if (skuClassFilter==='none') return list.filter(function(s){return !s.classFormat;});
+  return list.filter(function(s){return s.classFormat===skuClassFilter;});
+}
+function onSkuClassFilterChange(sel){
+  skuClassFilter = sel.value;
+  renderRightPanel();
+}
+function classFilterSelectHtml(){
+  var opts = '<option value="all"'+(skuClassFilter==='all'?' selected':'')+'>全部上課型態</option>' +
+    CLASS_FORMAT_OPTIONS.map(function(o){return '<option value="'+o.v+'"'+(skuClassFilter===o.v?' selected':'')+'>'+o.l+'</option>';}).join('') +
+    '<option value="none"'+(skuClassFilter==='none'?' selected':'')+'>未設定</option>';
+  return '<div style="margin-bottom:10px"><label class="small" style="display:inline-block;margin-right:6px;color:var(--g500)">依上課型態篩選</label><select class="dm-inline" onchange="onSkuClassFilterChange(this)">'+opts+'</select></div>';
+}
 
 var LINES = [
  {name:'Connect（線上）', code:'CN', nameEn:'TLI Connect Online', nameJa:'コネクト（オンライン）', desc:'TLI Connect 線上品牌產品線，一階段主力：一對一線上課、彈性團體直播課；次要：自學影音、文化線上課、企業線上培訓、線上師資認證。', order:1, status:'啟用', owner:'數位事業部'},
@@ -848,16 +909,19 @@ function deliverySelectHtml(s){
   return '<select class="dm-inline" onclick="event.stopPropagation()" onchange="onSkuDeliveryInline(\''+s.id+'\',this.value,event)">'+opts+'</select>';
 }
 function skuTableHtml(list, scopeLabel){
-  var rows = list.map(function(s){
+  var filtered = filterSkusByClass(list);
+  var rows = filtered.map(function(s){
     var taxBadge = s.tax === '免稅' ? '<span class="badge green">免稅</span>' : '<span class="badge orange">應稅</span>';
     var stBadge = s.status === '上架' ? '<span class="badge green">上架</span>' : '<span class="badge grey">下架</span>';
     var dmSelect = deliverySelectHtml(s);
-    return '<tr class="rowlink" onclick="location.href=\'a03_product_detail.html?sku='+s.id+'\'"><td>'+s.name+'</td><td>'+s.unit+'</td><td>'+s.duration+'</td><td>'+s.cat+'</td><td>'+dmSelect+'</td><td>'+taxBadge+'</td><td>'+stBadge+'</td>' +
+    return '<tr class="rowlink" onclick="location.href=\'a03_product_detail.html?sku='+s.id+'\'"><td>'+s.name+'</td><td>'+s.unit+'</td><td>'+s.duration+'</td><td>'+s.cat+'</td><td>'+dmSelect+'</td><td>'+classFormatBadgeHtml(s.classFormat)+'</td><td>'+classCapCellHtml(s)+'</td><td>'+taxBadge+'</td><td>'+stBadge+'</td>' +
       '<td><button class="btn ghost sm" onclick="openEditSkuDrawer(\''+s.id+'\',event)">編輯</button> <button class="btn ghost sm" onclick="toggleSkuStatus(\''+s.id+'\',event)">'+(s.status==='上架'?'停用':'啟用')+'</button></td></tr>';
   }).join('');
-  return '<h2>課程清單　<span class="small" style="font-weight:400">'+scopeLabel+'</span></h2>' +
-    '<div class="tablewrap"><table><tr><th>課程名稱</th><th>單位</th><th>時長</th><th>收費類目</th><th>上課方式</th><th>稅別</th><th>狀態</th><th>操作</th></tr>'+rows+'</table></div>' +
-    '<div class="hint">上課方式為課程自身屬性，「上課方式」欄可直接點選下拉快速修改；點「編輯」開啟完整表單；點列（操作欄以外）可進入課程詳情，含屬性、被哪些銷售方案引用與異動紀錄。</div>';
+  var countNote = (filtered.length===list.length) ? scopeLabel : ('（篩選後 '+filtered.length+' 項／'+scopeLabel+'）');
+  return '<h2>課程清單　<span class="small" style="font-weight:400">'+countNote+'</span></h2>' +
+    classFilterSelectHtml() +
+    '<div class="tablewrap"><table><tr><th>課程名稱</th><th>單位</th><th>時長</th><th>收費類目</th><th>上課方式</th><th>上課型態</th><th>本班名額</th><th>稅別</th><th>狀態</th><th>操作</th></tr>'+rows+'</table></div>' +
+    '<div class="hint">上課方式為課程自身屬性，「上課方式」欄可直接點選下拉快速修改；「上課型態」與「本班名額」請至「編輯」表單設定，名額不得超過 <a href="a17_master_data.html#classformat" class="fieldlink" style="margin-left:0">基礎資料設定 → 上課型態設定</a> 的型態上限；點「編輯」開啟完整表單；點列（操作欄以外）可進入課程詳情，含屬性、被哪些銷售方案引用與異動紀錄。</div>';
 }
 
 function renderRightPanel(){
@@ -989,7 +1053,25 @@ function openNewSku(){
   document.getElementById('ns_delivery').value = '';
   document.getElementById('ns_cat').value = '學費';
   onNsCatChange(document.getElementById('ns_cat'));
+  document.getElementById('ns_classFormat').innerHTML = classFormatOptionsHtml('');
+  document.getElementById('ns_classCap').value = '';
+  document.getElementById('ns_classCapHint').textContent = classCapHintText('');
   document.getElementById('newSkuModal').classList.add('open');
+}
+function onNsClassFormatChange(){
+  document.getElementById('ns_classCapHint').textContent = classCapHintText(document.getElementById('ns_classFormat').value);
+  validateNsClassCap();
+}
+function validateNsClassCap(){
+  var v = document.getElementById('ns_classFormat').value;
+  var cap = classFormatCap(v);
+  var capVal = document.getElementById('ns_classCap').value;
+  var hintEl = document.getElementById('ns_classCapHint');
+  if (v && cap!=='' && capVal!=='' && Number(capVal) > Number(cap)){
+    hintEl.innerHTML = '<span style="color:#C0392B;font-weight:700">本班名額不得超過型態上限 '+cap+'</span>';
+  } else {
+    hintEl.textContent = classCapHintText(v);
+  }
 }
 function onNsCatChange(el){
   var freeCats = ['學費','註冊費'];
@@ -1005,6 +1087,13 @@ function saveNewSku(){
   if (!name){ showToast('請輸入課程名稱'); return; }
   var delivery = document.getElementById('ns_delivery').value;
   if (!delivery){ showToast('請選擇上課方式'); return; }
+  var classFormat = document.getElementById('ns_classFormat').value;
+  var classCap = document.getElementById('ns_classCap').value;
+  var cap = classFormatCap(classFormat);
+  if (classFormat && cap!=='' && classCap!=='' && Number(classCap) > Number(cap)){
+    showToast('本班名額不得超過型態上限 '+cap+'，請修改後再儲存');
+    return;
+  }
   var line = document.getElementById('ns_line').value;
   var sys = document.getElementById('ns_system').value;
   var id = 'sku' + String(SKUS.length+1).padStart(2,'0');
@@ -1014,7 +1103,8 @@ function saveNewSku(){
     cat:document.getElementById('ns_cat').value,
     tax:document.getElementById('ns_tax').value,
     material:document.getElementById('ns_material').value,
-    deliveryMode:delivery, status:'上架'});
+    deliveryMode:delivery, status:'上架',
+    classFormat:classFormat, classCap:classCap===''?'':Number(classCap)});
   closeNewSku();
   buildTree();
   if (view.kind==='all' || (view.kind==='line'&&view.line===line) || (view.kind==='system'&&view.line===line&&view.system===sys)) renderRightPanel();
@@ -1039,9 +1129,27 @@ function openEditSkuDrawer(id, ev){
   document.getElementById('es_tax').value = s.tax;
   document.getElementById('es_material').value = s.material || '';
   document.getElementById('es_delivery').value = s.deliveryMode || '';
+  document.getElementById('es_classFormat').innerHTML = classFormatOptionsHtml(s.classFormat || '');
+  document.getElementById('es_classCap').value = (s.classCap===undefined || s.classCap==='') ? '' : s.classCap;
+  document.getElementById('es_classCapHint').textContent = classCapHintText(s.classFormat || '');
   document.getElementById('es_status').value = s.status;
   document.getElementById('editSkuDrawerMask').classList.add('open');
   document.getElementById('editSkuDrawer').classList.add('open');
+}
+function onEsClassFormatChange(){
+  document.getElementById('es_classCapHint').textContent = classCapHintText(document.getElementById('es_classFormat').value);
+  validateEsClassCap();
+}
+function validateEsClassCap(){
+  var v = document.getElementById('es_classFormat').value;
+  var cap = classFormatCap(v);
+  var capVal = document.getElementById('es_classCap').value;
+  var hintEl = document.getElementById('es_classCapHint');
+  if (v && cap!=='' && capVal!=='' && Number(capVal) > Number(cap)){
+    hintEl.innerHTML = '<span style="color:#C0392B;font-weight:700">本班名額不得超過型態上限 '+cap+'</span>';
+  } else {
+    hintEl.textContent = classCapHintText(v);
+  }
 }
 function closeEditSkuDrawer(){
   document.getElementById('editSkuDrawerMask').classList.remove('open');
@@ -1059,6 +1167,13 @@ function saveEditSkuDrawer(){
   if (!name){ showToast('請輸入課程名稱'); return; }
   var delivery = document.getElementById('es_delivery').value;
   if (!delivery){ showToast('請選擇上課方式'); return; }
+  var classFormat = document.getElementById('es_classFormat').value;
+  var classCap = document.getElementById('es_classCap').value;
+  var cap = classFormatCap(classFormat);
+  if (classFormat && cap!=='' && classCap!=='' && Number(classCap) > Number(cap)){
+    showToast('本班名額不得超過型態上限 '+cap+'，請修改後再儲存');
+    return;
+  }
   s.name = name;
   s.nameEn = document.getElementById('es_nameEn').value;
   s.nameJa = document.getElementById('es_nameJa').value;
@@ -1068,6 +1183,8 @@ function saveEditSkuDrawer(){
   s.tax = document.getElementById('es_tax').value;
   s.material = document.getElementById('es_material').value;
   s.deliveryMode = delivery;
+  s.classFormat = classFormat;
+  s.classCap = classCap===''?'':Number(classCap);
   s.status = document.getElementById('es_status').value;
   closeEditSkuDrawer();
   renderRightPanel();

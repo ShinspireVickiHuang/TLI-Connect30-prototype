@@ -435,6 +435,7 @@ html,body{overflow-x:hidden;}
 <button class="chip-fq" onclick="quickFb(this,'low')">低分回饋</button>
 </div>
 <div class="tablewrap"><table id="fbTable"></table></div>
+<p class="small" id="fbEmpty" style="display:none;text-align:center;padding:16px 0;">找不到符合條件的回饋紀錄。</p>
 <div class="pager" id="fbPager"></div>
 </div>
 </div>
@@ -785,6 +786,7 @@ function renderFb(){
       '<td style="white-space:normal;max-width:220px">'+f.summary+'</td><td>'+statusBadgeFb(f)+'</td><td>'+f.owner+'</td>';
     t.appendChild(tr);
   });
+  document.getElementById('fbEmpty').style.display = list.length ? 'none' : '';
   var start = (fbPage-1)*fbPageSize+1, end = Math.min(fbPage*fbPageSize, FAKE_TOTAL_FB);
   document.getElementById('fbPager').innerHTML =
     '<div>顯示第 '+start+'–'+end+' 筆／共 '+FAKE_TOTAL_FB.toLocaleString()+' 筆</div>' +

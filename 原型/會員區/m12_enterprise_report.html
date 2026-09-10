@@ -170,6 +170,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .pool-card .pc-value{font-size:22px;font-weight:800;color:#075A45;margin:6px 0 2px;}
 .attendance-def{font-size:12px;color:var(--c-primary-dark);background:#E6EEF8;border:1px solid #C7DAF0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.7;}
 .feedback-note{font-size:11.5px;color:var(--c-muted);background:var(--c-bg);border-radius:var(--radius-sm);padding:8px 10px;margin-top:8px;line-height:1.6;}
+/* ---- 我的出勤紀錄（20260910b 新增） ---- */
+.mystat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(min-width:640px){.mystat-grid{grid-template-columns:repeat(5,1fr);}}
+.mystat-box{background:var(--c-bg);border-radius:var(--radius-sm);padding:12px;text-align:center;}
+.mystat-box .ms-val{font-size:20px;font-weight:800;color:var(--c-text);}
+.mystat-box .ms-lbl{font-size:11px;color:var(--c-muted);margin-top:3px;}
+.empty-state{text-align:center;padding:28px 16px;color:var(--c-muted);}
+.empty-state h4{color:var(--c-text);font-size:14px;margin:0 0 4px;}
+.empty-state p{font-size:12.5px;margin:0;}
 </style>
 </head>
 <body>
@@ -179,6 +188,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
@@ -233,6 +243,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <p class="small muted" id="periodNote" style="margin:0;">統計區間：2026/08/01－2026/08/28</p>
     </div>
 
+    <div class="section-title first">我的出勤紀錄<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+    <div class="card">
+      <div class="mystat-grid" id="myAttendanceGrid"></div>
+      <p class="small muted" style="margin:12px 0 0;">這些紀錄會提供貴公司 HR 查閱；超額請假（超過每月免扣次數）將從公司時數池扣除。</p>
+    </div>
+
     <div class="section-title">企業時數池<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
     <div class="card pool-card">
       <div class="pc-label">共用時數池餘額</div>
@@ -256,7 +272,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="table-toolbar">
         <div class="search-input-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input class="search-input" type="text" id="empSearch" placeholder="搜尋姓名" oninput="renderEmpTable()">
+          <input class="search-input" type="text" id="empSearch" placeholder="搜尋姓名" oninput="empShown=EMP_PAGE_SIZE;renderEmpTable()">
         </div>
       </div>
       <div class="chip-row" id="deptChips">
@@ -285,7 +301,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <tbody id="empTableBody"></tbody>
         </table>
       </div>
+      <div class="empty-state hidden" id="empTableEmpty">
+        <h4>沒有符合條件的員工</h4>
+        <p>換個部門或搜尋關鍵字試試看。</p>
+      </div>
       <p class="small muted" id="empCountNote" style="margin:10px 0 0;"></p>
+      <div class="hidden" id="empMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="showMoreEmployees()">載入更多（還有 <span id="empMoreCount">0</span> 位）</button>
+      </div>
     </div>
 
     <div class="action-row">
@@ -457,6 +480,18 @@ function renderChart(d){
   }).join('');
 }
 
+/* ================= 我的出勤紀錄（示範資料，登入者本人本期統計） ================= */
+var MY_ATTENDANCE = { rate:92, cancelCount:1, leaveCount:2, absentCount:0, lateCount:1 };
+function renderMyAttendance(){
+  var d = MY_ATTENDANCE;
+  document.getElementById('myAttendanceGrid').innerHTML =
+    '<div class="mystat-box"><div class="ms-val">'+d.rate+'%</div><div class="ms-lbl">我的出勤率</div></div>'+
+    '<div class="mystat-box"><div class="ms-val">'+d.cancelCount+'</div><div class="ms-lbl">取消次數</div></div>'+
+    '<div class="mystat-box"><div class="ms-val">'+d.leaveCount+'</div><div class="ms-lbl">請假次數</div></div>'+
+    '<div class="mystat-box"><div class="ms-val">'+d.absentCount+'</div><div class="ms-lbl">缺席次數</div></div>'+
+    '<div class="mystat-box"><div class="ms-val">'+d.lateCount+'</div><div class="ms-lbl">遲到次數</div></div>';
+}
+
 /* ================= 員工明細 ================= */
 var EMPLOYEES = [
   {name:'王建宏',dept:'業務部',course:'商務華語情境 16 講',done:12,total:16,attendance:88,progress:75,score:92,level:'B1',status:'進行中'},
@@ -475,15 +510,19 @@ var EMPLOYEES = [
 EMPLOYEES.forEach(function(e,i){ e.id='e'+i; });
 
 var curDept='all', sortKey=null, sortDir=1, searchTerm='';
+var EMP_PAGE_SIZE=10;
+var empShown=EMP_PAGE_SIZE;
 
 function setDept(dept,btn){
   curDept=dept;
+  empShown=EMP_PAGE_SIZE;
   document.querySelectorAll('#deptChips .chip').forEach(function(c){c.classList.remove('selected');});
   btn.classList.add('selected');
   renderEmpTable();
 }
 function setSort(key){
   if(sortKey===key){ sortDir=-sortDir; } else { sortKey=key; sortDir=1; }
+  empShown=EMP_PAGE_SIZE;
   ['name','dept','attendance','progress'].forEach(function(k){
     document.getElementById('sortIcon-'+k).innerHTML = (k===sortKey) ? (sortDir===1?ICON_UP:ICON_DOWN) : ICON_SORT;
   });
@@ -508,7 +547,18 @@ function renderEmpTable(){
       return (av-bv)*sortDir;
     });
   }
-  document.getElementById('empTableBody').innerHTML = list.map(function(e){
+  var emptyEl=document.getElementById('empTableEmpty');
+  var moreWrap=document.getElementById('empMoreWrap');
+  if(list.length===0){
+    document.getElementById('empTableBody').innerHTML='';
+    emptyEl.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    document.getElementById('empCountNote').textContent='共 0 位員工（全公司 '+EMPLOYEES.length+' 位）';
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  var shown=list.slice(0,empShown);
+  document.getElementById('empTableBody').innerHTML = shown.map(function(e){
     return '' +
       '<tr onclick="openEmpDrawer(\''+e.id+'\')">' +
         '<td>'+e.name+'</td>' +
@@ -522,8 +572,16 @@ function renderEmpTable(){
         '<td>'+statusBadge(e.status)+'</td>' +
       '</tr>';
   }).join('');
+  var remain=list.length-shown.length;
+  if(remain>0){
+    moreWrap.classList.remove('hidden');
+    document.getElementById('empMoreCount').textContent=remain;
+  }else{
+    moreWrap.classList.add('hidden');
+  }
   document.getElementById('empCountNote').textContent = '共 '+list.length+' 位員工（全公司 '+EMPLOYEES.length+' 位）';
 }
+function showMoreEmployees(){ empShown+=EMP_PAGE_SIZE; renderEmpTable(); }
 function openEmpDrawer(id){
   var e = EMPLOYEES.filter(function(x){return x.id===id;})[0];
   if(!e) return;
@@ -573,6 +631,7 @@ function submitInvite(){
 
 renderPeriod();
 renderEmpTable();
+renderMyAttendance();
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

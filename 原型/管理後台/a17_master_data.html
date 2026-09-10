@@ -233,6 +233,19 @@ tr.paramrow-na{background:var(--g50);}
 .modlog-wrap h3{font-size:13.5px;margin:0 0 10px;}
 .crosslink{display:block;font-size:11.5px;color:var(--g500);margin-top:6px;}
 .crosslink a{color:var(--navy);}
+/* ==== 請假與取消規則組（20260910b 新增） ==== */
+.demo-tag{display:inline-block;background:#E1F3EE;color:var(--teal);font-size:11px;padding:2px 8px;border-radius:8px;margin-left:8px;font-weight:600;vertical-align:middle;}
+.tier-cards{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.tier-card{flex:1 1 200px;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:12px 14px;}
+.tier-card b{display:block;font-size:12.5px;color:var(--navy);margin-bottom:4px;}
+.tier-card span{font-size:11.5px;color:var(--g500);line-height:1.6;}
+.leaverule-wrap{margin-top:4px;}
+#leaveRuleTable{table-layout:auto;}
+#leaveRuleTable input[type=number],#leaveRuleTable select{width:100%;min-width:88px;padding:5px 6px;border:1px solid var(--g200);border-radius:6px;font-size:12px;font-family:inherit;}
+#leaveRuleTable td{vertical-align:top;min-width:110px;}
+#leaveRuleTable td:first-child{min-width:88px;font-weight:600;white-space:nowrap;}
+.rec-checks{display:flex;flex-direction:column;gap:3px;}
+.rec-checks label{display:flex;align-items:center;gap:5px;font-size:11.5px;white-space:nowrap;}
 </style>
 <style>
 /* ==== 側欄改版 20260826f：呼吸感間距／分段收合／底部卡收攏（覆寫舊樣式，回應主管截圖回饋） ==== */
@@ -311,11 +324,26 @@ html,body{overflow-x:hidden;}
 <div class="paramintro">系統各頁的規則數字都從這裡取預設值；合約層或機構層可覆寫，覆寫值顯示於各自設定頁。</div>
 <div class="paramcat-tabs" id="paramCatTabs"></div>
 <div class="paramcat-summary" id="paramCatSummary"></div>
-<div class="tablewrap"><table id="paramTable"></table></div>
-<div class="hint">「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。</div>
+<div class="tablewrap" id="paramTableWrap"><table id="paramTable"></table></div>
+<div class="leaverule-wrap" id="leaveRuleWrap" style="display:none">
+<div class="tier-cards" id="tierCards"></div>
+<div class="tablewrap"><table id="leaveRuleTable"></table></div>
+<div class="crosslink">企業合約若需覆寫本表「企業員工」列的數值，請至 <a href="a19_b2b_enterprise.html">B2B 企業客戶 → 合約參數</a> 設定，覆寫後該企業會顯示「已覆寫」徽章。</div>
+</div>
+<div class="hint" id="paramHint">「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。</div>
 <div class="modlog-wrap">
 <h3>修改紀錄（唯讀）</h3>
 <div class="tablewrap"><table id="modLogTable"></table></div>
+</div>
+</div>
+<div class="card" id="classFormatCard" style="display:none">
+<h2>上課型態設定</h2>
+<div class="paramintro">四種上課型態各自的名額上限、時長、排法等規則從這裡設定；各班或場次可在型態上限內另設名額，不得超過型態上限。團體聊天室每週使用上限請至 <a href="javascript:void(0)" onclick="selectTab('params');selectParamCat('institution');">參數設定 → 機構授權</a> 調整；請假與取消規則請至 <a href="javascript:void(0)" onclick="selectTab('params');selectParamCat('leaverules');">參數設定 → 請假與取消規則組</a> 設定。</div>
+<div class="tablewrap"><table id="classFormatTable"></table></div>
+<div class="hint">名額上限留白代表待定，可先行輸入示範值；示範值會標示「示範」，正式數字待業務與教研拍板後回填。灰底鎖定欄位為型態本質固定值，不開放調整。</div>
+<div class="modlog-wrap">
+<h3>修改紀錄（唯讀）</h3>
+<div class="tablewrap"><table id="classFormatModLogTable"></table></div>
 </div>
 </div>
 </div>
@@ -419,9 +447,10 @@ var TABS = [
    {code:'installment', name:'分期', desc:'依應收與分期設定之期數分批收款', enabled:true},
    {code:'monthly', name:'月結', desc:'機構／企業會員月結請款，通常對應合約單位', enabled:true}
   ]},
+ {key:'classformat', title:'上課型態設定', special:'classformat'},
  {key:'params', title:'參數設定', special:'params'}
 ];
-var currentTab = (location.hash === '#params') ? 'params' : 'lang';
+var currentTab = (location.hash.indexOf('#params') === 0) ? 'params' : 'lang';
 var editingIdx = null;
 var dragSrcIndex = null;
 
@@ -445,12 +474,22 @@ function renderContent(){
   if (t.special === 'params'){
     document.getElementById('mdNormalCard').style.display = 'none';
     document.getElementById('paramsCard').style.display = '';
+    document.getElementById('classFormatCard').style.display = 'none';
     document.getElementById('mdAddBtn').style.display = 'none';
     renderParamsPanel();
     return;
   }
+  if (t.special === 'classformat'){
+    document.getElementById('mdNormalCard').style.display = 'none';
+    document.getElementById('paramsCard').style.display = 'none';
+    document.getElementById('classFormatCard').style.display = '';
+    document.getElementById('mdAddBtn').style.display = 'none';
+    renderClassFormatPanel();
+    return;
+  }
   document.getElementById('mdNormalCard').style.display = '';
   document.getElementById('paramsCard').style.display = 'none';
+  document.getElementById('classFormatCard').style.display = 'none';
   document.getElementById('mdAddBtn').style.display = '';
   document.getElementById('mdSectionTitle').textContent = t.title;
   document.getElementById('mdAddBtn').textContent = '＋ 新增' + t.addLabel;
@@ -597,6 +636,7 @@ function onRoleApplied(role){
    ================================================================== */
 var PARAM_CATS = [
  {key:'cancel', title:'預約與取消'},
+ {key:'leaverules', title:'請假與取消規則組'},
  {key:'contract', title:'企業合約預設'},
  {key:'institution', title:'機構授權'},
  {key:'agent', title:'代理商'},
@@ -612,7 +652,9 @@ var PARAMS = [
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'},{c:'m05',h:'../會員區/m05_leave.html'}]},
  {cat:'cancel', name:'改期次數上限', desc:'企業合約下員工學員每期／每期間允許改期的次數上限。', value:'', unit:'次', level:'合約可覆寫',
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'m05',h:'../會員區/m05_leave.html'}]},
- {cat:'contract', name:'企業慣用時區預設', desc:'企業合約新建時預先帶入的基準時區，是取消時限與扣時數判定的唯一依據。', value:'', unit:'時區', level:'合約可覆寫',
+ {cat:'contract', name:'時區判定基準預設', desc:'企業合約新建時預先帶入的取消時限與扣時數判定基準：依員工所屬廠區時區計算（每位員工依所屬廠區時區各自判定），或統一改用合約指定的單一時區；已拍板此為預設值，顧問仍可於合約參數頁另行調整。', value:'依員工所屬廠區時區', unit:'判定基準', level:'合約可覆寫',
+  pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'}]},
+ {cat:'contract', name:'企業慣用時區預設（合約指定時區選項用）', desc:'當上一參數「時區判定基準」選擇改用合約指定時區時，此處為預先帶入的基準時區值；依廠區時區判定的合約不使用此欄。', value:'', unit:'時區', level:'合約可覆寫',
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'}]},
  {cat:'contract', name:'階梯計價級距與單價', desc:'依帳號數或總時數分級的門檻與對應單價，級距與單價數字一律由 TLI 拍板。', unit:'依級距', level:'全域預設', type:'table',
   tiers:[{threshold:'',price:''},{threshold:'',price:''}],
@@ -655,6 +697,85 @@ var PARAMS = [
 PARAMS.forEach(function(p, i){ p.id = i; p.effectiveDate = p.effectiveDate || ''; p.editor = p.editor || ''; p.editedAt = p.editedAt || ''; });
 var MOD_LOG = [];
 var currentParamCat = 'cancel';
+
+/* ==================================================================
+   請假與取消規則組（20260910b 新增）：示範畫面，資料為模擬數字
+   四層繼承：全域預設 → 客戶類型預設 → 企業合約覆寫（a19 合約參數） → 個人例外（顧問／HR 個別調整）
+   ================================================================== */
+var LEAVE_RULE_TIERS = [
+ {title:'① 全域預設', desc:'TLI 對所有客戶類型的請假／取消規則預設值，未被下層覆寫時全站生效。'},
+ {title:'② 客戶類型預設', desc:'依「一般會員／進階會員／企業員工／機構學生」分別設定的預設值，優先於全域預設。'},
+ {title:'③ 企業合約覆寫', desc:'個別企業於 a19「合約參數」頁設定的覆寫值，僅適用該企業員工，優先於客戶類型預設。'},
+ {title:'④ 個人例外', desc:'顧問或 HR 針對個別學員的例外調整（如特殊病假從寬），優先權最高，僅適用該學員。'}
+];
+var LEAVE_RULE_OVERAGE_OPTIONS = [{v:'',l:'待定'},{v:'appeal',l:'扣時數，可申訴'},{v:'deduct',l:'直接扣，不可申訴'},{v:'noleave',l:'不可取消，只能改期'}];
+var LEAVE_RULE_REVIEW_OPTIONS = [{v:'',l:'待定'},{v:'self',l:'自主'},{v:'hrApproval',l:'需 HR 核准'},{v:'rescheduleOnly',l:'只能改期'}];
+var LEAVE_RULE_ROWS = [
+ {key:'global', label:'全域預設', cancelWindow:'', freeCancel:'', rescheduleMax:'', overagePolicy:'', appealCap:'', reviewMode:'', record:{cancel:false,leave:false,absent:false,late:false}, editor:'', editedAt:''},
+ {key:'basic', label:'一般會員', cancelWindow:'12', freeCancel:'', rescheduleMax:'', overagePolicy:'', appealCap:'', reviewMode:'', record:{cancel:false,leave:false,absent:false,late:false}, editor:'', editedAt:''},
+ {key:'premium', label:'進階會員', cancelWindow:'', freeCancel:'', rescheduleMax:'', overagePolicy:'', appealCap:'', reviewMode:'', record:{cancel:false,leave:false,absent:false,late:false}, editor:'', editedAt:''},
+ {key:'enterprise', label:'企業員工', cancelWindow:'', freeCancel:'', rescheduleMax:'', overagePolicy:'', appealCap:'', reviewMode:'', record:{cancel:false,leave:false,absent:false,late:false}, editor:'', editedAt:''},
+ {key:'institution', label:'機構學生', cancelWindow:'', freeCancel:'', rescheduleMax:'', overagePolicy:'', appealCap:'', reviewMode:'', record:{cancel:false,leave:false,absent:false,late:false}, editor:'', editedAt:''}
+];
+function leaveRuleRowByKey(k){ return LEAVE_RULE_ROWS.find(function(r){return r.key===k;}); }
+function renderTierCards(){
+  var el = document.getElementById('tierCards');
+  if (!el) return;
+  el.innerHTML = LEAVE_RULE_TIERS.map(function(t){
+    return '<div class="tier-card"><b>'+t.title+'</b><span>'+t.desc+'</span></div>';
+  }).join('');
+}
+function renderLeaveRuleTable(){
+  var tbl = document.getElementById('leaveRuleTable');
+  if (!tbl) return;
+  var head = '<tr><th>客戶類型</th><th>取消時限（小時）</th><th>每月免扣次數</th><th>每堂改期上限</th>' +
+    '<th>超額處理</th><th>申訴通過每月上限</th><th>審核模式預設</th><th>成效紀錄（取消／請假／缺席／遲到）</th><th>最後修改人與時間</th><th></th></tr>';
+  tbl.innerHTML = head + LEAVE_RULE_ROWS.map(function(r){
+    var overageOpts = LEAVE_RULE_OVERAGE_OPTIONS.map(function(o){ return '<option value="'+o.v+'"'+(o.v===r.overagePolicy?' selected':'')+'>'+o.l+'</option>'; }).join('');
+    var reviewOpts = LEAVE_RULE_REVIEW_OPTIONS.map(function(o){ return '<option value="'+o.v+'"'+(o.v===r.reviewMode?' selected':'')+'>'+o.l+'</option>'; }).join('');
+    var recEvents = [{k:'cancel',l:'取消'},{k:'leave',l:'請假'},{k:'absent',l:'缺席'},{k:'late',l:'遲到'}];
+    var recChecks = '<div class="rec-checks">'+recEvents.map(function(rv){
+      return '<label><input type="checkbox" id="lr_'+r.key+'_rec_'+rv.k+'" '+(r.record[rv.k]?'checked':'')+'>'+rv.l+'</label>';
+    }).join('')+'</div>';
+    var lastEdit = r.editor ? (escHtml(r.editor)+'<br><span class="small">'+r.editedAt+'</span>') : '<span class="small">—</span>';
+    return '<tr><td>'+r.label+'</td>' +
+      '<td><input type="number" min="0" id="lr_'+r.key+'_cancelWindow" value="'+escHtml(r.cancelWindow)+'" placeholder="待定"></td>' +
+      '<td><input type="number" min="0" id="lr_'+r.key+'_freeCancel" value="'+escHtml(r.freeCancel)+'" placeholder="待定"></td>' +
+      '<td><input type="number" min="0" id="lr_'+r.key+'_rescheduleMax" value="'+escHtml(r.rescheduleMax)+'" placeholder="待定"></td>' +
+      '<td><select id="lr_'+r.key+'_overagePolicy">'+overageOpts+'</select></td>' +
+      '<td><input type="number" min="0" id="lr_'+r.key+'_appealCap" value="'+escHtml(r.appealCap)+'" placeholder="待定"></td>' +
+      '<td><select id="lr_'+r.key+'_reviewMode">'+reviewOpts+'</select></td>' +
+      '<td>'+recChecks+'</td>' +
+      '<td>'+lastEdit+'</td>' +
+      '<td><button class="btn ghost small2" onclick="saveLeaveRuleRow(\''+r.key+'\')">儲存</button></td></tr>';
+  }).join('');
+}
+function saveLeaveRuleRow(key){
+  var r = leaveRuleRowByKey(key);
+  if (!r) return;
+  ['cancelWindow','freeCancel','rescheduleMax','appealCap'].forEach(function(f){
+    var el = document.getElementById('lr_'+key+'_'+f);
+    if (el) r[f] = el.value.trim();
+  });
+  ['overagePolicy','reviewMode'].forEach(function(f){
+    var el = document.getElementById('lr_'+key+'_'+f);
+    if (el) r[f] = el.value;
+  });
+  ['cancel','leave','absent','late'].forEach(function(k){
+    var el = document.getElementById('lr_'+key+'_rec_'+k);
+    if (el) r.record[k] = el.checked;
+  });
+  r.editor = (document.getElementById('suName') && document.getElementById('suName').textContent) || '王大明';
+  r.editedAt = nowStr();
+  MOD_LOG.unshift({time:r.editedAt, cat:'請假與取消規則組', name:r.label, oldValue:'（規則列）', newValue:'（規則列，已更新）', editor:r.editor});
+  renderLeaveRuleTable();
+  renderModLog();
+  toast('已儲存「'+r.label+'」的請假與取消規則，異動已寫入修改紀錄');
+}
+function renderLeaveRuleGroup(){
+  renderTierCards();
+  renderLeaveRuleTable();
+}
 function escHtml(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function nowStr(){
   var d = new Date();
@@ -691,6 +812,22 @@ function removeTier(id, ti){
   toast('已刪除該級距列');
 }
 function renderParamTable(){
+  var isLeaveRules = (currentParamCat === 'leaverules');
+  var wrapEl = document.getElementById('paramTableWrap');
+  var leaveWrapEl = document.getElementById('leaveRuleWrap');
+  var hintEl = document.getElementById('paramHint');
+  var summaryEl0 = document.getElementById('paramCatSummary');
+  if (isLeaveRules){
+    if (wrapEl) wrapEl.style.display = 'none';
+    if (leaveWrapEl) leaveWrapEl.style.display = '';
+    if (hintEl) hintEl.textContent = '除「一般會員」取消時限 12 小時為既有規則外，其餘欄位留白代表待定，可先行輸入預估值；儲存後會寫入下方修改紀錄。';
+    if (summaryEl0) summaryEl0.innerHTML = '四層繼承：全域預設 → 客戶類型預設 → 企業合約覆寫（a19）→ 個人例外。<span class="demo-tag">示範畫面，資料為模擬數字</span>';
+    renderLeaveRuleGroup();
+    return;
+  }
+  if (wrapEl) wrapEl.style.display = '';
+  if (leaveWrapEl) leaveWrapEl.style.display = 'none';
+  if (hintEl) hintEl.textContent = '「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。';
   var rows = PARAMS.filter(function(p){ return p.cat === currentParamCat; });
   var tbl = document.getElementById('paramTable');
   var head = '<tr><th>參數名稱</th><th>說明</th><th style="min-width:150px">目前值</th><th>單位</th><th>適用層級</th><th>使用頁面</th><th>生效日</th><th>最後修改人與時間</th><th></th></tr>';
@@ -759,8 +896,100 @@ function renderModLog(){
   }).join('');
 }
 
+/* ==================================================================
+   上課型態設定（20260910e 新增）：一對一／團體直播／團體聊天室／線上活動
+   四種型態各自的名額上限、時長、排法等規則，供教師端開場次、產品管理建班時引用
+   ================================================================== */
+var CLASS_FORMAT_IDENTITY_OPTIONS = [{k:'general',l:'一般'},{k:'enterprise',l:'企業員工'},{k:'institution',l:'機構學生'}];
+var CLASS_FORMAT_SCHED_OPTIONS = [{v:'booking',l:'預約制'},{v:'fixed',l:'固定班表'},{v:'session',l:'場次報名制'}];
+var CLASS_FORMAT_COUNT_OPTIONS = [{v:'tang',l:'計堂數'},{v:'term',l:'計期'},{v:'none',l:'不計堂數'}];
+var CLASS_FORMATS = [
+ {key:'1v1', name:'一對一', desc:'顧問或學生指定日期時段，一對一排課', capValue:'1', capLocked:true,
+  duration:'50', durationLocked:true, durationDemo:false,
+  schedMode:'booking', schedLocked:true,
+  identities:{general:true, enterprise:true, institution:true},
+  countMode:'tang', countLocked:false, recording:false, noShow:true,
+  editor:'', editedAt:''},
+ {key:'grouplive', name:'團體直播', desc:'固定班表時段直播上課，依課程班表進行', capValue:'5', capLocked:false, capDemo:true,
+  duration:'50–60', durationLocked:false, durationDemo:true,
+  schedMode:'fixed', schedLocked:true,
+  identities:{general:true, enterprise:true, institution:true},
+  countMode:'tang', countLocked:false, recording:true, noShow:true,
+  editor:'', editedAt:''},
+ {key:'groupchat', name:'團體聊天室', desc:'老師帶、場次報名制，每週使用次數上限另於參數設定調整', capValue:'30', capLocked:false, capDemo:true,
+  duration:'30', durationLocked:true, durationDemo:false,
+  schedMode:'session', schedLocked:true,
+  identities:{general:true, enterprise:true, institution:true},
+  countMode:'none', countLocked:true, recording:false, noShow:false,
+  editor:'', editedAt:''},
+ {key:'event', name:'線上活動', desc:'時長依活動內容而定，場次報名制', capValue:'', capLocked:false,
+  duration:'依活動', durationLocked:false,
+  schedMode:'session', schedLocked:false,
+  identities:{general:true, enterprise:true, institution:true},
+  countMode:'none', countLocked:false, recording:false, noShow:false,
+  editor:'', editedAt:''}
+];
+var CLASS_FORMAT_MOD_LOG = [];
+function classFormatByKey(k){ return CLASS_FORMATS.find(function(f){return f.key===k;}); }
+function renderClassFormatPanel(){
+  var tbl = document.getElementById('classFormatTable');
+  if (!tbl) return;
+  var head = '<tr><th>上課型態</th><th>名額上限</th><th>時長（分）</th><th>排法</th><th>可加入身分</th><th>是否計堂數</th><th>是否錄影回放</th><th>請假規則組</th><th>no-show 是否記錄</th><th>最後修改人與時間</th><th></th></tr>';
+  tbl.innerHTML = head + CLASS_FORMATS.map(function(f){
+    var capBadge = f.capDemo ? '<span class="param-badge demo">示範</span>' : '';
+    var capCell = '<input type="number" min="1" class="paraminput" id="cf_'+f.key+'_cap" value="'+escHtml(f.capValue)+'" placeholder="待定" '+(f.capLocked?'disabled':'')+'>'+capBadge;
+    var durBadge = f.durationDemo ? '<span class="param-badge demo">示範</span>' : '';
+    var durCell = '<input type="text" class="paraminput" id="cf_'+f.key+'_dur" value="'+escHtml(f.duration)+'" placeholder="待定" '+(f.durationLocked?'disabled':'')+'>'+durBadge;
+    var schedOpts = CLASS_FORMAT_SCHED_OPTIONS.map(function(o){return '<option value="'+o.v+'"'+(o.v===f.schedMode?' selected':'')+'>'+o.l+'</option>';}).join('');
+    var schedCell = '<select class="paramlevel" id="cf_'+f.key+'_sched" '+(f.schedLocked?'disabled':'')+'>'+schedOpts+'</select>';
+    var idCell = '<div class="rec-checks">'+CLASS_FORMAT_IDENTITY_OPTIONS.map(function(o){
+      return '<label><input type="checkbox" id="cf_'+f.key+'_id_'+o.k+'" '+(f.identities[o.k]?'checked':'')+'>'+o.l+'</label>';
+    }).join('')+'</div>';
+    var countOpts = CLASS_FORMAT_COUNT_OPTIONS.map(function(o){return '<option value="'+o.v+'"'+(o.v===f.countMode?' selected':'')+'>'+o.l+'</option>';}).join('');
+    var countCell = '<select class="paramlevel" id="cf_'+f.key+'_count" '+(f.countLocked?'disabled':'')+'>'+countOpts+'</select>';
+    var recCell = '<label class="switch"><input type="checkbox" id="cf_'+f.key+'_rec" '+(f.recording?'checked':'')+'><span class="slider"></span></label>';
+    var leaveCell = '<a href="javascript:void(0)" onclick="selectTab(\'params\');selectParamCat(\'leaverules\');">檢視規則組</a>';
+    var noshowCell = '<label class="switch"><input type="checkbox" id="cf_'+f.key+'_noshow" '+(f.noShow?'checked':'')+'><span class="slider"></span></label>';
+    var lastEdit = f.editor ? (escHtml(f.editor)+'<br><span class="small">'+f.editedAt+'</span>') : '<span class="small">—</span>';
+    return '<tr><td><b>'+f.name+'</b><div class="small">'+f.desc+'</div></td><td>'+capCell+'</td><td>'+durCell+'</td><td>'+schedCell+'</td><td>'+idCell+'</td><td>'+countCell+'</td><td>'+recCell+'</td><td>'+leaveCell+'</td><td>'+noshowCell+'</td><td>'+lastEdit+'</td><td><button class="btn ghost small2" onclick="saveClassFormat(\''+f.key+'\')">儲存</button></td></tr>';
+  }).join('');
+  renderClassFormatModLog();
+}
+function saveClassFormat(key){
+  var f = classFormatByKey(key);
+  if (!f) return;
+  if (!f.capLocked){ var capEl = document.getElementById('cf_'+key+'_cap'); if (capEl) f.capValue = capEl.value.trim(); }
+  if (!f.durationLocked){ var durEl = document.getElementById('cf_'+key+'_dur'); if (durEl) f.duration = durEl.value.trim(); }
+  if (!f.schedLocked){ var schedEl = document.getElementById('cf_'+key+'_sched'); if (schedEl) f.schedMode = schedEl.value; }
+  CLASS_FORMAT_IDENTITY_OPTIONS.forEach(function(o){
+    var el = document.getElementById('cf_'+key+'_id_'+o.k);
+    if (el) f.identities[o.k] = el.checked;
+  });
+  if (!f.countLocked){ var countEl = document.getElementById('cf_'+key+'_count'); if (countEl) f.countMode = countEl.value; }
+  var recEl = document.getElementById('cf_'+key+'_rec'); if (recEl) f.recording = recEl.checked;
+  var noshowEl = document.getElementById('cf_'+key+'_noshow'); if (noshowEl) f.noShow = noshowEl.checked;
+  f.editor = (document.getElementById('suName') && document.getElementById('suName').textContent) || '王大明';
+  f.editedAt = nowStr();
+  CLASS_FORMAT_MOD_LOG.unshift({time:f.editedAt, name:f.name, editor:f.editor});
+  renderClassFormatPanel();
+  toast('已儲存「'+f.name+'」上課型態設定，異動已寫入修改紀錄');
+}
+function renderClassFormatModLog(){
+  var tbl = document.getElementById('classFormatModLogTable');
+  if (!tbl) return;
+  var head = '<tr><th>時間</th><th>型態</th><th>修改人</th></tr>';
+  if (!CLASS_FORMAT_MOD_LOG.length){
+    tbl.innerHTML = head + '<tr><td colspan="3" class="small" style="white-space:normal">尚無修改紀錄，儲存後會自動記錄於此。</td></tr>';
+    return;
+  }
+  tbl.innerHTML = head + CLASS_FORMAT_MOD_LOG.map(function(l){
+    return '<tr><td>'+l.time+'</td><td>'+escHtml(l.name)+'</td><td>'+escHtml(l.editor)+'</td></tr>';
+  }).join('');
+}
+
 renderSideTabs();
 renderContent();
+if (location.hash === '#params-leaverules') selectParamCat('leaverules');
 
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');

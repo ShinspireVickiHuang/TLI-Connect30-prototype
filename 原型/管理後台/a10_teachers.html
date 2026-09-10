@@ -238,6 +238,7 @@ html,body{overflow-x:hidden;}
 <button class="btn ghost" onclick="renderTable()">查詢</button>
 </div>
 <div class="tablewrap"><table id="teacherTable"></table></div>
+<div class="hint" id="teacherEmpty" style="display:none">找不到符合條件的老師。</div>
 <div class="hint">點列進入老師詳情，可設定帳號、可授課語言等級、查看授課時段與薪資級距。</div>
 </div>
 
@@ -337,9 +338,10 @@ function renderTable(){
   var status = document.getElementById('f_status').value;
   var t = document.getElementById('teacherTable');
   t.innerHTML = '<tr><th>姓名</th><th>校區</th><th>語言</th><th>等級</th><th>年資</th><th>累積授課時數</th><th>狀態</th></tr>';
-  TEACHERS.filter(function(x){
+  var rows = TEACHERS.filter(function(x){
     return (!campus || x.campus===campus) && (!lang || x.langs.indexOf(lang)>-1) && (!status || x.status===status);
-  }).forEach(function(x){
+  });
+  rows.forEach(function(x){
     var tr = document.createElement('tr');
     tr.className = 'rowlink';
     tr.onclick = function(){ openDetail(x.id); };
@@ -347,6 +349,7 @@ function renderTable(){
       '<td>'+x.tenure+' 年</td><td>'+x.totalHours.toLocaleString()+' 小時</td><td>'+statusBadge(x.status)+'</td>';
     t.appendChild(tr);
   });
+  document.getElementById('teacherEmpty').style.display = rows.length ? 'none' : '';
 }
 renderTable();
 

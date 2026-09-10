@@ -43,7 +43,10 @@ h1.sth{font-size:17px;margin:0 0 4px;}
 .formrow input,.formrow select{width:100%;padding:9px 11px;border:1px solid var(--g200);
 border-radius:6px;font-size:13.5px;box-sizing:border-box;font-family:inherit;}
 .formrow input[readonly]{background:var(--g50);color:var(--g500);}
+.formrow input.invalid,.formrow select.invalid{border-color:#C0392B;}
 .hint{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.req-mark{color:#C0392B;margin-left:2px;}
+.field-required-note{font-size:12px;color:var(--g500);margin-bottom:16px;}
 .pwmeter{height:5px;border-radius:3px;background:var(--g200);margin-top:8px;overflow:hidden;}
 .pwmeter i{display:block;height:100%;width:0%;background:#C0392B;transition:.2s;}
 .pwmeter.weak i{width:33%;background:#C0392B;}
@@ -109,10 +112,11 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div id="stepPane1">
 <h1 class="sth">步驟 1／3　確認公司與帳號資料</h1>
 <div class="stdesc">以下資料由 TLI 顧問於後台建檔時填入，如有錯誤請聯繫顧問修正；廠區時區請自行確認後選擇。</div>
+<div class="field-required-note"><span class="req-mark">*</span> 為必填欄位</div>
 <div class="formrow"><label>企業名稱</label><input type="text" value="範例半導體股份有限公司" readonly></div>
 <div class="formrow"><label>HR 姓名</label><input type="text" value="陳雅婷 Sarah Chen" readonly></div>
 <div class="formrow"><label>Email</label><input type="text" value="sarah.chen@example-semi.com" readonly></div>
-<div class="formrow"><label>廠區時區</label><select id="siteSelect" onchange="clearErr('siteErr')">
+<div class="formrow"><label>廠區時區<span class="req-mark">*</span></label><select id="siteSelect" onchange="clearSiteErr()">
 <option value="">請選擇廠區</option>
 <option value="us">美國廠區（UTC-7，美國西部時間）</option>
 <option value="jp">日本廠區（UTC+9，日本標準時間）</option>
@@ -123,9 +127,10 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div id="stepPane2" style="display:none">
 <h1 class="sth">步驟 2／3　設定密碼</h1>
 <div class="stdesc">密碼將用於登入企業管理後台，請設定至少 8 碼、包含英文與數字的密碼。</div>
-<div class="formrow"><label>設定密碼</label><input type="password" id="pw1" oninput="onPwInput()" placeholder="至少 8 碼，含英文與數字">
+<div class="field-required-note"><span class="req-mark">*</span> 為必填欄位</div>
+<div class="formrow"><label>設定密碼<span class="req-mark">*</span></label><input type="password" id="pw1" oninput="onPwInput()" placeholder="至少 8 碼，含英文與數字">
 <div class="pwmeter" id="pwmeter"><i></i></div><div class="pwmeterlbl" id="pwmeterlbl">尚未輸入</div></div>
-<div class="formrow"><label>再次輸入密碼</label><input type="password" id="pw2" oninput="clearErr('pwErr')" placeholder="請再輸入一次">
+<div class="formrow"><label>再次輸入密碼<span class="req-mark">*</span></label><input type="password" id="pw2" oninput="clearPwErr()" placeholder="請再輸入一次">
 <div class="errmsg" id="pwErr">兩次輸入的密碼不一致，或密碼強度不足，請重新確認。</div></div>
 <div class="btnrow"><button class="btn ghost" onclick="goStep(1)">上一步</button><button class="btn" onclick="goStep3()">下一步</button></div>
 </div>
@@ -192,9 +197,21 @@ function goStep(n){
 
 /* ===== 步驟 1：驗證廠區時區已選 ===== */
 function clearErr(id){ document.getElementById(id).classList.remove('show'); }
+function clearSiteErr(){
+  clearErr('siteErr');
+  document.getElementById('siteSelect').classList.remove('invalid');
+}
 function goStep2(){
-  var site = document.getElementById('siteSelect').value;
-  if (!site){ document.getElementById('siteErr').classList.add('show'); return; }
+  var siteSelect = document.getElementById('siteSelect');
+  var site = siteSelect.value;
+  if (!site){
+    document.getElementById('siteErr').classList.add('show');
+    siteSelect.classList.add('invalid');
+    siteSelect.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(function(){ try{ siteSelect.focus(); }catch(err){} }, 250);
+    return;
+  }
+  siteSelect.classList.remove('invalid');
   goStep(2);
 }
 
@@ -208,6 +225,7 @@ function pwStrength(pw){
   return score; /* 0~3 */
 }
 function onPwInput(){
+  clearPwErr();
   var pw = document.getElementById('pw1').value;
   var s = pwStrength(pw);
   var meter = document.getElementById('pwmeter'), lbl = document.getElementById('pwmeterlbl');
@@ -217,13 +235,26 @@ function onPwInput(){
   else if (s===2){ meter.classList.add('medium'); lbl.textContent = '強度：中'; }
   else { meter.classList.add('strong'); lbl.textContent = '強度：強'; }
 }
+function clearPwErr(){
+  document.getElementById('pwErr').classList.remove('show');
+  document.getElementById('pw1').classList.remove('invalid');
+  document.getElementById('pw2').classList.remove('invalid');
+}
 function goStep3(){
-  var pw1 = document.getElementById('pw1').value, pw2 = document.getElementById('pw2').value;
+  var pw1El = document.getElementById('pw1'), pw2El = document.getElementById('pw2');
+  var pw1 = pw1El.value, pw2 = pw2El.value;
   if (!pw1 || pwStrength(pw1)<1 || pw1!==pw2){
     document.getElementById('pwErr').classList.add('show');
+    pw1El.classList.add('invalid');
+    pw2El.classList.add('invalid');
+    var focusTarget = !pw1 ? pw1El : pw2El;
+    focusTarget.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(function(){ try{ focusTarget.focus(); }catch(err){} }, 250);
     return;
   }
   document.getElementById('pwErr').classList.remove('show');
+  pw1El.classList.remove('invalid');
+  pw2El.classList.remove('invalid');
   goStep(3);
 }
 

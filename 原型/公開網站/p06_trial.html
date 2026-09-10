@@ -78,11 +78,33 @@ main{max-width:1160px;margin:0 auto;padding:0 24px 60px;}
 .field input{width:100%;border:1px solid var(--c-border);border-radius:6px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--c-text);background:#fff;}
 .field input:focus{outline:2px solid var(--c-primary);outline-offset:1px;}
 
-.slot-daybar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;}
-.slot-day-chip{flex:none;}
+.slot-calendar{border:1px solid var(--c-border);border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-title{font-size:14.5px;font-weight:700;}
+.cal-nav-btn{border:1px solid var(--c-border);background:#fff;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--c-text);padding:0;flex:none;}
+.cal-nav-btn:hover{background:var(--c-bg);}
+.cal-nav-btn:disabled{opacity:.35;cursor:not-allowed;}
+.cal-weekday-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:4px;}
+.cal-weekday-row span{text-align:center;font-size:12px;color:var(--c-muted);font-weight:600;padding:4px 0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;}
+.cal-day{position:relative;aspect-ratio:1/1;border:1px solid transparent;background:none;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;color:var(--c-text);display:flex;align-items:center;justify-content:center;min-height:34px;padding:0;}
+.cal-day:hover:not(:disabled){background:var(--c-bg);}
+.cal-day.cal-day-available::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--c-accent);}
+.cal-day:disabled{color:#D0D5DD;cursor:not-allowed;background:none;}
+.cal-day.cal-day-active{background:var(--c-primary);border-color:var(--c-primary);color:#fff;font-weight:700;}
+.cal-day.cal-day-active::after{background:#fff;}
+.cal-day-empty{visibility:hidden;pointer-events:none;}
+@media(max-width:480px){.cal-day{font-size:12px;min-height:30px;}.cal-nav-btn{width:28px;height:28px;}}
 .slot-times{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:0;}
 .slot-hint{font-size:12px;color:var(--c-muted);margin-bottom:8px;}
 .selected-slot-line{font-size:13px;font-weight:700;color:var(--c-secondary);background:#E6F4EF;border-radius:8px;padding:9px 13px;display:none;}
+.teacher-pick-group{display:flex;flex-wrap:wrap;gap:10px;}
+.teacher-pick{border:1.5px solid var(--c-border);border-radius:10px;padding:9px 15px;font-size:13px;font-family:inherit;background:#fff;cursor:pointer;min-height:44px;color:var(--c-text);}
+.teacher-pick.active{border-color:var(--c-primary);background:#F7FAFF;color:var(--c-primary);font-weight:700;}
+.selfserve-price{font-size:13px;color:var(--c-text);background:var(--c-bg);border-radius:8px;padding:11px 14px;margin-bottom:14px;}
+.selfserve-price strong{color:var(--c-accent-dark);}
+.selfserve-price .tag{color:var(--c-muted);font-weight:400;}
+body.self-serve-mode .purpose-toggle{display:none;}
 
 .field-hint{font-size:12.5px;color:var(--c-accent-dark);margin-top:10px;display:none;}
 
@@ -251,32 +273,67 @@ main{max-width:1160px;margin:0 auto;padding:0 24px 60px;}
           </div>
         </div>
 
-        <div class="field-row">
-          <div class="field">
-            <label><span data-i18n="p06_field_name_label">姓名</span><span class="req">*</span></label>
-            <input type="text" id="bkName" placeholder="請輸入姓名" data-i18n-ph="p06_ph_name">
+        <div class="form-block" id="contactFieldsBlock">
+          <div class="field-row">
+            <div class="field">
+              <label><span data-i18n="p06_field_name_label">姓名</span><span class="req">*</span></label>
+              <input type="text" id="bkName" placeholder="請輸入姓名" data-i18n-ph="p06_ph_name">
+            </div>
+            <div class="field">
+              <label><span data-i18n="p06_field_email_label">Email</span><span class="req">*</span></label>
+              <input type="email" id="bkEmail" placeholder="請輸入 Email" data-i18n-ph="p06_ph_email">
+            </div>
           </div>
           <div class="field">
-            <label><span data-i18n="p06_field_email_label">Email</span><span class="req">*</span></label>
-            <input type="email" id="bkEmail" placeholder="請輸入 Email" data-i18n-ph="p06_ph_email">
+            <label><span data-i18n="p06_field_phone_label">手機（或 LINE ID）</span><span class="req">*</span></label>
+            <input type="text" id="bkPhone" placeholder="請輸入手機號碼或 LINE ID" data-i18n-ph="p06_ph_phone">
           </div>
-        </div>
-        <div class="field">
-          <label><span data-i18n="p06_field_phone_label">手機（或 LINE ID）</span><span class="req">*</span></label>
-          <input type="text" id="bkPhone" placeholder="請輸入手機號碼或 LINE ID" data-i18n-ph="p06_ph_phone">
         </div>
 
         <div class="form-block" id="trialSlotBlock" style="display:none;">
           <span class="form-label"><span data-i18n="p06_label_slot">選擇試聽時段</span><span class="req">*</span></span>
           <div class="slot-hint" data-i18n="p06_slot_hint">線上一對一體驗課，30 分鐘</div>
-          <div class="slot-daybar" id="slotDaybar"></div>
+          <div class="slot-calendar" id="slotCalendar">
+            <div class="cal-header">
+              <button type="button" class="cal-nav-btn" id="calPrevBtn" data-i18n="p06_cal_prev_aria" data-i18n-attr="aria-label" aria-label="上一月" onclick="calChangeMonth(-1)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <div class="cal-title" id="calTitle"></div>
+              <button type="button" class="cal-nav-btn" id="calNextBtn" data-i18n="p06_cal_next_aria" data-i18n-attr="aria-label" aria-label="下一月" onclick="calChangeMonth(1)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+            <div class="cal-weekday-row" id="calWeekdayRow"></div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+          <div class="slot-hint" id="calLegend">灰色日期代表當日無可預約時段</div>
+          <div class="slot-hint" id="slotTimesHint"></div>
           <div class="slot-times" id="slotTimes"></div>
           <div class="selected-slot-line" id="selectedSlotLine"></div>
+        </div>
+
+        <div class="form-block" id="teacherPickBlock" style="display:none;">
+          <span class="form-label"><span data-i18n="p06_label_teacher">選擇老師（可略過，由系統配對）</span></span>
+          <div class="teacher-pick-group" id="teacherPickGroup">
+            <button type="button" class="teacher-pick" data-teacher="wang" onclick="selectTeacher('wang')" data-i18n="p06_teacher_wang">王老師</button>
+            <button type="button" class="teacher-pick" data-teacher="li" onclick="selectTeacher('li')" data-i18n="p06_teacher_li">李老師</button>
+            <button type="button" class="teacher-pick" data-teacher="chen" onclick="selectTeacher('chen')" data-i18n="p06_teacher_chen">陳老師</button>
+            <button type="button" class="teacher-pick active" data-teacher="" onclick="selectTeacher('')" data-i18n="p06_teacher_auto">由系統配對</button>
+          </div>
         </div>
 
         <div class="form-block" id="consultTimeBlock">
           <span class="form-label"><span data-i18n="p06_label_contact_time">方便聯繫時段</span><span class="req">*</span></span>
           <div class="chip-group" id="chipContactTime"></div>
+        </div>
+
+        <div id="trialPaymentBlock" style="display:none;">
+          <div class="selfserve-price" id="selfservePriceNote">
+            <span data-i18n="p06_selfserve_price_label">體驗課費用</span>
+            <strong data-i18n="p06_selfserve_price_value">NT$390</strong>
+            <span class="tag" data-i18n="p06_selfserve_price_tag">（模擬金額）</span>
+          </div>
+          <button type="button" class="btn btn-accent btn-block" id="goPaymentBtn" disabled onclick="goToPayment()" data-i18n="p06_go_payment_btn">前往付款</button>
         </div>
 
         <button type="button" class="btn btn-accent btn-block" id="submitBookingBtn" disabled onclick="submitBooking()" data-i18n="p06_submit_btn">送出預約</button>
@@ -369,16 +426,22 @@ var LEVEL_IDS = ['none','beginner','intermediate','advanced_plus','unsure'];
 var FORMAT_IDS = ['online','onsite'];
 var CAMPUS_IDS = ['roosevelt','shilin','taichung','kaohsiung'];
 var CONTACT_TIME_IDS = ['morning','afternoon','evening','anytime'];
-var SLOT_TIMES = ['10:00','14:00','16:00','19:00'];
-var SLOT_LABEL_KEY = { '10:00':'p06_slot_label_1000','14:00':'p06_slot_label_1400','16:00':'p06_slot_label_1600','19:00':'p06_slot_label_1900' };
 var WEEKDAY_IDS = ['sun','mon','tue','wed','thu','fri','sat'];
+var CAL_WEEKDAY_ORDER = ['mon','tue','wed','thu','fri','sat','sun'];
+var MONTH_NAMES_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+/* 示範用半小時時段池，實際串接時改由後端回傳當日可約時段 */
+var SLOT_POOL = ['09:00','09:30','10:00','10:30','11:00','13:30','14:00','14:30','15:30','16:00','16:30','19:00','19:30','20:00'];
 
 var bookState = {
   purpose:'consult', langs:new Set(), level:null, format:'online', campus:null,
-  name:'', email:'', phone:'', contactTime:null,
-  slotDateLabel:null, slotDateIndex:null, slotTime:null, courseLabelKey:null
+  name:'', email:'', phone:'', contactTime:null, teacher:'',
+  slotDateLabel:null, slotTime:null, slotTimeEnd:null, courseLabelKey:null
 };
-var slotDayDates = [];
+/* 是否為自助購買體驗課流程（由 p03「選時段購買體驗課」導入，帶 ?plan=trial） */
+var isSelfServeTrial = false;
+var calViewYear = null;
+var calViewMonth = null;
+var calSelectedDate = null;
 
 function buildMultiChipGroup(containerId, ids, keyPrefix, onToggle){
   var wrap = document.getElementById(containerId);
@@ -430,101 +493,186 @@ function setFormat(id){
 function setCampus(id){ bookState.campus = id; selectSingle('chipCampus', id); updateValidity(); }
 function setContactTime(id){ bookState.contactTime = id; selectSingle('chipContactTime', id); updateValidity(); }
 
-/* ===== 目的切換：預約諮詢／預約試聽 ===== */
+/* ===== 目的切換：預約諮詢／預約試聽（試聽一律走自助選時段＋付款流程） ===== */
 function setPurpose(type){
   bookState.purpose = type;
+  var isTrial = (type === 'trial');
   document.querySelectorAll('.purpose-pill').forEach(function(p){ p.classList.toggle('active', p.dataset.type === type); });
-  document.getElementById('trialSlotBlock').style.display = (type === 'trial') ? 'block' : 'none';
-  document.getElementById('consultTimeBlock').style.display = (type === 'trial') ? 'none' : 'block';
+  document.getElementById('trialSlotBlock').style.display = isTrial ? 'block' : 'none';
+  document.getElementById('teacherPickBlock').style.display = isTrial ? 'block' : 'none';
+  document.getElementById('trialPaymentBlock').style.display = isTrial ? 'block' : 'none';
+  document.getElementById('consultTimeBlock').style.display = isTrial ? 'none' : 'block';
+  document.getElementById('contactFieldsBlock').style.display = isTrial ? 'none' : 'block';
+  document.getElementById('submitBookingBtn').style.display = isTrial ? 'none' : 'block';
   updateValidity();
 }
+function selectTeacher(id){
+  bookState.teacher = id;
+  document.querySelectorAll('#teacherPickGroup .teacher-pick').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-teacher') === id);
+  });
+}
 
-/* ===== 試聽時段：接下來 7 天 ===== */
+/* ===== 試聽時段：月曆選日期 ===== */
 function formatSlotDayLabel(d, dict){
   dict = dict || tliDict();
   var weekday = dict['p06_weekday_'+WEEKDAY_IDS[d.getDay()]];
   return tliFmt(dict.p06_slot_day_fmt, {month:(d.getMonth()+1), date:d.getDate(), weekday:weekday});
 }
-function buildSlotDays(){
-  var wrap = document.getElementById('slotDaybar');
-  wrap.innerHTML = '';
-  slotDayDates = [];
-  for(var i=1;i<=7;i++){
-    (function(i){
-      var d = new Date(); d.setDate(d.getDate()+i);
-      slotDayDates.push(d);
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'chip-opt slot-day-chip'; b.textContent = formatSlotDayLabel(d);
-      b.onclick = function(){ selectSlotDay(i-1, formatSlotDayLabel(d)); };
-      wrap.appendChild(b);
-    })(i);
-  }
+function calToday(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
+function calSameDate(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function formatCalTitle(year, monthIdx, dict, lang){
+  if(lang === 'en') return MONTH_NAMES_EN[monthIdx] + ' ' + year;
+  return tliFmt(dict.p06_cal_title_fmt, {year:year, month:(monthIdx+1)});
 }
-function refreshSlotDayLabels(){
+/* 示範用：今天以前、或週六週日視為無可約時段 */
+function calDateHasSlots(d){
+  var today = calToday();
+  if(d < today) return false;
+  var day = d.getDay();
+  return day !== 0 && day !== 6;
+}
+/* 用日期算出穩定的亂數種子，讓同一天每次重新渲染時段組合都一致 */
+function calSeedFromDate(d){ return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); }
+function calSlotsForDate(d){
+  if(!calDateHasSlots(d)) return [];
+  var seed = calSeedFromDate(d);
+  var count = 3 + (seed % 4);
+  var start = seed % SLOT_POOL.length;
+  var picks = [];
+  for(var i=0;i<count;i++){ picks.push(SLOT_POOL[(start + i*2) % SLOT_POOL.length]); }
+  picks = Array.from(new Set(picks)).sort();
+  return picks;
+}
+function calAddMinutes(hhmm, minutes){
+  var parts = hhmm.split(':'); var h = parseInt(parts[0],10); var m = parseInt(parts[1],10);
+  var total = ((h*60+m+minutes) % (24*60) + 24*60) % (24*60);
+  var nh = Math.floor(total/60), nm = total%60;
+  return (nh<10?'0':'')+nh+':'+(nm<10?'0':'')+nm;
+}
+function renderCalendar(){
   var dict = tliDict();
-  var buttons = document.querySelectorAll('.slot-day-chip');
-  buttons.forEach(function(b, i){
-    if(slotDayDates[i]) b.textContent = formatSlotDayLabel(slotDayDates[i], dict);
+  var lang = window.TLI_CURRENT_LANG || 'zh-TW';
+  document.getElementById('calTitle').textContent = formatCalTitle(calViewYear, calViewMonth, dict, lang);
+
+  var today = calToday();
+  var isCurrentMonth = (calViewYear === today.getFullYear() && calViewMonth === today.getMonth());
+  document.getElementById('calPrevBtn').disabled = isCurrentMonth;
+
+  var weekRow = document.getElementById('calWeekdayRow');
+  weekRow.innerHTML = '';
+  CAL_WEEKDAY_ORDER.forEach(function(id){
+    var span = document.createElement('span');
+    span.textContent = dict['p06_weekday_'+id];
+    weekRow.appendChild(span);
   });
-  if(bookState.slotDateIndex != null && slotDayDates[bookState.slotDateIndex] != null){
-    bookState.slotDateLabel = formatSlotDayLabel(slotDayDates[bookState.slotDateIndex], dict);
-    var line = document.getElementById('selectedSlotLine');
-    if(line && bookState.slotTime){
-      line.textContent = tliFmt(dict.p06_selected_slot_line, {date: bookState.slotDateLabel, time: bookState.slotTime});
-    }
+
+  var grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  var firstDay = new Date(calViewYear, calViewMonth, 1);
+  var startOffset = (firstDay.getDay() + 6) % 7; /* 轉成週一為第 0 欄 */
+  var daysInMonth = new Date(calViewYear, calViewMonth+1, 0).getDate();
+
+  for(var i=0;i<startOffset;i++){
+    var empty = document.createElement('div');
+    empty.className = 'cal-day cal-day-empty';
+    grid.appendChild(empty);
+  }
+  for(var day=1; day<=daysInMonth; day++){
+    (function(day){
+      var d = new Date(calViewYear, calViewMonth, day);
+      var hasSlots = calDateHasSlots(d);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day' + (hasSlots ? ' cal-day-available' : '');
+      btn.textContent = String(day);
+      if(calSelectedDate && calSameDate(calSelectedDate, d)) btn.classList.add('cal-day-active');
+      if(!hasSlots){ btn.disabled = true; }
+      else { btn.onclick = function(){ selectCalDate(d); }; }
+      grid.appendChild(btn);
+    })(day);
   }
 }
-function selectSlotDay(idx, label){
-  bookState.slotDateIndex = idx;
-  bookState.slotDateLabel = label;
+function calChangeMonth(delta){
+  calViewMonth += delta;
+  if(calViewMonth < 0){ calViewMonth = 11; calViewYear -= 1; }
+  if(calViewMonth > 11){ calViewMonth = 0; calViewYear += 1; }
+  renderCalendar();
+}
+function selectCalDate(d){
+  calSelectedDate = d;
+  bookState.slotDateLabel = formatSlotDayLabel(d);
   bookState.slotTime = null;
-  document.querySelectorAll('.slot-day-chip').forEach(function(b, i){ b.classList.toggle('active', i === idx); });
+  bookState.slotTimeEnd = null;
+  renderCalendar();
   renderSlotTimes();
-  document.getElementById('selectedSlotLine').style.display = 'none';
   updateValidity();
 }
 function renderSlotTimes(){
   var wrap = document.getElementById('slotTimes');
+  var hintEl = document.getElementById('slotTimesHint');
   var dict = tliDict();
   wrap.innerHTML = '';
-  SLOT_TIMES.forEach(function(t){
+  if(!calSelectedDate){
+    hintEl.textContent = dict.p06_cal_pick_date_hint;
+    hintEl.style.display = 'block';
+    document.getElementById('selectedSlotLine').style.display = 'none';
+    return;
+  }
+  var times = calSlotsForDate(calSelectedDate);
+  hintEl.style.display = 'none';
+  times.forEach(function(t){
+    var end = calAddMinutes(t, 30);
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'chip-opt slot-time-chip';
-    b.setAttribute('data-i18n', SLOT_LABEL_KEY[t]);
-    b.setAttribute('data-value', t);
-    b.textContent = dict[SLOT_LABEL_KEY[t]];
-    b.onclick = function(){ selectSlotTime(t, b); };
+    if(t === bookState.slotTime) b.classList.add('active');
+    b.textContent = t + '–' + end;
+    b.onclick = function(){ selectSlotTime(t, end); };
     wrap.appendChild(b);
   });
-}
-function selectSlotTime(t, btn){
-  bookState.slotTime = t;
-  document.querySelectorAll('.slot-time-chip').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  var dict = tliDict();
   var line = document.getElementById('selectedSlotLine');
-  line.textContent = tliFmt(dict.p06_selected_slot_line, {date: bookState.slotDateLabel, time: t});
-  line.style.display = 'block';
+  if(bookState.slotTime && bookState.slotTimeEnd){
+    line.textContent = tliFmt(dict.p06_selected_slot_line, {date: bookState.slotDateLabel, time: bookState.slotTime, end: bookState.slotTimeEnd});
+    line.style.display = 'block';
+  } else {
+    line.style.display = 'none';
+  }
+}
+function selectSlotTime(t, end){
+  bookState.slotTime = t;
+  bookState.slotTimeEnd = end;
+  renderSlotTimes();
   updateValidity();
+}
+function refreshSlotDayLabels(){
+  var dict = tliDict();
+  if(calSelectedDate){ bookState.slotDateLabel = formatSlotDayLabel(calSelectedDate, dict); }
+  renderCalendar();
+  renderSlotTimes();
 }
 
 /* ===== 必填驗證（回傳字典 key，顯示時才查目前語系文字） ===== */
+/* 試聽為自助購買流程，不需先填姓名／Email／手機，僅需選語言、程度與時段，帳號資訊留待結帳頁註冊時填寫 */
 function computeMissing(){
   var m = [];
   if(bookState.langs.size === 0) m.push('p06_label_lang');
   if(!bookState.level) m.push('p06_label_level');
   if(bookState.format === 'onsite' && !bookState.campus) m.push('p06_missing_campus');
-  if(!bookState.name) m.push('p06_field_name_label');
-  if(!bookState.email || bookState.email.indexOf('@') === -1) m.push('p06_field_email_label');
-  if(!bookState.phone) m.push('p06_missing_phone');
-  if(bookState.purpose === 'trial'){ if(!bookState.slotTime) m.push('p06_missing_slot'); }
-  else { if(!bookState.contactTime) m.push('p06_label_contact_time'); }
+  if(bookState.purpose === 'trial'){
+    if(!bookState.slotTime) m.push('p06_missing_slot');
+  } else {
+    if(!bookState.name) m.push('p06_field_name_label');
+    if(!bookState.email || bookState.email.indexOf('@') === -1) m.push('p06_field_email_label');
+    if(!bookState.phone) m.push('p06_missing_phone');
+    if(!bookState.contactTime) m.push('p06_label_contact_time');
+  }
   return m;
 }
 function updateValidity(){
   var dict = tliDict();
   var missing = computeMissing();
-  var btn = document.getElementById('submitBookingBtn');
+  var isTrial = bookState.purpose === 'trial';
+  var btn = document.getElementById(isTrial ? 'goPaymentBtn' : 'submitBookingBtn');
   var hint = document.getElementById('fieldHint');
   if(missing.length){
     btn.disabled = true;
@@ -535,6 +683,17 @@ function updateValidity(){
     btn.disabled = false;
     hint.style.display = 'none';
   }
+}
+/* ===== 自助購買體驗課：選好時段（老師可略過）後導向結帳頁付款 ===== */
+function goToPayment(){
+  if(computeMissing().length || !calSelectedDate) return;
+  var y = calSelectedDate.getFullYear();
+  var mo = String(calSelectedDate.getMonth()+1).padStart(2,'0');
+  var da = String(calSelectedDate.getDate()).padStart(2,'0');
+  var slot = y+'-'+mo+'-'+da+' '+bookState.slotTime;
+  var url = '../會員區/m13_checkout.html?plan=trial&slot=' + encodeURIComponent(slot);
+  if(bookState.teacher) url += '&teacher=' + encodeURIComponent(bookState.teacher);
+  window.location.href = url;
 }
 
 /* ===== 送出預約／已收到 ===== */
@@ -570,10 +729,13 @@ function submitBooking(){
   rv.scrollIntoView({behavior:'smooth', block:'start'});
 }
 function resetBooking(){
-  bookState.slotTime = null; bookState.slotDateLabel = null; bookState.slotDateIndex = null;
-  document.querySelectorAll('.slot-day-chip').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('slotTimes').innerHTML = '';
-  document.getElementById('selectedSlotLine').style.display = 'none';
+  bookState.slotTime = null; bookState.slotTimeEnd = null; bookState.slotDateLabel = null;
+  calSelectedDate = null;
+  var today = calToday();
+  calViewYear = today.getFullYear();
+  calViewMonth = today.getMonth();
+  renderCalendar();
+  renderSlotTimes();
   document.getElementById('receivedActions').style.display = 'none';
   document.getElementById('receivedView').style.display = 'none';
   document.getElementById('bookView').style.display = 'block';
@@ -586,6 +748,9 @@ function onLangApplied(lang){
   var dict = tliDict();
   refreshSlotDayLabels();
   updateValidity();
+  if(isSelfServeTrial){
+    document.querySelector('.lead').textContent = dict.p06_page_lead_selfserve;
+  }
   var banner = document.getElementById('courseBanner');
   if(banner.classList.contains('show') && bookState.courseLabelKey){
     banner.textContent = tliFmt(dict.p06_course_banner, {course: dict[bookState.courseLabelKey]});
@@ -618,13 +783,23 @@ document.addEventListener('DOMContentLoaded', function(){
   buildSingleChipGroup('chipFormat', FORMAT_IDS, 'p06_format_', setFormat);
   buildSingleChipGroup('chipCampus', CAMPUS_IDS, 'p06_campus_', setCampus);
   buildSingleChipGroup('chipContactTime', CONTACT_TIME_IDS, 'p06_contact_', setContactTime);
-  buildSlotDays();
+  var __today = calToday();
+  calViewYear = __today.getFullYear();
+  calViewMonth = __today.getMonth();
+  renderCalendar();
+  renderSlotTimes();
   setFormat('online');
 
   var dict = tliDict();
   var params = new URLSearchParams(window.location.search);
   var typeParam = params.get('type');
-  setPurpose((typeParam === 'trial') ? 'trial' : 'consult');
+  var planParam = params.get('plan');
+  isSelfServeTrial = (planParam === 'trial');
+  if(isSelfServeTrial) document.body.classList.add('self-serve-mode');
+  setPurpose((typeParam === 'trial' || isSelfServeTrial) ? 'trial' : 'consult');
+  if(isSelfServeTrial){
+    document.querySelector('.lead').textContent = dict.p06_page_lead_selfserve;
+  }
 
   var slug = params.get('course');
   if(slug && COURSE_PRESET_KEYS[slug]){
@@ -850,12 +1025,17 @@ var I18N_PAGE = {
   meta_description: 'TLI 快速預約諮詢與試聽：填表 30 秒完成預約，不確定怎麼選時再問 AI 諮詢助手，送出後由顧問於 1 個工作日內聯繫。',
   p06_page_title: '預約諮詢／預約試聽',
   p06_page_lead: '填表 30 秒完成預約，顧問將主動與您聯繫；不確定怎麼選時，可點右下角「線上諮詢」問 AI',
+  p06_page_lead_selfserve: '付款完成即確認時段，顧問會在試聽後聯繫你',
   p06_label_lang: '想學的語言', p06_label_level: '目前程度', p06_label_format: '上課形式',
   p06_onsite_note: 'TLI Connect 目前僅提供線上課程；實體課程請至官網選校區報名。',
   p06_onsite_link: '前往官網報名 →',
   p06_field_name_label: '姓名', p06_field_email_label: 'Email', p06_field_phone_label: '手機（或 LINE ID）',
   p06_ph_name: '請輸入姓名', p06_ph_email: '請輸入 Email', p06_ph_phone: '請輸入手機號碼或 LINE ID',
   p06_label_slot: '選擇試聽時段', p06_slot_hint: '線上一對一體驗課，30 分鐘',
+  p06_label_teacher: '選擇老師（可略過，由系統配對）',
+  p06_teacher_wang: '王老師', p06_teacher_li: '李老師', p06_teacher_chen: '陳老師', p06_teacher_auto: '由系統配對',
+  p06_selfserve_price_label: '體驗課費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（模擬金額）',
+  p06_go_payment_btn: '前往付款',
   p06_label_contact_time: '方便聯繫時段', p06_submit_btn: '送出預約',
   p06_missing_campus: '校區', p06_missing_phone: '手機或 LINE ID', p06_missing_slot: '試聽時段',
   p06_hint_missing: '還缺：{items}', p06_join_sep: '、',
@@ -875,7 +1055,9 @@ var I18N_PAGE = {
   p06_step_added_todo: '已加入顧問今日待辦（{name}）',
   p06_step_slot_locked: '已鎖定 {date} {time} 線上教室，開課前 15 分鐘從會員區進入',
   p06_default_student: '學員', p06_group_online: '線上組',
-  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '已選 {date} {time}',
+  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '已選 {date}{time}–{end}',
+  p06_cal_title_fmt: '{year} 年 {month} 月', p06_cal_prev_aria: '上一月', p06_cal_next_aria: '下一月',
+  p06_cal_pick_date_hint: '請先在上方月曆選擇日期',
   p06_course_banner: '已依您點選的課程「{course}」帶入語言，如需調整可自行修改。',
   p06_course_zh_1on1: '中文一對一線上課', p06_course_en_1on1: '英文一對一線上課', p06_course_ja_1on1: '日文一對一線上課',
   p06_course_ko_1on1: '韓文一對一線上課', p06_course_de_1on1: '德文一對一線上課', p06_course_fr_1on1: '法文一對一線上課',
@@ -887,7 +1069,6 @@ var I18N_PAGE = {
   p06_format_online: '線上', p06_format_onsite: '實體',
   p06_campus_roosevelt: '羅斯福校', p06_campus_shilin: '士林校', p06_campus_taichung: '台中校', p06_campus_kaohsiung: '高雄校',
   p06_contact_morning: '上午', p06_contact_afternoon: '下午', p06_contact_evening: '晚上', p06_contact_anytime: '皆可',
-  p06_slot_label_1000: '上午 10:00', p06_slot_label_1400: '下午 14:00', p06_slot_label_1600: '下午 16:00', p06_slot_label_1900: '晚上 19:00',
   p06_weekday_sun: '日', p06_weekday_mon: '一', p06_weekday_tue: '二', p06_weekday_wed: '三', p06_weekday_thu: '四', p06_weekday_fri: '五', p06_weekday_sat: '六',
   p06_ai_greeting_trial: '需要協助挑選班型，或有退費、請假、簽證、發票、付款相關問題，都可以問我。',
   p06_quiz_chip_label: '幫我挑班型',
@@ -918,12 +1099,17 @@ en: {
   meta_description: 'Book a consultation or free trial with TLI in 30 seconds. Not sure what to choose? Ask our AI assistant — an advisor will follow up within 1 business day.',
   p06_page_title: 'Book a Consultation or Free Trial',
   p06_page_lead: 'It takes 30 seconds to book — an advisor will reach out to you directly. Not sure what to pick? Tap “Chat with us” in the bottom right and ask our AI assistant.',
+  p06_page_lead_selfserve: 'Your time slot is confirmed as soon as payment completes; an advisor will follow up after your trial class.',
   p06_label_lang: 'Language you want to learn', p06_label_level: 'Current level', p06_label_format: 'Class format',
   p06_onsite_note: 'TLI Connect currently offers online courses only. For in-person classes, please register through our official website by campus.',
   p06_onsite_link: 'Register on our official website →',
   p06_field_name_label: 'Name', p06_field_email_label: 'Email', p06_field_phone_label: 'Mobile (or LINE ID)',
   p06_ph_name: 'Enter your name', p06_ph_email: 'Enter your email', p06_ph_phone: 'Enter your mobile number or LINE ID',
   p06_label_slot: 'Choose a trial time slot', p06_slot_hint: '30-minute online 1-on-1 trial class',
+  p06_label_teacher: 'Choose a teacher (optional — we can match one for you)',
+  p06_teacher_wang: 'Teacher Wang', p06_teacher_li: 'Teacher Li', p06_teacher_chen: 'Teacher Chen', p06_teacher_auto: 'Auto-match',
+  p06_selfserve_price_label: 'Trial class fee', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '(demo amount)',
+  p06_go_payment_btn: 'Proceed to Payment',
   p06_label_contact_time: 'Best time to reach you', p06_submit_btn: 'Submit Booking',
   p06_missing_campus: 'Campus', p06_missing_phone: 'Mobile or LINE ID', p06_missing_slot: 'Trial time slot',
   p06_hint_missing: 'Still needed: {items}', p06_join_sep: ', ',
@@ -943,7 +1129,9 @@ en: {
   p06_step_added_todo: 'Added to advisor’s to-do list for today ({name})',
   p06_step_slot_locked: 'Reserved for {date} {time} in the online classroom — join from the member area 15 minutes before class',
   p06_default_student: 'Student', p06_group_online: 'the online team',
-  p06_slot_day_fmt: '{month}/{date} ({weekday})', p06_selected_slot_line: 'Selected: {date} {time}',
+  p06_slot_day_fmt: '{month}/{date} ({weekday})', p06_selected_slot_line: 'Selected: {date} {time}–{end}',
+  p06_cal_title_fmt: '{month} {year}', p06_cal_prev_aria: 'Previous month', p06_cal_next_aria: 'Next month',
+  p06_cal_pick_date_hint: 'Please choose a date from the calendar above',
   p06_course_banner: 'Language auto-filled from the course you selected, “{course}.” Feel free to adjust it.',
   p06_course_zh_1on1: 'Chinese 1-on-1 Online', p06_course_en_1on1: 'English 1-on-1 Online', p06_course_ja_1on1: 'Japanese 1-on-1 Online',
   p06_course_ko_1on1: 'Korean 1-on-1 Online', p06_course_de_1on1: 'German 1-on-1 Online', p06_course_fr_1on1: 'French 1-on-1 Online',
@@ -955,7 +1143,6 @@ en: {
   p06_format_online: 'Online', p06_format_onsite: 'In-Person',
   p06_campus_roosevelt: 'Roosevelt Campus', p06_campus_shilin: 'Shilin Campus', p06_campus_taichung: 'Taichung Campus', p06_campus_kaohsiung: 'Kaohsiung Campus',
   p06_contact_morning: 'Morning', p06_contact_afternoon: 'Afternoon', p06_contact_evening: 'Evening', p06_contact_anytime: 'Anytime',
-  p06_slot_label_1000: 'Morning 10:00', p06_slot_label_1400: 'Afternoon 14:00', p06_slot_label_1600: 'Afternoon 16:00', p06_slot_label_1900: 'Evening 19:00',
   p06_weekday_sun: 'Sun', p06_weekday_mon: 'Mon', p06_weekday_tue: 'Tue', p06_weekday_wed: 'Wed', p06_weekday_thu: 'Thu', p06_weekday_fri: 'Fri', p06_weekday_sat: 'Sat',
   p06_ai_greeting_trial: 'Need help choosing a class, or have questions about refunds, rescheduling, visas, invoices, or payment? Just ask.',
   p06_quiz_chip_label: 'Help Me Choose a Class',
@@ -986,12 +1173,17 @@ ja: {
   meta_description: 'TLI の相談・体験レッスンは最短30秒で予約完了。迷ったときはAI相談アシスタントにご質問ください。送信後、アドバイザーが1営業日以内にご連絡します。',
   p06_page_title: '相談予約／体験レッスン予約',
   p06_page_lead: '入力は30秒で完了、アドバイザーからご連絡いたします。迷ったときは右下の「オンライン相談」からAIにご質問ください',
+  p06_page_lead_selfserve: 'お支払い完了と同時に時間帯が確定します。体験レッスン後にアドバイザーがご連絡いたします。',
   p06_label_lang: '学びたい言語', p06_label_level: '現在のレベル', p06_label_format: '受講形式',
   p06_onsite_note: 'TLI Connectは現在オンラインコースのみ提供しています。対面授業は公式サイトより校舎を選んでお申し込みください。',
   p06_onsite_link: '公式サイトで申し込む →',
   p06_field_name_label: 'お名前', p06_field_email_label: 'Email', p06_field_phone_label: '携帯電話番号（またはLINE ID）',
   p06_ph_name: 'お名前を入力してください', p06_ph_email: 'Emailを入力してください', p06_ph_phone: '携帯電話番号またはLINE IDを入力してください',
   p06_label_slot: '体験レッスンの時間帯を選択', p06_slot_hint: 'オンライン一対一体験レッスン、30分間',
+  p06_label_teacher: '講師を選択（任意・未選択の場合はシステムが自動マッチング）',
+  p06_teacher_wang: '王先生', p06_teacher_li: '李先生', p06_teacher_chen: '陳先生', p06_teacher_auto: 'システムに任せる',
+  p06_selfserve_price_label: '体験レッスン費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（デモ金額）',
+  p06_go_payment_btn: 'お支払いへ進む',
   p06_label_contact_time: 'ご連絡可能な時間帯', p06_submit_btn: '予約を送信',
   p06_missing_campus: '校舎', p06_missing_phone: '携帯電話番号またはLINE ID', p06_missing_slot: '体験レッスンの時間帯',
   p06_hint_missing: '未入力の項目：{items}', p06_join_sep: '、',
@@ -1011,7 +1203,9 @@ ja: {
   p06_step_added_todo: '本日のアドバイザー対応リストに追加しました（{name}）',
   p06_step_slot_locked: '{date} {time} のオンライン教室を確保しました。授業開始15分前に会員エリアからご入室ください',
   p06_default_student: '受講者', p06_group_online: 'オンライングループ',
-  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '選択済み：{date} {time}',
+  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '選択済み：{date}{time}–{end}',
+  p06_cal_title_fmt: '{year}年{month}月', p06_cal_prev_aria: '前の月', p06_cal_next_aria: '次の月',
+  p06_cal_pick_date_hint: '上のカレンダーで日付を選択してください',
   p06_course_banner: '選択されたコース「{course}」に基づき言語を自動入力しました。必要に応じて変更できます。',
   p06_course_zh_1on1: '中国語 1対1 オンライン', p06_course_en_1on1: '英語 1対1 オンライン', p06_course_ja_1on1: '日本語 1対1 オンライン',
   p06_course_ko_1on1: '韓国語 1対1 オンライン', p06_course_de_1on1: 'ドイツ語 1対1 オンライン', p06_course_fr_1on1: 'フランス語 1対1 オンライン',
@@ -1023,7 +1217,6 @@ ja: {
   p06_format_online: 'オンライン', p06_format_onsite: '対面',
   p06_campus_roosevelt: '羅斯福校', p06_campus_shilin: '士林校', p06_campus_taichung: '台中校', p06_campus_kaohsiung: '高雄校',
   p06_contact_morning: '午前', p06_contact_afternoon: '午後', p06_contact_evening: '夜間', p06_contact_anytime: 'いつでも可',
-  p06_slot_label_1000: '午前 10:00', p06_slot_label_1400: '午後 14:00', p06_slot_label_1600: '午後 16:00', p06_slot_label_1900: '夜間 19:00',
   p06_weekday_sun: '日', p06_weekday_mon: '月', p06_weekday_tue: '火', p06_weekday_wed: '水', p06_weekday_thu: '木', p06_weekday_fri: '金', p06_weekday_sat: '土',
   p06_ai_greeting_trial: 'クラス選びのサポートや、返金・振替・ビザ・領収書・お支払いに関するご質問など、お気軽にお尋ねください。',
   p06_quiz_chip_label: 'クラス選びを手伝ってもらう',

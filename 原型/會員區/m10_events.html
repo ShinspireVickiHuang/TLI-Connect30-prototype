@@ -108,6 +108,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .countdown.ok{color:#0B6B52;background:#E4F5F0;}
 .er-meta{display:flex;flex-direction:column;gap:4px;margin:10px 0 14px;font-size:13px;color:var(--c-muted);}
 .er-meta strong{color:var(--c-text);}
+.event-reg-card.reg-highlight{animation:regHighlight 2s ease;}
+@keyframes regHighlight{0%{box-shadow:0 0 0 4px rgba(27,78,140,.35);}100%{box-shadow:var(--shadow);}}
 
 /* Sheet / Modal */
 .sheet-overlay{position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
@@ -157,6 +159,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>首頁</a>
     <a class="side-link" href="m02_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v6M9 17h6"/></svg>預約</a>
     <a class="side-link" href="m03_schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>課表</a>
+    <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
@@ -190,6 +193,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <main class="content">
     <p class="page-h">我的活動</p>
     <p class="page-sub">查看已報名的線上活動，開課前 15 分鐘可進入線上教室；也可以探索更多場次。</p>
+    <p class="small muted" style="margin:-10px 0 18px;">以下報名／取消／候補時間為情境示範資料，正式串接後由後台規則與即時名額決定。</p>
 
     <div class="section-title first">已報名活動</div>
     <div class="stack" id="registeredList"></div>
@@ -197,6 +201,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></div>
       <h4>目前沒有已報名的活動</h4>
       <p>瀏覽線上活動，找一場感興趣的場次報名看看</p>
+    </div>
+
+    <div id="upcomingSection">
+      <div class="section-title">可報名活動</div>
+      <div class="card stack" id="upcomingList" style="gap:0;"></div>
+    </div>
+
+    <div id="endedSection" class="hidden">
+      <div class="section-title">已參加／已結束</div>
+      <div class="stack" id="endedList"></div>
     </div>
 
     <div class="section-title">探索活動</div>
@@ -309,25 +323,51 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
 });
 
-/* ===== 全站活動資料（與公開網站 p09 一致，示範用） ===== */
+/* ===== 全站活動資料（與公開網站 p09 一致，示範用）=====
+   新增欄位為報名／取消規則示範值：capacity 名額、totalRegistered 目前已報名（全站，非本人）、
+   waitlistEnabled 是否開放候補、regCloseHours 報名截止（開始前幾小時，留白代表沿用參數設定待定）、
+   cancelCloseHours 取消報名截止（開始前幾小時，留白代表不限）、noShowTrack 逾期未取消是否記 no-show、
+   recordingUrl 活動結束後是否提供回放（僅供情境示範，非真實影片連結）。 */
 var EVENTS_M10 = {
-  'cert-info':{title:'2026 TLI 國際華語教師認證線上說明會', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,27,20,0,0), timeLabel:'08/27（四）20:00–21:00'},
-  'flex-open-house':{title:'彈性團體直播 公開體驗場－日文情境會話', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,29,10,0,0), timeLabel:'08/29（六）10:00–10:50'},
-  'culture-midautumn':{title:'中文文化直播－中秋節茶道與詩詞賞析', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,3,19,0,0), timeLabel:'09/03（四）19:00–20:00'},
-  'culture-calligraphy':{title:'中文文化線上課－毛筆書法入門體驗', format:'online', feeType:'paid', feeAmount:600, start:new Date(2026,8,5,15,0,0), timeLabel:'09/05（六）15:00–16:30'},
-  'biz-webinar':{title:'企業線上培訓說明會－員工華語計畫怎麼規劃', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,10,14,0,0), timeLabel:'09/10（四）14:00–15:00'},
-  'flex-mock-exam':{title:'TLI-CPT 模擬檢定線上診斷會', format:'online', feeType:'paid', feeAmount:800, start:new Date(2026,8,18,19,0,0), timeLabel:'09/18（五）19:00–20:30'}
+  'cert-info':{title:'2026 TLI 國際華語教師認證線上說明會', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,27,20,0,0), timeLabel:'08/27（四）20:00–21:00',
+    capacity:60, totalRegistered:22, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:6, noShowTrack:false},
+  'flex-open-house':{title:'彈性團體直播 公開體驗場－日文情境會話', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,29,10,0,0), timeLabel:'08/29（六）10:00–10:50',
+    capacity:40, totalRegistered:31, waitlistEnabled:true, regCloseHours:'', cancelCloseHours:24, noShowTrack:true},
+  'culture-midautumn':{title:'中文文化直播－中秋節茶道與詩詞賞析', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,3,19,0,0), timeLabel:'09/03（四）19:00–20:00',
+    capacity:2, totalRegistered:2, waitlistEnabled:true, regCloseHours:'', cancelCloseHours:12, noShowTrack:true},
+  'culture-calligraphy':{title:'中文文化線上課－毛筆書法入門體驗', format:'online', feeType:'paid', feeAmount:600, start:new Date(2026,8,5,15,0,0), timeLabel:'09/05（六）15:00–16:30',
+    capacity:15, totalRegistered:9, waitlistEnabled:false, regCloseHours:288, cancelCloseHours:24, noShowTrack:true},
+  'biz-webinar':{title:'企業線上培訓說明會－員工華語計畫怎麼規劃', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,8,10,14,0,0), timeLabel:'09/10（四）14:00–15:00',
+    capacity:80, totalRegistered:12, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:6, noShowTrack:false},
+  'flex-mock-exam':{title:'TLI-CPT 模擬檢定線上診斷會', format:'online', feeType:'paid', feeAmount:800, start:new Date(2026,8,18,19,0,0), timeLabel:'09/18（五）19:00–20:30',
+    capacity:25, totalRegistered:25, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:24, noShowTrack:true},
+  'flex-morning-dropin':{title:'彈性團體直播 公開體驗場－日語晨間快閃場', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,25,10,10,0), timeLabel:'08/25（二）10:10–11:00',
+    capacity:30, totalRegistered:18, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:1, noShowTrack:true},
+  'flex-tomorrow-session':{title:'彈性團體直播 公開體驗場－韓語情境會話', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,26,9,0,0), timeLabel:'08/26（三）09:00–09:50',
+    capacity:30, totalRegistered:14, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:24, noShowTrack:true},
+  'past-demo-webinar':{title:'中文文化直播（回顧）－結業心得分享會', format:'online', feeType:'free', feeAmount:0, start:new Date(2026,7,18,19,0,0), timeLabel:'08/18（二）19:00–20:00',
+    capacity:100, totalRegistered:64, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:'', noShowTrack:false, recordingUrl:'#recording-demo'}
 };
 
 /* 示範用「現在時間」：與會員區其他頁一致，固定為 2026-08-25 10:00 */
 var NOW = new Date(2026,7,25,10,0,0);
 
-/* ===== 已報名活動（前端模擬狀態） ===== */
+/* ===== 已報名活動（前端模擬狀態）=====
+   下列四筆對應「可取消」「開放進入教室」「已過取消時限」「已結束（可回放）」四種情境，供實點驗證。 */
 var REGISTERED = [
-  {regId:'r1', eventId:'culture-midautumn'},
-  {regId:'r2', eventId:'flex-open-house'}
+  {regId:'r1', eventId:'flex-open-house'},
+  {regId:'r2', eventId:'flex-morning-dropin'},
+  {regId:'r3', eventId:'flex-tomorrow-session'},
+  {regId:'r4', eventId:'past-demo-webinar'}
 ];
-var _regCounter = 3;
+var _regCounter = 5;
+
+/* ===== 候補登記（前端模擬狀態） ===== */
+var WAITLIST = [];
+var _waitCounter = 1;
+
+/* ===== 取消紀錄（示範用，模擬後台會寫入取消歷程） ===== */
+var CANCEL_LOG = [];
 
 function countdownInfo(start){
   var diffMs = start - NOW;
@@ -349,10 +389,38 @@ function countdownInfo(start){
   return {enterOk:enterOk, ended:ended, text:text};
 }
 
+function pad2(n){ return (n<10?'0':'')+n; }
+function fmtDT(d){ return pad2(d.getMonth()+1)+'/'+pad2(d.getDate())+' '+pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+
+/* 取消規則：cancelCloseHours 留白視為不限（開課前皆可取消） */
+function cancelCutoffDate(ev){
+  if(ev.cancelCloseHours===''||ev.cancelCloseHours==null) return null;
+  return new Date(ev.start.getTime() - ev.cancelCloseHours*3600000);
+}
+function cancelInfo(ev){
+  var cutoff = cancelCutoffDate(ev);
+  var canCancel = cutoff ? (NOW < cutoff) : true;
+  return {canCancel:canCancel, cutoff:cutoff};
+}
+/* 報名規則：regCloseHours 留白視為不限（開課前皆可報名） */
+function regCloseDate(ev){
+  if(ev.regCloseHours===''||ev.regCloseHours==null) return null;
+  return new Date(ev.start.getTime() - ev.regCloseHours*3600000);
+}
+function isRegClosed(ev){
+  var d = regCloseDate(ev);
+  return d ? (NOW >= d) : false;
+}
+function isFull(ev){ return ev.totalRegistered >= ev.capacity; }
+
 function renderRegisteredList(){
   var wrap = document.getElementById('registeredList');
   var emptyState = document.getElementById('registeredEmpty');
-  if(REGISTERED.length === 0){
+  var active = REGISTERED.filter(function(r){
+    var ev = EVENTS_M10[r.eventId];
+    return ev && !countdownInfo(ev.start).ended;
+  });
+  if(active.length === 0){
     wrap.innerHTML = '';
     wrap.classList.add('hidden');
     emptyState.classList.remove('hidden');
@@ -360,11 +428,22 @@ function renderRegisteredList(){
   }
   wrap.classList.remove('hidden');
   emptyState.classList.add('hidden');
-  wrap.innerHTML = REGISTERED.map(function(r){
+  wrap.innerHTML = active.map(function(r){
     var ev = EVENTS_M10[r.eventId];
-    if(!ev) return '';
     var ci = countdownInfo(ev.start);
-    return '<div class="card event-reg-card">'+
+    var cInfo = cancelInfo(ev);
+    var cancelBlock;
+    if(cInfo.canCancel){
+      cancelBlock = '<button class="btn btn-danger-outline" onclick="openCancelSheet(\''+r.regId+'\')">取消報名</button>'+
+        '<p class="muted small" style="margin:6px 0 0;">可取消至 '+fmtDT(cInfo.cutoff)+'</p>';
+    } else {
+      var reason = cInfo.cutoff ? '已過取消時限（開始前 '+ev.cancelCloseHours+' 小時）' : '已過取消時限';
+      cancelBlock = '<p class="muted small" style="margin:0;">'+reason+(ev.noShowTrack?'，未出席將記錄':'')+'</p>';
+    }
+    var enterBlock = ci.enterOk
+      ? '<button class="btn btn-primary btn-block" onclick="enterClassroom(\''+r.regId+'\')">進入線上教室</button>'
+      : '<p class="muted small" style="margin:0;">開始前 15 分鐘開放進入</p>';
+    return '<div class="card event-reg-card" data-regevent="'+r.eventId+'">'+
       '<div class="er-top">'+
         '<div>'+
           '<span class="badge badge-live">線上活動</span>'+
@@ -377,12 +456,114 @@ function renderRegisteredList(){
         '<span><strong>時間：</strong>'+ev.timeLabel+'</span>'+
         '<span><strong>上課方式：</strong>線上教室（開課前 15 分鐘開放進入）</span>'+
       '</div>'+
-      '<div class="flex-between" style="gap:10px;">'+
-        '<button class="btn btn-primary btn-block" '+(ci.enterOk?'':'disabled')+' onclick="enterClassroom(\''+r.regId+'\')">進入線上教室</button>'+
-        (ci.ended ? '' : '<button class="btn btn-danger-outline" onclick="openCancelSheet(\''+r.regId+'\')">取消報名</button>')+
+      '<div class="stack" style="gap:8px;margin-top:2px;">'+
+        '<div>'+enterBlock+'</div>'+
+        '<div>'+cancelBlock+'</div>'+
       '</div>'+
     '</div>';
   }).join('');
+}
+
+function renderEndedList(){
+  var wrap = document.getElementById('endedList');
+  var section = document.getElementById('endedSection');
+  var ended = REGISTERED.filter(function(r){
+    var ev = EVENTS_M10[r.eventId];
+    return ev && countdownInfo(ev.start).ended;
+  });
+  if(ended.length === 0){
+    section.classList.add('hidden');
+    wrap.innerHTML = '';
+    return;
+  }
+  section.classList.remove('hidden');
+  wrap.innerHTML = ended.map(function(r){
+    var ev = EVENTS_M10[r.eventId];
+    var playback = ev.recordingUrl
+      ? '<button class="btn btn-outline btn-sm" onclick="viewRecording(\''+r.eventId+'\')">觀看回放</button>'
+      : '<span class="muted small">本場無回放紀錄</span>';
+    return '<div class="card event-reg-card" data-regevent="'+r.eventId+'">'+
+      '<div class="er-top">'+
+        '<div>'+
+          '<span class="badge badge-muted">已結束</span>'+
+          '<h3 style="margin:8px 0 2px;font-size:15.5px;">'+ev.title+'</h3>'+
+        '</div>'+
+      '</div>'+
+      '<div class="er-meta"><span><strong>時間：</strong>'+ev.timeLabel+'</span></div>'+
+      playback+
+    '</div>';
+  }).join('');
+}
+function viewRecording(eventId){
+  showToast('正在為您開啟活動回放（示範）');
+}
+
+function renderUpcomingList(){
+  var wrap = document.getElementById('upcomingList');
+  var section = document.getElementById('upcomingSection');
+  var registeredIds = REGISTERED.map(function(r){ return r.eventId; });
+  var waitlistedIds = WAITLIST.map(function(w){ return w.eventId; });
+  var list = Object.keys(EVENTS_M10).filter(function(id){
+    var ev = EVENTS_M10[id];
+    if(registeredIds.indexOf(id) > -1) return false;
+    if(countdownInfo(ev.start).ended) return false;
+    return true;
+  });
+  if(list.length === 0){
+    section.classList.add('hidden');
+    wrap.innerHTML = '';
+    return;
+  }
+  section.classList.remove('hidden');
+  wrap.innerHTML = list.map(function(id){
+    var ev = EVENTS_M10[id];
+    var actionHtml;
+    if(isRegClosed(ev)){
+      actionHtml = '<span class="muted small">報名已截止</span>';
+    } else if(isFull(ev)){
+      if(ev.waitlistEnabled){
+        actionHtml = waitlistedIds.indexOf(id) > -1
+          ? '<span class="muted small">已候補登記</span>'
+          : '<button class="btn btn-outline btn-sm" onclick="openWaitlistSheet(\''+id+'\')">候補</button>';
+      } else {
+        actionHtml = '<span class="muted small">名額已滿</span>';
+      }
+    } else {
+      actionHtml = '<button class="btn btn-primary btn-sm" onclick="openRegisterSheet(\''+id+'\')">報名</button>';
+    }
+    return '<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></div>'+
+      '<div class="body"><h4>'+ev.title+'</h4><p>'+ev.timeLabel+'・'+(ev.feeType==='free'?'免費':tliFmt(ev.feeAmount,'TWD'))+'</p></div>'+
+      '<div class="trail">'+actionHtml+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function openWaitlistSheet(eventId){
+  var ev = EVENTS_M10[eventId];
+  if(!ev) return;
+  document.getElementById('registerBody').innerHTML =
+    '<h3>候補登記</h3>'+
+    '<p class="muted small" style="margin:0 0 12px;">'+ev.title+'</p>'+
+    '<div class="card" style="margin-bottom:14px;">'+
+      '<div class="flex-between"><span class="small muted">時間</span><strong class="small">'+ev.timeLabel+'</strong></div>'+
+      '<div class="flex-between" style="margin-top:6px;"><span class="small muted">名額狀態</span><strong class="small">已滿，可登記候補</strong></div>'+
+    '</div>'+
+    '<p class="small muted" style="margin:0 0 14px;">登記候補後，若有名額釋出將另行通知，不代表已完成報名。</p>'+
+    '<div class="stack"><button class="btn btn-accent btn-block" onclick="confirmWaitlist(\''+eventId+'\')">確認候補登記</button><button class="btn btn-outline btn-block" onclick="closeRegisterOverlay()">取消</button></div>';
+  document.getElementById('registerOverlay').classList.remove('hidden');
+}
+function confirmWaitlist(eventId){
+  WAITLIST.push({wId:'w'+(_waitCounter++), eventId:eventId, time:new Date()});
+  closeRegisterOverlay();
+  renderUpcomingList();
+  showToast('已登記候補，有名額釋出將另行通知');
+}
+
+function renderAll(){
+  renderRegisteredList();
+  renderEndedList();
+  renderUpcomingList();
 }
 
 function enterClassroom(regId){
@@ -414,10 +595,12 @@ function openCancelSheet(regId){
   document.getElementById('cancelOverlay').classList.remove('hidden');
 }
 function confirmCancelRegistration(){
+  var target = REGISTERED.filter(function(r){ return r.regId === _pendingCancelId; })[0];
+  if(target){ CANCEL_LOG.push({regId:target.regId, eventId:target.eventId, time:new Date()}); }
   REGISTERED = REGISTERED.filter(function(r){ return r.regId !== _pendingCancelId; });
   document.getElementById('cancelOverlay').classList.add('hidden');
-  renderRegisteredList();
-  showToast('已取消報名');
+  renderAll();
+  showToast('已取消報名，系統已記錄本次操作');
 }
 
 /* ===== 報名流程 sheet ===== */
@@ -483,7 +666,7 @@ function selectSubMethodEvt(m){
 }
 function confirmFreeRegister(){
   REGISTERED.push({regId:'r'+(_regCounter++), eventId:regState.eventId});
-  renderRegisteredList();
+  renderAll();
   var ev = EVENTS_M10[regState.eventId];
   document.getElementById('registerBody').innerHTML =
     '<div style="text-align:center;padding:6px 0 4px;">'+
@@ -531,7 +714,7 @@ function goToGatewayEvent(){
 }
 function confirmGatewayEvent(orderNo){
   REGISTERED.push({regId:'r'+(_regCounter++), eventId:regState.eventId});
-  renderRegisteredList();
+  renderAll();
   var ev = EVENTS_M10[regState.eventId];
   var channelLabel = regState.channel==='newebpay' ? '藍新金流・'+(regState.subMethod==='credit'?'信用卡':'ATM 虛擬帳號') : 'Stripe';
   document.getElementById('registerBody').innerHTML =
@@ -545,11 +728,38 @@ function confirmGatewayEvent(orderNo){
   showToast('付款完成，報名成功');
 }
 
-renderRegisteredList();
+renderAll();
 (function applyUrlRegister(){
   var params = new URLSearchParams(window.location.search);
   var id = params.get('register');
   if(id && EVENTS_M10[id]) openRegisterSheet(id);
+})();
+
+/* 從公開活動頁／結帳頁報名成功後導回，帶 ?registered=<id>：
+   自動加入已報名活動（示範資料若無此活動則臨時補一筆）、捲動並高亮該卡 2 秒、顯示完成 toast。 */
+(function applyUrlRegistered(){
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('registered');
+  if(!id) return;
+  if(!EVENTS_M10[id]){
+    EVENTS_M10[id] = {
+      title:'已完成報名活動', format:'online', feeType:'free', feeAmount:0,
+      start:new Date(NOW.getTime()+3*86400000), timeLabel:'活動時間請至活動詳情查看',
+      capacity:50, totalRegistered:1, waitlistEnabled:false, regCloseHours:'', cancelCloseHours:24, noShowTrack:true
+    };
+  }
+  if(!REGISTERED.some(function(r){ return r.eventId===id; })){
+    REGISTERED.push({regId:'r'+(_regCounter++), eventId:id});
+  }
+  renderAll();
+  showToast('已完成報名');
+  setTimeout(function(){
+    var card = document.querySelector('[data-regevent="'+id+'"]');
+    if(!card) return;
+    card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.add('reg-highlight');
+    setTimeout(function(){ card.classList.remove('reg-highlight'); }, 2000);
+  }, 60);
 })();
 </script>
 </body>

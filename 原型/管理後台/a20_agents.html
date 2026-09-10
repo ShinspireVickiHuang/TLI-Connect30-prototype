@@ -83,6 +83,8 @@ border-radius:6px;}
 .hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
 /* ---- 列表共用 ---- */
 .toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.filterbar select{padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;color:var(--g900);}
 .searchbox{flex:1;min-width:220px;max-width:360px;position:relative;}
 .searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;
 font-size:13px;font-family:inherit;box-sizing:border-box;}
@@ -299,6 +301,7 @@ html,body{overflow-x:hidden;}
 <button class="btn ghost" onclick="agentExport()">匯出</button>
 </div>
 <div class="tablewrap"><table id="agentTable"></table></div>
+<div class="hint" id="agentEmpty" style="display:none">找不到符合條件的代理商。</div>
 </div>
 </div>
 
@@ -315,7 +318,12 @@ html,body{overflow-x:hidden;}
 <div class="desc">依代理商與結算期間彙總佣金，確認無誤後標記已結算，供財務對帳；實際佣金金額由 TLI 結算作業產出，本頁僅呈現對帳狀態。</div>
 <button class="btn" onclick="genSettlementReport()">產生本期結算報表</button>
 </div>
+<div class="filterbar">
+<select id="f_settlePeriod" onchange="renderSettlementTable()"><option value="">全部期間</option></select>
+<select id="f_settleStatus" onchange="renderSettlementTable()"><option value="">全部狀態</option><option>待結算</option><option>已結算</option></select>
+</div>
 <div class="tablewrap"><table id="settlementTable"></table></div>
+<div class="hint" id="settlementEmpty" style="display:none">這個期間或狀態下沒有結算紀錄。</div>
 </div>
 </div>
 
@@ -484,7 +492,8 @@ function agentExport(){ toast('已產生匯出檔案，共 ' + agentFiltered().l
 function renderAgentTable(){
   var t = document.getElementById('agentTable');
   t.innerHTML = '<tr><th>代理商</th><th>城市或區域</th><th>轉介碼</th><th>狀態</th><th>本月推薦</th><th>轉換</th><th></th></tr>';
-  agentFiltered().forEach(function(a){
+  var rows = agentFiltered();
+  rows.forEach(function(a){
     var tr = document.createElement('tr');
     tr.innerHTML = '<td>' + a.name + '<div class="small">聯絡人：' + a.contact + '</div></td>' +
       '<td>' + a.region + '</td><td>' + a.code + '</td><td>' + agentBadge(a.status) + '</td>' +
@@ -492,6 +501,7 @@ function renderAgentTable(){
       '<td><button class="btn ghost" onclick="toggleAgentStatus(\'' + a.id + '\')">' + (a.status === '啟用' ? '停用' : '啟用') + '</button></td>';
     t.appendChild(tr);
   });
+  document.getElementById('agentEmpty').style.display = rows.length ? 'none' : '';
 }
 function toggleAgentStatus(id){
   var a = AGENTS.find(function(x){ return x.id === id; });
@@ -514,16 +524,32 @@ function renderAttributionTable(){
 }
 
 /* ================= 結算報表 ================= */
+function refreshSettlePeriodOptions(){
+  var sel = document.getElementById('f_settlePeriod');
+  var cur = sel.value;
+  var periods = [];
+  SETTLEMENTS.forEach(function(s){ if (periods.indexOf(s.period) === -1) periods.push(s.period); });
+  periods.sort().reverse();
+  sel.innerHTML = '<option value="">全部期間</option>' + periods.map(function(p){ return '<option'+(p===cur?' selected':'')+'>'+p+'</option>'; }).join('');
+}
 function renderSettlementTable(){
+  refreshSettlePeriodOptions();
+  var period = document.getElementById('f_settlePeriod').value;
+  var status = document.getElementById('f_settleStatus').value;
   var t = document.getElementById('settlementTable');
   t.innerHTML = '<tr><th>期間</th><th>代理商</th><th>成交筆數</th><th>佣金規則</th><th>狀態</th><th></th></tr>';
-  SETTLEMENTS.slice().sort(function(a,b){ return b.period.localeCompare(a.period); }).forEach(function(s){
+  /* 依期間新到舊排序，最新一期在最上方 */
+  var rows = SETTLEMENTS.filter(function(s){
+    return (!period || s.period===period) && (!status || s.status===status);
+  }).slice().sort(function(a,b){ return b.period.localeCompare(a.period); });
+  rows.forEach(function(s){
     var tr = document.createElement('tr');
     var actionCell = s.status === '已結算' ? '<span class="small">已完成</span>' : '<button class="btn ghost" onclick="markSettled(\'' + s.id + '\')">標記已結算</button>';
     tr.innerHTML = '<td>' + s.period + '</td><td>' + s.agentName + '</td><td>' + s.dealCount + '</td>' +
       '<td>' + commTypeLabel(s.commType) + '</td><td>' + settleBadge(s.status) + '</td><td>' + actionCell + '</td>';
     t.appendChild(tr);
   });
+  document.getElementById('settlementEmpty').style.display = rows.length ? 'none' : '';
 }
 
 /* ================= 新增代理商 ================= */
