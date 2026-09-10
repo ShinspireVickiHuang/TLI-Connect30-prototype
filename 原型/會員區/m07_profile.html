@@ -116,13 +116,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
 .field label{font-size:13px;font-weight:700;}
 .field label .hint{display:block;font-size:11.5px;color:var(--c-muted);font-weight:400;margin-top:2px;}
-.pm-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:12px;margin-top:8px;}
-.pm-card:first-child{margin-top:0;}
-.pm-brand{width:38px;height:26px;border-radius:5px;background:var(--c-bg);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:var(--c-primary);flex:none;}
-.pm-body{flex:1;min-width:0;}
-.pm-body h4{margin:0;font-size:13.5px;font-weight:700;}
-.pm-body p{margin:2px 0 0;font-size:12px;color:var(--c-muted);}
-.pm-actions{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end;}
 .field input,.field select,.field textarea{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 11px;font-size:14px;font-family:inherit;color:var(--c-text);background:#fff;min-height:44px;width:100%;}
 .field textarea{resize:vertical;min-height:0;}
 .toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translateX(-50%);background:#101828;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;box-shadow:var(--shadow-lg);white-space:nowrap;}
@@ -162,6 +155,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
+    <a class="side-link" href="m17_feedback.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>回饋</a>
     <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
     <a class="side-link active" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
     <a class="side-link" href="../公開網站/p01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>回官網</a>
@@ -181,7 +175,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </button>
       <div class="bell-panel" id="bellPanel">
         <h4>通知</h4>
-        <div class="bell-item"><span class="b-dot"></span><div><p>你的付款卡片即將到期，請確認付款方式</p><span>今天 09:20</span></div></div>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你的上課時區設定已更新</p><span>今天 09:20</span></div></div>
       </div>
     </div>
   </header>
@@ -259,12 +253,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
     </div>
 
-    <div class="flex-between">
-      <div class="section-title" style="margin-bottom:8px;">付款方式管理</div>
-      <button class="btn btn-outline btn-sm" onclick="openAddCardSheet()">新增付款方式</button>
-    </div>
+    <div class="section-title" style="margin-bottom:8px;">付款方式</div>
     <div class="card">
-      <div id="paymentMethodList"></div>
+      <div class="small muted" style="margin:0 0 10px;">卡片資料由金流平台（藍新／Stripe）代管，TLI 系統不會儲存完整卡號或安全碼；新增或更換付款方式請於下次結帳時在金流頁面操作，或點下方前往管理既有卡片。</div>
+      <button class="btn btn-outline btn-block" onclick="openPaymentGateway()">前往金流平台管理付款方式</button>
       <div class="divider"></div>
       <div class="flex-between">
         <div class="small"><strong>收據載具預設：</strong><span id="invoiceCarrierDisplay">/ABC-1234</span></div>
@@ -381,39 +373,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </div>
 </div>
 
-<div class="sheet-overlay hidden" id="addCardOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3>新增付款方式</h3>
-    <p class="muted small">卡片資訊將加密儲存於藍新金流，僅顯示末四碼。</p>
-    <div class="field" style="margin-top:14px;"><label for="cardNo">信用卡卡號</label><input id="cardNo" type="text" placeholder="4000 1234 5678 9010"></div>
-    <div class="flex-between" style="gap:10px;">
-      <div class="field" style="flex:1;"><label for="cardExp">有效期限</label><input id="cardExp" type="text" placeholder="MM/YY"></div>
-      <div class="field" style="flex:1;"><label for="cardCvc">安全碼</label><input id="cardCvc" type="text" placeholder="CVC"></div>
-    </div>
-    <div class="check-line" style="padding:8px 0;">
-      <label class="switch"><input type="checkbox" id="cardSetDefault"><span class="track"></span></label>
-      <div class="cl-body">設為預設付款方式</div>
-    </div>
-    <div class="stack" style="margin-top:12px;">
-      <button class="btn btn-primary btn-block" onclick="saveNewCard()">新增卡片</button>
-      <button class="btn btn-outline btn-block" onclick="closeAddCardSheet()">取消</button>
-    </div>
-  </div>
-</div>
-
-<div class="sheet-overlay hidden" id="removeCardOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3>確定要移除這張卡片嗎？</h3>
-    <p class="muted small" id="removeCardDetail">－</p>
-    <div class="stack" style="margin-top:14px;">
-      <button class="btn btn-danger-outline btn-block" onclick="confirmRemoveCard()">確認移除</button>
-      <button class="btn btn-outline btn-block" onclick="document.getElementById('removeCardOverlay').classList.add('hidden')">取消</button>
-    </div>
-  </div>
-</div>
-
 <div class="sheet-overlay hidden" id="invoiceEditOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -509,77 +468,9 @@ function savePassword(){
   showToast('密碼已更新（示範）');
 }
 
-/* ===== 付款方式管理 ===== */
-var PAYMENT_METHODS=[
-  {id:'pm1',brand:'VISA',last4:'4242',exp:'09/28',isDefault:true},
-  {id:'pm2',brand:'Mastercard',last4:'1881',exp:'03/27',isDefault:false}
-];
-var _pmCounter=3;
-function cardBrandIcon(brand){
-  return brand==='VISA' ? 'VISA' : (brand==='Mastercard' ? 'MC' : brand.slice(0,3).toUpperCase());
-}
-function renderPaymentMethods(){
-  var wrap=document.getElementById('paymentMethodList');
-  if(PAYMENT_METHODS.length===0){
-    wrap.innerHTML='<p class="small muted" style="margin:0;">尚未新增付款方式，付費活動或續費時可於結帳頁新增。</p>';
-    return;
-  }
-  wrap.innerHTML=PAYMENT_METHODS.map(function(pm){
-    return '<div class="pm-card">'+
-      '<div class="pm-brand">'+cardBrandIcon(pm.brand)+'</div>'+
-      '<div class="pm-body"><h4>'+pm.brand+' •••• '+pm.last4+'</h4><p>有效期限 '+pm.exp+(pm.isDefault?'・預設付款方式':'')+'</p></div>'+
-      '<div class="pm-actions">'+
-        (pm.isDefault ? '<span class="badge badge-info">預設</span>' : '<button class="btn btn-outline btn-sm" onclick="setDefaultCard(\''+pm.id+'\')">設為預設</button>')+
-        '<button class="btn btn-outline btn-sm" onclick="openRemoveCardSheet(\''+pm.id+'\')">移除</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-function setDefaultCard(id){
-  PAYMENT_METHODS.forEach(function(pm){ pm.isDefault = (pm.id===id); });
-  renderPaymentMethods();
-  showToast('已設為預設付款方式');
-}
-var _pendingRemoveCardId=null;
-function openRemoveCardSheet(id){
-  var pm=PAYMENT_METHODS.filter(function(p){return p.id===id;})[0];
-  if(!pm) return;
-  _pendingRemoveCardId=id;
-  document.getElementById('removeCardDetail').textContent=pm.brand+' •••• '+pm.last4+'（有效期限 '+pm.exp+'）';
-  document.getElementById('removeCardOverlay').classList.remove('hidden');
-}
-function confirmRemoveCard(){
-  var removedWasDefault=false;
-  PAYMENT_METHODS=PAYMENT_METHODS.filter(function(pm){
-    if(pm.id===_pendingRemoveCardId){ removedWasDefault=pm.isDefault; return false; }
-    return true;
-  });
-  if(removedWasDefault && PAYMENT_METHODS.length>0){ PAYMENT_METHODS[0].isDefault=true; }
-  document.getElementById('removeCardOverlay').classList.add('hidden');
-  renderPaymentMethods();
-  showToast('已移除該付款方式');
-}
-function openAddCardSheet(){
-  document.getElementById('cardNo').value='';
-  document.getElementById('cardExp').value='';
-  document.getElementById('cardCvc').value='';
-  document.getElementById('cardSetDefault').checked = PAYMENT_METHODS.length===0;
-  document.getElementById('addCardOverlay').classList.remove('hidden');
-}
-function closeAddCardSheet(){
-  document.getElementById('addCardOverlay').classList.add('hidden');
-}
-function saveNewCard(){
-  var no=document.getElementById('cardNo').value.trim();
-  var exp=document.getElementById('cardExp').value.trim()||'12/29';
-  if(!no){ showToast('請輸入信用卡卡號'); return; }
-  var last4=no.replace(/\s+/g,'').slice(-4) || '0000';
-  var setDefault=document.getElementById('cardSetDefault').checked;
-  if(setDefault){ PAYMENT_METHODS.forEach(function(pm){ pm.isDefault=false; }); }
-  PAYMENT_METHODS.push({id:'pm'+(_pmCounter++),brand:'VISA',last4:last4,exp:exp,isDefault: setDefault || PAYMENT_METHODS.length===0});
-  renderPaymentMethods();
-  closeAddCardSheet();
-  showToast('付款方式已新增');
+/* ===== 付款方式：不在 TLI 系統內維護卡片資料（資安考量），只提供前往金流平台的入口 ===== */
+function openPaymentGateway(){
+  showToast('將導轉至藍新／Stripe 金流平台管理付款方式（示範，正式串接後為外部頁面）');
 }
 
 /* ===== 收據載具預設 ===== */
@@ -689,7 +580,6 @@ function handleLangChange(sel){
   }
 }
 renderProfile();
-renderPaymentMethods();
 renderInvoiceDefault();
 renderZoomBindStatus();
 </script>

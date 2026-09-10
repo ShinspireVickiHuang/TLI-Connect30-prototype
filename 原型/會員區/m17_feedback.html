@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TLI Connect 3.0 會員區－學習評量</title>
+<title>TLI Connect 3.0 會員區－課堂回饋</title>
 <style>
 :root{
   --c-primary:#1B4E8C;--c-primary-dark:#123A68;--c-accent:#E8792B;--c-accent-dark:#CF691F;--c-secondary:#0F9B79;
@@ -144,6 +144,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cond-main{flex:1;min-width:180px;}
 .cond-title{font-size:13.5px;font-weight:700;}
 .cond-status{margin-top:2px;}
+/* ---------- 課堂回饋列 ---------- */
+.record-card{cursor:pointer;}
+.record-card.locate-highlight{outline:2px solid var(--c-primary);outline-offset:2px;}
+.record-card .rc-skills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.record-card .rc-comment{margin:8px 0 0;font-size:12.5px;color:var(--c-text);background:var(--c-bg);border-radius:var(--radius-sm);padding:8px 10px;}
+.record-card .rc-comment.muted-note{color:var(--c-muted);background:none;padding:0;}
+.record-card.no-record{cursor:default;}
+.unread-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c-accent);flex:none;}
+/* ---------- 回饋對話串 ---------- */
+.msg-bubble{border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--c-bg);}
+.msg-bubble.msg-student{background:#E6EEF8;margin-left:22px;}
+.msg-bubble.msg-teacher{margin-right:22px;}
+.msg-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px;}
+.msg-head strong{font-size:12.5px;}
+.msg-head span{font-size:11px;color:var(--c-muted);white-space:nowrap;}
+.msg-text{margin:0;font-size:13px;white-space:pre-wrap;}
+.msg-rating{margin-top:6px;font-size:11.5px;color:var(--c-muted);display:flex;align-items:center;gap:4px;}
 .explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
@@ -159,8 +176,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <a class="side-link" href="m04_course_detail.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>我的方案</a>
     <a class="side-link" href="m08_self_paced.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>自學課程</a>
     <a class="side-link" href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
-    <a class="side-link active" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
-    <a class="side-link" href="m17_feedback.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>回饋</a>
+    <a class="side-link" href="m09_assessment.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg>評量</a>
+    <a class="side-link active" href="m17_feedback.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>回饋</a>
     <a class="side-link" href="m10_events.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>活動</a>
     <a class="side-link" href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
     <a class="side-link" href="../公開網站/p01_home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>回官網</a>
@@ -169,17 +186,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   <header class="topbar">
     <div class="topbar-left">
       <a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a>
-      <div class="topbar-title" data-i18n-zh="學習評量" data-i18n-en="Learning Assessment">學習評量</div>
+      <div class="topbar-title" data-i18n-zh="課堂回饋" data-i18n-en="Lesson Feedback">課堂回饋</div>
     </div>
     <div class="topbar-actions">
       <a class="explore-link" href="../公開網站/p02_courses.html" aria-label="探索課程" title="探索課程">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
-      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
-        <option value="default">有課程學員</option>
-        <option value="new">新學員</option>
-      </select>
       <select class="mini-select" id="langSelect" aria-label="語言與幣別" onchange="handleLangCurrency(this)"><option value="zh-TW">繁體中文・TWD</option><option value="zh-CN">简体中文・CNY</option><option value="en">English・USD</option><option value="ja">日本語・JPY</option><option value="de">Deutsch・EUR</option></select>
       <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
@@ -187,86 +200,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       </button>
       <div class="bell-panel" id="bellPanel">
         <h4>通知</h4>
-        <div class="bell-item"><span class="b-dot"></span><div><p>Lv.7 尚有 2 項必要評量待完成</p><span>今天 09:20</span></div></div>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你有 5 堂課待你回覆</p><span>今天 09:20</span></div></div>
       </div>
     </div>
   </header>
 
   <main class="content">
-    <p class="page-h">學習評量</p>
-    <p class="page-sub" data-i18n-zh="追蹤你的等級進度，並完成課程評量。" data-i18n-en="Track your level progress and complete course assessments.">追蹤你的等級進度，並完成課程評量。</p>
+    <p class="page-h">課堂回饋</p>
+    <p class="page-sub" data-i18n-zh="課後系統會自動通知你填寫回饋；這是老師與你之間可多輪往返的對話，部分紀錄可能尚未讀取。" data-i18n-en="You'll be notified automatically after each lesson to leave feedback; this is a two-way, multi-round conversation with your teacher, and some records may be unread.">課後系統會自動通知你填寫回饋；這是老師與你之間可多輪往返的對話，部分紀錄可能尚未讀取。</p>
 
-    <!-- ===== 新學員（尚未定級）畫面：網址帶 ?new=1 顯示 ===== -->
-    <div id="viewNew" class="hidden">
-      <div class="card">
-        <div class="empty-state" style="padding:22px 16px 10px;">
-          <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L17 22l-5-3-5 3 1.5-8.5"/></svg>
-          <h4>尚未定級</h4>
-          <p>完成分級測驗即可開始追蹤你的等級與升等進度<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="location.href='m11_quiz.html?type=level'">前往分級測驗</button>
-      </div>
+    <!-- ===== 老師課堂回饋 ===== -->
+    <div class="chip-row" id="threadFilterChips">
+      <button class="chip selected" data-filter="all" onclick="setThreadFilter('all',this)">全部</button>
+      <button class="chip" data-filter="pending" onclick="setThreadFilter('pending',this)">待你回覆</button>
+      <button class="chip" data-filter="replied" onclick="setThreadFilter('replied',this)">已回覆</button>
+    </div>
+    <div id="threadList"></div>
+    <div id="threadEmpty" class="card empty-state hidden">
+      <h4>沒有符合條件的紀錄</h4>
+      <p>切換上方篩選試試看。</p>
+    </div>
+    <div class="hidden" id="threadMoreWrap" style="text-align:center;margin-top:10px;">
+      <button class="btn btn-outline btn-sm" onclick="showMoreThreads()">載入更多（還有 <span id="threadMoreCount">0</span> 筆）</button>
     </div>
 
-    <!-- ===== 有課程學員畫面 ===== -->
-    <div id="viewDefault">
-
-      <!-- ===== 我的等級 ===== -->
-      <div class="card" id="levelCard">
-        <span class="badge badge-info">目前等級・中文</span>
-        <h3 style="margin:8px 0 2px;font-size:20px;">Lv.6　中級</h3>
-        <p class="small muted" style="margin:2px 0 0;">通過 Lv.6 等級測驗・2026-05-12</p>
-        <div class="divider"></div>
-        <div class="small" style="font-weight:700;">下一級：Lv.7　中高級</div>
-        <div style="margin-top:6px;">
-          <div class="cond-row">
-            <div class="cond-main">
-              <div class="cond-title">通過 Lv.7 等級測驗</div>
-              <div class="cond-status muted small">未進行</div>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="location.href='m11_quiz.html?type=level&amp;level=7'">前往等級測驗</button>
-          </div>
-          <div class="cond-row">
-            <div class="cond-main">
-              <div class="cond-title">完成 Lv.7 課程</div>
-              <div class="cond-status muted small">已完成 3／5 門（必要評量 2 待完成）</div>
-            </div>
-            <button class="btn btn-outline btn-sm" onclick="document.getElementById('courseAssessmentSection').scrollIntoView({behavior:'smooth'})">前往課程評量</button>
-          </div>
-        </div>
-        <p class="small muted" style="margin:12px 0 0;">升等條件由 TLI 教研設定。</p>
-      </div>
-
-      <!-- ===== 課程評量 ===== -->
-      <div class="section-title first" id="courseAssessmentSection">課程評量</div>
-      <div class="chip-row" id="caFilterChips">
-        <button class="chip selected" data-filter="all" onclick="setCaFilter('all',this)">全部</button>
-        <button class="chip" data-filter="pending" onclick="setCaFilter('pending',this)">待完成</button>
-        <button class="chip" data-filter="passed" onclick="setCaFilter('passed',this)">已完成</button>
-        <button class="chip" data-filter="failed" onclick="setCaFilter('failed',this)">待補考</button>
-      </div>
-      <div class="card">
-        <div id="caList"></div>
-        <div id="caEmpty" class="empty-state hidden" style="padding:12px 0;">
-          <p class="small muted" style="margin:0;">沒有符合條件的課程評量。</p>
-        </div>
-      </div>
-      <div class="hidden" id="caMoreWrap" style="text-align:center;margin-top:10px;">
-        <button class="btn btn-outline btn-sm" onclick="showMoreCa()">載入更多（還有 <span id="caMoreCount">0</span> 筆）</button>
-      </div>
-
-      <!-- ===== 等級紀錄 ===== -->
-      <div class="section-title">等級紀錄</div>
-      <div class="card">
-        <div id="levelHistoryList"></div>
-      </div>
-      <div class="hidden" id="lhMoreWrap" style="text-align:center;margin-top:10px;">
-        <button class="btn btn-outline btn-sm" onclick="showMoreLevelHistory()">載入更多（還有 <span id="lhMoreCount">0</span> 筆）</button>
-      </div>
-
-      <p class="small muted" style="margin-top:22px;text-align:center;">老師對各堂課的回饋請前往「<a href="m17_feedback.html" style="color:var(--c-primary);font-weight:700;">回饋</a>」。</p>
-
-    </div>
+    <p class="small muted" style="margin-top:22px;text-align:center;">等級與課程評量請前往「<a href="m09_assessment.html" style="color:var(--c-primary);font-weight:700;">評量</a>」。</p>
   </main>
 
   <nav class="bottom-nav">
@@ -276,6 +234,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <a href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
   </nav>
+</div>
+
+<!-- ===== 課堂回饋對話串 sheet ===== -->
+<div class="sheet-overlay hidden" id="threadOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 id="threadTitle">－</h3>
+    <p class="muted small" id="threadMeta">－</p>
+    <div class="divider"></div>
+    <div id="threadMessages"></div>
+    <div id="threadNoMessages" class="small muted hidden" style="padding:6px 0;">老師尚未留下課堂紀錄。</div>
+    <div class="divider" id="threadReplyDivider"></div>
+    <div id="threadReplyArea">
+      <div class="small" style="font-weight:700;">回覆老師</div>
+      <div class="small muted" style="margin:4px 0 2px;">給老師評分（選填）</div>
+      <div class="star-pick" id="threadStarTeacher">
+        <button type="button" onclick="pickStar('threadStarTeacher',1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button type="button" onclick="pickStar('threadStarTeacher',2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button type="button" onclick="pickStar('threadStarTeacher',3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button type="button" onclick="pickStar('threadStarTeacher',4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button type="button" onclick="pickStar('threadStarTeacher',5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+      </div>
+      <div class="field" style="margin-top:8px;margin-bottom:10px;">
+        <textarea id="threadReplyText" rows="3" placeholder="輸入你的回覆…"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="submitThreadReply()">送出回覆</button>
+    </div>
+    <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="closeThreadSheet()">關閉</button>
+  </div>
 </div>
 
 <script>
@@ -318,134 +301,196 @@ function toggleBell(){document.getElementById('bellPanel').classList.toggle('ope
 document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
 });
-/* ================= 會員狀態切換（示範用）：依網址參數決定顯示「有課程學員／新學員」畫面 ================= */
-function getMemberState(){
-  var params = new URLSearchParams(window.location.search);
-  if(params.get('new')==='1') return 'new';
-  return 'default';
-}
-function renderMemberState(state){
-  document.getElementById('viewDefault').classList.toggle('hidden', state!=='default');
-  document.getElementById('viewNew').classList.toggle('hidden', state!=='new');
-  var sel=document.getElementById('demoStateSwitch');
-  if(sel) sel.value=state;
-}
-function handleDemoStateChange(sel){
-  var val=sel.value;
-  var url='m09_assessment.html';
-  if(val==='new') url+='?new=1';
-  location.href=url;
+function pickStar(groupId,n){
+  var btns=document.querySelectorAll('#'+groupId+' button');
+  btns.forEach(function(b,i){b.classList.toggle('on',i<n);});
 }
 
-/* ================= 課程評量（每門課的評量：必要／選做，狀態依後台課程設定） ================= */
-var COURSE_ASSESSMENTS = {
-  q1:{id:'q1', status:'pending', title:'開會用語評量', course:'商務華語情境 16 講・L05 商務會議開場', level:'Lv.6', required:true, due:'2026-09-05'},
-  q2:{id:'q2', status:'pending', title:'語調練習隨堂評量', course:'發音基礎 20 講・L12 語調練習', level:'Lv.5', required:false, due:'2026-08-30'},
-  q3:{id:'q3', status:'pending', title:'期中複習評量', course:'中文一對一－會話進階', level:'Lv.6', required:true, due:'2026-09-10'},
-  q4:{id:'q4', status:'pending', title:'TLI-CPT 模擬評量（第二次）', course:'TLI-CPT 全民中文能力檢定・模擬題庫', level:'Lv.7', required:true, due:'2026-09-15'},
-  q5:{id:'q5', status:'pending', title:'緊急狀況求助評量', course:'旅遊華語會話 12 講・L06', level:'Lv.5', required:false, due:'2026-09-20'},
-  q6:{id:'q6', status:'pending', title:'期末情境評量', course:'商務書信寫作 8 講・期末', level:'Lv.6', required:true, due:'2026-09-25'},
-  c1:{id:'c1', status:'passed', title:'兒化音評量', course:'發音基礎 20 講・L05 兒化音', level:'Lv.5', required:true, doneDate:'2026-08-20', score:88},
-  c2:{id:'c2', status:'passed', title:'商務會議開場評量', course:'商務華語情境 16 講・L03', level:'Lv.6', required:true, doneDate:'2026-08-15', score:92},
-  c3:{id:'c3', status:'failed', title:'第一階複習評量', course:'中文一對一－會話進階', level:'Lv.6', required:true, doneDate:'2026-08-06', score:58},
-  c4:{id:'c4', status:'passed', title:'總複習評量', course:'發音基礎 20 講・L20', level:'Lv.5', required:false, doneDate:'2026-07-30', score:85},
-  c5:{id:'c5', status:'passed', title:'TLI-CPT 模擬評量（第一次）', course:'TLI-CPT 全民中文能力檢定・模擬題庫', level:'Lv.7', required:true, doneDate:'2026-07-10', score:68},
-  c6:{id:'c6', status:'passed', title:'期末情境評量', course:'旅遊華語會話 12 講・L08', level:'Lv.5', required:false, doneDate:'2026-02-01', score:80},
-  c7:{id:'c7', status:'passed', title:'期末評量', course:'台灣文化與生活 10 講・L05', level:'Lv.5', required:false, doneDate:'2025-11-10', score:74},
-  c8:{id:'c8', status:'passed', title:'單元評量', course:'商務書信寫作 8 講・L03', level:'Lv.6', required:true, doneDate:'2025-08-18', score:70},
-  c9:{id:'c9', status:'passed', title:'單元評量', course:'成語與慣用語 12 講・L03', level:'Lv.6', required:false, doneDate:'2025-05-12', score:82},
-  c10:{id:'c10', status:'passed', title:'單元評量', course:'職場面試會話 10 講・L03', level:'Lv.6', required:false, doneDate:'2025-03-02', score:78},
-  c11:{id:'c11', status:'passed', title:'單元評量', course:'中華文化與歷史 8 講・L03', level:'Lv.5', required:false, doneDate:'2024-09-18', score:65},
-  c12:{id:'c12', status:'passed', title:'入學分級評量', course:'入學分級題庫', level:'Lv.3', required:true, doneDate:'2024-02-10', score:60}
-};
-var caFilter='all', CA_PAGE_SIZE=6, caShown=CA_PAGE_SIZE;
-function caStatusBadge(item){
-  if(item.status==='pending') return '<span class="badge badge-muted">待完成</span>';
-  if(item.status==='failed') return '<span class="badge badge-full">未及格待補考</span>';
-  return '<span class="badge badge-ok">'+item.score+' 分</span>';
+var ICON_STAR_FILL='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+var ICON_STAR_LINE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+function starsRowHtml(n,max){max=max||5;var s='';for(var i=0;i<max;i++){s+='<span class="star-static'+(i<n?' on':'')+'">'+(i<n?ICON_STAR_FILL:ICON_STAR_LINE)+'</span>';}return s;}
+function skillChip(label,n){return '<span class="mini-chip">'+label+' '+n+'／5</span>';}
+
+/* ================= 老師課堂回饋：每堂課一則雙向對話串 ================= */
+var LESSON_THREADS = [
+  {id:'r0', date:'08/24（一）', course:'中文一對一－會話進階', teacher:'杜老師', unread:false, messages:[]},
+  {id:'r1', date:'08/20（四）', course:'中文一對一－會話進階', teacher:'杜老師', unread:true, messages:[
+    {role:'teacher', time:'08/20 19:40', skills:{L:4,S:4,R:5,W:3}, text:'表達越來越流暢，繼續加強書寫的用詞精準度。'}
+  ]},
+  {id:'r2', date:'08/13（四）', course:'中文一對一－會話進階', teacher:'杜老師', unread:true, messages:[
+    {role:'teacher', time:'08/13 19:35', skills:{L:4,S:4,R:4,W:4}, text:'這堂表現穩定，語調掌握進步明顯。'}
+  ]},
+  {id:'r3', date:'08/06（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:true, messages:[
+    {role:'teacher', time:'08/06 20:10', skills:{L:5,S:3,R:5,W:3}, text:'發音準確度提升，但口說速度可以再放慢一點。'}
+  ]},
+  {id:'r4', date:'07/30（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:true, messages:[
+    {role:'teacher', time:'07/30 20:05', skills:{L:4,S:3,R:4,W:3}, text:'基礎發音掌握良好，建議加強語調起伏。'},
+    {role:'student', time:'07/31 09:12', rating:5, text:'謝謝老師，我這週會多練習語調的部分。'},
+    {role:'teacher', time:'07/31 14:20', text:'很好，下堂課我們可以用情境對話再加強一次。'}
+  ]},
+  {id:'r5', date:'07/23（四）', course:'商務華語情境（體驗課）', teacher:'杜老師', unread:false, messages:[
+    {role:'teacher', time:'07/23 20:00', skills:{L:4,S:4,R:4,W:4}, text:'對商務情境對話反應快，用詞可以更正式一些。'},
+    {role:'student', time:'07/24 08:30', rating:5, text:'體驗課很實用，想請問正式用語可以怎麼加強？'},
+    {role:'teacher', time:'07/24 13:05', text:'可以多看商務書信寫作課程的範例信件，下次上課我們再練習口頭正式表達。'},
+    {role:'student', time:'07/24 20:40', text:'好的，我會先預習，謝謝老師！'}
+  ]},
+  {id:'r6', date:'07/16（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:true, messages:[
+    {role:'teacher', time:'07/16 20:15', skills:{L:3,S:3,R:4,W:3}, text:'跟讀掌握度不錯，持續累積詞彙量。'}
+  ]},
+  {id:'r7', date:'07/09（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:true, messages:[
+    {role:'teacher', time:'07/09 20:10', skills:{L:3,S:3,R:3,W:3}, text:'基礎穩定，可以再多練習語調變化。'},
+    {role:'student', time:'07/10 07:50', rating:4, text:'了解，我會再多聽老師上課錄音複習。'},
+    {role:'teacher', time:'07/10 12:30', text:'很好的習慣，持續保持！'}
+  ]},
+  {id:'r8', date:'07/02（四）', course:'商務華語情境（體驗課）', teacher:'杜老師', unread:false, messages:[
+    {role:'teacher', time:'07/02 20:00', skills:{L:3,S:3,R:4,W:3}, text:'對商務詞彙掌握不錯，可多練習正式語氣。'},
+    {role:'student', time:'07/03 09:00', rating:4, text:'好的，謝謝老師的建議。'}
+  ]},
+  {id:'r9', date:'06/25（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:true, messages:[
+    {role:'teacher', time:'06/25 20:05', skills:{L:2,S:3,R:3,W:2}, text:'發音掌握中，建議多聽多模仿。'}
+  ]},
+  {id:'r10', date:'06/18（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:false, messages:[
+    {role:'teacher', time:'06/18 20:00', skills:{L:2,S:2,R:3,W:2}, text:'初期基礎課，跟讀節奏可以再放慢。'},
+    {role:'student', time:'06/19 08:20', rating:5, text:'謝謝老師耐心指導！'}
+  ]},
+  {id:'r11', date:'06/11（四）', course:'中文一對一－發音矯正', teacher:'陳老師', unread:false, messages:[]}
+];
+var threadFilter='all', activeThreadId=null, THREAD_PAGE_SIZE=10, threadShown=THREAD_PAGE_SIZE;
+
+function threadStatus(t){
+  if(t.messages.length===0) return 'none';
+  var hasStudentMsg = t.messages.some(function(m){return m.role==='student';});
+  return hasStudentMsg ? 'replied' : 'pending';
 }
-function filteredCa(){
-  var all=Object.keys(COURSE_ASSESSMENTS).map(function(k){return COURSE_ASSESSMENTS[k];});
-  var list=all.filter(function(a){ return caFilter==='all' ? true : a.status===caFilter; });
-  list.sort(function(a,b){
-    var aKey = a.status==='pending' ? a.due : a.doneDate;
-    var bKey = b.status==='pending' ? b.due : b.doneDate;
-    if(a.status==='pending' && b.status!=='pending') return -1;
-    if(a.status!=='pending' && b.status==='pending') return 1;
-    if(a.status==='pending') return new Date(aKey)-new Date(bKey);
-    return new Date(bKey)-new Date(aKey);
+function filteredThreads(){
+  return LESSON_THREADS.filter(function(t){
+    var s=threadStatus(t);
+    if(threadFilter==='pending') return s==='pending';
+    if(threadFilter==='replied') return s==='replied';
+    return true;
   });
-  return list;
 }
-function renderCa(){
-  var list=filteredCa();
-  document.getElementById('caEmpty').classList.toggle('hidden', list.length>0);
-  var shown=list.slice(0,caShown);
-  document.getElementById('caList').innerHTML = shown.map(function(a){
-    var actionHtml;
-    if(a.status==='pending'){
-      actionHtml='<button class="btn btn-accent btn-sm" onclick="goToAssessment(\''+a.id+'\')">開始評量</button>';
-    }else if(a.status==='failed'){
-      actionHtml='<button class="btn btn-accent btn-sm" onclick="goToAssessment(\''+a.id+'\')">補考</button>';
-    }else{
-      actionHtml='<button class="btn btn-outline btn-sm" onclick="goToAssessment(\''+a.id+'\')">查看</button>';
+function renderThreads(){
+  var list=filteredThreads();
+  document.getElementById('threadEmpty').classList.toggle('hidden', list.length>0);
+  var shown=list.slice(0,threadShown);
+  document.getElementById('threadList').innerHTML = shown.map(function(t){
+    var s=threadStatus(t);
+    var unreadHtml = t.unread ? '<span class="unread-dot"></span>' : '';
+    if(s==='none'){
+      return '' +
+        '<div class="card record-card no-record" data-record-id="'+t.id+'">' +
+          '<div class="small muted">'+t.date+'</div>' +
+          '<h4 style="margin:2px 0 2px;font-size:14.5px;">'+t.course+'</h4>' +
+          '<div class="small muted">'+t.teacher+'</div>' +
+          '<p class="rc-comment muted-note">老師尚未留下課堂紀錄。</p>' +
+        '</div>';
     }
+    var first = t.messages[0];
+    var statusBadge = s==='pending' ? '<span class="badge badge-warn">待你回覆</span>' : '<span class="badge badge-ok">已回覆</span>';
+    var skillsHtml = first.skills ? ('<div class="rc-skills">'+skillChip('聽',first.skills.L)+skillChip('說',first.skills.S)+skillChip('讀',first.skills.R)+skillChip('寫',first.skills.W)+'</div>') : '';
     return '' +
-      '<div class="list-row">' +
-        '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/></svg></div>' +
-        '<div class="body">' +
-          '<h4>'+a.title+' <span class="badge '+(a.required?'badge-warn':'badge-muted')+'">'+(a.required?'必要':'選做')+'</span></h4>' +
-          '<p>'+a.course+'・'+a.level+'</p>' +
+      '<div class="card record-card" data-record-id="'+t.id+'" onclick="openThreadSheet(\''+t.id+'\')">' +
+        '<div class="flex-between" style="align-items:flex-start;">' +
+          '<div>' +
+            '<div class="small muted">'+t.date+'</div>' +
+            '<h4 style="margin:2px 0 2px;font-size:14.5px;">'+t.course+unreadHtml+'</h4>' +
+            '<div class="small muted">'+t.teacher+'</div>' +
+          '</div>' +
+          statusBadge +
         '</div>' +
-        '<div class="trail"><div style="margin-bottom:6px;">'+caStatusBadge(a)+'</div>'+actionHtml+'</div>' +
+        skillsHtml +
+        '<p class="rc-comment">"'+first.text+'"</p>' +
+        '<div class="flex-between" style="margin-top:10px;">' +
+          '<span class="small muted">共 '+t.messages.length+' 則訊息</span>' +
+          '<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openThreadSheet(\''+t.id+'\')">查看對話並回覆</button>' +
+        '</div>' +
       '</div>';
   }).join('');
   var remain=list.length-shown.length;
-  document.getElementById('caMoreWrap').classList.toggle('hidden', remain<=0);
-  document.getElementById('caMoreCount').textContent=remain;
+  document.getElementById('threadMoreWrap').classList.toggle('hidden', remain<=0);
+  document.getElementById('threadMoreCount').textContent=remain;
 }
-function setCaFilter(f,btn){
-  caFilter=f; caShown=CA_PAGE_SIZE;
-  document.querySelectorAll('#caFilterChips .chip').forEach(function(c){c.classList.remove('selected');});
+function setThreadFilter(f,btn){
+  threadFilter=f; threadShown=THREAD_PAGE_SIZE;
+  document.querySelectorAll('#threadFilterChips .chip').forEach(function(c){c.classList.remove('selected');});
   btn.classList.add('selected');
-  renderCa();
+  renderThreads();
 }
-function showMoreCa(){ caShown+=CA_PAGE_SIZE; renderCa(); }
-function goToAssessment(id){ location.href='m11_quiz.html?type=course&course='+id; }
+function showMoreThreads(){ threadShown+=THREAD_PAGE_SIZE; renderThreads(); }
 
-/* ================= 等級紀錄 ================= */
-var LEVEL_HISTORY = [
-  {level:6, name:'中級', method:'通過等級測驗', date:'2026-05-12'},
-  {level:5, name:'中級中段', method:'完成 Lv.5 課程', date:'2025-11-20'},
-  {level:4, name:'中級前段', method:'通過等級測驗', date:'2024-11-11'},
-  {level:3, name:'初中級', method:'完成 Lv.3 課程', date:'2024-08-02'},
-  {level:2, name:'初級', method:'通過等級測驗', date:'2024-05-21'},
-  {level:1, name:'入門', method:'通過入學分級測驗', date:'2024-02-10'}
-].sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
-var LH_PAGE_SIZE=4, lhShown=LH_PAGE_SIZE;
-function renderLevelHistory(){
-  var shown=LEVEL_HISTORY.slice(0,lhShown);
-  document.getElementById('levelHistoryList').innerHTML = shown.map(function(h){
+function findThread(id){ return LESSON_THREADS.filter(function(t){return t.id===id;})[0]; }
+function openThreadSheet(id){
+  var t=findThread(id);
+  if(!t || t.messages.length===0) return;
+  activeThreadId=id;
+  t.unread=false;
+  document.getElementById('threadTitle').textContent = t.course;
+  document.getElementById('threadMeta').textContent = t.date+'　'+t.teacher;
+  document.getElementById('threadMessages').innerHTML = t.messages.map(function(m){
+    var roleLabel = m.role==='teacher' ? t.teacher : '你';
+    var skillsHtml = m.skills ? ('<div class="rc-skills">'+skillChip('聽',m.skills.L)+skillChip('說',m.skills.S)+skillChip('讀',m.skills.R)+skillChip('寫',m.skills.W)+'</div>') : '';
+    var ratingHtml = m.rating ? ('<div class="msg-rating">給老師評分：'+starsRowHtml(m.rating)+'</div>') : '';
     return '' +
-      '<div class="list-row">' +
-        '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L17 22l-5-3-5 3 1.5-8.5"/></svg></div>' +
-        '<div class="body"><h4>Lv.'+h.level+'　'+h.name+'</h4><p>'+h.method+'</p></div>' +
-        '<div class="trail"><span class="small muted">'+h.date+'</span></div>' +
+      '<div class="msg-bubble msg-'+m.role+'">' +
+        '<div class="msg-head"><strong>'+roleLabel+'</strong><span>'+m.time+'</span></div>' +
+        skillsHtml +
+        '<p class="msg-text">'+m.text+'</p>' +
+        ratingHtml +
       '</div>';
   }).join('');
-  var remain=LEVEL_HISTORY.length-shown.length;
-  document.getElementById('lhMoreWrap').classList.toggle('hidden', remain<=0);
-  document.getElementById('lhMoreCount').textContent=remain;
+  pickStar('threadStarTeacher',0);
+  document.getElementById('threadReplyText').value='';
+  document.getElementById('threadOverlay').classList.remove('hidden');
+  renderThreads();
 }
-function showMoreLevelHistory(){ lhShown+=LH_PAGE_SIZE; renderLevelHistory(); }
+function closeThreadSheet(){
+  document.getElementById('threadOverlay').classList.add('hidden');
+  activeThreadId=null;
+}
+function submitThreadReply(){
+  if(!activeThreadId) return;
+  var t=findThread(activeThreadId);
+  if(!t) return;
+  var text=document.getElementById('threadReplyText').value.trim();
+  if(!text){ showToast('請先輸入回覆內容'); return; }
+  var rating=document.querySelectorAll('#threadStarTeacher button.on').length;
+  var msg={role:'student', time:'剛剛', text:text};
+  if(rating>0) msg.rating=rating;
+  t.messages.push(msg);
+  if(activeThreadId==='r1'){
+    try{ localStorage.setItem('tli_todo_feedback_done','1'); }catch(e){}
+  }
+  closeThreadSheet();
+  renderThreads();
+  showToast('回覆已送出，老師會收到通知');
+}
+
+/* ============ 首頁「填寫回饋」深連結：?lesson=<id> 直接展開該堂對話串並聚焦回覆框 ============ */
+function applyLessonDeepLink(){
+  var params = new URLSearchParams(window.location.search);
+  var lessonId = params.get('lesson');
+  if(!lessonId) return;
+  var t = findThread(lessonId);
+  if(!t) return;
+  if(t.messages.length>0){
+    openThreadSheet(lessonId);
+    setTimeout(function(){
+      var ta=document.getElementById('threadReplyText');
+      if(ta) ta.focus();
+    },60);
+  }
+  /* renderThreads() 內已重繪列表，須在其後才能抓到對應的 DOM 節點 */
+  var card = document.querySelector('.record-card[data-record-id="'+lessonId+'"]');
+  if(card){
+    card.scrollIntoView({block:'center'});
+    card.classList.add('locate-highlight');
+  }
+}
 
 /* ================= 初始化 ================= */
-var _m09State=getMemberState();
-renderMemberState(_m09State);
-if(_m09State==='default'){
-  renderCa();
-  renderLevelHistory();
-}
+renderThreads();
+applyLessonDeepLink();
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>
