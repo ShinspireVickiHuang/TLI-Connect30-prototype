@@ -227,6 +227,24 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
 .my-booking-row .mb-meta{font-size:12px;color:var(--c-muted);margin-top:2px;}
 .my-booking-row .mb-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .rule-note{font-size:11.5px;color:var(--c-muted);margin-top:8px;line-height:1.6;}
+/* ---------- 提出有空時間：每週固定時段 ---------- */
+.weekly-grid{display:grid;grid-template-columns:auto repeat(7,1fr);gap:6px;align-items:center;margin-bottom:16px;}
+.weekly-grid .wg-head{font-size:11px;color:var(--c-muted);font-weight:700;text-align:center;padding:4px 0;}
+.weekly-grid .wg-period-label{font-size:12px;color:var(--c-muted);font-weight:700;padding-right:6px;white-space:nowrap;}
+.wg-cell{border:1px solid var(--c-border);background:#fff;border-radius:8px;min-height:38px;cursor:pointer;font-family:inherit;}
+.wg-cell.selected{border-color:var(--c-primary);background:#E6EEF8;}
+@media(max-width:480px){.weekly-grid{gap:4px;}.wg-period-label{font-size:10.5px;}}
+/* ---------- 提出有空時間：特定日期時段 ---------- */
+.pref-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
+.pref-chip{display:flex;align-items:center;gap:6px;border:1px solid var(--c-border);background:#F7FAFF;border-radius:20px;padding:6px 8px 6px 14px;font-size:12.5px;color:var(--c-text);}
+.pref-chip button{border:none;background:var(--c-border);color:var(--c-muted);width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:12px;line-height:1;flex:none;}
+/* ---------- 排課需求列表 ---------- */
+.req-row{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:12px 13px;}
+.req-row + .req-row{margin-top:10px;}
+.req-row .req-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.req-row .req-meta{font-size:12px;color:var(--c-muted);margin-top:4px;line-height:1.7;}
+.req-row .req-note{font-size:12px;color:var(--c-text);margin-top:4px;}
+.badge-danger{background:#FBEAEA;color:#912018;}
 </style>
 </head>
 <body>
@@ -248,14 +266,6 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
   <header class="topbar">
     <div class="topbar-left"><a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a><div class="topbar-title" data-i18n-zh="預約" data-i18n-en="Booking">預約</div></div>
     <div class="topbar-actions">
-      <div class="role-switch-wrap" id="roleSwitchWrap">
-        <button type="button" class="mini-select demo-switch" id="roleSwitchBtn" aria-haspopup="listbox" aria-expanded="false" title="示範：切換身分（正式版依登入身分自動判斷）" onclick="toggleRoleMenu()">示範：<span id="roleSwitchLabel">一般學員</span></button>
-        <div class="role-menu" id="roleMenu" role="listbox">
-          <button type="button" role="option" onclick="switchRole('b2c')">一般學員</button>
-          <button type="button" role="option" onclick="switchRole('b2b')">企業學員</button>
-          <button type="button" role="option" onclick="switchRole('inst')">機構學生</button>
-        </div>
-      </div>
       <a class="explore-link" href="../公開網站/p02_courses.html" aria-label="探索課程" title="探索課程">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
@@ -275,117 +285,41 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
   </header>
 
   <main class="content">
-    <p class="page-sub" data-i18n-zh="選擇老師與時段即可預約，已預約課程可在下方管理。" data-i18n-en="Pick a teacher and a time slot to book. Manage your booked classes below.">選擇老師與時段即可預約，已預約課程可在下方管理。</p>
+    <p class="page-sub" data-i18n-zh="這裡可以報名團體直播班、團體聊天室場次，或報名付費的線上活動。" data-i18n-en="Join a group livestream class, sign up for a group chat-room session, or register for a paid online event here.">這裡可以報名團體直播班、團體聊天室場次，或報名付費的線上活動。</p>
 
-    <div class="status-bar" id="statusBar">
-      <div class="status-bar-text" id="statusBarText">－</div>
-      <div class="status-bar-tz hidden" id="statusBarTz">
-        <div class="seg" id="tzSeg">
-          <button type="button" class="active" onclick="setTimezoneMode('taipei')">台北時間</button>
-          <button type="button" onclick="setTimezoneMode('dual')">我的廠區時間</button>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="flex-between" style="gap:10px;">
+        <div>
+          <h3 style="margin:0 0 4px;font-size:14.5px;">一對一課程怎麼約？</h3>
+          <p class="small muted" style="margin:0;">一對一課程由顧問依你提出的有空時間安排老師與時間，前往課表提出你的有空時間。</p>
         </div>
+        <a class="btn btn-outline btn-sm" href="m03_schedule.html#request" style="flex:none;">前往課表提出</a>
       </div>
-    </div>
-
-    <div class="banner banner-warn hidden reschedule-banner" id="rescheduleBanner"></div>
-
-    <div id="bookingFlowArea">
-      <div id="pickTeacherSection">
-        <div class="flex-between" style="margin:4px 0 12px;">
-          <h3 class="section-title first" style="margin:0;">我的老師<span class="demo-tag">可約時段為示範資料</span></h3>
-          <button type="button" class="mini-link-btn" id="exploreToggleBtn" onclick="toggleExplorePanel()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>找其他老師</span>
-          </button>
-        </div>
-        <div class="teacher-grid" id="teacherGrid"></div>
-
-        <div class="teacher-explore-panel" id="explorePanel">
-          <div class="filter-grid" style="grid-template-columns:1fr 1fr;">
-            <div class="filter-field">
-              <label for="exploreDirection">語言方向</label>
-              <select id="exploreDirection" onchange="renderExploreList()">
-                <option value="all">不限方向</option>
-                <option value="會話">會話</option>
-                <option value="商務">商務</option>
-                <option value="發音">發音矯正</option>
-                <option value="聽力">聽力加強</option>
-                <option value="閱讀寫作">閱讀寫作</option>
-                <option value="文化">文化體驗</option>
-              </select>
-            </div>
-            <div class="filter-field">
-              <label for="explorePeriod">可上課時段</label>
-              <select id="explorePeriod" onchange="renderExploreList()">
-                <option value="all">不限時段</option>
-                <option value="morning">上午</option>
-                <option value="afternoon">下午</option>
-                <option value="evening">晚上</option>
-              </select>
-            </div>
-          </div>
-          <div class="stack" id="exploreList" style="margin-top:10px;"></div>
-        </div>
-      </div>
-
-      <div class="section-title" id="calendarSectionTitle">選擇日期與時段</div>
-      <div class="card">
-        <p class="small muted" id="calendarTeacherLine" style="margin:0 0 12px;">－</p>
-        <div class="slot-calendar" id="slotCalendar">
-          <div class="cal-header">
-            <button type="button" class="cal-nav-btn" aria-label="上一月" onclick="calChangeMonth(-1)">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <div class="cal-title" id="calTitle"></div>
-            <button type="button" class="cal-nav-btn" aria-label="下一月" onclick="calChangeMonth(1)">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-          </div>
-          <div class="cal-weekday-row" id="calWeekdayRow"></div>
-          <div class="cal-grid" id="calGrid"></div>
-          <p class="small muted" style="margin:8px 0 0;">灰色日期代表當日無可預約時段</p>
-        </div>
-        <p class="small muted" id="slotTimesHint" style="margin:10px 0 8px;">請先在月曆選擇日期</p>
-        <div class="slot-times" id="slotTimes"></div>
-      </div>
-    </div>
-
-    <div id="emptyState" class="card empty-state hidden">
-      <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <h4>目前沒有可預約的堂數</h4>
-      <p>你的方案堂數或時數已用完，加購新方案後即可繼續預約課程。</p>
-      <a class="btn btn-accent" href="m06_renew.html">前往加購</a>
-    </div>
-
-    <div class="card my-booking-card" id="myBookingCard">
-      <h3 style="margin:0 0 12px;font-size:15px;">我的已預約<span class="demo-tag">示範資料</span></h3>
-      <div id="myBookingList"></div>
-      <p class="rule-note" id="myBookingRuleNote"></p>
     </div>
 
     <div id="flexSection">
-      <h3 class="section-title">團體直播班<span class="demo-tag">名額為示範資料</span></h3>
-      <div id="flexAddonEntry" class="card hidden">
-        <div class="flex-between">
-          <div>
-            <div style="font-weight:700;font-size:14px;">你的方案不含團體直播班</div>
-            <p class="small muted" style="margin:4px 0 0;">加購後即可加入固定班表的團體直播課程。</p>
-          </div>
-          <a class="btn btn-outline btn-sm" href="m13_checkout.html?plan=flex_group">需加購</a>
-        </div>
-      </div>
+      <h3 class="section-title first">團體直播班<span class="demo-tag">名額為示範資料</span></h3>
       <div id="flexFullBlock">
         <div id="flexCards" class="stack"></div>
         <button type="button" class="btn btn-outline btn-block hidden" id="flexMoreBtn" style="margin-top:10px;" onclick="toggleFlexMore()">看更多直播班</button>
       </div>
     </div>
 
-    <div class="card" style="margin-top:20px;">
-      <button type="button" class="mini-link-btn" id="ruleToggleBtn" onclick="toggleRuleText()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-        <span>查看規則</span>
-      </button>
-      <div class="rule-text hidden" id="ruleTextWrap"></div>
+    <div class="card" style="margin-top:16px;" id="chatSection">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">團體聊天室<span class="demo-tag">場次為示範資料</span></h3>
+        <a class="btn btn-outline btn-sm" href="m14_chat_booking.html">看全部場次</a>
+      </div>
+      <p class="small muted" style="margin:8px 0 12px;">來源：商務華語企業培訓（公司提供・白名單場次）／華語會話學期方案（學校提供・全員開放）。實際可報名場次以聊天室頁面顯示為準。</p>
+      <div id="chatWeekList" class="stack"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;margin-bottom:16px;" id="eventSection">
+      <div class="flex-between">
+        <h3 style="margin:0;font-size:15px;">線上活動<span class="demo-tag">示範資料</span></h3>
+        <span class="small muted">活動為一次性付費</span>
+      </div>
+      <div id="eventList" class="stack" style="margin-top:10px;"></div>
     </div>
   </main>
 
@@ -396,40 +330,6 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
     <a href="m14_chat_booking.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>聊天室</a>
     <a href="m07_profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>我的</a>
   </nav>
-</div>
-
-<div class="sheet-overlay hidden" id="slotOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3 id="slotSheetTitle">確認預約</h3>
-    <p class="muted small" id="slotSheetMeta">－</p>
-    <div class="divider"></div>
-    <div class="stack" style="gap:6px;margin-bottom:14px;">
-      <div class="small"><strong>老師：</strong><span id="slotTeacher">－</span></div>
-      <div class="small"><strong>時間：</strong><span id="slotTime">－</span></div>
-      <div class="small"><strong>地點／方式：</strong><span id="slotLocation">－</span></div>
-      <div class="small" id="slotCreditLine">－</div>
-      <div class="small muted" id="slotRuleLine">－</div>
-    </div>
-    <div class="stack">
-      <button class="btn btn-primary btn-block" id="slotConfirmBtn" onclick="confirmSlotBooking()">確認預約</button>
-      <button class="btn btn-outline btn-block" onclick="closeSlotSheet()">取消</button>
-    </div>
-  </div>
-</div>
-
-<div class="sheet-overlay hidden" id="cancelOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3 id="cancelSheetTitle">－</h3>
-    <p class="muted small" id="cancelSheetMeta">－</p>
-    <div class="divider"></div>
-    <div class="small" id="cancelSheetBody" style="margin-bottom:14px;line-height:1.7;">－</div>
-    <div class="stack">
-      <button class="btn btn-primary btn-block" onclick="confirmCancelDeduct()">確認取消</button>
-      <button class="btn btn-outline btn-block" onclick="closeCancelSheet()">先不取消</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -457,467 +357,50 @@ function handleLangCurrency(sel){
 function toggleBell(){document.getElementById('bellPanel').classList.toggle('open');}
 document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
-  if(!e.target.closest('#roleSwitchWrap')) closeRoleMenu();
 });
-
-/* ================= 示範用身分切換：預設一般學員，可用 ?role=b2c|b2b|inst ================= */
-/* 選單關閉時選項以 display:none 隱藏，不會出現在頁面文字內容中 */
-function getRole(){
-  var p=new URLSearchParams(location.search);
-  var r=p.get('role');
-  return (r==='b2b'||r==='inst') ? r : 'b2c';
-}
-function toggleRoleMenu(){
-  var menu=document.getElementById('roleMenu');
-  var btn=document.getElementById('roleSwitchBtn');
-  var open=menu.classList.toggle('open');
-  btn.setAttribute('aria-expanded', open?'true':'false');
-}
-function closeRoleMenu(){
-  document.getElementById('roleMenu').classList.remove('open');
-  document.getElementById('roleSwitchBtn').setAttribute('aria-expanded','false');
-}
-function switchRole(v){
-  var url='m02_booking.html';
-  if(v!=='b2c') url+='?role='+v;
-  location.href=url;
-}
 
 /* ================= 日期基準（對齊全站示範用「今天」＝2026-08-25） ================= */
 var TODAY=new Date(2026,7,25);
 var NOW_MOMENT=new Date(2026,7,25,10,0,0);
-var B2C_CANCEL_DEADLINE_HOURS=12;
-var INST_CANCEL_DEADLINE_HOURS=12;
 
-/* ================= 企業合約參數（資料為模擬數字，畫面已用小字標註） ================= */
-var ENTERPRISE={
-  companyName:'和霖科技股份有限公司',
-  campusName:'美國廠區',
-  timezoneOffsetHours:-15, /* 廠區當地＝台北時間 -15 小時，來自廠區設定示範數字 */
-  freeCancelTotal:2, freeCancelUsed:1,
-  hoursPoolTotal:120, hoursPoolUsed:76,
-  cancelDeadlineHours:24
-};
-var INST_WEEKLY_TOTAL=3, INST_WEEKLY_USED=1;
-
-function effectiveDeadlineHours(){
-  var role=getRole();
-  if(role==='b2b') return ENTERPRISE.cancelDeadlineHours;
-  if(role==='inst') return INST_CANCEL_DEADLINE_HOURS;
-  return B2C_CANCEL_DEADLINE_HOURS;
-}
-function freeCancelRemain(){ return Math.max(0, ENTERPRISE.freeCancelTotal-ENTERPRISE.freeCancelUsed); }
-function hoursPoolRemain(){ return Math.max(0, ENTERPRISE.hoursPoolTotal-ENTERPRISE.hoursPoolUsed); }
-function instWeeklyRemain(){ return Math.max(0, INST_WEEKLY_TOTAL-INST_WEEKLY_USED); }
-
-var tzMode='taipei';
-function taipeiToLocal(d){ return new Date(d.getTime()+ENTERPRISE.timezoneOffsetHours*3600000); }
-function fmtOneTime(dt){
-  var wd='日一二三四五六';
-  return (dt.getMonth()+1)+'/'+String(dt.getDate()).padStart(2,'0')+'（'+wd.charAt(dt.getDay())+'）'+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
-}
-function fmtDualTime(d){
-  if(tzMode==='taipei') return fmtOneTime(d)+'　台北時間';
-  return fmtOneTime(d)+'　台北時間／'+fmtOneTime(taipeiToLocal(d))+'　'+ENTERPRISE.campusName+'當地';
-}
-function setTimezoneMode(mode){
-  tzMode=mode;
-  document.querySelectorAll('#tzSeg button').forEach(function(b,i){
-    b.classList.toggle('active', (mode==='taipei'&&i===0)||(mode==='dual'&&i===1));
-  });
-  showToast(mode==='dual' ? '已顯示台北與廠區當地雙時區對照' : '已切換為台北時間單一顯示');
-  renderMyBookings();
-}
-
-/* ================= 老師資料（方案配的老師與其他老師池） ================= */
-var TEACHERS={
-  du:{name:'杜老師',spec:'會話進階教學',tags:['會話'],loc:'zoom'},
-  lin:{name:'林老師',spec:'商務中文與職場溝通',tags:['商務'],loc:'zoom'},
-  chen:{name:'陳老師',spec:'發音矯正與聽力加強',tags:['發音','聽力'],loc:'shilin'},
-  wang:{name:'王老師',spec:'閱讀寫作與檢定衝刺',tags:['閱讀寫作'],loc:'zoom'},
-  huang:{name:'黃老師',spec:'生活會話與文化體驗',tags:['會話','文化'],loc:'roosevelt'}
-};
-var LOCATIONS={zoom:{name:'線上 Zoom'},shilin:{name:'士林校區'},roosevelt:{name:'羅斯福校區'}};
-var TEACHER_OFF_DAY={du:6, lin:0, chen:2, wang:0, huang:5}; /* 每位老師固定不排課的星期（0＝日） */
-var AVATAR_COLORS=['#1B4E8C','#0F9B79','#E8792B','#6B21A8','#B54708'];
-var PERSON_ICON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>';
-
-var MY_TEACHERS_BY_ROLE={ b2c:['du','lin'], b2b:['du','lin','chen'], inst:['du'] };
-var EXPLORE_POOL=['du','lin','chen','wang','huang'];
-var selectedTeacherId=null;
-
-function teacherAvatarHtml(teacherId){
-  var idx=Object.keys(TEACHERS).indexOf(teacherId);
-  var color=AVATAR_COLORS[idx%AVATAR_COLORS.length];
-  return '<div class="avatar" style="background:'+color+';">'+PERSON_ICON_SVG+'</div>';
-}
-/* ================= 老師可約時段（依老師與日期決定式產生，示範資料） ================= */
-var SLOT_POOL=['09:00','10:00','11:00','14:00','15:00','16:00','19:00','20:00'];
-var CAL_WEEKDAYS=['一','二','三','四','五','六','日'];
-var MANUAL_BOOKED_OVERRIDES={};
-function calToday(){ return new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()); }
-function calSameDate(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
-function toIsoDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function slotKey(teacherId,d,time){ return teacherId+'_'+toIsoDate(d)+'_'+time; }
-function markSlotBookedInMemory(teacherId,d,time){ MANUAL_BOOKED_OVERRIDES[slotKey(teacherId,d,time)]=true; }
-function teacherSeed(teacherId){ return (Object.keys(TEACHERS).indexOf(teacherId)+1)*13; }
-function calSeedFromDate(d){ return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
-function teacherWorksOn(teacherId,d){
-  if(d<calToday()) return false;
-  var maxDate=new Date(calToday().getTime()+42*86400000); /* 開放約 6 週內的時段 */
-  if(d>maxDate) return false;
-  return d.getDay()!==TEACHER_OFF_DAY[teacherId];
-}
-function teacherSlotsForDate(teacherId,d){
-  if(!teacherWorksOn(teacherId,d)) return [];
-  var seed=calSeedFromDate(d)+teacherSeed(teacherId);
-  var count=2+(seed%3); /* 2~4 個時段 */
-  var start=seed%SLOT_POOL.length;
-  var times=[];
-  for(var i=0;i<count;i++){ times.push(SLOT_POOL[(start+i*3)%SLOT_POOL.length]); }
-  times=Array.from(new Set(times)).sort();
-  return times.map(function(t,idx){
-    var bookedSeed=seed+idx*7;
-    var booked=(bookedSeed%5===0) || !!MANUAL_BOOKED_OVERRIDES[slotKey(teacherId,d,t)];
-    return {time:t, booked:booked};
-  });
-}
-function periodOfTime(t){
-  var h=parseInt(t.split(':')[0],10);
-  return h<12?'morning':(h<18?'afternoon':'evening');
-}
-function nextAvailableSlot(teacherId){
-  for(var d=0; d<21; d++){
-    var day=new Date(calToday().getTime()+d*86400000);
-    var open=teacherSlotsForDate(teacherId,day).filter(function(s){return !s.booked;});
-    if(open.length>0) return {date:day, time:open[0].time};
-  }
-  return null;
-}
-function fmtSlotDayLabel(d){
-  var wd='日一二三四五六';
-  return (d.getMonth()+1)+'/'+String(d.getDate()).padStart(2,'0')+'（'+wd.charAt(d.getDay())+'）';
-}
-
-/* ================= 我的老師／找其他老師 ================= */
-function renderTeacherSection(){
-  var role=getRole();
-  var myIds=MY_TEACHERS_BY_ROLE[role];
-  if(!selectedTeacherId || myIds.indexOf(selectedTeacherId)===-1){
-    selectedTeacherId=myIds[0];
-  }
-  var wrap=document.getElementById('teacherGrid');
-  wrap.innerHTML=myIds.map(function(tid){
-    var t=TEACHERS[tid];
-    var next=nextAvailableSlot(tid);
-    var nextText = next ? ('下次可約：'+fmtSlotDayLabel(next.date)+' '+next.time) : '近期無可約時段';
-    var sel=tid===selectedTeacherId;
-    return '<button type="button" class="pick-card teacher-pick-card'+(sel?' selected':'')+'" onclick="selectTeacher(\''+tid+'\')">'+
-      teacherAvatarHtml(tid)+
-      '<div class="body"><h4>'+t.name+'</h4><p class="small muted">'+t.spec+'</p>'+
-      '<p class="small" style="color:var(--c-primary);margin-top:3px;">'+nextText+'</p></div>'+
-      '<div class="radio-dot"></div>'+
-    '</button>';
-  }).join('');
-}
-function selectTeacher(tid){
-  selectedTeacherId=tid;
-  calSelectedDate=null; pickedSlotTime=null;
-  renderTeacherSection();
-  renderCalendarSection();
-}
-function toggleExplorePanel(){
-  var p=document.getElementById('explorePanel');
-  var open=p.classList.toggle('open');
-  if(open) renderExploreList();
-}
-function renderExploreList(){
-  var dir=document.getElementById('exploreDirection').value;
-  var per=document.getElementById('explorePeriod').value;
-  var wrap=document.getElementById('exploreList');
-  var list=EXPLORE_POOL.filter(function(tid){
-    var t=TEACHERS[tid];
-    if(dir!=='all' && t.tags.indexOf(dir)===-1) return false;
-    if(per!=='all'){
-      var next=nextAvailableSlot(tid);
-      if(!next || periodOfTime(next.time)!==per) return false;
-    }
-    return true;
-  });
-  if(list.length===0){
-    wrap.innerHTML='<p class="small muted">沒有符合條件的老師，可放寬篩選條件再試一次。</p>';
-    return;
-  }
-  wrap.innerHTML=list.map(function(tid){
-    var t=TEACHERS[tid];
-    var next=nextAvailableSlot(tid);
-    var nextText = next ? ('下次可約：'+fmtSlotDayLabel(next.date)+' '+next.time) : '近期無可約時段';
-    return '<button type="button" class="pick-card teacher-pick-card" onclick="pickExploreTeacher(\''+tid+'\')">'+
-      teacherAvatarHtml(tid)+
-      '<div class="body"><h4>'+t.name+'</h4><p class="small muted">'+t.spec+'</p>'+
-      '<p class="small" style="color:var(--c-primary);margin-top:3px;">'+nextText+'</p></div>'+
-    '</button>';
-  }).join('');
-}
-function pickExploreTeacher(tid){
-  selectedTeacherId=tid;
-  calSelectedDate=null; pickedSlotTime=null;
-  document.getElementById('explorePanel').classList.remove('open');
-  renderTeacherSection();
-  renderCalendarSection();
-  showToast('已切換為 '+TEACHERS[tid].name+' 的可約時段');
-  var el=document.getElementById('calendarSectionTitle');
-  if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-/* ================= 選擇日期與時段（月曆比照 p06_trial／m05_leave 手刻月曆邏輯） ================= */
-var calViewYear=TODAY.getFullYear(), calViewMonth=TODAY.getMonth(), calSelectedDate=null;
-var pickedSlotTime=null;
-function renderCalendarSection(){
-  var t=TEACHERS[selectedTeacherId];
-  document.getElementById('calendarTeacherLine').innerHTML='目前顯示：<strong>'+t.name+'</strong>・'+t.spec+' 的可約時段<span class="demo-tag">示範資料</span>';
-  renderCalendarGrid();
-  renderSlotTimes();
-}
-function renderCalendarGrid(){
-  document.getElementById('calTitle').textContent=calViewYear+' 年 '+(calViewMonth+1)+' 月';
-  var weekRow=document.getElementById('calWeekdayRow');
-  weekRow.innerHTML=CAL_WEEKDAYS.map(function(w){return '<span>'+w+'</span>';}).join('');
-  var grid=document.getElementById('calGrid');
-  grid.innerHTML='';
-  var firstDay=new Date(calViewYear,calViewMonth,1);
-  var startOffset=(firstDay.getDay()+6)%7;
-  var daysInMonth=new Date(calViewYear,calViewMonth+1,0).getDate();
-  for(var i=0;i<startOffset;i++){
-    var empty=document.createElement('div');
-    empty.className='cal-day cal-day-empty';
-    grid.appendChild(empty);
-  }
-  for(var day=1; day<=daysInMonth; day++){
-    (function(day){
-      var d=new Date(calViewYear,calViewMonth,day);
-      var slots=teacherSlotsForDate(selectedTeacherId,d);
-      var hasOpen=slots.some(function(s){return !s.booked;});
-      var btn=document.createElement('button');
-      btn.type='button';
-      var cname='cal-day'+(hasOpen?' cal-day-available':'');
-      if(calSelectedDate && calSameDate(calSelectedDate,d)) cname+=' cal-day-active';
-      btn.className=cname;
-      btn.textContent=String(day);
-      if(!hasOpen){ btn.disabled=true; }
-      else{ btn.onclick=function(){ selectCalDate(d); }; }
-      grid.appendChild(btn);
-    })(day);
-  }
-}
-function calChangeMonth(delta){
-  calViewMonth+=delta;
-  if(calViewMonth<0){ calViewMonth=11; calViewYear-=1; }
-  if(calViewMonth>11){ calViewMonth=0; calViewYear+=1; }
-  renderCalendarGrid();
-}
-function selectCalDate(d){
-  calSelectedDate=d;
-  pickedSlotTime=null;
-  renderCalendarGrid();
-  renderSlotTimes();
-}
-function renderSlotTimes(){
-  var wrap=document.getElementById('slotTimes');
-  var hintEl=document.getElementById('slotTimesHint');
-  wrap.innerHTML='';
-  if(!calSelectedDate){
-    hintEl.textContent='請先在月曆選擇日期';
-    hintEl.style.display='block';
-    return;
-  }
-  var slots=teacherSlotsForDate(selectedTeacherId,calSelectedDate);
-  if(slots.length===0){
-    hintEl.textContent='這天沒有可約時段，請改選其他日期';
-    hintEl.style.display='block';
-    return;
-  }
-  hintEl.style.display='none';
-  slots.forEach(function(s){
-    var b=document.createElement('button');
-    b.type='button';
-    b.className='chip-opt'+(s.booked?' slot-time-booked':'');
-    if(!s.booked && s.time===pickedSlotTime) b.classList.add('active');
-    b.textContent=s.time+(s.booked?'（已被約）':'');
-    if(s.booked){ b.disabled=true; }
-    else{ b.onclick=function(){ openSlotConfirm(calSelectedDate, s.time); }; }
-    wrap.appendChild(b);
-  });
-}
-
-/* ================= 預約 / 改期確認 sheet ================= */
-var activeSlotDate=null, activeSlotTime=null;
-function openSlotConfirm(date, time){
-  activeSlotDate=date; activeSlotTime=time;
-  pickedSlotTime=time;
-  renderSlotTimes();
-  var t=TEACHERS[selectedTeacherId];
-  var role=getRole();
-  var hh=parseInt(time.split(':')[0],10);
-  var slotDateTime=new Date(date.getFullYear(),date.getMonth(),date.getDate(),hh,0);
-  document.getElementById('slotSheetTitle').textContent = rescheduleMode ? '確認改期' : '確認預約';
-  document.getElementById('slotSheetMeta').textContent = fmtSlotDayLabel(date)+' '+time+' 開始';
-  document.getElementById('slotTeacher').textContent=t.name;
-  document.getElementById('slotTime').textContent=fmtDualTime(slotDateTime);
-  document.getElementById('slotLocation').textContent=LOCATIONS[t.loc].name;
-  var creditLine=document.getElementById('slotCreditLine');
-  var confirmBtn=document.getElementById('slotConfirmBtn');
-  var ruleLine=document.getElementById('slotRuleLine');
-  if(rescheduleMode){
-    creditLine.innerHTML='<strong>說明：</strong>改期不扣堂數，原時段將自動取消。';
-    confirmBtn.textContent='確認改期至此時段';
-  }else if(role==='b2c'){
-    var prev=Math.max(0,remaining-1);
-    creditLine.innerHTML='<strong>扣堂：</strong>扣 1 堂・預約後剩餘 '+prev+' 堂';
-    confirmBtn.textContent='確認預約（扣 1 堂）';
-  }else if(role==='b2b'){
-    var prevH=Math.max(0,hoursPoolRemain()-1);
-    creditLine.innerHTML='<strong>扣時數：</strong>扣 1 小時・預約後時數池剩餘 '+prevH+'／'+ENTERPRISE.hoursPoolTotal+' 小時';
-    confirmBtn.textContent='確認預約（扣 1 小時）';
-  }else{
-    creditLine.innerHTML='<strong>說明：</strong>此為一對一練習預約，不使用本週聊天室報名次數。';
-    confirmBtn.textContent='確認預約';
-  }
-  ruleLine.textContent = role==='b2b'
-    ? ('取消時限：課前 '+ENTERPRISE.cancelDeadlineHours+' 小時（依所屬廠區時區判定），超過時限將扣時數。')
-    : ('取消時限：課前 '+effectiveDeadlineHours()+' 小時，超過恕不受理取消或改期。');
-  document.getElementById('slotOverlay').classList.remove('hidden');
-}
-function closeSlotSheet(){
-  document.getElementById('slotOverlay').classList.add('hidden');
-  activeSlotDate=null; activeSlotTime=null;
-}
-function confirmSlotBooking(){
-  if(!activeSlotDate || !activeSlotTime) return;
-  var t=TEACHERS[selectedTeacherId];
-  var role=getRole();
-  var hh=parseInt(activeSlotTime.split(':')[0],10);
-  var newStart=new Date(activeSlotDate.getFullYear(),activeSlotDate.getMonth(),activeSlotDate.getDate(),hh,0);
-  markSlotBookedInMemory(selectedTeacherId, activeSlotDate, activeSlotTime);
-  document.getElementById('slotOverlay').classList.add('hidden');
-
-  if(rescheduleMode && activeRescheduleBookingId){
-    var origBooking=MY_BOOKINGS.filter(function(x){return x.id===activeRescheduleBookingId;})[0];
-    if(origBooking) origBooking.cancelled=true;
-    MY_BOOKINGS.push({id:'mb'+(MY_BOOKINGS.length+1), title:'中文一對一－'+t.spec, teacher:t.name, loc:LOCATIONS[t.loc].name, start:newStart, cancelled:false});
-    rescheduleMode=false;
-    activeRescheduleBookingId=null;
-    document.getElementById('rescheduleBanner').classList.add('hidden');
-    showToast('已改期成功');
-  }else{
-    MY_BOOKINGS.push({id:'mb'+(MY_BOOKINGS.length+1), title:'中文一對一－'+t.spec, teacher:t.name, loc:LOCATIONS[t.loc].name, start:newStart, cancelled:false});
-    if(role==='b2c'){
-      remaining=Math.max(0,remaining-1);
-      showToast('預約成功・已扣 1 堂，剩餘 '+remaining+' 堂');
-    }else if(role==='b2b'){
-      ENTERPRISE.hoursPoolUsed=Math.min(ENTERPRISE.hoursPoolTotal, ENTERPRISE.hoursPoolUsed+1);
-      showToast('預約成功・已扣 1 小時，時數池剩餘 '+hoursPoolRemain()+' 小時');
-    }else{
-      showToast('預約成功');
-    }
-  }
-  calSelectedDate=null; pickedSlotTime=null;
-  activeSlotDate=null; activeSlotTime=null;
-  renderStatusBar();
-  renderCalendarSection();
-}
-
-/* ================= 我的已預約 ================= */
-var MY_BOOKINGS=[
-  {id:'mb1', title:'中文一對一－會話進階教學', teacher:'杜老師', loc:'線上 Zoom', start:new Date(2026,7,29,10,0), cancelled:false},
-  {id:'mb2', title:'中文一對一－商務中文與職場溝通', teacher:'林老師', loc:'線上 Zoom', start:new Date(2026,7,25,19,0), cancelled:false}
+/* ================= 團體聊天室：本週可報名場次摘要（實際報名走 m14） ================= */
+var CHAT_WEEK_SESSIONS=[
+  {id:'cw1', title:'生活會話聊天室', time:'8/25（二）20:00–20:30', seatsText:'剩 4 名額／共 8 名'},
+  {id:'cw2', title:'時事討論聊天室', time:'8/26（三）20:00–20:30', seatsText:'剩 2 名額／共 8 名'},
+  {id:'cw3', title:'商務會話聊天室', time:'8/27（四）19:30–20:00', seatsText:'剩 6 名額／共 10 名'}
 ];
-var rescheduleMode=false;
-var activeRescheduleBookingId=null;
-var rescheduleOrigTitle='';
-var rescheduleOrigTime='';
-function hoursUntil(d){ return (d-NOW_MOMENT)/3600000; }
-function renderMyBookings(){
-  var role=getRole();
-  var wrap=document.getElementById('myBookingList');
-  var active=MY_BOOKINGS.filter(function(b){return !b.cancelled;});
-  if(active.length===0){
-    wrap.innerHTML='<p class="small muted" style="margin:0 0 12px;">目前沒有已預約課程。</p>'+
-      '<a class="btn btn-outline btn-sm" href="#pickTeacherSection">立刻預約</a>';
-    return;
-  }
-  wrap.innerHTML=active.map(function(b){
-    var hu=hoursUntil(b.start);
-    var within=hu>=effectiveDeadlineHours();
-    var actionsHtml;
-    if(within){
-      actionsHtml='<button class="btn btn-outline btn-sm" onclick="openCancelSheet(\''+b.id+'\')">取消</button>'+
-        '<button class="btn btn-outline btn-sm" onclick="startReschedule(\''+b.id+'\')">改期</button>';
-    }else if(role!=='inst'){
-      actionsHtml='<a class="btn btn-outline btn-sm" href="m05_leave.html?class='+b.id+'&role='+role+'">請假</a>';
-    }else{
-      actionsHtml='<span class="small muted">距開課不到 '+effectiveDeadlineHours()+' 小時，無法異動</span>';
-    }
-    return '<div class="my-booking-row" data-id="'+b.id+'">'+
-      '<div class="mb-top"><div>'+
-        '<div class="mb-title">'+b.title+'</div>'+
-        '<div class="mb-meta">'+fmtDualTime(b.start)+'・'+b.teacher+'・'+b.loc+'</div>'+
-      '</div></div>'+
-      '<div class="mb-actions">'+actionsHtml+'</div></div>';
+function renderChatWeekList(){
+  var wrap=document.getElementById('chatWeekList');
+  wrap.innerHTML=CHAT_WEEK_SESSIONS.map(function(s){
+    return '<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>'+
+      '<div class="body"><h4>'+s.title+'</h4><p>'+s.time+'・'+s.seatsText+'</p></div>'+
+      '<div class="trail"><a class="btn btn-outline btn-sm" href="m14_chat_booking.html">報名</a></div>'+
+    '</div>';
   }).join('');
 }
-var activeCancelId=null;
-/* 取消不扣除的計費單位說明：機構學生的一對一預約本就不使用堂數／時數池，故用中性說法，避免暗示有堂數存在 */
-function cancelNoDeductText(){
-  var role=getRole();
-  if(role==='b2b') return '取消不扣時數。';
-  if(role==='inst') return '取消不影響本週聊天室報名次數。';
-  return '取消不扣堂數。';
-}
-function cancelNoDeductToast(){
-  var role=getRole();
-  if(role==='b2b') return '已取消，未扣時數';
-  if(role==='inst') return '已取消預約';
-  return '已取消，未扣堂數';
-}
-function openCancelSheet(id){
-  var b=MY_BOOKINGS.filter(function(x){return x.id===id;})[0];
-  if(!b) return;
-  activeCancelId=id;
-  document.getElementById('cancelSheetTitle').textContent=b.title;
-  document.getElementById('cancelSheetMeta').textContent=fmtDualTime(b.start)+'・'+b.teacher;
-  document.getElementById('cancelSheetBody').textContent='距上課還有約 '+Math.max(0,Math.round(hoursUntil(b.start)))+' 小時，在取消時限內，'+cancelNoDeductText();
-  document.getElementById('cancelOverlay').classList.remove('hidden');
-}
-function closeCancelSheet(){ document.getElementById('cancelOverlay').classList.add('hidden'); }
-function confirmCancelDeduct(){
-  var b=MY_BOOKINGS.filter(function(x){return x.id===activeCancelId;})[0];
-  if(!b) return;
-  b.cancelled=true;
-  closeCancelSheet();
-  showToast(cancelNoDeductToast());
-  renderStatusBar();
-  renderMyBookings();
-}
-function startReschedule(id){
-  var b=MY_BOOKINGS.filter(function(x){return x.id===id;})[0];
-  if(!b) return;
-  rescheduleMode=true;
-  activeRescheduleBookingId=id;
-  rescheduleOrigTitle=b.title;
-  rescheduleOrigTime=fmtDualTime(b.start);
-  var rb=document.getElementById('rescheduleBanner');
-  rb.classList.remove('hidden');
-  rb.className='banner banner-warn reschedule-banner';
-  rb.textContent='改期：原 '+rescheduleOrigTime+'　'+rescheduleOrigTitle+'・請在下方選擇老師與新時段完成改期';
-  showToast('請選擇老師與新時段完成改期');
-  var sec=document.getElementById('pickTeacherSection');
-  if(sec && sec.scrollIntoView) sec.scrollIntoView({behavior:'smooth', block:'start'});
+
+/* ================= 線上活動：即將舉辦，報名等於一次性付費（免費活動僅需報名） ================= */
+var UPCOMING_EVENTS=[
+  {id:'ev1', title:'活動：華語電影賞析', time:'9/5（六）14:00–16:00', feeText:'NT$390（一次性付費）', free:false},
+  {id:'ev2', title:'活動：中秋茶會', time:'9/20（日）14:00–16:00', feeText:'NT$590（一次性付費）', free:false},
+  {id:'ev3', title:'活動：新生入門說明會', time:'8/30（日）10:00–11:00', feeText:'免費', free:true}
+];
+function renderEventList(){
+  var wrap=document.getElementById('eventList');
+  wrap.innerHTML=UPCOMING_EVENTS.map(function(e){
+    var actionText=e.free?'報名':'報名並付款';
+    return '<div class="list-row">'+
+      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg></div>'+
+      '<div class="body"><h4>'+e.title+'</h4><p>'+e.time+'・'+e.feeText+'</p></div>'+
+      '<div class="trail"><a class="btn btn-accent btn-sm" href="../公開網站/p09_events.html?event='+e.id+'&action=register">'+actionText+'</a></div>'+
+    '</div>';
+  }).join('');
 }
 
-/* ================= 團體直播班 ================= */
+/* ================= 團體直播班（此會員已持有彈性團體直播・中級會話 B1 班，加購其他班另行標示） ================= */
 var FLEX_PROGRAMS=[
-  {id:'flex1', name:'中級會話直播班', teacher:'林老師', schedule:'每週二、四 19:00–20:00', level:'中文・Lv.5-7', capacity:12, enrolled:8, included:true, levelOk:true, joined:false, waitlisted:false},
+  {id:'flex1', planId:'plan-b', name:'中級會話直播班', teacher:'林老師', schedule:'每週二、四 19:00–20:00', level:'中文・Lv.5-7', capacity:12, enrolled:9, included:true, levelOk:true, joined:true, waitlisted:false},
   {id:'flex2', name:'發音矯正直播班', teacher:'陳老師', schedule:'每週一、三 20:00–21:00', level:'中文・Lv.6-9', capacity:10, enrolled:6, included:true, levelOk:false, joined:false, waitlisted:false},
   {id:'flex3', name:'商務中文直播班', teacher:'林老師', schedule:'每週五 19:00–20:00', level:'中文・Lv.7-9', capacity:8, enrolled:8, included:true, levelOk:true, joined:false, waitlisted:false},
   {id:'flex4', name:'HSK 檢定衝刺直播班', teacher:'王老師', schedule:'每週六 10:00–11:30', level:'中文・Lv.5-9', capacity:10, enrolled:4, included:false, levelOk:true, joined:false, waitlisted:false}
@@ -947,32 +430,23 @@ function flexCardHtml(f){
     actionHtml='<a class="btn btn-sm btn-outline" href="m13_checkout.html?plan=flex_group">需加購</a>';
   }
   var noteHtml = state==='mismatch' ? '<p class="small muted" style="margin:4px 0 0;">目前程度尚未達到此班開課等級。</p>' : '';
+  var planTag = f.joined ? '<p class="small muted" style="margin:4px 0 0;">所屬方案：彈性團體直播・中級會話 B1 班（自費）</p>' : '';
   return '<div class="flex-card">'+
     '<div class="flex-between"><span class="badge badge-live">直播制</span>'+(state==='full'&&!f.joined&&!f.waitlisted?'<span class="badge badge-full">已滿</span>':'')+'</div>'+
     '<h4 style="margin:8px 0 2px;font-size:14.5px;">'+f.name+'</h4>'+
     '<p class="small muted" style="margin:0 0 8px;">'+f.teacher+'・'+f.level+'</p>'+
     '<div class="small" style="margin-bottom:4px;"><strong>固定班表：</strong>'+f.schedule+'</div>'+
-    '<div class="small muted" style="margin-bottom:4px;">小班制，名額依型態設定</div>'+
-    noteHtml+
+    '<div class="small muted" style="margin-bottom:4px;">小班制，名額依型態設定；單堂可線上請假，規則見方案詳情</div>'+
+    noteHtml+planTag+
     '<div class="flex-between" style="margin-top:8px;"><span class="small muted">'+seatsText+'</span>'+actionHtml+'</div>'+
   '</div>';
 }
 function renderFlexSection(){
-  var role=getRole();
-  var addonEntry=document.getElementById('flexAddonEntry');
-  var fullBlock=document.getElementById('flexFullBlock');
-  if(role==='b2c'){
-    addonEntry.classList.remove('hidden');
-    fullBlock.classList.add('hidden');
-    return;
-  }
-  addonEntry.classList.add('hidden');
-  fullBlock.classList.remove('hidden');
   var rank={ok:0, mismatch:1, full:2, addon:3};
   var sorted=FLEX_PROGRAMS.slice().sort(function(a,b){ return rank[flexCardState(a)]-rank[flexCardState(b)]; });
-  var visible = flexExpanded ? sorted : sorted.slice(0,2);
+  var visible = flexExpanded ? sorted : sorted.slice(0,3);
   document.getElementById('flexCards').innerHTML=visible.map(flexCardHtml).join('');
-  document.getElementById('flexMoreBtn').classList.toggle('hidden', flexExpanded || sorted.length<=2);
+  document.getElementById('flexMoreBtn').classList.toggle('hidden', flexExpanded || sorted.length<=3);
 }
 function joinFlex(id){
   var f=FLEX_PROGRAMS.filter(function(x){return x.id===id;})[0];
@@ -994,98 +468,10 @@ function toggleFlexMore(){
   renderFlexSection();
 }
 
-/* ================= 規則（查看規則展開／收合） ================= */
-function toggleRuleText(){
-  var el=document.getElementById('ruleTextWrap');
-  var btn=document.getElementById('ruleToggleBtn');
-  var willOpen=el.classList.contains('hidden');
-  el.classList.toggle('hidden', !willOpen);
-  btn.classList.toggle('open', willOpen);
-}
-function renderRuleText(role){
-  var el=document.getElementById('ruleTextWrap');
-  var lines;
-  if(role==='b2c'){
-    lines=[
-      '課前 12 小時以上，可以直接在這頁取消或改期。',
-      '12 小時內沒辦法直接取消，只能請假通知老師，堂數不會退回。',
-      '方案效期到了，還沒上完的堂數就會失效，記得提前排課。'
-    ];
-  }else if(role==='b2b'){
-    lines=[
-      '取消時限依貴公司合約設定，目前為課前 '+ENTERPRISE.cancelDeadlineHours+' 小時。',
-      '超過時限取消，會先用本月免扣次數；免扣次數用完才會從時數池扣除。',
-      '時數池歸企業所有，離職或方案到期時會由企業與 TLI 一併結算。'
-    ];
-  }else{
-    lines=[
-      '課前 12 小時以上，可以取消或改期。',
-      '12 小時內沒辦法取消或改期，也沒辦法臨時請假。',
-      '本週可報名次數會在每週一重新計算。'
-    ];
-  }
-  el.innerHTML=lines.map(function(l){return '<p style="margin:0 0 6px;">'+l+'</p>';}).join('');
-}
-
-/* ================= 狀態列與方案堂數／時數用罄的空狀態 ================= */
-var qs=new URLSearchParams(location.search);
-var remaining = qs.get('remaining')!==null ? parseInt(qs.get('remaining'),10) : 8;
-var PLAN_TOTAL_LESSONS=30;
-var PLAN_EXPIRY='2026-09-08';
-function canBook(){
-  var role=getRole();
-  if(role==='b2b') return hoursPoolRemain()>0;
-  if(role==='inst') return instWeeklyRemain()>0;
-  return remaining>0;
-}
-function updateBookingAvailability(){
-  var ok=canBook();
-  document.getElementById('bookingFlowArea').classList.toggle('hidden', !ok);
-  document.getElementById('emptyState').classList.toggle('hidden', ok);
-}
-function renderStatusBar(){
-  var role=getRole();
-  var roleLabels={b2c:'一般學員',b2b:'企業學員',inst:'機構學生'};
-  var labelEl=document.getElementById('roleSwitchLabel');
-  if(labelEl) labelEl.textContent=roleLabels[role];
-
-  var bar=document.getElementById('statusBar');
-  var tzWrap=document.getElementById('statusBarTz');
-  var textEl=document.getElementById('statusBarText');
-
-  if(role==='b2c'){
-    bar.className='status-bar status-bar-info';
-    textEl.innerHTML='一對一課程包 剩 <strong>'+remaining+'／'+PLAN_TOTAL_LESSONS+'</strong> 堂・效期至 '+PLAN_EXPIRY+'<span class="demo-tag">示範資料</span>';
-    tzWrap.classList.add('hidden');
-  }else if(role==='b2b'){
-    bar.className='status-bar status-bar-enterprise';
-    textEl.innerHTML='本月免扣 <strong>'+freeCancelRemain()+'／'+ENTERPRISE.freeCancelTotal+'</strong>・時數池 <strong>'+hoursPoolRemain()+'／'+ENTERPRISE.hoursPoolTotal+'</strong><span class="demo-tag">示範資料</span>';
-    tzWrap.classList.remove('hidden');
-  }else{
-    bar.className='status-bar status-bar-info';
-    textEl.innerHTML='本週聊天室可報名 <strong>'+instWeeklyRemain()+'</strong> 次<span class="demo-tag">示範資料</span>';
-    tzWrap.classList.add('hidden');
-  }
-
-  var ruleNoteEl=document.getElementById('myBookingRuleNote');
-  ruleNoteEl.textContent='取消時限：課前 '+effectiveDeadlineHours()+' 小時。';
-
-  renderRuleText(role);
-  renderTeacherSection();
-  renderMyBookings();
-  renderFlexSection();
-  updateBookingAvailability();
-}
-
 /* ================= 初始化 ================= */
-document.addEventListener('click',function(e){
-  if(!e.target.closest('#pickTeacherSection')){
-    var ep=document.getElementById('explorePanel');
-    if(ep) ep.classList.remove('open');
-  }
-});
-renderStatusBar();
-renderCalendarSection();
+renderFlexSection();
+renderChatWeekList();
+renderEventList();
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

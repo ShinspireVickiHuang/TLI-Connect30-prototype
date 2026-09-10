@@ -96,6 +96,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .list-row .body h4{margin:0;font-size:13.5px;font-weight:700;}
 .list-row .body p{margin:2px 0 0;font-size:12px;color:var(--c-muted);}
 .list-row .trail{flex:none;text-align:right;}
+.lv-row.selected{background:#F7FAFF;box-shadow:inset 3px 0 0 var(--c-primary);border-radius:var(--radius-sm);}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--c-border);margin:18px 0 14px;overflow-x:auto;}
 .tab-btn{padding:9px 14px;border:none;background:none;font-size:13.5px;font-weight:700;color:var(--c-muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit;min-height:40px;}
 .tab-btn.active{color:var(--c-primary);border-color:var(--c-primary);}
@@ -109,9 +110,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translateX(-50%);background:#101828;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;box-shadow:var(--shadow-lg);white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;}
 .toast.hidden{display:none;}
 @media(min-width:1024px){.toast{bottom:24px;}}
-.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
-.field label{font-size:13px;font-weight:700;}
-.field textarea{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 11px;font-size:14px;font-family:inherit;color:var(--c-text);background:#fff;width:100%;resize:vertical;}
 .explore-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c-primary);white-space:nowrap;padding:4px 2px;flex:none;}
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
@@ -219,40 +217,69 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </button>
       <div class="bell-panel" id="bellPanel">
         <h4>通知</h4>
-        <div class="bell-item"><span class="b-dot"></span><div><p>你有 4 份測驗尚未完成</p><span>今天 09:20</span></div></div>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你有 6 份課程評量尚未完成</p><span>今天 09:20</span></div></div>
       </div>
     </div>
   </header>
 
   <main class="content">
 
-    <!-- ===== 狀態 A：測驗列表 ===== -->
+    <!-- ===== 狀態 A：測驗列表（等級測驗／課程評量兩頁籤） ===== -->
     <div id="view-list">
       <p class="page-h">線上測驗</p>
-      <p class="page-sub" data-i18n-zh="依課程章節完成隨堂測驗，成績會同步到學習評量。" data-i18n-en="Complete quizzes by lesson; scores sync to your learning assessment.">依課程章節完成隨堂測驗，成績會同步到學習評量。</p>
+      <p class="page-sub" data-i18n-zh="依你的等級進度參加等級測驗，或完成課程指定的評量，分數會同步到學習評量。" data-i18n-en="Take level tests based on your progress, or complete course-assigned assessments. Scores sync to your learning assessment.">依你的等級進度參加等級測驗，或完成課程指定的評量，分數會同步到學習評量。</p>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="setListTab('pending',this)">待完成</button>
-        <button class="tab-btn" onclick="setListTab('done',this)">已完成</button>
+      <div class="tabs" id="pageTabs">
+        <button class="tab-btn active" data-tab="level" onclick="setPageTab('level')">等級測驗</button>
+        <button class="tab-btn" data-tab="course" onclick="setPageTab('course')">課程評量</button>
       </div>
-      <div class="tab-panel active" id="tabpanel-pending">
-        <div class="stack" id="pendingList"></div>
-        <div class="empty-state hidden" id="pendingEmpty">
-          <h4>目前沒有待完成的測驗</h4>
-          <p>有新的隨堂測驗指派時會出現在這裡。</p>
+
+      <!-- ---- 等級測驗頁籤 ---- -->
+      <div class="tab-panel active" id="pagepanel-level">
+        <div id="levelLadderList"></div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="small" style="font-weight:700;">測驗說明</div>
+          <p class="small muted" style="margin:6px 0 0;">題數：依設定・作答時間：依設定・及格門檻：依設定，詳細規則以 TLI 教研公告為準。</p>
         </div>
-        <div class="hidden" id="pendingMoreWrap" style="text-align:center;margin-top:10px;">
-          <button class="btn btn-outline btn-sm" onclick="showMorePending()">載入更多（還有 <span id="pendingMoreCount">0</span> 份）</button>
+
+        <div class="section-title">歷次成績</div>
+        <div class="card">
+          <div id="levelHistoryList"></div>
+          <div class="empty-state hidden" id="levelHistoryEmpty" style="padding:12px 0;">
+            <p class="small muted" style="margin:0;">目前還沒有等級測驗紀錄。</p>
+          </div>
+        </div>
+        <div class="hidden" id="levelHistoryMoreWrap" style="text-align:center;margin-top:10px;">
+          <button class="btn btn-outline btn-sm" onclick="showMoreLevelHistory()">載入更多（還有 <span id="levelHistoryMoreCount">0</span> 筆）</button>
         </div>
       </div>
-      <div class="tab-panel" id="tabpanel-done">
-        <div class="stack" id="doneList"></div>
-        <div class="empty-state hidden" id="doneEmpty">
-          <h4>目前還沒有已完成的測驗</h4>
-          <p>完成測驗後會出現在這裡。</p>
+
+      <!-- ---- 課程評量頁籤 ---- -->
+      <div class="tab-panel" id="pagepanel-course">
+        <div class="tabs" id="courseSubTabs">
+          <button class="tab-btn active" onclick="setListTab('pending',this)">待完成</button>
+          <button class="tab-btn" onclick="setListTab('done',this)">已完成</button>
         </div>
-        <div class="hidden" id="doneMoreWrap" style="text-align:center;margin-top:10px;">
-          <button class="btn btn-outline btn-sm" onclick="showMoreDone()">載入更多（還有 <span id="doneMoreCount">0</span> 份）</button>
+        <div class="tab-panel active" id="tabpanel-pending">
+          <div class="stack" id="pendingList"></div>
+          <div class="empty-state hidden" id="pendingEmpty">
+            <h4>目前沒有待完成的課程評量</h4>
+            <p>有新的課程評量指派時會出現在這裡。</p>
+          </div>
+          <div class="hidden" id="pendingMoreWrap" style="text-align:center;margin-top:10px;">
+            <button class="btn btn-outline btn-sm" onclick="showMorePending()">載入更多（還有 <span id="pendingMoreCount">0</span> 份）</button>
+          </div>
+        </div>
+        <div class="tab-panel" id="tabpanel-done">
+          <div class="stack" id="doneList"></div>
+          <div class="empty-state hidden" id="doneEmpty">
+            <h4>目前還沒有已完成的課程評量</h4>
+            <p>完成評量後會出現在這裡。</p>
+          </div>
+          <div class="hidden" id="doneMoreWrap" style="text-align:center;margin-top:10px;">
+            <button class="btn btn-outline btn-sm" onclick="showMoreDone()">載入更多（還有 <span id="doneMoreCount">0</span> 份）</button>
+          </div>
         </div>
       </div>
     </div>
@@ -295,23 +322,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <div class="result-score-wrap">
           <div class="result-score" id="resultScore">0<span>／100</span></div>
           <p class="muted small" style="margin-top:6px;" id="resultRate">正確率 0%</p>
-          <span class="badge badge-ok" id="resultLevel">對照 TLI-CPT A2</span>
+          <span class="badge badge-ok" id="resultLevel">通過</span>
         </div>
         <div class="divider"></div>
         <div class="small muted" style="font-weight:700;">四技能小結</div>
         <div id="resultSkills"></div>
       </div>
 
-      <div class="banner banner-success" style="margin-top:14px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg>
-        <div>本次測驗成績已寫入你的學習評量紀錄。<br><a href="m09_assessment.html" style="font-weight:700;text-decoration:underline;">前往學習評量 ›</a></div>
-      </div>
+      <div class="banner banner-success" id="resultBanner" style="margin-top:14px;"></div>
 
       <div class="section-title">逐題詳解</div>
       <div class="card"><div id="reviewList"></div></div>
 
       <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="retakeQuiz()">再測一次</button>
-      <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="backToQuizList()">回測驗列表</button>
+      <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="backToQuizList()">回列表</button>
     </div>
 
   </main>
@@ -376,31 +400,124 @@ var ICON_CROSS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 var ICON_PLAY_SM='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
 var ICON_PAUSE_SM='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
 var ICON_AWARD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L17 22l-5-3-5 3 1.5-8.5"/></svg>';
-var ICON_CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+var ICON_QUIZ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/></svg>';
 
-/* ================= 測驗清單資料 ================= */
-var QUIZZES = {
-  q1:{id:'q1',status:'pending',title:'商務會話 L05 開會用語小測驗',source:'商務華語情境 16 講・L05 商務會議開場',count:10,mins:12,due:'2026-09-05'},
-  q2:{id:'q2',status:'pending',title:'發音基礎 L12 語調練習隨堂測驗',source:'發音基礎 20 講・L12 語調練習',count:8,mins:8,due:'2026-08-30'},
-  q3:{id:'q3',status:'pending',title:'會話進階 期中複習測驗',source:'中文一對一－會話進階',count:15,mins:18,due:'2026-09-10'},
-  q4:{id:'q4',status:'pending',title:'TLI-CPT 模擬測驗（第二次）',source:'TLI-CPT 全民中文能力檢定・模擬題庫',count:20,mins:25,due:'2026-09-15'},
-  q5:{id:'q5',status:'pending',title:'旅遊華語 L06 緊急狀況求助測驗',source:'旅遊華語會話 12 講・L06',count:8,mins:8,due:'2026-09-20'},
-  q6:{id:'q6',status:'pending',title:'商務書信寫作 期末情境測驗',source:'商務書信寫作 8 講・期末',count:10,mins:12,due:'2026-09-25'},
-  c1:{id:'c1',status:'done',title:'發音基礎 L05 兒化音測驗',source:'發音基礎 20 講・L05 兒化音',count:8,mins:8,doneDate:'2026-08-20',score:88,level:'A2+'},
-  c2:{id:'c2',status:'done',title:'商務華語 L03 商務會議開場測驗',source:'商務華語情境 16 講・L03',count:10,mins:10,doneDate:'2026-08-15',score:92,level:'B1'},
-  c3:{id:'c3',status:'done',title:'會話進階 第一階複習測驗',source:'中文一對一－會話進階',count:12,mins:15,doneDate:'2026-08-06',score:76,level:'B1'},
-  c4:{id:'c4',status:'done',title:'發音基礎 總複習測驗',source:'發音基礎 20 講・L20',count:20,mins:20,doneDate:'2026-07-30',score:85,level:'A2+'},
-  c5:{id:'c5',status:'done',title:'TLI-CPT 模擬測驗（第一次）',source:'TLI-CPT 全民中文能力檢定・模擬題庫',count:20,mins:25,doneDate:'2026-07-10',score:68,level:'A2'},
-  c6:{id:'c6',status:'done',title:'旅遊華語 期末情境測驗',source:'旅遊華語會話 12 講・L08',count:8,mins:8,doneDate:'2026-02-01',score:80,level:'A2+'},
-  c7:{id:'c7',status:'done',title:'台灣文化與生活 期末測驗',source:'台灣文化與生活 10 講・L05',count:6,mins:8,doneDate:'2025-11-10',score:74,level:'A2'},
-  c8:{id:'c8',status:'done',title:'商務書信寫作 單元測驗',source:'商務書信寫作 8 講・L03',count:6,mins:8,doneDate:'2025-08-18',score:70,level:'A2'},
-  c9:{id:'c9',status:'done',title:'成語與慣用語 單元測驗',source:'成語與慣用語 12 講・L03',count:10,mins:10,doneDate:'2025-05-12',score:82,level:'B1'},
-  c10:{id:'c10',status:'done',title:'職場面試會話 單元測驗',source:'職場面試會話 10 講・L03',count:8,mins:8,doneDate:'2025-03-02',score:78,level:'A2+'},
-  c11:{id:'c11',status:'done',title:'中華文化與歷史 單元測驗',source:'中華文化與歷史 8 講・L03',count:6,mins:8,doneDate:'2024-09-18',score:65,level:'A2'},
-  c12:{id:'c12',status:'done',title:'入學分級測驗',source:'入學分級題庫',count:20,mins:20,doneDate:'2024-02-10',score:60,level:'A1+'}
+/* ================= 頁籤切換：等級測驗／課程評量 ================= */
+function setPageTab(name){
+  document.querySelectorAll('#pageTabs .tab-btn').forEach(function(b){b.classList.toggle('active', b.dataset.tab===name);});
+  document.getElementById('pagepanel-level').classList.toggle('active', name==='level');
+  document.getElementById('pagepanel-course').classList.toggle('active', name==='course');
+}
+
+/* ================= 等級測驗：等級階梯（依產品系列設定，示範：中文） ================= */
+var CURRENT_LEVEL = 6;
+var LEVEL_LADDER = [
+  {level:1, name:'入門', date:'2024-02-10'},
+  {level:2, name:'初級', date:'2024-05-21'},
+  {level:3, name:'初中級', date:'2024-08-02'},
+  {level:4, name:'中級前段', date:'2024-11-11'},
+  {level:5, name:'中級中段', date:'2025-11-20'},
+  {level:6, name:'中級', date:'2026-05-12'},
+  {level:7, name:'中高級', date:null},
+  {level:8, name:'高級', date:null}
+];
+function levelStatus(lv){
+  if(lv.level<=CURRENT_LEVEL) return 'passed';
+  if(lv.level===CURRENT_LEVEL+1) return 'available';
+  return 'locked';
+}
+function renderLevelLadder(){
+  document.getElementById('levelLadderList').innerHTML = LEVEL_LADDER.map(function(lv){
+    var status=levelStatus(lv);
+    var trailHtml;
+    if(status==='passed'){
+      trailHtml='<span class="badge badge-ok">已通過</span><div class="small muted" style="margin-top:4px;">'+lv.date+'</div>';
+    }else if(status==='available'){
+      trailHtml='<span class="badge badge-info">可測驗</span><div style="margin-top:6px;"><button class="btn btn-accent btn-sm" onclick="startLevelTest('+lv.level+')">開始測驗</button></div>';
+    }else{
+      trailHtml='<span class="badge badge-muted">未開放</span><div class="small muted" style="margin-top:4px;">需先通過 Lv.'+(lv.level-1)+' 等級測驗</div>';
+    }
+    return '' +
+      '<div class="list-row lv-row" data-level-row="'+lv.level+'">' +
+        '<div class="icon-box">'+ICON_AWARD+'</div>' +
+        '<div class="body"><h4>Lv.'+lv.level+'　'+lv.name+'</h4></div>' +
+        '<div class="trail">'+trailHtml+'</div>' +
+      '</div>';
+  }).join('');
+}
+function applyLevelSelect(levelParam){
+  document.querySelectorAll('.lv-row.selected').forEach(function(r){r.classList.remove('selected');});
+  if(!levelParam) return;
+  var row=document.querySelector('.lv-row[data-level-row="'+levelParam+'"]');
+  if(row){
+    row.classList.add('selected');
+    row.scrollIntoView({block:'center'});
+  }
+}
+
+/* ================= 等級測驗：歷次成績 ================= */
+var LEVEL_TEST_HISTORY = [
+  {date:'2026-05-12', level:6, name:'中級', result:'passed'},
+  {date:'2025-11-20', level:5, name:'中級中段', result:'passed'},
+  {date:'2025-08-14', level:5, name:'中級中段', result:'failed'},
+  {date:'2024-11-11', level:4, name:'中級前段', result:'passed'},
+  {date:'2024-08-02', level:3, name:'初中級', result:'passed'},
+  {date:'2024-05-21', level:2, name:'初級', result:'passed'},
+  {date:'2024-02-19', level:2, name:'初級', result:'failed'},
+  {date:'2024-02-10', level:1, name:'入門', result:'passed'}
+].sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+var LTH_PAGE_SIZE=5, lthShown=LTH_PAGE_SIZE;
+function renderLevelHistory(){
+  var empty=document.getElementById('levelHistoryEmpty');
+  var moreWrap=document.getElementById('levelHistoryMoreWrap');
+  if(LEVEL_TEST_HISTORY.length===0){
+    document.getElementById('levelHistoryList').innerHTML='';
+    empty.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  var shown=LEVEL_TEST_HISTORY.slice(0,lthShown);
+  document.getElementById('levelHistoryList').innerHTML = shown.map(function(h){
+    var pass = h.result==='passed';
+    var resultHtml = pass ? '<span class="badge badge-ok">通過</span>' : '<span class="badge badge-full">未通過</span>';
+    var subHtml = pass ? '' : '<div class="small muted" style="margin-top:2px;">下次可考日期：依設定</div>';
+    return '' +
+      '<div class="list-row">' +
+        '<div class="icon-box">'+ICON_AWARD+'</div>' +
+        '<div class="body"><h4>Lv.'+h.level+'　'+h.name+'　等級測驗</h4><p>'+h.date+'</p>'+subHtml+'</div>' +
+        '<div class="trail">'+resultHtml+'</div>' +
+      '</div>';
+  }).join('');
+  var remain=LEVEL_TEST_HISTORY.length-shown.length;
+  moreWrap.classList.toggle('hidden', remain<=0);
+  document.getElementById('levelHistoryMoreCount').textContent=remain;
+}
+function showMoreLevelHistory(){ lthShown+=LTH_PAGE_SIZE; renderLevelHistory(); }
+
+/* ================= 課程評量資料（掛在課程上的評量，必要／選做與及格門檻由課程設定） ================= */
+var COURSE_ASSESSMENTS = {
+  q1:{id:'q1', status:'pending', title:'開會用語評量', course:'商務華語情境 16 講・L05 商務會議開場', level:'Lv.6', required:true, due:'2026-09-05'},
+  q2:{id:'q2', status:'pending', title:'語調練習隨堂評量', course:'發音基礎 20 講・L12 語調練習', level:'Lv.5', required:false, due:'2026-08-30'},
+  q3:{id:'q3', status:'pending', title:'期中複習評量', course:'中文一對一－會話進階', level:'Lv.6', required:true, due:'2026-09-10'},
+  q4:{id:'q4', status:'pending', title:'TLI-CPT 模擬評量（第二次）', course:'TLI-CPT 全民中文能力檢定・模擬題庫', level:'Lv.7', required:true, due:'2026-09-15'},
+  q5:{id:'q5', status:'pending', title:'緊急狀況求助評量', course:'旅遊華語會話 12 講・L06', level:'Lv.5', required:false, due:'2026-09-20'},
+  q6:{id:'q6', status:'pending', title:'期末情境評量', course:'商務書信寫作 8 講・期末', level:'Lv.6', required:true, due:'2026-09-25'},
+  c1:{id:'c1', status:'passed', title:'兒化音評量', course:'發音基礎 20 講・L05 兒化音', level:'Lv.5', required:true, doneDate:'2026-08-20', score:88},
+  c2:{id:'c2', status:'passed', title:'商務會議開場評量', course:'商務華語情境 16 講・L03', level:'Lv.6', required:true, doneDate:'2026-08-15', score:92},
+  c3:{id:'c3', status:'failed', title:'第一階複習評量', course:'中文一對一－會話進階', level:'Lv.6', required:true, doneDate:'2026-08-06', score:58},
+  c4:{id:'c4', status:'passed', title:'總複習評量', course:'發音基礎 20 講・L20', level:'Lv.5', required:false, doneDate:'2026-07-30', score:85},
+  c5:{id:'c5', status:'passed', title:'TLI-CPT 模擬評量（第一次）', course:'TLI-CPT 全民中文能力檢定・模擬題庫', level:'Lv.7', required:true, doneDate:'2026-07-10', score:68},
+  c6:{id:'c6', status:'passed', title:'期末情境評量', course:'旅遊華語會話 12 講・L08', level:'Lv.5', required:false, doneDate:'2026-02-01', score:80},
+  c7:{id:'c7', status:'passed', title:'期末評量', course:'台灣文化與生活 10 講・L05', level:'Lv.5', required:false, doneDate:'2025-11-10', score:74},
+  c8:{id:'c8', status:'passed', title:'單元評量', course:'商務書信寫作 8 講・L03', level:'Lv.6', required:true, doneDate:'2025-08-18', score:70},
+  c9:{id:'c9', status:'passed', title:'單元評量', course:'成語與慣用語 12 講・L03', level:'Lv.6', required:false, doneDate:'2025-05-12', score:82},
+  c10:{id:'c10', status:'passed', title:'單元評量', course:'職場面試會話 10 講・L03', level:'Lv.6', required:false, doneDate:'2025-03-02', score:78},
+  c11:{id:'c11', status:'passed', title:'單元評量', course:'中華文化與歷史 8 講・L03', level:'Lv.5', required:false, doneDate:'2024-09-18', score:65},
+  c12:{id:'c12', status:'passed', title:'入學分級評量', course:'入學分級題庫', level:'Lv.3', required:true, doneDate:'2024-02-10', score:60}
 };
 
-/* ================= 作答用題庫（示範，固定 9 題涵蓋四種題型） ================= */
+/* ================= 作答用題庫（示範，固定 9 題涵蓋四種題型，等級測驗與課程評量共用） ================= */
 var QUESTIONS = [
   {type:'single',skill:'讀',text:'請選出正確的量詞：一___咖啡',options:['杯','個','隻','張'],answer:0,explain:'液體飲料常用量詞為「杯」，如一杯咖啡、一杯茶。'},
   {type:'single',skill:'讀',text:'「開會」最貼近的英文翻譯是？',options:['have a meeting','have a party','have dinner','take a class'],answer:0,explain:'「開會」指召開會議，對應 have a meeting。'},
@@ -413,16 +530,19 @@ var QUESTIONS = [
   {type:'single',skill:'說',text:'「麻煩您」這句話主要用來表達什麼？',options:['命令','請求','拒絕','道謝'],answer:1,explain:'「麻煩您」是禮貌性請求他人協助的用語。'}
 ];
 
-var lState = {tab:'pending'};
-var aState = null; /* 作答狀態 */
-var QUIZ_PAGE_SIZE=10;
-var pendingShown=QUIZ_PAGE_SIZE, doneShown=QUIZ_PAGE_SIZE;
+var aState = null; /* 作答狀態：{mode:'level'|'course', refId, idx, answers, flags, secLeft, timerId} */
+var QUIZ_PAGE_SIZE=6, pendingShown=QUIZ_PAGE_SIZE, doneShown=QUIZ_PAGE_SIZE;
 
-function renderQuizList(){
-  var pend = Object.keys(QUIZZES).map(function(k){return QUIZZES[k];}).filter(function(q){return q.status==='pending';})
-    .sort(function(a,b){ return new Date(a.due) - new Date(b.due); }); /* 待完成：期限近到遠 */
-  var done = Object.keys(QUIZZES).map(function(k){return QUIZZES[k];}).filter(function(q){return q.status==='done';})
-    .sort(function(a,b){ return new Date(b.doneDate) - new Date(a.doneDate); }); /* 已完成：完成日新到舊 */
+function renderCourseList(){
+  var all=Object.keys(COURSE_ASSESSMENTS).map(function(k){return COURSE_ASSESSMENTS[k];});
+  var pend = all.filter(function(a){return a.status==='pending'||a.status==='failed';})
+    .sort(function(a,b){
+      if(a.status==='failed'&&b.status!=='failed') return -1;
+      if(a.status!=='failed'&&b.status==='failed') return 1;
+      return new Date(a.due||a.doneDate) - new Date(b.due||b.doneDate);
+    });
+  var done = all.filter(function(a){return a.status==='passed';})
+    .sort(function(a,b){ return new Date(b.doneDate) - new Date(a.doneDate); });
 
   var pendEmpty=document.getElementById('pendingEmpty'), pendMoreWrap=document.getElementById('pendingMoreWrap');
   if(pend.length===0){
@@ -452,51 +572,66 @@ function renderQuizList(){
     else{ doneMoreWrap.classList.add('hidden'); }
   }
 }
-function showMorePending(){ pendingShown+=QUIZ_PAGE_SIZE; renderQuizList(); }
-function showMoreDone(){ doneShown+=QUIZ_PAGE_SIZE; renderQuizList(); }
-function pendingCardHtml(q){
+function showMorePending(){ pendingShown+=QUIZ_PAGE_SIZE; renderCourseList(); }
+function showMoreDone(){ doneShown+=QUIZ_PAGE_SIZE; renderCourseList(); }
+function reqBadge(a){ return '<span class="badge '+(a.required?'badge-warn':'badge-muted')+'">'+(a.required?'必要':'選做')+'</span>'; }
+function pendingCardHtml(a){
+  var isRetake = a.status==='failed';
   return '' +
     '<div class="card quiz-card">' +
-      '<span class="badge badge-info">'+q.source+'</span>' +
-      '<h3 style="margin:8px 0 4px;font-size:15.5px;">'+q.title+'</h3>' +
-      '<p class="small muted" style="margin:0;">共 '+q.count+' 題・預估 '+q.mins+' 分鐘・期限 '+q.due+'</p>' +
+      '<span class="badge badge-info">'+a.course+'・'+a.level+'</span> '+reqBadge(a)+
+      '<h3 style="margin:8px 0 4px;font-size:15.5px;">'+a.title+'</h3>' +
+      '<p class="small muted" style="margin:0;">題數・時間・及格門檻依設定'+(a.due?('・期限 '+a.due):'')+'</p>' +
       '<div class="flex-between" style="margin-top:12px;">' +
-        '<span class="small muted">尚未作答</span>' +
-        '<button class="btn btn-accent btn-sm" onclick="startQuiz(\''+q.id+'\')">開始作答</button>' +
+        '<span class="small muted">'+(isRetake?'未及格待補考':'尚未作答')+'</span>' +
+        '<button class="btn btn-accent btn-sm" onclick="startAssessment(\''+a.id+'\')">'+(isRetake?'補考':'開始作答')+'</button>' +
       '</div>' +
     '</div>';
 }
-function doneCardHtml(q){
+function doneCardHtml(a){
   return '' +
     '<div class="card quiz-card">' +
-      '<span class="badge badge-info">'+q.source+'</span>' +
-      '<h3 style="margin:8px 0 4px;font-size:15.5px;">'+q.title+'</h3>' +
-      '<p class="small muted" style="margin:0;">共 '+q.count+' 題・完成日 '+q.doneDate+'</p>' +
+      '<span class="badge badge-info">'+a.course+'・'+a.level+'</span> '+reqBadge(a)+
+      '<h3 style="margin:8px 0 4px;font-size:15.5px;">'+a.title+'</h3>' +
+      '<p class="small muted" style="margin:0;">完成日 '+a.doneDate+'</p>' +
       '<div class="flex-between" style="margin-top:12px;">' +
-        '<span><span class="badge badge-ok">'+q.score+' 分</span> <span class="badge badge-info">TLI-CPT '+q.level+'</span></span>' +
-        '<button class="btn btn-outline btn-sm" onclick="startQuiz(\''+q.id+'\')">查看結果</button>' +
+        '<span class="badge badge-ok">'+a.score+' 分</span>' +
+        '<button class="btn btn-outline btn-sm" onclick="startAssessment(\''+a.id+'\')">查看結果</button>' +
       '</div>' +
     '</div>';
 }
 function setListTab(name,btn){
-  lState.tab=name;
-  document.querySelectorAll('#view-list .tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#courseSubTabs .tab-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  document.querySelectorAll('#view-list .tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('tabpanel-'+name).classList.add('active');
+  document.getElementById('tabpanel-pending').classList.toggle('active', name==='pending');
+  document.getElementById('tabpanel-done').classList.toggle('active', name==='done');
 }
 
 /* ================= 作答流程 ================= */
-function startQuiz(id){
-  var q = QUIZZES[id];
-  if(q.status==='done'){ showResultDirect(q); return; }
-  aState = {
-    quizId:id, idx:0, answers:{}, flags:{}, secLeft:15*60, timerId:null
-  };
+function startAssessment(id){
+  var a = COURSE_ASSESSMENTS[id];
+  if(!a) return;
+  setPageTab('course');
+  var subBtns=document.querySelectorAll('#courseSubTabs .tab-btn');
+  if(a.status==='passed'){ setListTab('done', subBtns[1]); showResultDirect(a); return; }
+  setListTab('pending', subBtns[0]);
+  aState = {mode:'course', refId:id, idx:0, answers:{}, flags:{}, secLeft:15*60, timerId:null};
   document.getElementById('view-list').classList.add('hidden');
   document.getElementById('view-result').classList.add('hidden');
   document.getElementById('view-answer').classList.remove('hidden');
-  document.getElementById('answerTitle').textContent = q.title;
+  document.getElementById('answerTitle').textContent = a.title;
+  renderQNav();
+  renderQuestion();
+  startTimer();
+  window.scrollTo(0,0);
+}
+function startLevelTest(level){
+  aState = {mode:'level', refId:level, idx:0, answers:{}, flags:{}, secLeft:15*60, timerId:null};
+  document.getElementById('view-list').classList.add('hidden');
+  document.getElementById('view-result').classList.add('hidden');
+  document.getElementById('view-answer').classList.remove('hidden');
+  var lv=LEVEL_LADDER.filter(function(l){return l.level===level;})[0];
+  document.getElementById('answerTitle').textContent = 'Lv.'+level+' '+(lv?lv.name:'')+' 等級測驗';
   renderQNav();
   renderQuestion();
   startTimer();
@@ -508,7 +643,7 @@ function backToQuizList(){
   document.getElementById('view-answer').classList.add('hidden');
   document.getElementById('view-result').classList.add('hidden');
   document.getElementById('view-list').classList.remove('hidden');
-  renderQuizList();
+  renderCourseList();
   window.scrollTo(0,0);
 }
 function startTimer(){
@@ -618,7 +753,7 @@ function toggleListen(){
   }
 }
 
-/* ================= 交卷 ================= */
+/* ================= 交卷與計分 ================= */
 function openSubmitConfirm(){
   var answered = Object.keys(aState.answers).length;
   var unanswered = QUESTIONS.length - answered;
@@ -630,7 +765,12 @@ function confirmSubmit(){
   closeSubmitConfirm();
   stopTimer();
   var result = scoreQuiz();
-  showResult(result, QUIZZES[aState.quizId].title);
+  if(aState.mode==='level'){
+    showLevelResult(result, aState.refId);
+  }else{
+    var a=COURSE_ASSESSMENTS[aState.refId];
+    showCourseResult(result, a);
+  }
 }
 function scoreQuiz(){
   var correctCount=0;
@@ -651,31 +791,68 @@ function scoreQuiz(){
     return {q:q, given:given, ok:ok};
   });
   var score = Math.round(correctCount/QUESTIONS.length*100);
-  var level = score>=90?'B2':score>=75?'B1':score>=60?'A2+':score>=40?'A2':'A1';
-  return {score:score, correctCount:correctCount, total:QUESTIONS.length, level:level, skillTotal:skillTotal, skillCorrect:skillCorrect, reviews:reviews};
+  return {score:score, correctCount:correctCount, total:QUESTIONS.length, skillTotal:skillTotal, skillCorrect:skillCorrect, reviews:reviews};
 }
-function showResult(result, title){
+function showLevelResult(result, level){
   document.getElementById('view-answer').classList.add('hidden');
   document.getElementById('view-list').classList.add('hidden');
   document.getElementById('view-result').classList.remove('hidden');
-  document.getElementById('resultTitle').textContent = title + '・結果';
+  var pass = result.score>=60;
+  var lv=LEVEL_LADDER.filter(function(l){return l.level===level;})[0];
+  document.getElementById('resultTitle').textContent = 'Lv.'+level+' '+(lv?lv.name:'')+'・結果';
   document.getElementById('resultScore').innerHTML = result.score + '<span>／100</span>';
-  document.getElementById('resultRate').textContent = '正確率 '+result.score+'%（答對 '+result.correctCount+'／'+result.total+' 題）';
-  document.getElementById('resultLevel').textContent = '對照 TLI-CPT '+result.level;
+  document.getElementById('resultRate').textContent = '答對 '+result.correctCount+'／'+result.total+' 題';
+  var levelBadge=document.getElementById('resultLevel');
+  levelBadge.textContent = pass ? '通過' : '未通過';
+  levelBadge.className = 'badge '+(pass?'badge-ok':'badge-full');
   renderResultSkills(result);
   renderReview(result);
+  var banner=document.getElementById('resultBanner');
+  if(pass){
+    if(level>CURRENT_LEVEL){ CURRENT_LEVEL=level; }
+    banner.className='banner banner-success';
+    banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg><div>恭喜通過！已升等 Lv.'+level+'　'+(lv?lv.name:'')+'。<br><a href="m09_assessment.html" style="font-weight:700;text-decoration:underline;">前往學習評量 ›</a></div>';
+    renderLevelLadder();
+    showToast('已升等 Lv.'+level);
+  }else{
+    banner.className='banner banner-warn';
+    banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg><div>這次還未達晉級標準，下次可考日期依設定。<br><a href="m09_assessment.html" style="font-weight:700;text-decoration:underline;">前往學習評量 ›</a></div>';
+  }
   window.scrollTo(0,0);
 }
-function showResultDirect(q){
-  /* 已完成測驗直接顯示既有成績（示範資料） */
+function showCourseResult(result, a){
+  document.getElementById('view-answer').classList.add('hidden');
+  document.getElementById('view-list').classList.add('hidden');
+  document.getElementById('view-result').classList.remove('hidden');
+  var pass = result.score>=60;
+  document.getElementById('resultTitle').textContent = a.title + '・結果';
+  document.getElementById('resultScore').innerHTML = result.score + '<span>／100</span>';
+  document.getElementById('resultRate').textContent = '答對 '+result.correctCount+'／'+result.total+' 題';
+  var levelBadge=document.getElementById('resultLevel');
+  levelBadge.textContent = pass ? '及格' : '未及格';
+  levelBadge.className = 'badge '+(pass?'badge-ok':'badge-full');
+  renderResultSkills(result);
+  renderReview(result);
+  a.status = pass ? 'passed' : 'failed';
+  a.score = result.score;
+  a.doneDate = a.doneDate || new Date().toISOString().slice(0,10);
+  var banner=document.getElementById('resultBanner');
+  banner.className = pass ? 'banner banner-success' : 'banner banner-warn';
+  banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg><div>本次評量成績已寫入你的學習評量紀錄。'+(pass?'':'未達及格門檻，可依設定補考。')+'<br><a href="m09_assessment.html" style="font-weight:700;text-decoration:underline;">前往學習評量 ›</a></div>';
+  window.scrollTo(0,0);
+}
+function showResultDirect(a){
+  /* 已完成課程評量直接顯示既有成績（示範資料） */
   document.getElementById('view-list').classList.add('hidden');
   document.getElementById('view-answer').classList.add('hidden');
   document.getElementById('view-result').classList.remove('hidden');
-  document.getElementById('resultTitle').textContent = q.title + '・結果';
-  document.getElementById('resultScore').innerHTML = q.score + '<span>／100</span>';
-  document.getElementById('resultRate').textContent = '正確率 '+q.score+'%・完成日 '+q.doneDate;
-  document.getElementById('resultLevel').textContent = '對照 TLI-CPT '+q.level;
-  aState = {quizId:q.id, idx:0, answers:{}, flags:{}};
+  document.getElementById('resultTitle').textContent = a.title + '・結果';
+  document.getElementById('resultScore').innerHTML = a.score + '<span>／100</span>';
+  document.getElementById('resultRate').textContent = '完成日 '+a.doneDate;
+  var levelBadge=document.getElementById('resultLevel');
+  levelBadge.textContent = '及格';
+  levelBadge.className = 'badge badge-ok';
+  aState = {mode:'course', refId:a.id, idx:0, answers:{}, flags:{}};
   QUESTIONS.forEach(function(qq,i){
     if(qq.type==='multi') aState.answers[i]=qq.answer.slice();
     else if(qq.type==='fill') aState.answers[i]=qq.answer[0];
@@ -684,6 +861,9 @@ function showResultDirect(q){
   var demoResult = scoreQuiz();
   renderResultSkills(demoResult);
   renderReview(demoResult);
+  var banner=document.getElementById('resultBanner');
+  banner.className='banner banner-success';
+  banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></svg><div>本次評量成績已寫入你的學習評量紀錄。<br><a href="m09_assessment.html" style="font-weight:700;text-decoration:underline;">前往學習評量 ›</a></div>';
   window.scrollTo(0,0);
 }
 function renderResultSkills(result){
@@ -726,16 +906,35 @@ function formatAnswer(q, val){
 }
 function toggleReview(i){ document.getElementById('reviewDetail'+i).classList.toggle('open'); }
 function retakeQuiz(){
-  var qid = aState ? aState.quizId : null;
-  if(qid && QUIZZES[qid]){
-    QUIZZES[qid].status = 'pending';
-    startQuiz(qid);
-  }else{
-    backToQuizList();
+  if(!aState){ backToQuizList(); return; }
+  if(aState.mode==='level'){ startLevelTest(aState.refId); }
+  else{
+    var a=COURSE_ASSESSMENTS[aState.refId];
+    if(a){ a.status='pending'; startAssessment(a.id); }
+    else backToQuizList();
   }
 }
 
-renderQuizList();
+/* ================= 深連結：?type=course&course=<id> 或 ?type=level&level=<n> ================= */
+function applyDeepLinks(){
+  var params=new URLSearchParams(window.location.search);
+  var type=params.get('type');
+  if(type==='course'){
+    var cid=params.get('course');
+    setPageTab('course');
+    if(cid && COURSE_ASSESSMENTS[cid]) startAssessment(cid);
+  }else if(type==='level'){
+    setPageTab('level');
+    var lvl=params.get('level');
+    if(lvl) applyLevelSelect(parseInt(lvl,10));
+  }
+}
+
+/* ================= 初始化 ================= */
+renderLevelLadder();
+renderLevelHistory();
+renderCourseList();
+applyDeepLinks();
 </script>
 <div class="toast hidden" id="toast">已完成</div>
 </body>

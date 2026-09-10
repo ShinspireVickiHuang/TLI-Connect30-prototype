@@ -95,6 +95,7 @@ h1.page-title{font-size:20px;margin:0 0 4px;}
 .banner{background:var(--accent-light);border:1px solid #f6c89b;color:#93440f;border-radius:10px;padding:10px 14px;font-size:12.5px;margin-bottom:16px;display:none;}
 .banner.show{display:block;}
 .layout{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start;}
+.layout>div{min-width:0;} /* 20260910q 修正：避免寬表格（如方案清單）撐開 grid 欄位，把右側訂單摘要擠壓變形 */
 .card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:18px 20px;margin-bottom:18px;}
 .card h2{font-size:14px;margin:0 0 14px;}
 .step-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;margin-right:8px;}
@@ -371,19 +372,62 @@ body .toast{top:20px;bottom:auto;height:auto;}
 .step-badge.done{background:var(--secondary);}
 .search-row{display:flex;gap:8px;margin-bottom:10px;}
 .search-row input{flex:1;}
+/* 會員自動完成（單一欄位）：輸入姓名或 Email，候選列以 Email 分辨同名同姓 */
+.member-ac{position:relative;}
+.member-ac .ac-input-row{position:relative;display:flex;align-items:center;}
+.member-ac .ac-input-row input{padding-right:30px;}
+.member-ac .ac-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:none;background:none;color:var(--gray-400);font-size:16px;line-height:1;cursor:pointer;display:none;border-radius:50%;}
+.member-ac .ac-clear:hover{color:var(--gray-700);background:var(--gray-100);}
+.member-ac .ac-clear.show{display:block;}
+.member-ac .ac-list{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--gray-200);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.14);max-height:300px;overflow-y:auto;z-index:60;display:none;}
+.member-ac .ac-list.open{display:block;}
+.member-ac .ac-item{padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--gray-100);}
+.member-ac .ac-item:last-child{border-bottom:none;}
+.member-ac .ac-item:hover,.member-ac .ac-item.active{background:var(--gray-50);}
+.member-ac .ac-item .l1{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;flex-wrap:wrap;}
+.member-ac .ac-item .l2{font-size:11.5px;color:var(--gray-500);margin-top:2px;}
+.member-ac .ac-empty{padding:12px;font-size:12.5px;color:var(--gray-500);}
+.member-ac .ac-empty a{color:var(--primary);font-weight:600;cursor:pointer;}
+.resend-link{font-size:11px;color:var(--primary);cursor:pointer;margin-left:2px;}
+.resend-link:hover{text-decoration:underline;}
+.badge.unactivated{background:var(--accent-light);color:var(--accent);}
+.req-mark{color:var(--danger);margin-left:2px;}
+.field-required-note{font-size:11px;color:var(--gray-500);margin-bottom:8px;}
+.dup-warning{font-size:11.5px;color:var(--danger);background:var(--danger-light);border-radius:6px;padding:7px 9px;margin-top:6px;display:none;}
+.dup-warning.show{display:block;}
+.dup-warning a{color:var(--danger);font-weight:700;text-decoration:underline;cursor:pointer;}
 .member-chip-btn{background:none;border:1px dashed var(--gray-300);border-radius:8px;padding:8px 10px;font-size:12.5px;color:var(--primary);cursor:pointer;width:100%;text-align:left;margin-top:4px;}
 .member-chip-btn:hover{border-color:var(--primary);background:var(--primary-light);}
 .quick-form{border:1px solid var(--gray-200);border-radius:8px;padding:12px;margin-top:10px;background:var(--gray-50);display:none;}
 .quick-form.open{display:block;}
-.plan-card-list{display:flex;flex-direction:column;gap:8px;}
-.plan-card{border:1px solid var(--gray-200);border-radius:8px;padding:10px 12px;cursor:pointer;}
-.plan-card:hover{border-color:var(--primary);}
-.plan-card.selected{border-color:var(--primary);background:var(--primary-light);}
-.plan-card .pc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;}
-.plan-card .pc-name{font-weight:700;font-size:13px;}
-.plan-card .pc-price{font-size:13px;font-weight:700;color:var(--primary);white-space:nowrap;}
-.plan-card .pc-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
 .mode-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:700;background:var(--gray-100);color:var(--gray-700);}
+/* 20260910q 新增：選銷售方案三頁籤（銷售方案／組合包／專案型）與多筆訂單明細 */
+.pkg-tabs{display:flex;gap:2px;border-bottom:1px solid var(--gray-200);margin-bottom:12px;}
+.pkg-tab{padding:8px 14px;border:none;background:none;font-size:13px;color:var(--gray-500);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.pkg-tab.active{color:var(--primary);border-color:var(--primary);font-weight:700;}
+.pkg-filter-row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start;margin-bottom:10px;padding:10px;background:var(--gray-50);border-radius:8px;}
+.filter-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.filter-group-inline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.filter-group-inline select,.filter-group-inline input{width:auto;padding:6px 8px;font-size:12px;}
+.chip-check{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--gray-300);border-radius:999px;padding:3px 10px 3px 6px;font-size:12px;cursor:pointer;background:#fff;}
+.chip-check input{width:auto;margin:0;}
+.plan-row-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px;}
+.plan-row-table th{text-align:left;font-weight:600;color:var(--gray-500);font-size:11.5px;padding:6px 8px;border-bottom:1px solid var(--gray-200);}
+.plan-row-table td{padding:8px;border-bottom:1px solid var(--gray-100);vertical-align:top;}
+.plan-row-table td.num,.plan-row-table th.num{text-align:right;white-space:nowrap;}
+.bundle-list{display:flex;flex-direction:column;gap:10px;}
+.bundle-card{border:1px solid var(--gray-200);border-radius:8px;padding:12px;}
+.bundle-name{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+.bundle-price-row{display:flex;align-items:center;gap:10px;margin:8px 0;}
+.bundle-orig{font-size:12px;color:var(--gray-500);text-decoration:line-through;}
+.bundle-now{font-size:15px;font-weight:700;color:var(--primary);}
+.order-lines-table{min-width:760px;}
+.order-lines-table td:first-child{min-width:220px;max-width:320px;}
+.line-qty,.line-term{width:64px;padding:5px 6px;text-align:right;}
+.line-disc-select{width:auto;padding:5px 6px;font-size:12px;}
+.line-disc-val{width:80px;padding:5px 6px;text-align:right;margin-left:4px;}
+.line-quote-input{width:110px;padding:5px 6px;text-align:right;margin-top:4px;}
+.promo-note{font-size:10.5px;color:var(--gray-400);margin-top:4px;}
 .course-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:420px;}
 .course-table th{text-align:left;font-weight:600;color:var(--gray-500);font-size:11.5px;padding:6px 8px;border-bottom:1px solid var(--gray-200);}
 .course-table td{padding:8px;border-bottom:1px solid var(--gray-100);}
@@ -566,18 +610,22 @@ html,body{overflow-x:hidden;}
               <svg class="card-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg>
             </div>
             <div class="card-body">
-              <div class="search-row">
-                <input type="text" id="memberSearch" placeholder="搜尋會員姓名" oninput="onMemberSearch(this.value)">
-              </div>
-              <div class="field">
+              <div class="field member-ac" id="memberAcWrap">
                 <label>會員</label>
-                <select id="studentSelect" onchange="tliOnStudentChange()"></select>
+                <div class="ac-input-row">
+                  <input type="text" id="memberAcInput" placeholder="輸入姓名或 Email" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="memberAcList" oninput="onMemberAcInput(this.value)" onkeydown="onMemberAcKeydown(event)" onfocus="onMemberAcFocus()">
+                  <button type="button" class="ac-clear" id="memberAcClear" onclick="clearMemberSelection()" aria-label="清除已選會員">×</button>
+                </div>
+                <div class="ac-list" id="memberAcList"></div>
+                <div class="hint">同名同姓時請以 Email 分辨候選項目。</div>
+                <select id="studentSelect" style="display:none" aria-hidden="true" tabindex="-1"></select>
               </div>
               <button type="button" class="member-chip-btn" onclick="toggleQuickForm()">＋ 新增會員（快速建檔）</button>
               <div class="quick-form" id="quickMemberForm">
+                <div class="field-required-note"><span class="req-mark">*</span> 為必填欄位</div>
                 <div class="grid2">
-                  <div class="field"><label>姓名</label><input id="qmName" placeholder="必填"></div>
-                  <div class="field"><label>Email</label><input id="qmEmail" placeholder="選填"></div>
+                  <div class="field"><label>姓名<span class="req-mark">*</span></label><input id="qmName" placeholder="必填"></div>
+                  <div class="field"><label>Email<span class="req-mark">*</span></label><input id="qmEmail" placeholder="必填，作為會員主鍵" oninput="onQmEmailInput(this.value)"><div class="dup-warning" id="qmDupWarning"></div></div>
                 </div>
                 <div class="grid2">
                   <div class="field"><label>手機</label><input id="qmPhone" placeholder="選填"></div>
@@ -587,6 +635,7 @@ html,body{overflow-x:hidden;}
                   <div class="field"><label>會員分類</label><select id="qmCls"><option value="B">B</option><option value="G">G</option><option value="C">C</option><option value="BIP">BIP</option></select></div>
                   <div class="field"><label>企業（選填）</label><input id="qmEnterprise" placeholder="無則留空"></div>
                 </div>
+                <div class="hint" style="margin-bottom:8px;">會員收到開通信後自行設定密碼並完成資料，開通前仍可為其建單。</div>
                 <div style="display:flex;gap:8px;justify-content:flex-end;">
                   <button class="btn sm" onclick="toggleQuickForm()">取消</button>
                   <button class="btn primary sm" style="width:auto;" onclick="submitQuickMember()">加入會員並選取</button>
@@ -602,37 +651,66 @@ html,body{overflow-x:hidden;}
               <svg class="card-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg>
             </div>
             <div class="card-body">
-              <div class="hint" style="margin-bottom:8px;">依會員分類「適用對象」篩選：只列出此會員可購買的方案。</div>
-              <div class="plan-card-list" id="planCardList"></div>
+              <div class="hint" style="margin-bottom:8px;">依會員分類「適用對象」篩選：僅列出此會員可購買的方案／組合包，可多筆加入下方訂單明細。</div>
+              <div class="pkg-tabs" id="pkgTabs">
+                <button type="button" class="pkg-tab active" data-tab="plan" onclick="switchPkgTab('plan')">銷售方案</button>
+                <button type="button" class="pkg-tab" data-tab="bundle" onclick="switchPkgTab('bundle')">組合包</button>
+                <button type="button" class="pkg-tab" data-tab="project" onclick="switchPkgTab('project')">專案型（顧問組合）</button>
+              </div>
+
+              <div class="pkg-panel" id="pkgPanelPlan">
+                <div class="pkg-filter-row">
+                  <div class="filter-group" id="planCatFilter"></div>
+                  <div class="filter-group" id="planTagFilter"></div>
+                  <div class="filter-group-inline">
+                    <select id="planModeFilter" onchange="renderPlanList()"><option value="">全部上課方式</option><option value="線上">線上</option><option value="實體">實體</option></select>
+                    <select id="planSystemFilter" onchange="renderPlanList()"><option value="">全部制度</option><option value="學期制">學期制</option><option value="彈性制">彈性制</option></select>
+                    <input type="text" id="planNameSearch" placeholder="搜尋方案名稱" oninput="renderPlanList()">
+                  </div>
+                </div>
+                <div style="overflow-x:auto;">
+                  <div id="planListTable"></div>
+                </div>
+                <div style="text-align:center;margin-top:10px;">
+                  <button type="button" class="btn sm" id="planLoadMoreBtn" onclick="loadMorePlans()">載入更多</button>
+                </div>
+              </div>
+
+              <div class="pkg-panel" id="pkgPanelBundle" style="display:none;">
+                <div class="bundle-list" id="bundleListTable"></div>
+              </div>
+
+              <div class="pkg-panel" id="pkgPanelProject" style="display:none;">
+                <div class="field">
+                  <label>複製上次合約</label>
+                  <select id="projectHistorySelect" onchange="onCopyLastContract(this.value)"></select>
+                  <div class="hint">帶入既有專案型合約的產品組成，可再調整數量。</div>
+                </div>
+                <div class="grid2" id="projectProductInputs"></div>
+                <div class="note" id="projectSummary">尚未挑選任何產品。</div>
+                <div class="field" style="margin-top:10px;">
+                  <label>報價金額</label>
+                  <input type="number" min="0" step="1000" id="projectQuoteInput" placeholder="請輸入報價">
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:10px 0;">
+                  <input type="checkbox" id="projectApprovalCheck" style="width:auto;"> 需主管核准
+                </label>
+                <button type="button" class="btn primary sm" style="width:auto;" onclick="addProjectToOrder()">加入訂單</button>
+              </div>
             </div>
           </div>
 
           <div class="card section-card open" id="sec3">
             <div class="card-head" onclick="toggleSection(3)">
-              <div class="card-head-l"><span class="step-badge" id="badge3">3</span><h2>組成課程與金額</h2></div>
+              <div class="card-head-l"><span class="step-badge" id="badge3">3</span><h2>訂單明細</h2></div>
               <svg class="card-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 8 10 12 14 8"/></svg>
             </div>
             <div class="card-body">
-              <div class="hint" id="courseHint" style="margin-bottom:8px;"></div>
+              <div class="hint" id="courseHint" style="margin-bottom:8px;">已加入的方案／組合包／專案型列於下方，可分別調整數量、期數與折扣。</div>
               <div style="overflow-x:auto;">
-                <table class="course-table" id="courseTable"></table>
+                <table class="course-table order-lines-table" id="orderLinesTable"></table>
               </div>
-              <div class="addon-row">
-                <label><input type="checkbox" id="addonMaterial" onchange="onAddonChange()"> 加購教材（NT$1,200）</label>
-                <label><input type="checkbox" id="addonRegFee" onchange="onAddonChange()"> 加購註冊費（NT$500）</label>
-              </div>
-              <div class="field" style="margin-top:12px;">
-                <label>折扣</label>
-                <div class="hint" id="autoDiscountHint" style="margin-bottom:8px;"></div>
-                <label style="font-size:12px;color:var(--gray-500);display:block;margin-bottom:4px;">可用折扣碼</label>
-                <select id="promoCodeSelect" onchange="onPromoCodeSelectChange()">
-                  <option value="">不使用折扣碼</option>
-                </select>
-                <div class="grid2" style="margin-top:8px;">
-                  <div class="field"><label>或手動輸入折扣碼</label><input id="promoCodeInput" placeholder="輸入折扣碼" oninput="onPromoCodeInput(this.value)"></div>
-                </div>
-                <div class="note" id="promoCodeNote" style="display:none;margin-top:8px;"></div>
-              </div>
+              <div class="summary-row total" id="orderLinesTotalRow" style="margin-top:6px;"><span>合計</span><span id="orderLinesTotal">NT$0</span></div>
             </div>
           </div>
 
@@ -798,46 +876,96 @@ html,body{overflow-x:hidden;}
 <div class="toast" id="toast"></div>
 
 <script>
+// 20260910 新增：email／phone／planCount／advisor／activated，供會員自動完成候選列與摘要顯示；wang01／wang02 為同名同姓示範資料，以 Email 分辨
 var STUDENTS=[
-  {id:'wang01',name:'王大同',cls:'B',campus:'羅斯福',hours:12,expire:'2026-11-20',taxId:'12345678',taxTitle:'範例工業股份有限公司',enterprise:'範例工業股份有限公司'},
-  {id:'chen01',name:'陳美惠',cls:'G',campus:'士林',hours:0,expire:'2026-11-01',taxId:'',taxTitle:'',enterprise:''},
-  {id:'emma01',name:'Emma Chen',cls:'C',campus:'士林',hours:0,expire:'2026-10-01',taxId:'',taxTitle:'',enterprise:''},
-  {id:'yamada01',name:'山田太郎',cls:'BIP',campus:'台中',hours:20,expire:'2027-01-15',taxId:'',taxTitle:'',enterprise:''},
-  {id:'li01',name:'李文彬',cls:'B',campus:'羅斯福',hours:5,expire:'2026-08-01',taxId:'',taxTitle:'',enterprise:''},
-  {id:'zhang01',name:'張雅婷',cls:'G',campus:'高雄',hours:8,expire:'2026-12-10',taxId:'',taxTitle:'',enterprise:''}
+  {id:'wang01',name:'王大同',email:'wang.dt01@example.com',phone:'0912345678',cls:'B',campus:'羅斯福',hours:12,expire:'2026-11-20',taxId:'12345678',taxTitle:'範例工業股份有限公司',enterprise:'範例工業股份有限公司',planCount:2,advisor:'顧問 A',activated:true},
+  {id:'wang02',name:'王大同',email:'dtwang02@example.com',phone:'0933221100',cls:'C',campus:'士林',hours:3,expire:'2026-09-30',taxId:'',taxTitle:'',enterprise:'',planCount:1,advisor:'顧問 B',activated:true},
+  {id:'chen01',name:'陳美惠',email:'chen.mh@example.com',phone:'0955667788',cls:'G',campus:'士林',hours:0,expire:'2026-11-01',taxId:'',taxTitle:'',enterprise:'',planCount:0,advisor:'顧問 A',activated:true},
+  {id:'emma01',name:'Emma Chen',email:'emma.chen@example.com',phone:'0966778899',cls:'C',campus:'士林',hours:0,expire:'2026-10-01',taxId:'',taxTitle:'',enterprise:'',planCount:1,advisor:'顧問 C',activated:true},
+  {id:'yamada01',name:'山田太郎',email:'yamada.t@example.com',phone:'0977889900',cls:'BIP',campus:'台中',hours:20,expire:'2027-01-15',taxId:'',taxTitle:'',enterprise:'',planCount:3,advisor:'顧問 B',activated:true},
+  {id:'li01',name:'李文彬',email:'li.wb@example.com',phone:'0988990011',cls:'B',campus:'羅斯福',hours:5,expire:'2026-08-01',taxId:'',taxTitle:'',enterprise:'',planCount:1,advisor:'顧問 A',activated:true},
+  {id:'zhang01',name:'張雅婷',email:'zhang.yt@example.com',phone:'0999001122',cls:'G',campus:'高雄',hours:8,expire:'2026-12-10',taxId:'',taxTitle:'',enterprise:'',planCount:2,advisor:'顧問 C',activated:true}
 ];
 // 銷售方案：audience＝適用對象（可購買的會員分類），mode＝上課方式，courses＝組成課程（收費類目決定免稅／應稅），quotable＝標示「顧問報價」可編輯價格
-var PLANS=[
-  {id:'p_flex',name:'彈性方案 10 堂',mode:'預約制',audience:['B','G','C','BIP'],
-    courses:[{name:'中文一對一 50 分鐘',qty:10,taxable:false}],
-    price:{B:20000,G:19000,C:22000,BIP:21000}},
-  {id:'p_spring',name:'春季學期班',mode:'實體',audience:['C','BIP'],
-    courses:[{name:'學期班 Lv.5–8（一期）',qty:1,taxable:false},{name:'教材 Lv.6（一冊）',qty:1,taxable:true,fixedPrice:1200}],
-    price:{C:48000,BIP:46000}},
-  {id:'p_1v1_30',name:'中文一對一 30 堂',mode:'預約制',audience:['B','G','C','BIP'],
-    courses:[{name:'中文一對一 50 分鐘',qty:30,taxable:false}],
-    price:{B:60000,G:58000,C:65000,BIP:62000}},
-  {id:'p_enterprise',name:'企業團體班（20 人）',mode:'實體',audience:['B','G'],
-    courses:[{name:'小組班（20 人一期）',qty:1,taxable:false},{name:'教材一式',qty:20,taxable:true,fixedPrice:600},{name:'註冊費',qty:20,taxable:true,fixedPrice:500}],
-    price:{B:150000,G:140000}},
-  {id:'p_quote',name:'企業顧問報價方案（顧問報價）',mode:'實體',audience:['B','G'],
-    courses:[{name:'依合約條列，顧問於送出前確認明細',qty:1,taxable:false}],
-    price:{B:0,G:0},quotable:true}
+// 20260910q 重做：銷售方案／組合包／專案型三層架構（呼應客戶「銷售方案／組合包 → 產品 → 資源」的銷售架構）
+// 基礎方案樣板（產品組成＋定價），再依上課方式展開為線上／實體版本，示範資料求量以滿足清單筆數
+var PLAN_TEMPLATES=[
+  {key:'p_flex10',name:'中文彈性方案 10 堂',cat:['中文'],system:'彈性制',tags:['熱門'],
+    courses:[{name:'中文一對一 50 分鐘',qty:10,taxable:false}],base:{B:20000,G:19000,C:22000,BIP:21000},audience:['B','G','C','BIP']},
+  {key:'p_flex30',name:'中文一對一 30 堂',cat:['中文'],system:'彈性制',tags:['熱門'],
+    courses:[{name:'中文一對一 50 分鐘',qty:30,taxable:false}],base:{B:60000,G:58000,C:65000,BIP:62000},audience:['B','G','C','BIP']},
+  {key:'p_spring',name:'中文學期班 Lv.5–8',cat:['中文'],system:'學期制',tags:['新上架'],
+    courses:[{name:'學期班 Lv.5–8（一期）',qty:1,taxable:false},{name:'教材 Lv.6（一冊）',qty:1,taxable:true,fixedPrice:1200}],base:{C:48000,BIP:46000},audience:['C','BIP']},
+  {key:'p_selfpaced',name:'中文自學影音課程包',cat:['中文'],system:'彈性制',tags:['促銷'],
+    courses:[{name:'自學影音課程（3 門）',qty:3,taxable:true,fixedPrice:1800}],base:{B:5400,G:5400,C:5400,BIP:5400},audience:['B','G','C','BIP']},
+  {key:'p_eng30',name:'英語一對一 30 堂',cat:['外文'],system:'彈性制',tags:['熱門'],
+    courses:[{name:'英語一對一 50 分鐘',qty:30,taxable:false}],base:{B:63000,G:61000,C:68000,BIP:65000},audience:['B','G','C','BIP']},
+  {key:'p_jpn',name:'日語學期班 一期',cat:['外文'],system:'學期制',tags:[],
+    courses:[{name:'日語學期班（一期）',qty:1,taxable:false}],base:{C:46000,BIP:44000},audience:['C','BIP']},
+  {key:'p_eng10',name:'英語一對一 10 堂',cat:['外文'],system:'彈性制',tags:['促銷'],
+    courses:[{name:'英語一對一 50 分鐘',qty:10,taxable:false}],base:{B:23000,G:22000,C:25000,BIP:24000},audience:['B','G','C','BIP']},
+  {key:'p_culture',name:'文化體驗工作坊',cat:['文化'],system:'學期制',tags:['新上架'],
+    courses:[{name:'文化體驗工作坊（一期）',qty:1,taxable:false}],base:{B:8000,G:7500,C:9000,BIP:8500},audience:['B','G','C','BIP']},
+  {key:'p_calligraphy',name:'書法體驗課程',cat:['文化'],system:'彈性制',tags:[],
+    courses:[{name:'書法體驗（4 堂）',qty:4,taxable:false}],base:{B:6400,G:6000,C:7200,BIP:6800},audience:['B','G','C','BIP']},
+  {key:'p_biz',name:'商用會話密集班',cat:['商業'],system:'學期制',tags:['促銷'],
+    courses:[{name:'商用會話密集班（一期）',qty:1,taxable:false}],base:{B:42000,G:40000},audience:['B','G']},
+  {key:'p_mgmt',name:'主管溝通專班',cat:['商業'],system:'彈性制',tags:[],
+    courses:[{name:'主管溝通專班（企業內訓）',qty:12,taxable:false}],base:{B:96000,G:90000},audience:['B','G']},
+  {key:'p_eventpack',name:'活動票加購包',cat:['商業'],system:'彈性制',tags:['促銷'],
+    courses:[{name:'活動票（2 張）',qty:2,taxable:true,fixedPrice:800}],base:{B:1600,G:1600,C:1600,BIP:1600},audience:['B','G','C','BIP']},
+  {key:'p_teacher',name:'華語師資認證班',cat:['師培'],system:'學期制',tags:[],
+    courses:[{name:'華語師資培訓認證班（一期）',qty:1,taxable:false}],base:{B:88000,G:85000,C:92000,BIP:90000},audience:['B','G','C','BIP']},
+  {key:'p_intern',name:'教學實習班',cat:['師培'],system:'彈性制',tags:['新上架'],
+    courses:[{name:'教學實習班（8 堂）',qty:8,taxable:false}],base:{B:32000,G:30000,C:34000,BIP:33000},audience:['B','G','C','BIP']},
+  {key:'p_quote',name:'企業顧問報價方案',cat:['商業'],system:'彈性制',tags:[],
+    courses:[{name:'依合約條列，顧問於送出前確認明細',qty:1,taxable:false}],base:{B:0,G:0},audience:['B','G'],quotable:true}
 ];
-// 方案折扣規則：依會員分類自動帶入，建訂單時不需手動輸入（對應管理後台銷售方案設定的「方案折扣規則」）
-var AUTO_DISCOUNTS={
-  p_flex:{B:{rate:0.05,label:'企業會員方案折扣'},G:{rate:0.05,label:'機構會員方案折扣'}},
-  p_spring:{C:{rate:0.05,label:'新生開學方案折扣'},BIP:{rate:0.05,label:'新生開學方案折扣'}},
-  p_1v1_30:{C:{rate:0.03,label:'長期學員方案折扣'},BIP:{rate:0.03,label:'長期學員方案折扣'}}
-};
-// 折扣碼：依會員分類與期間篩選出可用清單（對應管理後台銷售方案設定的「折扣碼」）
-var PROMO_CODES=[
-  {code:'OPENFALL',rate:0.05,audience:['B','G','C','BIP'],periodStart:'2026-09-01',periodEnd:'2027-01-31',label:'開學優惠 95 折（全分類）'},
-  {code:'SPRING2026',rate:0.03,audience:['C','BIP'],periodStart:'2026-01-01',periodEnd:'2026-12-31',label:'一般學員限定 97 折'},
-  {code:'VIP9',rate:0.10,audience:['B','G'],periodStart:'2026-01-01',periodEnd:'2026-12-31',label:'企業／機構會員 9 折'}
+var PLANS=[];
+PLAN_TEMPLATES.forEach(function(t){
+  ['線上','實體'].forEach(function(mode){
+    var priceAdj=mode==='實體'?1:0.97; // 實體版示範價格微幅上調，非真實訂價，僅供清單筆數示範
+    var price={};
+    Object.keys(t.base).forEach(function(k){price[k]=t.quotable?0:Math.round(t.base[k]*priceAdj/100)*100;});
+    PLANS.push({
+      id:t.key+'_'+(mode==='線上'?'on':'off'),
+      name:t.name+'（'+mode+'）',
+      mode:mode,
+      system:t.system,
+      cat:t.cat,
+      tags:t.tags||[],
+      audience:t.audience,
+      courses:t.courses,
+      price:price,
+      quotable:!!t.quotable,
+      validity:t.system==='學期制'?'一學期（約 4 個月）':'一年',
+      summary:t.courses.map(function(c){return c.name+' × '+c.qty;}).join('＋')
+    });
+  });
+});
+var PLAN_CATS=['中文','外文','文化','商業','師培'];
+var PLAN_TAGS=['熱門','促銷','新上架'];
+// 組合包：整包銷售 2–3 個方案，示範資料含組合價與原價對照
+var BUNDLES=[
+  {id:'bd_flex_culture',name:'中文彈性 10 堂＋文化體驗（線上）',planIds:['p_flex10_on','p_culture_on'],audience:['B','G','C','BIP'],bundleDiscount:0.90},
+  {id:'bd_flex30_teacher',name:'中文一對一 30 堂＋師資試讀（線上）',planIds:['p_flex30_on','p_teacher_on'],audience:['B','G','C','BIP'],bundleDiscount:0.92},
+  {id:'bd_biz_mgmt',name:'商用會話＋主管溝通專班（實體）',planIds:['p_biz_off','p_mgmt_off'],audience:['B','G'],bundleDiscount:0.93},
+  {id:'bd_eng_culture',name:'英語一對一 30 堂＋文化體驗（線上）',planIds:['p_eng30_on','p_culture_on'],audience:['B','G','C','BIP'],bundleDiscount:0.90},
+  {id:'bd_spring_eng',name:'中文學期班＋英語一對一 30 堂',planIds:['p_spring_off','p_eng30_on'],audience:['C','BIP'],bundleDiscount:0.91},
+  {id:'bd_jpn_culture_teacher',name:'日語學期班＋文化體驗＋師資試讀',planIds:['p_jpn_off','p_culture_off','p_teacher_off'],audience:['C','BIP'],bundleDiscount:0.88}
 ];
-var __appliedPromoCode=null; // {code, rate, label} 或 null
-var __promoCodeError='';
+// 專案型（顧問組合）：顧問自行挑選產品數量後輸入報價，比照 a19 企業端「專案型方案」概念，示範用歷史紀錄供複製
+var PROJECT_PRODUCTS=[
+  {key:'course_hours',label:'課程堂數（中文一對一 50 分鐘）',unit:'堂',taxable:false},
+  {key:'group_class',label:'團體班堂數',unit:'堂',taxable:false},
+  {key:'chat_room',label:'聊天室權益',unit:'則／月',taxable:false},
+  {key:'self_paced',label:'自學影音課程',unit:'門',taxable:true},
+  {key:'event_ticket',label:'活動票',unit:'張',taxable:true}
+];
+var PROJECT_HISTORY=[
+  {id:'ph1',label:'CT-2026-014　2026 年續約，加開新人基礎會話班',qty:{course_hours:20,group_class:12,chat_room:0,self_paced:0,event_ticket:0}},
+  {id:'ph2',label:'CT-2025-077　2025 年度生醫廠區日常會話學期班',qty:{course_hours:0,group_class:24,chat_room:0,self_paced:0,event_ticket:0}}
+];
 // 付款方式：統一清單，所有會員分類共用，不隨分類切換
 var PAYMENT_MODES=[
   {v:'full',t:'一次付清',d:'訂單成立後一次收取全部金額'},
@@ -865,10 +993,12 @@ var CONTRACT_TEMPLATES=[
 ];
 var __channelState=null; // {channel, status, ref, label}
 var __contractConfirmed=false;
-var __addonMaterial=false;
-var __addonRegFee=false;
-var __quoteValue=100000;
-var __selectedPlanId=null;
+var __orderLines=[]; // 訂單明細（多筆）：每筆為已加入的銷售方案／組合包／專案型
+var __planListFull=[];
+var __planListShown=0;
+var __planListPageSize=8;
+var __projectQty={};
+PROJECT_PRODUCTS.forEach(function(pr){__projectQty[pr.key]=0;});
 
 function qs(k){return new URLSearchParams(location.search).get(k);}
 function fmt(n){return 'NT$'+n.toLocaleString();}
@@ -1081,120 +1211,156 @@ function tliSwitchOrderType(type){
   tliRecalcEnt();
 })();
 
-// ---- ① 選會員 ----
-var sel=document.getElementById('studentSelect');
-function renderStudentOptions(filterText){
+// ---- ① 選會員（單一欄位自動完成：輸入姓名或 Email，最多列 8 筆候選，同名同姓以 Email 分辨）----
+var sel=document.getElementById('studentSelect'); // 隱藏 select，僅作為既有流程（AI 示範代入、續約帶入等）沿用的值容器，不再顯示於畫面
+function renderStudentOptions(){
   var keep=sel.value;
-  var q=(filterText||'').trim().toLowerCase();
-  var list=STUDENTS.filter(function(s){return !q||s.name.toLowerCase().indexOf(q)>-1;});
-  if(!list.length)list=STUDENTS;
-  sel.innerHTML=list.map(function(s){return '<option value="'+s.id+'">'+s.name+'（'+s.cls+' 類／'+s.campus+'校）</option>';}).join('');
-  if(list.some(function(s){return s.id===keep;}))sel.value=keep;
+  sel.innerHTML=STUDENTS.map(function(s){return '<option value="'+s.id+'">'+s.name+'（'+s.cls+' 類／'+s.campus+'校）</option>';}).join('');
+  sel.value=keep; // 若 keep 不在清單中（含尚未選擇），selectedIndex 會變成 -1，value 取回空字串
 }
-renderStudentOptions('');
+renderStudentOptions();
+sel.value=''; // 建訂單預設尚未選擇會員，需由顧問主動搜尋並選取
 
-function onMemberSearch(v){renderStudentOptions(v);}
+var __memberAcResults=[];
+var __memberAcActiveIndex=-1;
+function memberAcMatch(s,q){
+  if(!q)return false;
+  var n=(s.name||'').toLowerCase(),e=(s.email||'').toLowerCase();
+  return n.indexOf(q)>-1||e.indexOf(q)>-1;
+}
+function onMemberAcInput(v){
+  __memberAcActiveIndex=-1;
+  var q=(v||'').trim().toLowerCase();
+  var list=document.getElementById('memberAcList');
+  if(!q){__memberAcResults=[];list.classList.remove('open');list.innerHTML='';document.getElementById('memberAcInput').setAttribute('aria-expanded','false');return;}
+  __memberAcResults=STUDENTS.filter(function(s){return memberAcMatch(s,q);}).slice(0,8);
+  renderMemberAcList();
+}
+function onMemberAcFocus(){
+  var v=document.getElementById('memberAcInput').value.trim();
+  if(v)onMemberAcInput(v);
+}
+function renderMemberAcList(){
+  var list=document.getElementById('memberAcList');
+  var input=document.getElementById('memberAcInput');
+  if(!__memberAcResults.length){
+    var q=input.value.trim();
+    if(!q){list.classList.remove('open');list.innerHTML='';input.setAttribute('aria-expanded','false');return;}
+    list.innerHTML='<div class="ac-empty">查無會員<br><a onmousedown="event.preventDefault();openQuickFormFromSearch()">＋ 新增會員</a></div>';
+    list.classList.add('open');
+    input.setAttribute('aria-expanded','true');
+    return;
+  }
+  list.innerHTML=__memberAcResults.map(function(s,i){
+    return '<div class="ac-item'+(i===__memberAcActiveIndex?' active':'')+'" onmousedown="event.preventDefault();selectMemberAc('+i+')">'+
+      '<div class="l1">'+s.name+' <span class="'+classBadge(s.cls)+'">'+s.cls+' 類</span><span class="badge muted">'+s.campus+'校</span></div>'+
+      '<div class="l2">'+s.email+'　手機末三碼 '+(s.phone?s.phone.slice(-3):'—')+'</div>'+
+    '</div>';
+  }).join('');
+  list.classList.add('open');
+  input.setAttribute('aria-expanded','true');
+}
+function onMemberAcKeydown(ev){
+  var list=document.getElementById('memberAcList');
+  if(!list.classList.contains('open')||!__memberAcResults.length){
+    if(ev.key==='Escape'){list.classList.remove('open');}
+    return;
+  }
+  if(ev.key==='ArrowDown'){ev.preventDefault();__memberAcActiveIndex=Math.min(__memberAcActiveIndex+1,__memberAcResults.length-1);renderMemberAcList();}
+  else if(ev.key==='ArrowUp'){ev.preventDefault();__memberAcActiveIndex=Math.max(__memberAcActiveIndex-1,0);renderMemberAcList();}
+  else if(ev.key==='Enter'){ev.preventDefault();if(__memberAcActiveIndex>-1)selectMemberAc(__memberAcActiveIndex);}
+  else if(ev.key==='Escape'){list.classList.remove('open');}
+}
+function selectMemberAc(i){
+  var s=__memberAcResults[i];
+  if(!s)return;
+  sel.value=s.id;
+  document.getElementById('memberAcList').classList.remove('open');
+  tliOnStudentChange();
+}
+function clearMemberSelection(){
+  sel.value='';
+  tliOnStudentChange();
+  var input=document.getElementById('memberAcInput');
+  input.value='';
+  input.focus();
+}
+document.addEventListener('click',function(ev){
+  var wrap=document.getElementById('memberAcWrap');
+  if(wrap&&!wrap.contains(ev.target))document.getElementById('memberAcList').classList.remove('open');
+});
+
 function toggleQuickForm(){document.getElementById('quickMemberForm').classList.toggle('open');}
-function submitQuickMember(){
-  var name=document.getElementById('qmName').value.trim();
-  if(!name){tliToast('請先填寫姓名');return;}
-  var ent=document.getElementById('qmEnterprise').value.trim();
-  var id='m_'+Date.now();
-  STUDENTS.push({
-    id:id,name:name,
-    cls:document.getElementById('qmCls').value,
-    campus:document.getElementById('qmCampus').value,
-    hours:0,expire:'—',taxId:'',taxTitle:ent,enterprise:ent
-  });
-  document.getElementById('memberSearch').value='';
-  renderStudentOptions('');
-  sel.value=id;
-  document.getElementById('quickMemberForm').classList.remove('open');
+function openQuickFormFromSearch(){
+  var q=document.getElementById('memberAcInput').value.trim();
+  document.getElementById('memberAcList').classList.remove('open');
+  document.getElementById('quickMemberForm').classList.add('open');
+  if(q&&q.indexOf('@')===-1)document.getElementById('qmName').value=q;
+  document.getElementById('qmName').focus();
+}
+function onQmEmailInput(v){
+  var email=(v||'').trim().toLowerCase();
+  var box=document.getElementById('qmDupWarning');
+  var dup=email?STUDENTS.find(function(s){return (s.email||'').toLowerCase()===email;}):null;
+  if(dup){
+    box.innerHTML='此 Email 已有會員：'+dup.name+'〈'+dup.email+'〉　<a onclick="selectExistingFromDup(\''+dup.id+'\')">直接選取</a>';
+    box.classList.add('show');
+  }else{
+    box.classList.remove('show');
+    box.innerHTML='';
+  }
+}
+function resetQuickForm(){
   document.getElementById('qmName').value='';
   document.getElementById('qmEmail').value='';
   document.getElementById('qmPhone').value='';
   document.getElementById('qmEnterprise').value='';
+  var box=document.getElementById('qmDupWarning');
+  box.classList.remove('show');
+  box.innerHTML='';
+}
+function selectExistingFromDup(id){
+  var s=STUDENTS.find(function(x){return x.id===id;});
+  if(!s)return;
+  sel.value=id;
+  document.getElementById('quickMemberForm').classList.remove('open');
+  resetQuickForm();
   tliOnStudentChange();
-  tliToast('已建立會員「'+name+'」並選取');
+  tliToast('已選取既有會員「'+s.name+'」，不建立第二筆');
+}
+function submitQuickMember(){
+  var name=document.getElementById('qmName').value.trim();
+  var email=document.getElementById('qmEmail').value.trim();
+  if(!name){tliToast('請先填寫姓名');return;}
+  if(!email){tliToast('請先填寫 Email（必填，作為會員主鍵）');return;}
+  var dup=STUDENTS.find(function(s){return (s.email||'').toLowerCase()===email.toLowerCase();});
+  if(dup){tliToast('此 Email 已有會員「'+dup.name+'」，請直接選取，不允許建立第二筆');return;}
+  var ent=document.getElementById('qmEnterprise').value.trim();
+  var id='m_'+Date.now();
+  STUDENTS.push({
+    id:id,name:name,email:email,
+    phone:document.getElementById('qmPhone').value.trim(),
+    cls:document.getElementById('qmCls').value,
+    campus:document.getElementById('qmCampus').value,
+    hours:0,expire:'—',taxId:'',taxTitle:ent,enterprise:ent,
+    planCount:0,advisor:'顧問 A',activated:false
+  });
+  renderStudentOptions();
+  sel.value=id;
+  document.getElementById('quickMemberForm').classList.remove('open');
+  resetQuickForm();
+  tliOnStudentChange();
+  tliToast('已建立並寄出開通信至 '+email);
+}
+function resendActivationEmail(){
+  var s=currentStudent();
+  if(!s)return;
+  tliToast('已重寄開通信至 '+s.email);
 }
 
 function currentStudent(){return STUDENTS.find(function(s){return s.id===sel.value;});}
-function currentPlan(){return PLANS.find(function(p){return p.id===__selectedPlanId;});}
 function classBadge(c){return 'badge '+c.toLowerCase();}
-
-// ---- 折扣：依會員分類自動帶入方案折扣＋可用折扣碼 ----
 function todayStr(){return new Date().toISOString().slice(0,10);}
-function currentAutoDiscount(){
-  var s=currentStudent();
-  if(!s||!__selectedPlanId)return null;
-  var map=AUTO_DISCOUNTS[__selectedPlanId];
-  if(!map)return null;
-  return map[s.cls]||null;
-}
-function availablePromoCodes(cls){
-  var today=todayStr();
-  return PROMO_CODES.filter(function(pc){
-    return pc.audience.indexOf(cls)>-1 && (!pc.periodStart||pc.periodStart<=today) && (!pc.periodEnd||pc.periodEnd>=today);
-  });
-}
-function renderDiscountArea(){
-  var hintEl=document.getElementById('autoDiscountHint');
-  var selEl=document.getElementById('promoCodeSelect');
-  var inputEl=document.getElementById('promoCodeInput');
-  if(!hintEl||!selEl)return;
-  var s=currentStudent();
-  var auto=currentAutoDiscount();
-  if(auto){
-    hintEl.innerHTML='依會員分類（'+s.cls+' 類）自動帶入：<b>'+auto.label+'　'+Math.round((1-auto.rate)*100)+' 折</b>';
-  }else{
-    hintEl.textContent=s?('此方案依會員分類（'+s.cls+' 類）暫無自動帶入折扣。'):'請先選擇會員與方案。';
-  }
-  var codes=s?availablePromoCodes(s.cls):[];
-  selEl.innerHTML='<option value="">不使用折扣碼</option>'+codes.map(function(pc){
-    return '<option value="'+pc.code+'">'+pc.code+'　'+pc.label+'</option>';
-  }).join('');
-  selEl.value=__appliedPromoCode?__appliedPromoCode.code:'';
-  if(inputEl)inputEl.value='';
-  updatePromoCodeNote();
-}
-function onPromoCodeSelectChange(){
-  var v=document.getElementById('promoCodeSelect').value;
-  var s=currentStudent();
-  if(!v){__appliedPromoCode=null;__promoCodeError='';}
-  else{
-    var pc=PROMO_CODES.find(function(x){return x.code===v;});
-    if(pc&&s&&pc.audience.indexOf(s.cls)>-1){__appliedPromoCode=pc;__promoCodeError='';}
-    else{__appliedPromoCode=null;__promoCodeError='此碼不適用於此會員分類';}
-  }
-  updatePromoCodeNote();
-  tliRecalc();
-}
-function onPromoCodeInput(val){
-  val=(val||'').trim().toUpperCase();
-  if(!val)return;
-  var s=currentStudent();
-  var pc=PROMO_CODES.find(function(x){return x.code===val;});
-  if(!pc){__appliedPromoCode=null;__promoCodeError='查無此折扣碼';}
-  else if(!s||pc.audience.indexOf(s.cls)===-1){__appliedPromoCode=null;__promoCodeError='此碼不適用於此會員分類';}
-  else{
-    var today=todayStr();
-    if((pc.periodStart&&pc.periodStart>today)||(pc.periodEnd&&pc.periodEnd<today)){__appliedPromoCode=null;__promoCodeError='此折扣碼已過期或尚未生效';}
-    else{__appliedPromoCode=pc;__promoCodeError='';document.getElementById('promoCodeSelect').value=pc.code;}
-  }
-  updatePromoCodeNote();
-  tliRecalc();
-}
-function updatePromoCodeNote(){
-  var note=document.getElementById('promoCodeNote');
-  if(!note)return;
-  if(__promoCodeError){
-    note.style.display='block';note.style.color='#C0392B';note.textContent=__promoCodeError;
-  }else if(__appliedPromoCode){
-    note.style.display='block';note.style.color='';note.textContent='已套用折扣碼「'+__appliedPromoCode.code+'」：'+__appliedPromoCode.label;
-  }else{
-    note.style.display='none';note.textContent='';
-  }
-}
 
 function markSectionDone(n,done){
   var badge=document.getElementById('badge'+n);
@@ -1232,100 +1398,300 @@ function tliOnModeChange(){
   tliRecalc();
 }
 
-// ---- ② 選銷售方案 ----
-function renderPlanCards(){
-  var s=currentStudent();
-  var box=document.getElementById('planCardList');
-  if(!s){box.innerHTML='';return;}
-  var avail=PLANS.filter(function(p){return p.audience.indexOf(s.cls)>-1;});
-  box.innerHTML=avail.map(function(p){
-    var priceText=p.quotable?'顧問報價':fmt(p.price[s.cls]);
-    return '<div class="plan-card" data-plan="'+p.id+'" onclick="selectPlan(\''+p.id+'\')">'+
-      '<div class="pc-top"><span class="pc-name">'+p.name+'</span><span class="pc-price">'+priceText+'</span></div>'+
-      '<div class="pc-tags"><span class="mode-tag">'+p.mode+'</span></div>'+
-      '</div>';
+// ---- ② 選銷售方案（銷售方案／組合包／專案型三頁籤，皆可「加入訂單」成為下方多筆明細）----
+function switchPkgTab(tab){
+  document.querySelectorAll('.pkg-tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab);});
+  document.getElementById('pkgPanelPlan').style.display=tab==='plan'?'':'none';
+  document.getElementById('pkgPanelBundle').style.display=tab==='bundle'?'':'none';
+  document.getElementById('pkgPanelProject').style.display=tab==='project'?'':'none';
+  if(tab==='plan')renderPlanList();
+  if(tab==='bundle')renderBundleList();
+  if(tab==='project')renderProjectProductInputs();
+}
+function renderPlanFilterChips(){
+  document.getElementById('planCatFilter').innerHTML=PLAN_CATS.map(function(c){
+    return '<label class="chip-check"><input type="checkbox" value="'+c+'" onchange="renderPlanList()"> '+c+'</label>';
   }).join('');
-  var stillValid=avail.some(function(p){return p.id===__selectedPlanId;});
-  if(!stillValid){__selectedPlanId=avail.length?avail[0].id:null;}
-  markPlanCardsSelected();
+  document.getElementById('planTagFilter').innerHTML=PLAN_TAGS.map(function(t){
+    return '<label class="chip-check"><input type="checkbox" value="'+t+'" onchange="renderPlanList()"> '+t+'</label>';
+  }).join('');
 }
-function markPlanCardsSelected(){
-  document.querySelectorAll('#planCardList .plan-card').forEach(function(el){
-    el.classList.toggle('selected',el.dataset.plan===__selectedPlanId);
+function renderPlanList(){
+  var s=currentStudent();
+  var box=document.getElementById('planListTable');
+  if(!s){box.innerHTML='<div class="hint">請先選擇會員。</div>';document.getElementById('planLoadMoreBtn').style.display='none';return;}
+  var cats=Array.prototype.map.call(document.querySelectorAll('#planCatFilter input:checked'),function(el){return el.value;});
+  var tags=Array.prototype.map.call(document.querySelectorAll('#planTagFilter input:checked'),function(el){return el.value;});
+  var mode=document.getElementById('planModeFilter').value;
+  var system=document.getElementById('planSystemFilter').value;
+  var kw=document.getElementById('planNameSearch').value.trim().toLowerCase();
+  var list=PLANS.filter(function(p){
+    if(p.audience.indexOf(s.cls)===-1)return false;
+    if(cats.length&&!cats.some(function(c){return p.cat.indexOf(c)>-1;}))return false;
+    if(tags.length&&!tags.some(function(t){return p.tags.indexOf(t)>-1;}))return false;
+    if(mode&&p.mode!==mode)return false;
+    if(system&&p.system!==system)return false;
+    if(kw&&p.name.toLowerCase().indexOf(kw)===-1)return false;
+    return true;
   });
+  __planListFull=list;
+  __planListShown=Math.min(__planListPageSize,list.length);
+  renderPlanListRows();
 }
-function selectPlan(id){
-  __selectedPlanId=id;
-  markPlanCardsSelected();
-  onPlanSelected();
+function renderPlanListRows(){
+  var s=currentStudent();
+  var box=document.getElementById('planListTable');
+  var btn=document.getElementById('planLoadMoreBtn');
+  var shown=__planListFull.slice(0,__planListShown);
+  if(!shown.length){box.innerHTML='<div class="hint">查無符合條件的方案，請調整篩選條件。</div>';btn.style.display='none';return;}
+  var head='<tr><th>方案</th><th>標籤</th><th>包含產品</th><th>效期</th><th class="num">定價</th><th></th></tr>';
+  var body=shown.map(function(p){
+    var priceText=p.quotable?'顧問報價':fmt(p.price[s.cls]);
+    var tagsHtml=(p.tags||[]).map(function(t){return '<span class="badge muted">'+t+'</span>';}).join('')+
+      '<span class="badge muted">'+p.mode+'</span><span class="badge muted">'+p.system+'</span>';
+    return '<tr><td>'+p.name+'</td><td>'+tagsHtml+'</td><td class="small">'+p.summary+'</td><td>'+p.validity+'</td><td class="num">'+priceText+'</td>'+
+      '<td><button type="button" class="btn sm" onclick="addPlanToOrder(\''+p.id+'\')">加入訂單</button></td></tr>';
+  }).join('');
+  box.innerHTML='<table class="plan-row-table">'+head+body+'</table>';
+  btn.style.display=(__planListShown<__planListFull.length)?'':'none';
 }
-function onPlanSelected(){
-  var p=currentPlan();
-  if(!p)return;
+function loadMorePlans(){__planListShown=Math.min(__planListShown+__planListPageSize,__planListFull.length);renderPlanListRows();}
+function addPlanToOrder(id){
+  var s=currentStudent();
+  var p=PLANS.find(function(x){return x.id===id;});
+  if(!s||!p)return;
+  __orderLines.push({
+    lineId:'ol_'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    kind:'plan',name:p.name,courses:p.courses,system:p.system,
+    term:p.system==='學期制'?1:null,qty:1,
+    unitPrice:p.quotable?0:p.price[s.cls],quotable:!!p.quotable,
+    discountType:'none',discountValue:0
+  });
   markSectionDone(2,true);
-  __addonMaterial=false;__addonRegFee=false;
-  var am=document.getElementById('addonMaterial'),ar=document.getElementById('addonRegFee');
-  if(am)am.checked=false;
-  if(ar)ar.checked=false;
-  if(p.quotable)__quoteValue=100000;
-  renderCourseTable();
   renderInvoiceEntity();
-  markSectionDone(3,true);
-  renderDiscountArea();
+  renderOrderLines();
   tliRecalc();
+  tliToast('已加入訂單：'+p.name);
 }
 
-// ---- ③ 組成課程與金額 ----
-function onQuoteInput(v){__quoteValue=parseFloat(v)||0;tliRecalc();}
-function computeCourseRows(){
-  var s=currentStudent(),p=currentPlan();
-  if(!s||!p)return [];
-  var addonsTotal=p.courses.filter(function(c){return c.fixedPrice;}).reduce(function(sum,c){return sum+c.fixedPrice*c.qty;},0);
-  var base=p.quotable?__quoteValue:p.price[s.cls];
-  var rows=p.courses.map(function(c){
-    var unit=c.fixedPrice?c.fixedPrice:Math.round((base-addonsTotal)/c.qty);
-    return {name:c.name,qty:c.qty,unit:unit,subtotal:unit*c.qty,taxable:c.taxable,editable:(p.quotable&&!c.fixedPrice)};
-  });
-  if(__addonMaterial)rows.push({name:'加購教材',qty:1,unit:1200,subtotal:1200,taxable:true});
-  if(__addonRegFee)rows.push({name:'加購註冊費',qty:1,unit:500,subtotal:500,taxable:true});
-  return rows;
+// ---- 組合包 ----
+function renderBundleList(){
+  var s=currentStudent();
+  var box=document.getElementById('bundleListTable');
+  if(!s){box.innerHTML='<div class="hint">請先選擇會員。</div>';return;}
+  var avail=BUNDLES.filter(function(b){return b.audience.indexOf(s.cls)>-1;});
+  if(!avail.length){box.innerHTML='<div class="hint">此會員分類目前無適用組合包。</div>';return;}
+  box.innerHTML=avail.map(function(b){
+    var plans=b.planIds.map(function(pid){return PLANS.find(function(x){return x.id===pid;});}).filter(Boolean);
+    var original=plans.reduce(function(sum,p){return sum+(p.price[s.cls]||0);},0);
+    var bundlePriceVal=Math.round(original*b.bundleDiscount/100)*100;
+    return '<div class="bundle-card">'+
+      '<div class="bundle-name">'+b.name+'</div>'+
+      '<div class="hint">內含：'+plans.map(function(p){return p.name;}).join('＋')+'</div>'+
+      '<div class="bundle-price-row"><span class="bundle-orig">原價 '+fmt(original)+'</span><span class="bundle-now">組合價 '+fmt(bundlePriceVal)+'</span></div>'+
+      '<button type="button" class="btn sm primary" style="width:auto;" onclick="addBundleToOrder(\''+b.id+'\')">加入訂單</button>'+
+      '</div>';
+  }).join('');
 }
-function renderCourseTable(){
-  var p=currentPlan();
-  var table=document.getElementById('courseTable');
-  var hintEl=document.getElementById('courseHint');
-  if(!p){table.innerHTML='';hintEl.textContent='';return;}
-  hintEl.textContent=p.quotable?'此方案為「顧問報價」，單價欄可編輯，請依合約條件填寫金額。':'';
-  var rows=computeCourseRows();
-  var head='<tr><th>課程</th><th class="num">數量</th><th class="num">單價</th><th class="num">小計</th></tr>';
-  var body=rows.map(function(r){
-    var unitCell=r.editable?'<input type="number" class="unit-price" id="quoteInput" min="0" step="1000" value="'+r.unit+'" oninput="onQuoteInput(this.value)">':fmt(r.unit);
-    return '<tr><td>'+r.name+(r.taxable?' <span class="badge muted" style="font-size:10px;">應稅</span>':'')+'</td><td class="num">'+r.qty+'</td><td class="num">'+unitCell+'</td><td class="num">'+fmt(r.subtotal)+'</td></tr>';
+function addBundleToOrder(id){
+  var s=currentStudent();
+  var b=BUNDLES.find(function(x){return x.id===id;});
+  if(!s||!b)return;
+  var plans=b.planIds.map(function(pid){return PLANS.find(function(x){return x.id===pid;});}).filter(Boolean);
+  var courses=[].concat.apply([],plans.map(function(p){return p.courses;}));
+  var original=plans.reduce(function(sum,p){return sum+(p.price[s.cls]||0);},0);
+  var bundlePriceVal=Math.round(original*b.bundleDiscount/100)*100;
+  __orderLines.push({
+    lineId:'ol_'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    kind:'bundle',name:b.name,courses:courses,system:'彈性制',
+    term:null,qty:1,unitPrice:bundlePriceVal,quotable:false,
+    discountType:'none',discountValue:0
+  });
+  markSectionDone(2,true);
+  renderInvoiceEntity();
+  renderOrderLines();
+  tliRecalc();
+  tliToast('已整包加入訂單：'+b.name);
+}
+
+// ---- 專案型（顧問組合）----
+function renderProjectProductInputs(){
+  var box=document.getElementById('projectProductInputs');
+  if(!box)return;
+  box.innerHTML=PROJECT_PRODUCTS.map(function(pr){
+    return '<div class="field"><label>'+pr.label+'（'+pr.unit+'）</label><input type="number" min="0" value="'+(__projectQty[pr.key]||0)+'" oninput="onProjectQtyChange(\''+pr.key+'\',this.value)"></div>';
+  }).join('');
+  renderProjectSummary();
+  var histSel=document.getElementById('projectHistorySelect');
+  if(histSel)histSel.innerHTML='<option value="">不複製，從空白開始</option>'+PROJECT_HISTORY.map(function(h){return '<option value="'+h.id+'">'+h.label+'</option>';}).join('');
+}
+function onProjectQtyChange(key,v){__projectQty[key]=Math.max(0,parseInt(v)||0);renderProjectSummary();}
+function renderProjectSummary(){
+  var box=document.getElementById('projectSummary');
+  if(!box)return;
+  var items=PROJECT_PRODUCTS.filter(function(pr){return (__projectQty[pr.key]||0)>0;});
+  box.textContent=items.length?('包含：'+items.map(function(pr){return pr.label+' × '+__projectQty[pr.key];}).join('、')):'尚未挑選任何產品。';
+}
+function onCopyLastContract(id){
+  if(!id)return;
+  var h=PROJECT_HISTORY.find(function(x){return x.id===id;});
+  if(!h)return;
+  PROJECT_PRODUCTS.forEach(function(pr){__projectQty[pr.key]=h.qty[pr.key]||0;});
+  renderProjectProductInputs();
+  tliToast('已帶入「'+h.label+'」的產品組成，請確認並輸入報價');
+}
+function resetProjectForm(){
+  PROJECT_PRODUCTS.forEach(function(pr){__projectQty[pr.key]=0;});
+  renderProjectProductInputs();
+  var q=document.getElementById('projectQuoteInput'); if(q)q.value='';
+  var c=document.getElementById('projectApprovalCheck'); if(c)c.checked=false;
+  var h=document.getElementById('projectHistorySelect'); if(h)h.value='';
+}
+function addProjectToOrder(){
+  var s=currentStudent();
+  if(!s)return;
+  var items=PROJECT_PRODUCTS.filter(function(pr){return (__projectQty[pr.key]||0)>0;});
+  if(!items.length){tliToast('請至少填寫一項產品數量');return;}
+  var quote=parseFloat(document.getElementById('projectQuoteInput').value)||0;
+  var needApproval=document.getElementById('projectApprovalCheck').checked;
+  var courses=items.map(function(pr){return {name:pr.label,qty:__projectQty[pr.key],taxable:pr.taxable};});
+  __orderLines.push({
+    lineId:'ol_'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    kind:'project',name:'專案型（顧問組合）'+(needApproval?'（需主管核准）':''),courses:courses,system:'彈性制',
+    term:null,qty:1,unitPrice:quote,quotable:true,needApproval:needApproval,
+    discountType:'none',discountValue:0
+  });
+  markSectionDone(2,true);
+  renderInvoiceEntity();
+  renderOrderLines();
+  tliRecalc();
+  tliToast('已加入訂單：專案型（顧問組合）'+(needApproval?'，待主管核准':''));
+  resetProjectForm();
+}
+
+// ---- ③ 訂單明細（多筆：每筆方案／組合包／專案型一列，可調整數量、期數、折扣）----
+function lineBaseAmount(line){return (line.unitPrice||0)*(line.qty||1);}
+function lineDiscountAmt(line){
+  var base=lineBaseAmount(line);
+  if(line.discountType==='percent')return Math.round(base*(line.discountValue||0)/100);
+  if(line.discountType==='amount')return Math.min(line.discountValue||0,base);
+  return 0;
+}
+function lineSubtotal(line){return lineBaseAmount(line)-lineDiscountAmt(line);}
+function orderLinesTotalBase(){return __orderLines.reduce(function(s,l){return s+lineBaseAmount(l);},0);}
+function orderLinesTotalDiscount(){return __orderLines.reduce(function(s,l){return s+lineDiscountAmt(l);},0);}
+function orderLinesGrandTotal(){return __orderLines.reduce(function(s,l){return s+lineSubtotal(l);},0);}
+function renderOrderLines(){
+  var table=document.getElementById('orderLinesTable');
+  if(!__orderLines.length){
+    table.innerHTML='<tr><td class="hint" style="padding:14px 0;border-bottom:none;">尚未加入任何方案，請於上方「選銷售方案」加入。</td></tr>';
+    document.getElementById('orderLinesTotal').textContent=fmt(0);
+    markSectionDone(3,false);
+    return;
+  }
+  var head='<tr><th>項目</th><th class="num">數量</th><th>期數</th><th>折扣</th><th class="num">小計</th><th></th></tr>';
+  var body=__orderLines.map(function(line,i){
+    var courseSummary=(line.courses||[]).map(function(c){return c.name+' × '+c.qty;}).join('、');
+    var quoteCell=line.quotable?('<div class="hint">報價：<input type="number" min="0" step="1000" class="line-quote" value="'+line.unitPrice+'" oninput="onOrderLineQuoteChange('+i+',this.value)"></div>'):'';
+    var termCell=line.system==='學期制'?'<input type="number" min="1" class="line-term" value="'+(line.term||1)+'" oninput="onOrderLineTermChange('+i+',this.value)">':'<span class="hint">—</span>';
+    var qtyCell='<input type="number" min="1" class="line-qty" value="'+(line.qty||1)+'" oninput="onOrderLineQtyChange('+i+',this.value)">';
+    var discCell='<select class="line-disc-select" onchange="onOrderLineDiscountTypeChange('+i+',this.value)">'+
+        '<option value="none"'+(line.discountType==='none'?' selected':'')+'>不折扣</option>'+
+        '<option value="percent"'+(line.discountType==='percent'?' selected':'')+'>折扣％</option>'+
+        '<option value="amount"'+(line.discountType==='amount'?' selected':'')+'>折抵金額</option>'+
+      '</select>'+
+      (line.discountType!=='none'?'<input type="number" min="0" class="line-disc-val" value="'+(line.discountValue||0)+'" oninput="onOrderLineDiscountValueChange('+i+',this.value)">':'')+
+      '<div class="promo-note">折價券代碼（促銷機制規劃中）</div>';
+    return '<tr><td>'+line.name+'<div class="hint">'+courseSummary+'</div>'+quoteCell+'</td>'+
+      '<td class="num">'+qtyCell+'</td>'+
+      '<td>'+termCell+'</td>'+
+      '<td>'+discCell+'</td>'+
+      '<td class="num">'+fmt(lineSubtotal(line))+'</td>'+
+      '<td><button type="button" class="btn sm" onclick="removeOrderLine('+i+')">移除</button></td></tr>';
   }).join('');
   table.innerHTML=head+body;
+  document.getElementById('orderLinesTotal').textContent=fmt(orderLinesGrandTotal());
+  markSectionDone(3,true);
 }
-function onAddonChange(){
-  __addonMaterial=document.getElementById('addonMaterial').checked;
-  __addonRegFee=document.getElementById('addonRegFee').checked;
-  renderCourseTable();
+function onOrderLineQtyChange(i,v){__orderLines[i].qty=Math.max(1,parseInt(v)||1);renderOrderLines();tliRecalc();}
+function onOrderLineTermChange(i,v){__orderLines[i].term=Math.max(1,parseInt(v)||1);renderOrderLines();tliRecalc();}
+function onOrderLineDiscountTypeChange(i,v){__orderLines[i].discountType=v;if(v==='none')__orderLines[i].discountValue=0;renderOrderLines();tliRecalc();}
+function onOrderLineDiscountValueChange(i,v){__orderLines[i].discountValue=parseFloat(v)||0;renderOrderLines();tliRecalc();}
+function onOrderLineQuoteChange(i,v){__orderLines[i].unitPrice=parseFloat(v)||0;renderOrderLines();tliRecalc();}
+function removeOrderLine(i){
+  var name=__orderLines[i]?__orderLines[i].name:'';
+  __orderLines.splice(i,1);
+  renderInvoiceEntity();
+  renderOrderLines();
   tliRecalc();
+  if(name)tliToast('已移除：'+name);
+}
+// 供稅別試算與合約預覽使用：將每筆訂單明細攤平為課程單價列（依線內課程金額佔比分攤該筆折扣）
+function courseUnitRowsForLine(line){
+  var addonsTotal=(line.courses||[]).filter(function(c){return c.taxable&&line.kind!=='project';}).length?0:0; // 保留擴充欄位，目前無固定加購金額
+  var base=line.unitPrice||0;
+  var qtySum=(line.courses||[]).reduce(function(s,c){return s+(c.qty||1);},0)||1;
+  return (line.courses||[]).map(function(c){
+    var unit=c.qty?Math.round(base/qtySum):0;
+    return {name:c.name,qty:c.qty,unit:unit,taxable:c.taxable};
+  });
+}
+function computeAllRows(){
+  var out=[];
+  __orderLines.forEach(function(line){
+    var qty=line.qty||1;
+    var unitRows=courseUnitRowsForLine(line);
+    var lineBase=unitRows.reduce(function(s,r){return s+r.unit*r.qty;},0)||1;
+    var discAmt=lineDiscountAmt(line);
+    unitRows.forEach(function(r){
+      var rowBase=r.unit*r.qty*qty;
+      var rowDiscShare=Math.round(discAmt*(r.unit*r.qty)/lineBase);
+      out.push({name:r.name+'（'+line.name+'）',qty:r.qty*qty,unit:r.unit,subtotal:rowBase-rowDiscShare,taxable:r.taxable});
+    });
+  });
+  return out;
 }
 
 // ---- 選會員後續連動 ----
 function tliOnStudentChange(){
   var s=currentStudent();
-  if(!s)return;
+  var acInput=document.getElementById('memberAcInput');
+  var acClear=document.getElementById('memberAcClear');
+  if(!s){
+    acInput.value='';
+    acClear.classList.remove('show');
+    document.getElementById('studentChips').innerHTML='';
+    markSectionDone(1,false);
+    renderPlanFilterChips();
+    switchPkgTab('plan');
+    renderBundleList();
+    resetProjectForm();
+    renderOrderLines();
+    return;
+  }
+  acInput.value=s.name+'〈'+s.email+'〉';
+  acClear.classList.add('show');
   document.getElementById('studentChips').innerHTML=
     '<span class="'+classBadge(s.cls)+'">'+s.cls+' 類</span>'+
     '<span class="badge muted">'+s.campus+'校</span>'+
     (s.enterprise?'<span class="badge muted">'+s.enterprise+'</span>':'')+
-    '<span class="badge muted">剩餘課時 '+s.hours+' 堂</span>';
+    '<span class="badge muted">剩餘課時 '+s.hours+' 堂</span>'+
+    '<span class="badge muted">既有方案 '+(s.planCount||0)+' 筆</span>'+
+    '<span class="badge muted">顧問：'+(s.advisor||'未指派')+'</span>'+
+    (s.activated===false?'<span class="badge unactivated">未開通</span><span class="resend-link" onclick="resendActivationEmail()">重寄開通信</span>':'');
   document.getElementById('taxId').value=s.taxId||'';
   document.getElementById('taxTitle').value=s.taxTitle||'';
   markSectionDone(1,true);
-  __appliedPromoCode=null;__promoCodeError='';
-  renderPlanCards();
-  onPlanSelected();
+  __orderLines=[]; // 換會員時清空訂單明細，需重新依此會員分類選購
+  renderPlanFilterChips();
+  document.getElementById('planNameSearch').value='';
+  document.getElementById('planModeFilter').value='';
+  document.getElementById('planSystemFilter').value='';
+  switchPkgTab('plan');
+  renderBundleList();
+  resetProjectForm();
+  renderInvoiceEntity();
+  renderOrderLines();
   __channelState=null;
   document.getElementById('channelResultNote').style.display='none';
   tliOnChannelChange();
@@ -1454,16 +1820,16 @@ function currentSignMethodText(){
   return (r&&r.value==='paper')?'紙本簽署':'線上簽署';
 }
 function tliOpenContractModal(){
-  var s=currentStudent(),p=currentPlan();
-  if(!s||!p){tliToast('請先完成上方選會員與選方案');return;}
-  var rows=computeCourseRows();
+  var s=currentStudent();
+  if(!s||!__orderLines.length){tliToast('請先完成上方選會員與加入至少一筆銷售方案');return;}
+  var rows=computeAllRows();
   var mode=document.querySelector('input[name="paymode"]:checked');
   var modeText=mode?PAYMENT_MODES.find(function(x){return x.v===mode.value;}).t:'—';
   document.getElementById('contractDoc').innerHTML=
     '<h4>TLI Connect 3.0 課程合約（草稿）</h4>'+
     '<div>合約範本：'+currentContractTemplateName()+'　｜　簽署方式：'+currentSignMethodText()+'</div>'+
     '<div>會員：'+s.name+'（'+s.cls+' 類／'+s.campus+'校）</div>'+
-    '<div>方案：'+p.name+'（'+p.mode+'）</div>'+
+    '<div>項目：'+__orderLines.map(function(l){return l.name+' × '+(l.qty||1);}).join('、')+'</div>'+
     '<div>組成課程：'+rows.map(function(r){return r.name+' × '+r.qty;}).join('、')+'</div>'+
     '<div>付款方式：'+modeText+'</div>'+
     '<div>開票主體：'+currentEntity()+'</div>'+
@@ -1484,17 +1850,11 @@ function tliConfirmContract(){
 
 // ---- 試算與右側摘要 ----
 function tliRecalc(){
-  var s=currentStudent(),p=currentPlan();
-  if(!s||!p)return;
-  renderCourseTable();
-  var rows=computeCourseRows();
-  var priceSum=rows.reduce(function(sum,r){return sum+r.subtotal;},0);
-  var auto=currentAutoDiscount();
-  var autoRate=auto?auto.rate:0;
-  var promoRate=__appliedPromoCode?__appliedPromoCode.rate:0;
-  var discRate=autoRate+promoRate;
-  var discAmt=Math.round(priceSum*discRate);
-  var total=priceSum-discAmt;
+  var s=currentStudent();
+  if(!s)return;
+  var priceSum=orderLinesTotalBase();
+  var discAmt=orderLinesTotalDiscount();
+  var total=orderLinesGrandTotal();
   document.getElementById('sumPrice').textContent=fmt(priceSum);
   document.getElementById('sumDiscount').textContent=discAmt?('－'+fmt(discAmt)):'—';
   document.getElementById('sumTotal').textContent=fmt(total);
@@ -1509,17 +1869,16 @@ function tliRecalc(){
     }
   }
   document.getElementById('sumModeNote').textContent=modeNote;
-  renderTaxSplit(rows);
+  renderTaxSplit(computeAllRows());
   document.getElementById('resultCard').classList.remove('show');
   updateSummary();
   updateSubmitGate();
 }
 function updateSummary(){
-  var s=currentStudent(),p=currentPlan();
+  var s=currentStudent();
   document.getElementById('sumMember').textContent=s?(s.name+'（'+s.cls+' 類／'+s.campus+'校）'):'—';
-  document.getElementById('sumPlan').textContent=p?(p.name+(p.quotable?'（顧問報價）':'')):'—';
-  var rows=computeCourseRows();
-  document.getElementById('sumCourseList').innerHTML=rows.map(function(r){return '<li>'+r.name+' × '+r.qty+'</li>';}).join('');
+  document.getElementById('sumPlan').textContent=__orderLines.length?(__orderLines.length+' 筆項目'):'—';
+  document.getElementById('sumCourseList').innerHTML=__orderLines.map(function(l){return '<li>'+l.name+' × '+(l.qty||1)+'</li>';}).join('');
   document.getElementById('sumChannel').textContent=__channelState?(__channelState.channel+'（'+__channelState.label+'）'):'尚未完成收款操作';
   document.getElementById('sumEntity').textContent=currentEntity();
   document.getElementById('sumContract').textContent=__contractConfirmed?(currentContractTemplateName()+'／'+currentSignMethodText()):'尚未確認';
@@ -1533,7 +1892,7 @@ function updateSummary(){
 function updateSubmitGate(){
   var missing=[];
   if(!currentStudent())missing.push('尚未選擇會員');
-  if(!currentPlan())missing.push('尚未選擇銷售方案');
+  if(!__orderLines.length)missing.push('尚未加入任何銷售方案／組合包');
   if(!__channelState)missing.push('尚未完成收款渠道操作');
   if(!__contractConfirmed)missing.push('尚未確認合約內容');
   var btn=document.getElementById('submitBtn');
@@ -1550,8 +1909,8 @@ function updateSubmitGate(){
 }
 
 function tliSubmitOrder(){
-  var s=currentStudent(),p=currentPlan();
-  if(!s||!p||!__channelState||!__contractConfirmed){tliToast('請先完成左側所有必填項目');return;}
+  var s=currentStudent();
+  if(!s||!__orderLines.length||!__channelState||!__contractConfirmed){tliToast('請先完成左側所有必填項目');return;}
   var no='TLI-2026-0'+(900+Math.floor(Math.random()*90));
   document.getElementById('resOrderNo').textContent=no;
   var hasPayLink=__channelState.ref&&__channelState.ref.indexOf('http')===0;
@@ -1608,13 +1967,17 @@ var __prefillPlan=null;
   if(plan)__prefillPlan=plan;
 })();
 
+// 20260910q 相容對照：c06 續約列表仍帶舊版方案 id（?plan=xxx），對應到新版三層架構的方案 id
+var LEGACY_PLAN_ID_MAP={p_flex:'p_flex10_on',p_spring:'p_spring_off',p_1v1_30:'p_flex30_on',p_enterprise:'p_mgmt_off',p_quote:'p_quote_off'};
 renderPaymentModesOnce();
 initContractTemplates();
 tliOnStudentChange();
 if(__prefillPlan){
-  var __avail=PLANS.filter(function(p){var s=currentStudent();return s&&p.audience.indexOf(s.cls)>-1;});
-  if(__avail.some(function(p){return p.id===__prefillPlan;})){
-    selectPlan(__prefillPlan);
+  var __mappedPlan=LEGACY_PLAN_ID_MAP[__prefillPlan]||__prefillPlan;
+  var __s0=currentStudent();
+  var __match=__s0&&PLANS.find(function(p){return p.id===__mappedPlan&&p.audience.indexOf(__s0.cls)>-1;});
+  if(__match){
+    addPlanToOrder(__mappedPlan);
   }
 }
 updateSummary();
@@ -1643,22 +2006,18 @@ function tliAppendMsg(role,html){
 }
 function tliAiDemoOrder(){
   tliAppendMsg('user','幫 Emma 建 30 堂中文一對一，士林校');
-  document.getElementById('memberSearch').value='';
-  renderStudentOptions('');
   sel.value='emma01';
   tliOnStudentChange();
-  selectPlan('p_1v1_30');
-  tliAppendMsg('bot','已代入：會員 Emma Chen（C 類／士林校）、方案「中文一對一 30 堂」、開票主體「世華」（士林校固定）。付款方式先預設「一次付清」，請於「收款渠道」與「合約」完成剩餘步驟後送出。<div class="src">資料來源：3.0 中台／會員查詢工具＋產品與定價工具</div>');
+  addPlanToOrder('p_flex30_on');
+  tliAppendMsg('bot','已代入：會員 Emma Chen（C 類／士林校）、方案「中文一對一 30 堂（線上）」、開票主體「世華」（士林校固定）。付款方式先預設「一次付清」，請於「收款渠道」與「合約」完成剩餘步驟後送出。<div class="src">資料來源：3.0 中台／會員查詢工具＋產品與定價工具</div>');
   tliToast('AI 已代入①②③區塊，請顧問確認後完成剩餘步驟並送出');
 }
 function tliAiDemoOrder2(){
   tliAppendMsg('user','幫王大同開彈性方案 10 堂續約單');
-  document.getElementById('memberSearch').value='';
-  renderStudentOptions('');
   sel.value='wang01';
   tliOnStudentChange();
-  selectPlan('p_flex');
-  tliAppendMsg('bot','已代入：會員 王大同（B 類／羅斯福校）、方案「彈性方案 10 堂」、開票主體需於羅斯福校 4 選項中擇一。付款方式先預設「一次付清」，請於「收款渠道」與「合約」完成剩餘步驟後送出。<div class="src">資料來源：3.0 中台／會員查詢工具＋產品與定價工具</div>');
+  addPlanToOrder('p_flex10_on');
+  tliAppendMsg('bot','已代入：會員 王大同（B 類／羅斯福校）、方案「中文彈性方案 10 堂（線上）」、開票主體需於羅斯福校 4 選項中擇一。付款方式先預設「一次付清」，請於「收款渠道」與「合約」完成剩餘步驟後送出。<div class="src">資料來源：3.0 中台／會員查詢工具＋產品與定價工具</div>');
   tliToast('AI 已代入①②③區塊，請顧問確認後完成剩餘步驟並送出');
 }
 function tliAskFree(){

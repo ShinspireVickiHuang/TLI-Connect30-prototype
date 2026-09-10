@@ -534,6 +534,26 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
 renderTable();
 
+/* ===== 由儀表板通知深連結進入：?tab=leave|appeal&status=<狀態> 自動切到對應分頁並套用狀態篩選 =====
+   示範資料的姓名為隨機姓名池產生，與儀表板通知文字中的具名人物非同一來源，故只能定位到「分頁＋狀態」，
+   無法反白到某一特定筆（若要精確對應，需先統一兩處的示範資料來源）。 */
+function applyDashboardQuery(){
+  var params = new URLSearchParams(window.location.search);
+  var tab = params.get('tab') === 'appeal' ? 'appeal' : (params.get('tab') === 'leave' ? 'leave' : null);
+  var status = params.get('status');
+  if(tab) switchTab(tab);
+  if(status){
+    if(tab==='appeal'){
+      var sel = document.getElementById('fStatus');
+      if(sel && Array.prototype.some.call(sel.options,function(o){return o.value===status;})){ sel.value=status; renderTable(); }
+    } else {
+      var lsel = document.getElementById('fLeaveStatus');
+      if(lsel && Array.prototype.some.call(lsel.options,function(o){return o.value===status;})){ lsel.value=status; renderLeaveTable(); }
+    }
+  }
+}
+applyDashboardQuery();
+
 /* ===== 共用：側欄／頂欄／通知／登出／toast ===== */
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }

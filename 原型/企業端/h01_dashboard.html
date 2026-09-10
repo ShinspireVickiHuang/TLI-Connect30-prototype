@@ -439,8 +439,8 @@ document.addEventListener('click', function(){ closePanel('suMenu'); closePanel(
 /* ===== 通知中心：即時事件清單（示範畫面，資料為模擬數字） =====
    涵蓋事件類型：員工請假送出／申訴送出／免扣次數用完／時數池餘額低／對帳待確認 */
 var NOTIFS = [
-  {t:'王小明已送出請假申請，待 HR 核准', time:'10 分鐘前', unread:true, link:'h06_appeals.html'},
-  {t:'林雅婷對缺席扣時數判定提出申訴，待覆核', time:'1 小時前', unread:true, link:'h06_appeals.html'},
+  {t:'王小明已送出請假申請，待 HR 核准', time:'10 分鐘前', unread:true, link:'h06_appeals.html?tab=leave&status=pending'},
+  {t:'林雅婷對缺席扣時數判定提出申訴，待覆核', time:'1 小時前', unread:true, link:'h06_appeals.html?tab=appeal&status=pending'},
   {t:'陳建宏本月免扣次數已用完，下次請假將直接記缺席扣時數', time:'今天 08:40', unread:true, link:'h03_reports.html'},
   {t:'企業時數池餘額低於門檻（門檻由合約參數設定），請留意領用速度', time:'昨天', unread:false, link:'h05_contract.html'},
   {t:'本期時數對帳待確認，請至合約頁核對用量', time:'2 天前', unread:false, link:'h05_contract.html'}
@@ -457,8 +457,8 @@ function renderNotifPanel(){
 function markAllRead(ev){ if (ev) ev.stopPropagation(); NOTIFS.forEach(function(n){n.unread=false;}); renderNotifPanel(); }
 /* ===== 模擬新事件：示範鈴鐺即時通知（點擊後立即新增一則未讀通知，數字即時 +1） ===== */
 var SIMULATE_EVENT_POOL = [
-  {t:'黃詩涵已送出請假申請，待 HR 核准', link:'h06_appeals.html'},
-  {t:'吳承翰對缺席扣時數判定提出申訴，待覆核', link:'h06_appeals.html'},
+  {t:'黃詩涵已送出請假申請，待 HR 核准', link:'h06_appeals.html?tab=leave&status=pending'},
+  {t:'吳承翰對缺席扣時數判定提出申訴，待覆核', link:'h06_appeals.html?tab=appeal&status=pending'},
   {t:'張淑芬本月免扣次數已用完，下次請假將直接記缺席扣時數', link:'h03_reports.html'},
   {t:'企業時數池餘額持續下降，請留意領用速度', link:'h05_contract.html'}
 ];

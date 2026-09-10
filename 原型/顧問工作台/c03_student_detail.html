@@ -154,6 +154,12 @@ textarea,input{width:100%;padding:8px 10px;border:1px solid var(--gray-300);bord
 .ent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 20px;}
 .ent-item .l{font-size:11.5px;color:var(--gray-500);margin-bottom:3px;}
 .ent-item .v{font-size:13.5px;font-weight:600;color:var(--gray-900);}
+.acct-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.acct-status{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.acct-status .l{font-size:11.5px;color:var(--gray-500);}
+.acct-detail{font-size:12.5px;color:var(--gray-500);flex:1;min-width:200px;line-height:1.6;}
+.acct-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.acct-actions .link-btn{background:none;border:none;padding:0;font-size:12.5px;color:var(--primary);cursor:pointer;font-family:inherit;text-decoration:underline;}
 .hr-visible-tag{font-size:11px;font-weight:700;color:#7a3ed9;background:#f3e8fd;border-radius:999px;padding:1px 9px;}
 .ent-feedback-item{border-bottom:1px solid var(--gray-100);padding:10px 0;}
 .ent-feedback-item:last-child{border-bottom:none;}
@@ -460,6 +466,15 @@ html,body{overflow-x:hidden;}
       </div>
       <div class="note" id="bNote" style="display:none;"></div>
 
+      <div class="ent-card">
+        <div class="ent-card-head"><h2>帳號區<span class="demo-tag">示範畫面，資料為模擬數字</span></h2></div>
+        <div class="acct-row">
+          <div class="acct-status"><span class="l">開通狀態</span><span class="badge" id="acctStatusBadge">—</span></div>
+          <div class="acct-detail" id="acctDetail"></div>
+          <div class="acct-actions" id="acctActions"></div>
+        </div>
+      </div>
+
       <div class="ent-card" id="entCard" style="display:none;">
         <div class="ent-card-head"><h2>所屬企業與合約<span class="demo-tag">示範畫面，資料為模擬數字</span></h2></div>
         <div class="ent-grid" id="entGrid"></div>
@@ -630,6 +645,7 @@ html,body{overflow-x:hidden;}
 <script>
 var STUDENTS={
   wang01:{name:'王大同',cls:'B',campus:'羅斯福',hours:12,expire:'2026-11-20',status:'學習中',join:'2024-03-02',
+    activation:{status:'已開通',activatedAt:'2024-03-05'},
     contact:'0912-345-678／wang@example.com',company:'範例工業股份有限公司（統編 12345678，月結）',
     orders:[{no:'0841',item:'春季學期班',amount:'NT$45,000',mode:'課前頭款加自訂分期',status:'分期進行中（第 3 期逾期）'},
             {no:'0891',item:'教材加購',amount:'NT$1,800',mode:'全額付清',status:'待開票'}],
@@ -649,6 +665,7 @@ var STUDENTS={
       {date:'2026-07-28',course:'英文學期班 B2 第 4 堂',teacher:'李老師',courseStar:3,teacherStar:2,summary:'這堂教材銜接不順，講解略顯匆促。',lowFlag:true}
     ]},
   chen01:{name:'陳美惠',cls:'G',campus:'士林',hours:0,expire:'2026-11-01',status:'學習中',join:'2025-01-10',
+    activation:{status:'已開通',activatedAt:'2025-01-12'},
     contact:'0922-111-222／chen.mh@example.com',company:'士林社區大學合作方案',
     orders:[{no:'0770',item:'團體班方案',amount:'NT$28,000',mode:'先上課後月結固定金額',status:'已結清'}],
     courses:[{plan:'團體班（日文）',total:20,used:20,left:0,expire:'2026-11-01'}],
@@ -664,6 +681,7 @@ var STUDENTS={
       {date:'2026-06-10',course:'日文團體班 N4 第 6 堂',teacher:'佐藤老師',courseStar:4,teacherStar:4,summary:'老師發音示範清楚，內容豐富。',lowFlag:false}
     ]},
   emma01:{name:'Emma Chen',cls:'C',campus:'士林',hours:0,expire:'2026-10-01',status:'停止中',join:'2025-06-18',
+    activation:{status:'已開通',activatedAt:'2025-06-20'},
     contact:'+1-628-555-0110／emma.chen@example.com',company:'',
     orders:[{no:'0855',item:'中文一對一 30 堂',amount:'NT$65,000',mode:'訂金加尾款',status:'待開票'}],
     courses:[{plan:'中文一對一',total:30,used:30,left:0,expire:'2026-10-01'}],
@@ -677,6 +695,7 @@ var STUDENTS={
       {date:'2026-06-20',course:'中文一對一 第 12 堂',teacher:'王老師',courseStar:5,teacherStar:5,summary:'老師很有耐心，時區配合度高。',lowFlag:false}
     ]},
   yamada01:{name:'山田太郎',cls:'BIP',campus:'台中',hours:20,expire:'2027-01-15',status:'學習中',join:'2026-02-01',
+    activation:{status:'已開通',activatedAt:'2026-02-03'},
     contact:'+81-90-1234-5678／yamada@example.co.jp',company:'範例半導體股份有限公司（美國廠區，企業合約客戶）',
     orders:[{no:'0860',item:'企業團體班',amount:'NT$155,000',mode:'暫收款後開發票',status:'發票開立失敗'}],
     courses:[{plan:'企業團體班（英文）',total:40,used:20,left:20,expire:'2027-01-15'}],
@@ -702,6 +721,7 @@ var STUDENTS={
       {date:'2026-07-24',teacher:'Mark 老師',summary:'因廠區排班調整請假一次，屬企業合約免扣次數範圍內，未影響時數池扣抵。'}
     ]},
   li01:{name:'李文彬',cls:'B',campus:'羅斯福',hours:5,expire:'2026-08-01',status:'學習中',join:'2023-09-05',
+    activation:{status:'已開通',activatedAt:'2023-09-07'},
     contact:'0933-222-333／li.wb@example.com',company:'',
     orders:[{no:'0699',item:'彈性方案 20 堂',amount:'NT$38,000',mode:'先上課後月結實支實付',status:'已結清'}],
     courses:[{plan:'彈性方案（英文）',total:20,used:15,left:5,expire:'2026-08-01（已過期）'}],
@@ -715,6 +735,7 @@ var STUDENTS={
       {date:'2026-07-28',course:'英文彈性方案 第 14 堂',teacher:'李老師',courseStar:2,teacherStar:3,summary:'效期將至但課程進度卡關，希望能加開複習堂。',lowFlag:true}
     ]},
   zhang01:{name:'張雅婷',cls:'G',campus:'高雄',hours:8,expire:'2026-12-10',status:'學習中',join:'2024-11-20',
+    activation:{status:'已開通',activatedAt:'2024-11-22'},
     contact:'0955-666-777／zhang.yt@example.com',company:'高雄職訓合作方案',
     orders:[{no:'0872',item:'團體班續約',amount:'NT$27,000',mode:'課前頭款加自訂分期',status:'分期進行中（第 2 期逾期）'}],
     courses:[{plan:'團體班（英文）',total:16,used:8,left:8,expire:'2026-12-10'}],
@@ -728,6 +749,7 @@ var STUDENTS={
       {date:'2026-08-19',course:'英文團體班 A2 第 7 堂',teacher:'David 老師',courseStar:4,teacherStar:4,summary:'課堂步調適中，內容實用。',lowFlag:false}
     ]},
   chenjh01:{name:'陳建宏',cls:'C',campus:'羅斯福',hours:0,expire:'2026-09-15',status:'學習中',join:'2026-08-24',
+    activation:{status:'未開通',createdAt:'2026-08-24',mailSentAt:'2026-08-24 10:35'},
     contact:'0966-888-999／chen.jh@example.com',company:'',
     orders:[{no:'0888',item:'彈性方案 10 堂',amount:'NT$6,000',mode:'開課後自訂分期',status:'3 天內到期'}],
     courses:[{plan:'彈性方案（英文）',total:10,used:0,left:10,expire:'2026-09-15'}],
@@ -753,6 +775,7 @@ document.getElementById('iHours').textContent=S.hours+' 堂';
 document.getElementById('iExpire').textContent=S.expire;
 document.getElementById('iJoin').textContent=S.join;
 document.getElementById('iContact').textContent=S.contact;
+renderAcct(S);
 if(S.id==='li01'||curId==='li01'){
   document.getElementById('bNote').style.display='block';
   document.getElementById('bNote').textContent='提醒：此學生效期已過但仍有剩餘課時，屬待確認情境，請於「續約與到期提醒」頁確認處理方式。';
@@ -773,6 +796,26 @@ document.getElementById('contactsBody').innerHTML=S.contacts.map(function(c){
 document.getElementById('contractsBody').innerHTML=S.contracts.map(function(c){
   return '<tr><td>'+c.no+'</td><td>'+c.type+'</td><td><span class="badge ok">'+c.state+'</span></td><td>'+c.expire+'</td><td><button class="btn sm" onclick="tliToast(\'開啟合約檢視，正式版將顯示線上簽署與時間戳\')">檢視</button></td></tr>';
 }).join('');
+
+/* ================= 帳號區：開通狀態（顧問建檔後會員收信開通） ================= */
+function renderAcct(S){
+  var a=S.activation||{status:'已開通',activatedAt:S.join};
+  var badge=document.getElementById('acctStatusBadge');
+  var detail=document.getElementById('acctDetail');
+  var actions=document.getElementById('acctActions');
+  if(a.status==='未開通'){
+    badge.textContent='未開通'; badge.className='badge warn';
+    detail.innerHTML='建檔日 '+(a.createdAt||S.join)+'　｜　開通信寄出時間 '+(a.mailSentAt||'—');
+    actions.innerHTML='<button class="btn sm" onclick="tliResendActivation()">重寄開通信</button>'
+      +'<button type="button" class="link-btn" onclick="tliCopyActivationLink()">複製開通連結</button>';
+  }else{
+    badge.textContent='已開通'; badge.className='badge ok';
+    detail.innerHTML='開通日 '+(a.activatedAt||S.join);
+    actions.innerHTML='';
+  }
+}
+function tliResendActivation(){ toast('已重新寄出開通信給「'+S.name+'」'); }
+function tliCopyActivationLink(){ toast('已複製開通連結，可貼給「'+S.name+'」'); }
 
 /* ================= v2 新增：企業與合約卡片、企業評語分頁 ================= */
 if(S.enterprise){

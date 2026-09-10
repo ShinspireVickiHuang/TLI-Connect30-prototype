@@ -400,7 +400,16 @@ html,body{overflow-x:hidden;}
 <div class="formrow"><label>上課型態 <a href="a17_master_data.html#classformat" class="fieldlink">管理選項 →</a></label><select id="ns_classFormat" onchange="onNsClassFormatChange()"></select></div>
 <div class="formrow"><label>本班名額</label><input type="number" id="ns_classCap" min="1" oninput="validateNsClassCap()"><div class="hint" id="ns_classCapHint">—</div></div>
 </div>
-<div class="hint" style="margin-bottom:10px">收費類目決定免稅／應稅與日後訂單的發票分張；學費、註冊費為免稅，其餘為應稅（選「活動」會自動帶出應稅）。上課方式為課程本身的屬性，需逐筆選擇。上課型態決定名額上限，本班名額不得超過型態上限。此頁不設定價格，售價於「銷售方案設定」中組成方案時填入。</div>
+<div class="grid2">
+<div class="formrow"><label>對應等級 <a href="a17_master_data.html#levelrules" class="fieldlink">管理選項 →</a></label><input type="text" id="ns_level" placeholder="例：Lv.5（留白代表待定）"></div>
+<div class="formrow"><label>課程評量</label><select id="ns_hasAssessment" onchange="onNsAssessmentChange(this)"><option value="0">無</option><option value="1">有</option></select></div>
+</div>
+<div class="grid2" id="ns_assessmentFields" style="display:none">
+<div class="formrow"><label>必須完成才算完課</label><label class="switch"><input type="checkbox" id="ns_assessRequired"><span class="slider"></span></label></div>
+<div class="formrow"><label>評量型式</label><select id="ns_assessType"><option value="">請選擇</option><option value="線上小測">線上小測</option><option value="作業上傳">作業上傳</option></select></div>
+</div>
+<div class="formrow" id="ns_assessPassRow" style="display:none"><label>及格門檻</label><input type="text" id="ns_assessPass" placeholder="依設定"></div>
+<div class="hint" style="margin-bottom:10px">收費類目決定免稅／應稅與日後訂單的發票分張；學費、註冊費為免稅，其餘為應稅（選「活動」會自動帶出應稅）。上課方式為課程本身的屬性，需逐筆選擇。上課型態決定名額上限，本班名額不得超過型態上限。對應等級與等級測驗分開設定，等級表與升等規則請至基礎資料設定管理。課程評量是否必須完成才算完課，會影響完課判定，與升等條件連動；不影響升等的老師課堂回饋，設定在教師端課後紀錄。此頁不設定價格，售價於「銷售方案設定」中組成方案時填入。</div>
 <div style="text-align:right">
 <button class="btn ghost" onclick="closeNewSku()">取消</button>
 <button class="btn" onclick="saveNewSku()">儲存</button>
@@ -441,6 +450,15 @@ html,body{overflow-x:hidden;}
 <div class="formrow"><label>上課型態 <a href="a17_master_data.html#classformat" class="fieldlink">管理選項 →</a></label><select id="es_classFormat" onchange="onEsClassFormatChange()"></select></div>
 <div class="formrow"><label>本班名額</label><input type="number" id="es_classCap" min="1" oninput="validateEsClassCap()"><div class="hint" id="es_classCapHint">—</div></div>
 </div>
+<div class="grid2">
+<div class="formrow"><label>對應等級 <a href="a17_master_data.html#levelrules" class="fieldlink">管理選項 →</a></label><input type="text" id="es_level" placeholder="例：Lv.5（留白代表待定）"></div>
+<div class="formrow"><label>課程評量</label><select id="es_hasAssessment" onchange="onEsAssessmentChange(this)"><option value="0">無</option><option value="1">有</option></select></div>
+</div>
+<div class="grid2" id="es_assessmentFields" style="display:none">
+<div class="formrow"><label>必須完成才算完課</label><label class="switch"><input type="checkbox" id="es_assessRequired"><span class="slider"></span></label></div>
+<div class="formrow"><label>評量型式</label><select id="es_assessType"><option value="">請選擇</option><option value="線上小測">線上小測</option><option value="作業上傳">作業上傳</option></select></div>
+</div>
+<div class="formrow" id="es_assessPassRow" style="display:none"><label>及格門檻</label><input type="text" id="es_assessPass" placeholder="依設定"></div>
 <div class="formrow"><label>狀態</label><select id="es_status"><option value="上架">上架</option><option value="下架">下架</option></select></div>
 <div style="text-align:right;margin-top:10px">
 <button class="btn ghost" onclick="closeEditSkuDrawer()">取消</button>
@@ -662,6 +680,36 @@ var SKUS = [
  {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架', classFormat:'', classCap:''},
  {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架', classFormat:'', classCap:''}
 ];
+/* ==== 對應等級與課程評量（20260910m 新增）：與「等級測驗」分開設計，見 a17「等級與升等規則」====
+   level：本課對應的產品系列等級（留白代表待定，不編造數字）
+   hasAssessment：本課是否有課程評量；assessRequired：是否必須完成才算完課；assessType：評量型式；assessPass：及格門檻（依設定） */
+SKUS.forEach(function(s){
+  if (s.level === undefined) s.level = '';
+  if (s.hasAssessment === undefined) s.hasAssessment = false;
+  if (s.assessRequired === undefined) s.assessRequired = false;
+  if (s.assessType === undefined) s.assessType = '';
+  if (s.assessPass === undefined) s.assessPass = '';
+});
+(function(){
+  var d1 = SKUS.find(function(s){return s.id==='sku02';});
+  if (d1){ d1.level='Lv.5'; d1.hasAssessment=true; d1.assessRequired=true; d1.assessType='線上小測'; }
+  var d2 = SKUS.find(function(s){return s.id==='skuC03';});
+  if (d2){ d2.level='Lv.1'; d2.hasAssessment=true; d2.assessRequired=false; d2.assessType='作業上傳'; }
+  var d3 = SKUS.find(function(s){return s.id==='sku01';});
+  if (d3){ d3.level='Lv.1'; }
+})();
+function assessBadgeHtml(s){
+  if (!s.hasAssessment) return '<span class="badge grey">無</span>';
+  return s.assessRequired ? '<span class="badge orange">必要</span>' : '<span class="badge blue">選做</span>';
+}
+function levelCellHtml(s){
+  return s.level ? s.level : '<span class="small">待定</span>';
+}
+function distinctLevels(){
+  var set = {};
+  SKUS.forEach(function(s){ if (s.level) set[s.level] = true; });
+  return Object.keys(set).sort();
+}
 // 課程主檔（與 a03、a04 共用同一份清單）；上課方式為課程自身屬性，逐筆填寫，不再跟隨產品系統
 // 上課型態（20260910e 新增）：對應 a17 基礎資料設定→上課型態設定的四種型態；舊網站課程（實體（舊網站））尚未納入新型態框架，維持未設定
 /* 型態上限與 a17_master_data.html 的 CLASS_FORMATS 示範值同步：一對一 1、團體直播 5（示範）、團體聊天室 30（示範）、線上活動依活動（待定） */
@@ -701,20 +749,44 @@ function classCapHintText(v){
   return '型態上限 '+(cap===''?'依活動（待定）':cap)+'；本班名額不得超過型態上限，可在上限內另設較低名額。';
 }
 var skuClassFilter = 'all';
+var skuLineFilter = 'all';
+var skuLevelFilter = 'all';
 function filterSkusByClass(list){
-  if (skuClassFilter==='all') return list;
-  if (skuClassFilter==='none') return list.filter(function(s){return !s.classFormat;});
-  return list.filter(function(s){return s.classFormat===skuClassFilter;});
+  var out = list;
+  if (skuClassFilter==='none') out = out.filter(function(s){return !s.classFormat;});
+  else if (skuClassFilter!=='all') out = out.filter(function(s){return s.classFormat===skuClassFilter;});
+  if (skuLineFilter!=='all') out = out.filter(function(s){return s.line===skuLineFilter;});
+  if (skuLevelFilter==='none') out = out.filter(function(s){return !s.level;});
+  else if (skuLevelFilter!=='all') out = out.filter(function(s){return s.level===skuLevelFilter;});
+  return out;
 }
 function onSkuClassFilterChange(sel){
   skuClassFilter = sel.value;
+  renderRightPanel();
+}
+function onSkuLineFilterChange(sel){
+  skuLineFilter = sel.value;
+  renderRightPanel();
+}
+function onSkuLevelFilterChange(sel){
+  skuLevelFilter = sel.value;
   renderRightPanel();
 }
 function classFilterSelectHtml(){
   var opts = '<option value="all"'+(skuClassFilter==='all'?' selected':'')+'>全部上課型態</option>' +
     CLASS_FORMAT_OPTIONS.map(function(o){return '<option value="'+o.v+'"'+(skuClassFilter===o.v?' selected':'')+'>'+o.l+'</option>';}).join('') +
     '<option value="none"'+(skuClassFilter==='none'?' selected':'')+'>未設定</option>';
-  return '<div style="margin-bottom:10px"><label class="small" style="display:inline-block;margin-right:6px;color:var(--g500)">依上課型態篩選</label><select class="dm-inline" onchange="onSkuClassFilterChange(this)">'+opts+'</select></div>';
+  var lineOpts = '<option value="all"'+(skuLineFilter==='all'?' selected':'')+'>全部產品系列</option>' +
+    LINE_ORDER.map(function(l){return '<option value="'+l+'"'+(skuLineFilter===l?' selected':'')+'>'+l+'</option>';}).join('');
+  var lvlList = distinctLevels();
+  var lvlOpts = '<option value="all"'+(skuLevelFilter==='all'?' selected':'')+'>全部對應等級</option>' +
+    lvlList.map(function(v){return '<option value="'+v+'"'+(skuLevelFilter===v?' selected':'')+'>'+v+'</option>';}).join('') +
+    '<option value="none"'+(skuLevelFilter==='none'?' selected':'')+'>待定</option>';
+  return '<div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center">' +
+    '<span><label class="small" style="display:inline-block;margin-right:6px;color:var(--g500)">依上課型態篩選</label><select class="dm-inline" onchange="onSkuClassFilterChange(this)">'+opts+'</select></span>' +
+    '<span><label class="small" style="display:inline-block;margin-right:6px;color:var(--g500)">依產品系列篩選</label><select class="dm-inline" onchange="onSkuLineFilterChange(this)">'+lineOpts+'</select></span>' +
+    '<span><label class="small" style="display:inline-block;margin-right:6px;color:var(--g500)">依對應等級篩選</label><select class="dm-inline" onchange="onSkuLevelFilterChange(this)">'+lvlOpts+'</select></span>' +
+  '</div>';
 }
 
 var LINES = [
@@ -914,14 +986,14 @@ function skuTableHtml(list, scopeLabel){
     var taxBadge = s.tax === '免稅' ? '<span class="badge green">免稅</span>' : '<span class="badge orange">應稅</span>';
     var stBadge = s.status === '上架' ? '<span class="badge green">上架</span>' : '<span class="badge grey">下架</span>';
     var dmSelect = deliverySelectHtml(s);
-    return '<tr class="rowlink" onclick="location.href=\'a03_product_detail.html?sku='+s.id+'\'"><td>'+s.name+'</td><td>'+s.unit+'</td><td>'+s.duration+'</td><td>'+s.cat+'</td><td>'+dmSelect+'</td><td>'+classFormatBadgeHtml(s.classFormat)+'</td><td>'+classCapCellHtml(s)+'</td><td>'+taxBadge+'</td><td>'+stBadge+'</td>' +
+    return '<tr class="rowlink" onclick="location.href=\'a03_product_detail.html?sku='+s.id+'\'"><td>'+s.name+'</td><td>'+s.line+'</td><td>'+levelCellHtml(s)+'</td><td>'+s.unit+'</td><td>'+s.duration+'</td><td>'+s.cat+'</td><td>'+dmSelect+'</td><td>'+classFormatBadgeHtml(s.classFormat)+'</td><td>'+classCapCellHtml(s)+'</td><td>'+assessBadgeHtml(s)+'</td><td>'+taxBadge+'</td><td>'+stBadge+'</td>' +
       '<td><button class="btn ghost sm" onclick="openEditSkuDrawer(\''+s.id+'\',event)">編輯</button> <button class="btn ghost sm" onclick="toggleSkuStatus(\''+s.id+'\',event)">'+(s.status==='上架'?'停用':'啟用')+'</button></td></tr>';
   }).join('');
   var countNote = (filtered.length===list.length) ? scopeLabel : ('（篩選後 '+filtered.length+' 項／'+scopeLabel+'）');
   return '<h2>課程清單　<span class="small" style="font-weight:400">'+countNote+'</span></h2>' +
     classFilterSelectHtml() +
-    '<div class="tablewrap"><table><tr><th>課程名稱</th><th>單位</th><th>時長</th><th>收費類目</th><th>上課方式</th><th>上課型態</th><th>本班名額</th><th>稅別</th><th>狀態</th><th>操作</th></tr>'+rows+'</table></div>' +
-    '<div class="hint">上課方式為課程自身屬性，「上課方式」欄可直接點選下拉快速修改；「上課型態」與「本班名額」請至「編輯」表單設定，名額不得超過 <a href="a17_master_data.html#classformat" class="fieldlink" style="margin-left:0">基礎資料設定 → 上課型態設定</a> 的型態上限；點「編輯」開啟完整表單；點列（操作欄以外）可進入課程詳情，含屬性、被哪些銷售方案引用與異動紀錄。</div>';
+    '<div class="tablewrap"><table><tr><th>課程名稱</th><th>產品系列</th><th>對應等級</th><th>單位</th><th>時長</th><th>收費類目</th><th>上課方式</th><th>上課型態</th><th>本班名額</th><th>評量</th><th>稅別</th><th>狀態</th><th>操作</th></tr>'+rows+'</table></div>' +
+    '<div class="hint">上課方式為課程自身屬性，「上課方式」欄可直接點選下拉快速修改；「上課型態」「本班名額」「對應等級」「課程評量」請至「編輯」表單設定，名額不得超過 <a href="a17_master_data.html#classformat" class="fieldlink" style="margin-left:0">基礎資料設定 → 上課型態設定</a> 的型態上限，等級與測驗規則請至 <a href="a17_master_data.html#levelrules" class="fieldlink" style="margin-left:0">基礎資料設定 → 等級與升等規則</a> 管理；點「編輯」開啟完整表單；點列（操作欄以外）可進入課程詳情，含屬性、被哪些銷售方案引用與異動紀錄。</div>';
 }
 
 function renderRightPanel(){
@@ -1056,11 +1128,22 @@ function openNewSku(){
   document.getElementById('ns_classFormat').innerHTML = classFormatOptionsHtml('');
   document.getElementById('ns_classCap').value = '';
   document.getElementById('ns_classCapHint').textContent = classCapHintText('');
+  document.getElementById('ns_level').value = '';
+  document.getElementById('ns_hasAssessment').value = '0';
+  document.getElementById('ns_assessRequired').checked = false;
+  document.getElementById('ns_assessType').value = '';
+  document.getElementById('ns_assessPass').value = '';
+  onNsAssessmentChange(document.getElementById('ns_hasAssessment'));
   document.getElementById('newSkuModal').classList.add('open');
 }
 function onNsClassFormatChange(){
   document.getElementById('ns_classCapHint').textContent = classCapHintText(document.getElementById('ns_classFormat').value);
   validateNsClassCap();
+}
+function onNsAssessmentChange(el){
+  var has = el.value === '1';
+  document.getElementById('ns_assessmentFields').style.display = has ? '' : 'none';
+  document.getElementById('ns_assessPassRow').style.display = has ? '' : 'none';
 }
 function validateNsClassCap(){
   var v = document.getElementById('ns_classFormat').value;
@@ -1097,6 +1180,7 @@ function saveNewSku(){
   var line = document.getElementById('ns_line').value;
   var sys = document.getElementById('ns_system').value;
   var id = 'sku' + String(SKUS.length+1).padStart(2,'0');
+  var hasAssess = document.getElementById('ns_hasAssessment').value === '1';
   SKUS.push({id:id, name:name, line:line, system:sys,
     unit:document.getElementById('ns_unit').value||'堂',
     duration:document.getElementById('ns_duration').value||'－',
@@ -1104,7 +1188,12 @@ function saveNewSku(){
     tax:document.getElementById('ns_tax').value,
     material:document.getElementById('ns_material').value,
     deliveryMode:delivery, status:'上架',
-    classFormat:classFormat, classCap:classCap===''?'':Number(classCap)});
+    classFormat:classFormat, classCap:classCap===''?'':Number(classCap),
+    level:document.getElementById('ns_level').value.trim(),
+    hasAssessment:hasAssess,
+    assessRequired:hasAssess ? document.getElementById('ns_assessRequired').checked : false,
+    assessType:hasAssess ? document.getElementById('ns_assessType').value : '',
+    assessPass:hasAssess ? document.getElementById('ns_assessPass').value.trim() : ''});
   closeNewSku();
   buildTree();
   if (view.kind==='all' || (view.kind==='line'&&view.line===line) || (view.kind==='system'&&view.line===line&&view.system===sys)) renderRightPanel();
@@ -1132,6 +1221,12 @@ function openEditSkuDrawer(id, ev){
   document.getElementById('es_classFormat').innerHTML = classFormatOptionsHtml(s.classFormat || '');
   document.getElementById('es_classCap').value = (s.classCap===undefined || s.classCap==='') ? '' : s.classCap;
   document.getElementById('es_classCapHint').textContent = classCapHintText(s.classFormat || '');
+  document.getElementById('es_level').value = s.level || '';
+  document.getElementById('es_hasAssessment').value = s.hasAssessment ? '1' : '0';
+  document.getElementById('es_assessRequired').checked = !!s.assessRequired;
+  document.getElementById('es_assessType').value = s.assessType || '';
+  document.getElementById('es_assessPass').value = s.assessPass || '';
+  onEsAssessmentChange(document.getElementById('es_hasAssessment'));
   document.getElementById('es_status').value = s.status;
   document.getElementById('editSkuDrawerMask').classList.add('open');
   document.getElementById('editSkuDrawer').classList.add('open');
@@ -1139,6 +1234,11 @@ function openEditSkuDrawer(id, ev){
 function onEsClassFormatChange(){
   document.getElementById('es_classCapHint').textContent = classCapHintText(document.getElementById('es_classFormat').value);
   validateEsClassCap();
+}
+function onEsAssessmentChange(el){
+  var has = el.value === '1';
+  document.getElementById('es_assessmentFields').style.display = has ? '' : 'none';
+  document.getElementById('es_assessPassRow').style.display = has ? '' : 'none';
 }
 function validateEsClassCap(){
   var v = document.getElementById('es_classFormat').value;
@@ -1185,6 +1285,12 @@ function saveEditSkuDrawer(){
   s.deliveryMode = delivery;
   s.classFormat = classFormat;
   s.classCap = classCap===''?'':Number(classCap);
+  s.level = document.getElementById('es_level').value.trim();
+  var hasAssessEdit = document.getElementById('es_hasAssessment').value === '1';
+  s.hasAssessment = hasAssessEdit;
+  s.assessRequired = hasAssessEdit ? document.getElementById('es_assessRequired').checked : false;
+  s.assessType = hasAssessEdit ? document.getElementById('es_assessType').value : '';
+  s.assessPass = hasAssessEdit ? document.getElementById('es_assessPass').value.trim() : '';
   s.status = document.getElementById('es_status').value;
   closeEditSkuDrawer();
   renderRightPanel();

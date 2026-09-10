@@ -329,6 +329,11 @@ html,body{overflow-x:hidden;}
 <div class="tier-cards" id="tierCards"></div>
 <div class="tablewrap"><table id="leaveRuleTable"></table></div>
 <div class="crosslink">企業合約若需覆寫本表「企業員工」列的數值，請至 <a href="a19_b2b_enterprise.html">B2B 企業客戶 → 合約參數</a> 設定，覆寫後該企業會顯示「已覆寫」徽章。</div>
+<div class="grouprule-block" id="groupRuleBlock" style="margin-top:22px;">
+<h3 style="font-size:14px;margin:0 0 8px;">團體直播班規則</h3>
+<div class="paramintro">團體直播班特有的請假、回放、補課、退點數規則；四層繼承與上方一致：全域預設 → 客戶類型預設 → 企業合約覆寫（a19）→ 個人例外。單堂請假逾提前時限記缺席；回放僅開放給請假已核准者；補課限同級班；缺席與遲到是否記入學員成效由最後一欄控制（B2B 記入員工成效、機構記入學生成效）。</div>
+<div class="tablewrap"><table id="groupRuleTable"></table></div>
+</div>
 </div>
 <div class="hint" id="paramHint">「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。</div>
 <div class="modlog-wrap">
@@ -345,6 +350,12 @@ html,body{overflow-x:hidden;}
 <h3>修改紀錄（唯讀）</h3>
 <div class="tablewrap"><table id="classFormatModLogTable"></table></div>
 </div>
+</div>
+<div class="card" id="levelRulesCard" style="display:none">
+<h2>等級與升等規則</h2>
+<div class="paramintro">依產品系列設定等級表與升等條件；升等來源可為「通過本級等級測驗」或「完成本級課程」（完課定義：出席比例與必要評量門檻皆依設定），兩者可設為任一即可或需全部滿足。任務型升等條件規畫中，暫不開放操作。</div>
+<div class="formrow" style="max-width:280px"><label>產品系列</label><select id="lvlSeriesSel" onchange="onLvlSeriesChange(this)"></select></div>
+<div id="lvlSeriesBody"></div>
 </div>
 </div>
 </div>
@@ -447,10 +458,11 @@ var TABS = [
    {code:'installment', name:'分期', desc:'依應收與分期設定之期數分批收款', enabled:true},
    {code:'monthly', name:'月結', desc:'機構／企業會員月結請款，通常對應合約單位', enabled:true}
   ]},
+ {key:'levelrules', title:'等級與升等規則', special:'levelrules'},
  {key:'classformat', title:'上課型態設定', special:'classformat'},
  {key:'params', title:'參數設定', special:'params'}
 ];
-var currentTab = (location.hash.indexOf('#params') === 0) ? 'params' : 'lang';
+var currentTab = (location.hash.indexOf('#params') === 0) ? 'params' : (location.hash.indexOf('#levelrules') === 0 ? 'levelrules' : 'lang');
 var editingIdx = null;
 var dragSrcIndex = null;
 
@@ -467,7 +479,7 @@ function selectTab(key){
   editingIdx = null;
   renderSideTabs();
   renderContent();
-  try{ history.replaceState(null,'',location.pathname+location.search+(key==='params'?'#params':'')); }catch(e){}
+  try{ history.replaceState(null,'',location.pathname+location.search+(key==='params'?'#params':(key==='levelrules'?'#levelrules':''))); }catch(e){}
 }
 function renderContent(){
   var t = currentTabObj();
@@ -475,6 +487,7 @@ function renderContent(){
     document.getElementById('mdNormalCard').style.display = 'none';
     document.getElementById('paramsCard').style.display = '';
     document.getElementById('classFormatCard').style.display = 'none';
+    document.getElementById('levelRulesCard').style.display = 'none';
     document.getElementById('mdAddBtn').style.display = 'none';
     renderParamsPanel();
     return;
@@ -483,13 +496,24 @@ function renderContent(){
     document.getElementById('mdNormalCard').style.display = 'none';
     document.getElementById('paramsCard').style.display = 'none';
     document.getElementById('classFormatCard').style.display = '';
+    document.getElementById('levelRulesCard').style.display = 'none';
     document.getElementById('mdAddBtn').style.display = 'none';
     renderClassFormatPanel();
+    return;
+  }
+  if (t.special === 'levelrules'){
+    document.getElementById('mdNormalCard').style.display = 'none';
+    document.getElementById('paramsCard').style.display = 'none';
+    document.getElementById('classFormatCard').style.display = 'none';
+    document.getElementById('levelRulesCard').style.display = '';
+    document.getElementById('mdAddBtn').style.display = 'none';
+    renderLevelRulesPanel();
     return;
   }
   document.getElementById('mdNormalCard').style.display = '';
   document.getElementById('paramsCard').style.display = 'none';
   document.getElementById('classFormatCard').style.display = 'none';
+  document.getElementById('levelRulesCard').style.display = 'none';
   document.getElementById('mdAddBtn').style.display = '';
   document.getElementById('mdSectionTitle').textContent = t.title;
   document.getElementById('mdAddBtn').textContent = '＋ 新增' + t.addLabel;
@@ -775,6 +799,54 @@ function saveLeaveRuleRow(key){
 function renderLeaveRuleGroup(){
   renderTierCards();
   renderLeaveRuleTable();
+  renderGroupRuleTable();
+}
+
+/* ==================================================================
+   團體直播班規則（20260910h 新增）：單堂請假、回放、補課、退點數、缺席記成效
+   四層繼承與上方請假與取消規則組一致：全域預設 → 客戶類型預設 → 企業合約覆寫（a19） → 個人例外
+   ================================================================== */
+var GROUP_RULE_ROWS = [
+ {key:'global', label:'全域預設', leaveWindow:'', replayDays:'', makeupMax:'', refundWindow:'', recordEffect:true, editor:'', editedAt:''},
+ {key:'basic', label:'一般會員', leaveWindow:'', replayDays:'', makeupMax:'', refundWindow:'', recordEffect:true, editor:'', editedAt:''},
+ {key:'premium', label:'進階會員', leaveWindow:'', replayDays:'', makeupMax:'', refundWindow:'', recordEffect:true, editor:'', editedAt:''},
+ {key:'enterprise', label:'企業員工', leaveWindow:'', replayDays:'', makeupMax:'', refundWindow:'', recordEffect:true, editor:'', editedAt:''},
+ {key:'institution', label:'機構學生', leaveWindow:'', replayDays:'', makeupMax:'', refundWindow:'', recordEffect:true, editor:'', editedAt:''}
+];
+function groupRuleRowByKey(k){ return GROUP_RULE_ROWS.find(function(r){return r.key===k;}); }
+function renderGroupRuleTable(){
+  var tbl = document.getElementById('groupRuleTable');
+  if (!tbl) return;
+  var head = '<tr><th>客戶類型</th><th>單堂請假提前時數</th><th>回放開放天數</th><th>補課每期次數</th><th>退點數提前時數</th><th>缺席記入學員成效</th><th>最後修改人與時間</th><th></th></tr>';
+  tbl.innerHTML = head + GROUP_RULE_ROWS.map(function(r){
+    var effSwitch = '<label class="switch"><input type="checkbox" id="gr_'+r.key+'_recordEffect" '+(r.recordEffect?'checked':'')+'><span class="slider"></span></label>';
+    var lastEdit = r.editor ? (escHtml(r.editor)+'<br><span class="small">'+r.editedAt+'</span>') : '<span class="small">—</span>';
+    return '<tr><td>'+r.label+'</td>' +
+      '<td><input type="number" min="0" id="gr_'+r.key+'_leaveWindow" value="'+escHtml(r.leaveWindow)+'" placeholder="待定"><span class="small">小時</span></td>' +
+      '<td><input type="number" min="0" id="gr_'+r.key+'_replayDays" value="'+escHtml(r.replayDays)+'" placeholder="待定"><span class="small">天</span></td>' +
+      '<td><input type="number" min="0" id="gr_'+r.key+'_makeupMax" value="'+escHtml(r.makeupMax)+'" placeholder="待定"><span class="small">次／期</span></td>' +
+      '<td><input type="number" min="0" id="gr_'+r.key+'_refundWindow" value="'+escHtml(r.refundWindow)+'" placeholder="待定"><span class="small">小時</span></td>' +
+      '<td>'+effSwitch+'</td>' +
+      '<td>'+lastEdit+'</td>' +
+      '<td><button class="btn ghost small2" onclick="saveGroupRuleRow(\''+r.key+'\')">儲存</button></td></tr>';
+  }).join('');
+}
+function saveGroupRuleRow(key){
+  var r = groupRuleRowByKey(key);
+  if (!r) return;
+  ['leaveWindow','replayDays','makeupMax','refundWindow'].forEach(function(f){
+    var el = document.getElementById('gr_'+key+'_'+f);
+    if (el) r[f] = el.value.trim();
+  });
+  var effEl = document.getElementById('gr_'+key+'_recordEffect');
+  if (effEl) r.recordEffect = effEl.checked;
+  r.editor = (document.getElementById('suName') && document.getElementById('suName').textContent) || '王大明';
+  r.editedAt = nowStr();
+  MOD_LOG.unshift({time:r.editedAt, cat:'團體直播班規則', name:r.label, oldValue:'（規則列）', newValue:'（規則列，已更新）', editor:r.editor});
+  renderGroupRuleTable();
+  renderModLog();
+  renderClassFormatPanel();
+  toast('已儲存「'+r.label+'」的團體直播班規則，異動已寫入修改紀錄');
 }
 function escHtml(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function nowStr(){
@@ -947,7 +1019,14 @@ function renderClassFormatPanel(){
     }).join('')+'</div>';
     var countOpts = CLASS_FORMAT_COUNT_OPTIONS.map(function(o){return '<option value="'+o.v+'"'+(o.v===f.countMode?' selected':'')+'>'+o.l+'</option>';}).join('');
     var countCell = '<select class="paramlevel" id="cf_'+f.key+'_count" '+(f.countLocked?'disabled':'')+'>'+countOpts+'</select>';
-    var recCell = '<label class="switch"><input type="checkbox" id="cf_'+f.key+'_rec" '+(f.recording?'checked':'')+'><span class="slider"></span></label>';
+    var recCell;
+    if (f.key === 'grouplive'){
+      var gRow = groupRuleRowByKey('global');
+      var replayDaysTxt = (gRow && gRow.replayDays) ? gRow.replayDays : 'N';
+      recCell = '<a href="javascript:void(0)" onclick="selectTab(\'params\');selectParamCat(\'leaverules\');">限請假核准者，'+replayDaysTxt+' 天（依規則組）</a>';
+    }else{
+      recCell = '<label class="switch"><input type="checkbox" id="cf_'+f.key+'_rec" '+(f.recording?'checked':'')+'><span class="slider"></span></label>';
+    }
     var leaveCell = '<a href="javascript:void(0)" onclick="selectTab(\'params\');selectParamCat(\'leaverules\');">檢視規則組</a>';
     var noshowCell = '<label class="switch"><input type="checkbox" id="cf_'+f.key+'_noshow" '+(f.noShow?'checked':'')+'><span class="slider"></span></label>';
     var lastEdit = f.editor ? (escHtml(f.editor)+'<br><span class="small">'+f.editedAt+'</span>') : '<span class="small">—</span>';
@@ -984,6 +1063,213 @@ function renderClassFormatModLog(){
   }
   tbl.innerHTML = head + CLASS_FORMAT_MOD_LOG.map(function(l){
     return '<tr><td>'+l.time+'</td><td>'+escHtml(l.name)+'</td><td>'+escHtml(l.editor)+'</td></tr>';
+  }).join('');
+}
+
+/* ==================================================================
+   等級與升等規則（20260910m 新增）：與課程評量分開設計
+   學員等級來源二擇一或需全部：通過本級等級測驗／完成本級課程（完課看出席比例＋必要評量），依產品系列各自設定
+   老師課堂回饋（四技能、文字）只做參考，不進這裡決定等級
+   ================================================================== */
+var LEVEL_SERIES = [
+ {key:'zh', name:'中文'},
+ {key:'cn', name:'Connect（線上）'},
+ {key:'fl', name:'外文'},
+ {key:'tc', name:'師資班'},
+ {key:'dl', name:'方言'}
+];
+function defaultLadder(seriesName){
+  var arr = [];
+  for (var i=1;i<=9;i++){
+    arr.push({id:'lv'+i, name:'Lv'+i,
+      condTest:true, condCourse:false, combine:'any',
+      attendPct:'', assessReq:true,
+      testEnabled:true, testName:seriesName+' Lv'+i+' 等級測驗', testQCount:'', testPass:'',
+      editor:'', editedAt:''});
+  }
+  return arr;
+}
+var LEVEL_LADDERS = {};
+LEVEL_LADDERS['zh'] = defaultLadder('中文');
+var currentLvlSeries = 'zh';
+var currentLvlLevel = null;
+var LEVEL_MOD_LOG = [];
+function currentLvlSeriesObj(){ return LEVEL_SERIES.find(function(s){return s.key===currentLvlSeries;}) || LEVEL_SERIES[0]; }
+function renderLevelRulesPanel(){
+  var sel = document.getElementById('lvlSeriesSel');
+  sel.innerHTML = LEVEL_SERIES.map(function(s){
+    return '<option value="'+s.key+'"'+(s.key===currentLvlSeries?' selected':'')+'>'+s.name+'</option>';
+  }).join('');
+  renderLvlSeriesBody();
+}
+function onLvlSeriesChange(sel){
+  currentLvlSeries = sel.value;
+  currentLvlLevel = null;
+  renderLvlSeriesBody();
+}
+function seedLadder(){
+  var s = currentLvlSeriesObj();
+  LEVEL_LADDERS[currentLvlSeries] = defaultLadder(s.name);
+  currentLvlLevel = null;
+  renderLvlSeriesBody();
+  toast('已建立「'+s.name+'」等級表，共 9 級示範，可再編輯或增刪');
+}
+function renderLvlSeriesBody(){
+  var body = document.getElementById('lvlSeriesBody');
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  if (!ladder){
+    body.innerHTML = '<div class="mdpreview" style="margin-top:12px">此產品系列尚未設定等級表，狀態為待定。</div>' +
+      '<button type="button" class="btn ghost small2" style="margin-top:10px" onclick="seedLadder()">＋ 新增本系列等級表</button>';
+    return;
+  }
+  if (!currentLvlLevel || !ladder.some(function(l){return l.id===currentLvlLevel;})) currentLvlLevel = ladder[0].id;
+  body.innerHTML =
+    '<div class="mdwrap" style="margin-top:14px">' +
+      '<div class="mdside" id="lvlLadderList"></div>' +
+      '<div class="mdmain" id="lvlCondPanel"></div>' +
+    '</div>' +
+    '<div class="hint">可新增或刪除等級（至少保留一級）；刪除前請自行確認未被課程或測驗設定引用。</div>' +
+    '<div class="modlog-wrap"><h3>等級測驗（本系列，每級一筆）</h3>' +
+    '<div class="hint" style="margin-top:0 0 8px">目前後台尚未建置題庫／測驗頁，此處僅列測驗名稱、題數、及格門檻與啟用狀態；題目內容待題庫頁建置後串接。</div>' +
+    '<div class="tablewrap"><table id="lvlTestTable"></table></div></div>' +
+    '<div class="modlog-wrap"><h3>修改紀錄（唯讀）</h3><div class="tablewrap"><table id="lvlModLogTable"></table></div></div>';
+  renderLvlLadderList();
+  renderLvlCondPanel();
+  renderLvlTestTable();
+  renderLvlModLog();
+}
+function renderLvlLadderList(){
+  var wrap = document.getElementById('lvlLadderList');
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  wrap.innerHTML = ladder.map(function(l){
+    return '<div style="display:flex;gap:4px;align-items:center">' +
+      '<button type="button" style="flex:1" class="'+(l.id===currentLvlLevel?'active':'')+'" onclick="selectLvlLevel(\''+l.id+'\')">'+escHtml(l.name)+'</button>' +
+      '<button type="button" class="tier-del" title="刪除此級" aria-label="刪除此級" onclick="deleteLvlLevel(\''+l.id+'\')">×</button>' +
+      '</div>';
+  }).join('') +
+  '<button type="button" class="btn ghost small2" style="margin-top:6px" onclick="addLvlLevel()">＋ 新增一級</button>';
+}
+function selectLvlLevel(id){
+  currentLvlLevel = id;
+  renderLvlLadderList();
+  renderLvlCondPanel();
+}
+function addLvlLevel(){
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  var s = currentLvlSeriesObj();
+  var n = ladder.length + 1;
+  var id = 'lv_new'+Date.now();
+  ladder.push({id:id, name:'Lv'+n, condTest:true, condCourse:false, combine:'any',
+    attendPct:'', assessReq:true, testEnabled:true, testName:s.name+' Lv'+n+' 等級測驗', testQCount:'', testPass:'',
+    editor:'', editedAt:''});
+  currentLvlLevel = id;
+  renderLvlLadderList();
+  renderLvlCondPanel();
+  renderLvlTestTable();
+  toast('已新增一級');
+}
+function deleteLvlLevel(id){
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  if (ladder.length <= 1){ toast('至少需保留一級，無法刪除'); return; }
+  var idx = -1;
+  ladder.forEach(function(l,i){ if (l.id===id) idx = i; });
+  if (idx < 0) return;
+  var name = ladder[idx].name;
+  ladder.splice(idx,1);
+  if (currentLvlLevel === id) currentLvlLevel = ladder[0].id;
+  renderLvlLadderList();
+  renderLvlCondPanel();
+  renderLvlTestTable();
+  toast('已刪除「'+name+'」');
+}
+function toggleLvlCourseFields(el){
+  var f = document.getElementById('lvlCourseFields');
+  if (f) f.style.display = el.checked ? 'block' : 'none';
+}
+function renderLvlCondPanel(){
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  var l = ladder.find(function(x){return x.id===currentLvlLevel;});
+  var panel = document.getElementById('lvlCondPanel');
+  if (!l || !panel) return;
+  var lastEdit = l.editor ? ('最後修改：'+escHtml(l.editor)+'　'+l.editedAt) : '';
+  panel.innerHTML =
+   '<div style="border:1px solid var(--g200);border-radius:10px;padding:16px">' +
+   '<div class="formrow" style="max-width:220px"><label>等級名稱</label><input type="text" id="lvl_name" value="'+escHtml(l.name)+'"></div>' +
+   '<h3 style="font-size:13.5px;margin:14px 0 8px">升等條件</h3>' +
+   '<label style="display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:13px"><input type="checkbox" id="lvl_condTest" '+(l.condTest?'checked':'')+'>通過本級等級測驗（及格門檻依測驗設定）</label>' +
+   '<label style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:13px"><input type="checkbox" id="lvl_condCourse" onchange="toggleLvlCourseFields(this)" '+(l.condCourse?'checked':'')+'>完成本級課程</label>' +
+   '<div id="lvlCourseFields" style="margin:4px 0 10px 24px;display:'+(l.condCourse?'block':'none')+'">' +
+     '<div class="formrow" style="max-width:220px"><label>出席比例下限</label><input type="text" class="paraminput" id="lvl_attendPct" value="'+escHtml(l.attendPct)+'" placeholder="依設定"><span class="small"> ％</span></div>' +
+     '<label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" id="lvl_assessReq" '+(l.assessReq?'checked':'')+'>必要課程評量須完成／及格</label>' +
+   '</div>' +
+   '<div class="formrow" style="max-width:280px"><label>組合方式</label>' +
+     '<label style="display:inline-flex;gap:5px;align-items:center;margin-right:14px;font-size:13px"><input type="radio" name="lvl_combine" value="any" '+(l.combine==='any'?'checked':'')+'>任一即可</label>' +
+     '<label style="display:inline-flex;gap:5px;align-items:center;font-size:13px"><input type="radio" name="lvl_combine" value="all" '+(l.combine==='all'?'checked':'')+'>全部皆需</label>' +
+   '</div>' +
+   '<div class="small" style="color:var(--g500);background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:8px 10px;margin-top:6px">任務型條件（規畫中）</div>' +
+   '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><span class="small">'+lastEdit+'</span><button class="btn" onclick="saveLvlCond()">儲存</button></div>' +
+   '</div>';
+}
+function saveLvlCond(){
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  var l = ladder.find(function(x){return x.id===currentLvlLevel;});
+  if (!l) return;
+  var nameEl = document.getElementById('lvl_name');
+  if (nameEl && nameEl.value.trim()) l.name = nameEl.value.trim();
+  l.condTest = document.getElementById('lvl_condTest').checked;
+  l.condCourse = document.getElementById('lvl_condCourse').checked;
+  var attendEl = document.getElementById('lvl_attendPct'); if (attendEl) l.attendPct = attendEl.value.trim();
+  var assessEl = document.getElementById('lvl_assessReq'); if (assessEl) l.assessReq = assessEl.checked;
+  var combineEls = document.getElementsByName('lvl_combine');
+  for (var i=0;i<combineEls.length;i++){ if (combineEls[i].checked) l.combine = combineEls[i].value; }
+  l.editor = (document.getElementById('suName') && document.getElementById('suName').textContent) || '王大明';
+  l.editedAt = nowStr();
+  LEVEL_MOD_LOG.unshift({time:l.editedAt, series:currentLvlSeriesObj().name, name:l.name+'　升等條件', editor:l.editor});
+  renderLvlLadderList();
+  renderLvlCondPanel();
+  renderLvlTestTable();
+  renderLvlModLog();
+  toast('已儲存「'+l.name+'」的升等條件，異動已寫入修改紀錄');
+}
+function renderLvlTestTable(){
+  var tbl = document.getElementById('lvlTestTable');
+  if (!tbl) return;
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  var head = '<tr><th>等級</th><th>測驗名稱</th><th>題數</th><th>及格門檻</th><th>狀態</th><th></th></tr>';
+  tbl.innerHTML = head + ladder.map(function(l){
+    return '<tr><td>'+escHtml(l.name)+'</td>' +
+      '<td><input type="text" class="paraminput" style="width:190px" id="lt_'+l.id+'_name" value="'+escHtml(l.testName)+'" placeholder="依設定"></td>' +
+      '<td><input type="text" class="paraminput" id="lt_'+l.id+'_qcount" value="'+escHtml(l.testQCount)+'" placeholder="依設定"></td>' +
+      '<td><input type="text" class="paraminput" id="lt_'+l.id+'_pass" value="'+escHtml(l.testPass)+'" placeholder="依設定"></td>' +
+      '<td><label class="switch"><input type="checkbox" id="lt_'+l.id+'_enabled" '+(l.testEnabled?'checked':'')+'><span class="slider"></span></label></td>' +
+      '<td><button class="btn ghost small2" onclick="saveLvlTest(\''+l.id+'\')">儲存</button></td></tr>';
+  }).join('');
+}
+function saveLvlTest(id){
+  var ladder = LEVEL_LADDERS[currentLvlSeries];
+  var l = ladder.find(function(x){return x.id===id;});
+  if (!l) return;
+  var nameEl = document.getElementById('lt_'+id+'_name'); if (nameEl) l.testName = nameEl.value.trim();
+  var qEl = document.getElementById('lt_'+id+'_qcount'); if (qEl) l.testQCount = qEl.value.trim();
+  var pEl = document.getElementById('lt_'+id+'_pass'); if (pEl) l.testPass = pEl.value.trim();
+  var enEl = document.getElementById('lt_'+id+'_enabled'); if (enEl) l.testEnabled = enEl.checked;
+  l.editor = (document.getElementById('suName') && document.getElementById('suName').textContent) || '王大明';
+  l.editedAt = nowStr();
+  LEVEL_MOD_LOG.unshift({time:l.editedAt, series:currentLvlSeriesObj().name, name:l.name+' 等級測驗', editor:l.editor});
+  renderLvlTestTable();
+  renderLvlModLog();
+  toast('已儲存「'+l.name+' 等級測驗」，異動已寫入修改紀錄');
+}
+function renderLvlModLog(){
+  var tbl = document.getElementById('lvlModLogTable');
+  if (!tbl) return;
+  var head = '<tr><th>時間</th><th>產品系列</th><th>項目</th><th>修改人</th></tr>';
+  if (!LEVEL_MOD_LOG.length){
+    tbl.innerHTML = head + '<tr><td colspan="4" class="small" style="white-space:normal">尚無修改紀錄，儲存後會自動記錄於此。</td></tr>';
+    return;
+  }
+  tbl.innerHTML = head + LEVEL_MOD_LOG.map(function(l){
+    return '<tr><td>'+l.time+'</td><td>'+escHtml(l.series)+'</td><td>'+escHtml(l.name)+'</td><td>'+escHtml(l.editor)+'</td></tr>';
   }).join('');
 }
 

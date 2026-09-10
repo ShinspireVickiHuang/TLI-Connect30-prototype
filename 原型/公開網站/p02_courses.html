@@ -155,6 +155,39 @@ main{max-width:1160px;margin:0 auto;padding:0 24px;}
 .empty-inner h3{font-size:16px;font-weight:800;margin-bottom:6px;}
 .empty-inner p{color:var(--c-muted);font-size:13.5px;margin-bottom:18px;}
 
+/* ===== 銷售標籤徽章（熱門／促銷／新上架） ===== */
+.tag-hot{background:var(--c-accent);color:#fff;border-color:var(--c-accent);}
+.tag-promo{background:var(--c-secondary);color:#fff;border-color:var(--c-secondary);}
+.tag-new{background:var(--c-primary);color:#fff;border-color:var(--c-primary);}
+
+/* ===== 載入更多 ===== */
+.loadmore-row{max-width:1160px;margin:4px auto 8px;padding:0 24px;text-align:center;}
+.loadmore-row.hide{display:none;}
+
+/* ===== 方案下方提示列 ===== */
+.p02-note-row{max-width:1160px;margin:28px auto 0;padding:16px 24px;background:var(--c-cream);border:1px solid var(--c-border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.p02-note-row p{font-size:13.5px;color:var(--c-muted);}
+
+/* ===== 章節標題（組合包區沿用） ===== */
+.section-title{font-size:22px;font-weight:800;margin-bottom:4px;}
+.section-sub{color:var(--c-muted);font-size:13.5px;margin-bottom:20px;}
+.package-section{max-width:1160px;margin:48px auto 0;padding:0 24px;}
+
+/* ===== 組合包卡片 ===== */
+.package-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+@media(max-width:780px){.package-grid{grid-template-columns:1fr;}}
+.package-card{background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:22px;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(16,24,40,.04);}
+.package-card h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+.pkg-pitch{font-size:13px;color:var(--c-muted);margin-bottom:14px;}
+.pkg-plan-list{margin-bottom:14px;display:flex;flex-direction:column;gap:6px;}
+.pkg-plan-list li{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;border-bottom:1px dashed var(--c-border);padding-bottom:6px;}
+.pkg-plan-list a{color:var(--c-primary);font-weight:700;}
+.pkg-plan-list a:hover{text-decoration:underline;}
+.pkg-plan-list span{color:var(--c-muted);white-space:nowrap;}
+.pkg-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;}
+.pkg-price-orig{font-size:13px;color:var(--c-muted);text-decoration:line-through;}
+.pkg-price-combo{font-size:18px;font-weight:800;color:var(--c-accent-dark);}
+
 /* ===== 結尾：淡灰底，左文右按鈕 + 三個信任數字 ===== */
 .course-closer{background:var(--c-bg);padding:60px 24px 52px;margin-top:64px;border-top:1px solid var(--c-border);}
 .closer-inner{max-width:1160px;margin:0 auto;}
@@ -285,9 +318,9 @@ main{max-width:1160px;margin:0 auto;padding:0 24px;}
 <section class="course-hero">
   <div class="course-hero-inner">
     <div>
-      <h1 data-i18n="p02_hero_h1">線上課程</h1>
-      <p class="course-hero-lead" data-i18n="p02_hero_lead">依語言、上課方式與程度篩選，找到最適合你的班型與方案。</p>
-      <p class="course-hero-stats" data-i18n="p02_hero_stats">12 門課・2 種上課方式・7 種語言</p>
+      <h1 data-i18n="p02_hero_h1">銷售方案與組合包</h1>
+      <p class="course-hero-lead" data-i18n="p02_hero_lead">依分類、上課方式、制度與型態篩選，找到最適合你的銷售方案或組合包。</p>
+      <p class="course-hero-stats" data-i18n="p02_hero_stats">20 個銷售方案・4 組組合包・7 種語言</p>
     </div>
     <div class="course-hero-visual" aria-hidden="true">
       <svg width="62%" height="62%" viewBox="0 0 220 140" fill="none" stroke="#1B4E8C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -305,11 +338,15 @@ main{max-width:1160px;margin:0 auto;padding:0 24px;}
 <div class="filter-wrap">
   <div class="tabs-row" id="pillCategory"></div>
   <div class="filter-row-sub">
-    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_lang">語言</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillLang"></div></div>
+    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_delivery">上課方式</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillDelivery"></div></div>
     <div class="filter-sep"></div>
-    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_mode">上課方式</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillMode"></div></div>
+    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_schedule">制度</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillSchedule"></div></div>
     <div class="filter-sep"></div>
-    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_level">等級</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillLevel"></div></div>
+    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_format">型態</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillFormat"></div></div>
+    <div class="filter-sep"></div>
+    <div class="filter-group"><span class="filter-group-label" data-i18n="p02_filter_priceband">價格帶</span><div style="display:flex;gap:6px;flex-wrap:wrap;" id="pillPriceBand"></div></div>
+    <div class="filter-sep"></div>
+    <div class="filter-group filter-search"><input type="text" id="searchInput" data-i18n-ph="p02_filter_search_ph" placeholder="搜尋方案名稱" oninput="onSearchInput()"></div>
     <button class="pill-clear" onclick="clearPills()" data-i18n="p02_filter_clear">清除篩選</button>
   </div>
 </div>
@@ -329,14 +366,29 @@ main{max-width:1160px;margin:0 auto;padding:0 24px;}
 
   <div class="card-grid" id="cardGrid"></div>
 
+  <div class="loadmore-row" id="loadMoreRow">
+    <button type="button" class="btn btn-outline" id="loadMoreBtn" onclick="loadMorePlans()" data-i18n="p02_loadmore">載入更多方案</button>
+  </div>
+
   <div class="empty-state" id="emptyState">
     <div class="empty-inner">
       <div class="empty-illus"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-      <h3 data-i18n="p02_empty_title">目前篩選條件下沒有符合的課程</h3>
-      <p data-i18n="p02_empty_desc">試試調整篩選條件，或直接讓顧問幫您推薦合適的班型</p>
+      <h3 data-i18n="p02_empty_title">目前篩選條件下沒有符合的方案</h3>
+      <p data-i18n="p02_empty_desc">試試調整篩選條件，或直接讓顧問幫您推薦合適的方案</p>
       <button type="button" class="btn btn-primary" onclick="aiOpen('fab')" data-i18n="p02_empty_cta">找顧問幫我推薦</button>
     </div>
   </div>
+
+  <div class="p02-note-row">
+    <p data-i18n="p02_note_text">自學課程與聊天室權益隨方案提供，可請顧問依目標組合專案方案。</p>
+    <a class="btn btn-outline btn-sm" data-i18n="p02_note_cta" href="p06_trial.html?type=consult">聯繫顧問</a>
+  </div>
+
+  <section class="package-section">
+    <div class="section-title" data-i18n="p02_package_title">組合包</div>
+    <p class="section-sub" data-i18n="p02_package_sub">將常見的方案組合在一起，組合價低於個別方案原價加總</p>
+    <div class="package-grid" id="packageGrid"></div>
+  </section>
 </main>
 
 <section class="course-closer">
@@ -405,82 +457,343 @@ function showToast(msg){
   window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
 }
 
-/* ===== 分類（可擴充陣列，新增課程分類只需在此加一筆） ===== */
-var CATEGORIES = [
-  {key:'zh-1on1-online', labelKey:'p02_cat_zh1on1'},
-  {key:'flex', labelKey:'p02_cat_flex'},
-  {key:'self-paced', labelKey:'p02_cat_selfpaced'},
-  {key:'culture-online', labelKey:'p02_cat_culture'},
-  {key:'corp-online', labelKey:'p02_cat_corp'},
-  {key:'cert-online', labelKey:'p02_cat_cert'}
+/* ===== 篩選定義（可擴充陣列；fallback 為示範版預設繁中文字，語系字典缺 key 時使用，避免切換語系顯示 undefined） ===== */
+var CATEGORY_DEFS = [
+  {key:'zh', labelKey:'p02_cat_zh', fallback:'中文'},
+  {key:'foreign', labelKey:'p02_cat_foreign', fallback:'外文'},
+  {key:'culture', labelKey:'p02_cat_culture', fallback:'文化'},
+  {key:'corp', labelKey:'p02_cat_corp', fallback:'商業'},
+  {key:'cert', labelKey:'p02_cat_cert', fallback:'師培'}
 ];
-var MODE_DEFS = [
-  {key:'booking', labelKey:'p02_mode_booking'},
-  {key:'live', labelKey:'p02_mode_live'},
-  {key:'ondemand', labelKey:'p02_mode_ondemand'}
+var DELIVERY_DEFS = [
+  {key:'online', labelKey:'p02_delivery_online', fallback:'線上'},
+  {key:'offline', labelKey:'p02_delivery_offline', fallback:'實體'}
 ];
-var LANG_DEFS = [
-  {key:'zh', labelKey:'p02_lang_zh'},
-  {key:'en', labelKey:'p02_lang_en'},
-  {key:'ja', labelKey:'p02_lang_ja'},
-  {key:'ko', labelKey:'p02_lang_ko'},
-  {key:'de', labelKey:'p02_lang_de'},
-  {key:'fr', labelKey:'p02_lang_fr'}
+var SCHEDULE_DEFS = [
+  {key:'semester', labelKey:'p02_sched_semester', fallback:'學期制'},
+  {key:'flexible', labelKey:'p02_sched_flexible', fallback:'彈性制'}
 ];
-var LEVEL_DEFS = [
-  {key:'beginner', labelKey:'p02_level_beginner'},
-  {key:'elementary', labelKey:'p02_level_elementary'},
-  {key:'intermediate', labelKey:'p02_level_intermediate'},
-  {key:'advanced', labelKey:'p02_level_advanced'}
+var FORMAT_DEFS = [
+  {key:'1on1', labelKey:'p02_format_1on1', fallback:'一對一'},
+  {key:'group-live', labelKey:'p02_format_grouplive', fallback:'團體直播'},
+  {key:'chatroom', labelKey:'p02_format_chatroom', fallback:'聊天室'},
+  {key:'self-paced', labelKey:'p02_format_selfpaced', fallback:'自學'},
+  {key:'activity', labelKey:'p02_format_activity', fallback:'活動'}
 ];
-var LEVEL_ALL = ['beginner','elementary','intermediate','advanced'];
+var PRICEBAND_DEFS = [
+  {key:'lt5k', labelKey:'p02_price_lt5k', fallback:'5,000 以下'},
+  {key:'5to15k', labelKey:'p02_price_5to15k', fallback:'5,000–15,000'},
+  {key:'15to35k', labelKey:'p02_price_15to35k', fallback:'15,000–35,000'},
+  {key:'gt35k', labelKey:'p02_price_gt35k', fallback:'35,000 以上'},
+  {key:'quote', labelKey:'p02_price_quote_band', fallback:'顧問報價'}
+];
+function priceBandOf(price){
+  if(price === null) return 'quote';
+  if(price < 5000) return 'lt5k';
+  if(price < 15000) return '5to15k';
+  if(price < 35000) return '15to35k';
+  return 'gt35k';
+}
+/* 產品型態徽章與銷售標籤（示範版僅提供繁中內容，方案本身資料不隨語系切換） */
+var PRODUCT_TYPE_LABEL = {
+  'booking':'一對一課程', 'group-live':'團體直播課', 'chatroom':'聊天室權限',
+  'self-paced':'自學影音課程', 'activity':'活動', 'membership':'會員卡權益'
+};
+var SALES_TAG_LABEL = { hot:'熱門', promo:'促銷', 'new':'新上架' };
+var PLAN_BADGE = {
+  'zh-1on1-trial':'中','zh-1on1-standard':'中','zh-1on1-corp':'中','en-1on1-trial':'英','en-1on1-standard':'英',
+  'jp-1on1-standard':'日','ko-1on1-standard':'韓','de-1on1-standard':'德','fr-1on1-standard':'法',
+  'flex-zh-trial':'中','flex-zh-standard':'中','flex-en-standard':'英','self-zh-pack':'中',
+  'culture-zh-single':'文','culture-zh-season':'文','corp-training-custom':'企','cert-teacher-2026':'證',
+  'semester-zh-campus':'中','chatroom-pass-90':'中','membership-annual':'中'
+};
 
-/* ===== 課程資料（Connect 第一階段僅販售線上課程）
-   dt：卡片圖區雙色調樣式（1／2／3 循環，非以語言或分類決定，純視覺輪替）
-   featured／highlightKey：首列主打大卡專用；顯示文字一律改存 key，三語內容由 I18N_PAGE 提供 ===== */
-var COURSES = [
-  {id:'zh-1on1', titleKey:'p02_c_zh1on1_title', langKey:'zh', badgeKey:'p02_badge_zh', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_zh1on1_pitch', fact1Key:'p02_c_zh1on1_fact1', fact2Key:'p02_c_zh1on1_fact2', rank:1, added:12, priceRank:5, slug:'zh-1on1', href:'p03_course_detail.html', dt:1, featuredPos:'top', highlightKey:'p02_c_zh1on1_highlight'},
-  {id:'en-1on1', titleKey:'p02_c_en1on1_title', langKey:'en', badgeKey:'p02_badge_en', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_en1on1_pitch', fact1Key:'p02_c_en1on1_fact1', fact2Key:'p02_c_en1on1_fact2', rank:2, added:9, priceRank:2, slug:'en-1on1', href:'p03_course_detail.html', dt:2},
-  {id:'jp-1on1', titleKey:'p02_c_jp1on1_title', langKey:'ja', badgeKey:'p02_badge_ja', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_jp1on1_pitch', fact1Key:'p02_c_jp1on1_fact1', fact2Key:'p02_c_jp1on1_fact2', rank:3, added:8, priceRank:9, slug:'jp-1on1', href:'p03_course_detail.html', dt:3},
-  {id:'ko-1on1', titleKey:'p02_c_ko1on1_title', langKey:'ko', badgeKey:'p02_badge_ko', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_ko1on1_pitch', fact1Key:'p02_c_ko1on1_fact1', fact2Key:'p02_c_ko1on1_fact2', rank:4, added:7, priceRank:10, slug:'ko-1on1', href:'p03_course_detail.html', dt:1},
-  {id:'de-1on1', titleKey:'p02_c_de1on1_title', langKey:'de', badgeKey:'p02_badge_de', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_de1on1_pitch', fact1Key:'p02_c_de1on1_fact1', fact2Key:'p02_c_de1on1_fact2', rank:5, added:6, priceRank:11, slug:'de-1on1', href:'p03_course_detail.html', dt:2},
-  {id:'fr-1on1', titleKey:'p02_c_fr1on1_title', langKey:'fr', badgeKey:'p02_badge_fr', categoryKey:'zh-1on1-online', modeKeys:['booking'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_fr1on1_pitch', fact1Key:'p02_c_fr1on1_fact1', fact2Key:'p02_c_fr1on1_fact2', rank:6, added:5, priceRank:12, slug:'fr-1on1', href:'p03_course_detail.html', dt:3},
-  {id:'flex-zh', titleKey:'p02_c_flexzh_title', langKey:'zh', badgeKey:'p02_badge_zh', categoryKey:'flex', modeKeys:['live'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_flexzh_pitch', fact1Key:'p02_c_flexzh_fact1', fact2Key:'p02_c_flexzh_fact2', rank:7, added:11, priceRank:6, slug:'flex-zh', href:'p03_course_detail.html', dt:2, featuredPos:'top', highlightKey:'p02_c_flexzh_highlight'},
-  {id:'flex-en', titleKey:'p02_c_flexen_title', langKey:'en', badgeKey:'p02_badge_en', categoryKey:'flex', modeKeys:['live'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_flexen_pitch', fact1Key:'p02_c_flexen_fact1', fact2Key:'p02_c_flexen_fact2', rank:8, added:10, priceRank:7, slug:'flex-en', href:'p03_course_detail.html', dt:3},
-  {id:'self-zh', titleKey:'p02_c_selfzh_title', langKey:'zh', badgeKey:'p02_badge_zh', categoryKey:'self-paced', modeKeys:['ondemand'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_selfzh_pitch', fact1Key:'p02_c_selfzh_fact1', fact2Key:'p02_c_selfzh_fact2', rank:9, added:4, priceRank:8, slug:'self-zh', href:'p03_course_detail.html', dt:1},
-  {id:'culture-zh', titleKey:'p02_c_culturezh_title', langKey:'zh', badgeKey:'p02_badge_zh', categoryKey:'culture-online', modeKeys:['live'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_culturezh_pitch', fact1Key:'p02_c_culturezh_fact1', fact2Key:'p02_c_culturezh_fact2', rank:10, added:3, priceRank:3, slug:'culture-zh', href:'p03_course_detail.html', dt:2},
-  {id:'corp-online', titleKey:'p02_c_corp_title', langKey:null, badgeKey:'p02_badge_corp', categoryKey:'corp-online', modeKeys:['booking','live'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_corp_pitch', fact1Key:'p02_c_corp_fact1', fact2Key:'p02_c_corp_fact2', rank:11, added:2, priceRank:13, slug:'corp', href:'p03_course_detail.html', dt:3, featuredPos:'bottom', highlightKey:'p02_c_corp_highlight'},
-  {id:'cert-online', titleKey:'p02_c_cert_title', langKey:'zh', badgeKey:'p02_badge_cert', categoryKey:'cert-online', modeKeys:['live'], levelKeys:LEVEL_ALL, pitchKey:'p02_c_cert_pitch', fact1Key:'p02_c_cert_fact1', fact2Key:'p02_c_cert_fact2', rank:12, added:1, priceRank:1, slug:'cert', href:'p03_course_detail.html', dt:1, featuredPos:'bottom', highlightKey:'p02_c_cert_highlight'}
+/* ===== 銷售方案資料（第一層：銷售方案／組合包；本陣列為「方案」層）
+   三層結構：銷售方案／組合包 → 產品（課程／活動／預約／會員卡，見 includes）→ 資源（教材、堂數、場次等以 note 呈現）
+   categoryKeys／deliveryKeys／formatKeys 皆為陣列，同一方案可對應多個分類篩選條件 ===== */
+var PLANS = [
+  {id:'zh-1on1-trial', name:'中文一對一體驗方案', categoryKeys:['zh'], salesTag:'hot', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:12000,
+   validity:'購買後 90 天內使用完畢', audience:'零基礎或初次接觸中文的學員',
+   pitch:'先上 10 堂感受一對一教學，確認老師與步調再決定是否延伸方案。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:10, label:'中文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'30 天，課後可加入練習'}
+   ],
+   suitFor:['零基礎或初學者，需要從發音、基礎會話建立信心','想先體驗一對一教學再決定是否延伸方案','時間彈性、希望自己安排上課時段']},
+
+  {id:'zh-1on1-standard', name:'中文一對一標準方案', categoryKeys:['zh'], salesTag:'hot', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:33000,
+   validity:'購買後 180 天內使用完畢', audience:'規劃三個月以上學習計畫的學員',
+   pitch:'30 堂課程搭配指定教材與自學影音，適合中長期規劃的學習者。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'中文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'中文發音強化影音'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['已有基礎、想密集加強口說與聽力反應','短期來台工作或求學，需快速累積生活會話能力','需要申請簽證所需之上課證明']},
+
+  {id:'zh-1on1-corp', name:'中文一對一企業客製方案', categoryKeys:['zh','corp'], salesTag:null, mode:'advisor-quote',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:null,
+   validity:'依合約約定期間使用', audience:'企業員工個人化中文培訓',
+   pitch:'依員工人數與學習目標客製排課，線上進行、可分批分時段上課。',
+   rulesSummary:'請假、改期、退費依合約條款辦理，由顧問於報價時一併說明。',
+   includes:[
+     {type:'booking', qty:'依合約', label:'中文一對一線上課', note:'堂數與教材依合約約定'},
+     {type:'membership', qty:1, label:'企業會員卡', note:'多人共用學習額度'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'依合約期間開放'}
+   ],
+   suitFor:['企業想為個別員工安排一對一中文培訓','需要企業月結發票與客製報表','員工分批分時段上課，不影響排班']},
+
+  {id:'en-1on1-trial', name:'英文一對一體驗方案', categoryKeys:['foreign'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:13000,
+   validity:'購買後 90 天內使用完畢', audience:'需加強多益、雅思口說與聽力的學員',
+   pitch:'先上 10 堂體驗一對一教學，對應 TOEFL／IELTS／TOEIC／GEPT。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:10, label:'英文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'30 天'}
+   ],
+   suitFor:['準備多益、雅思等檢定考試','想先體驗一對一教學再決定是否延伸方案','需要針對口說與聽力密集練習']},
+
+  {id:'en-1on1-standard', name:'英文一對一標準方案', categoryKeys:['foreign'], salesTag:'hot', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:34000,
+   validity:'購買後 180 天內使用完畢', audience:'規劃三個月以上學習計畫的學員',
+   pitch:'30 堂課程搭配自學影音，對應 11 級 CEFR 對照表。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'英文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'TOEIC 聽力影音包'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['需要對應多益、雅思成績目標','希望密集累積職場英文能力','想搭配自學影音持續練習聽力']},
+
+  {id:'jp-1on1-standard', name:'日文一對一標準方案', categoryKeys:['foreign'], salesTag:'new', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:34000,
+   validity:'購買後 180 天內使用完畢', audience:'準備 JLPT 檢定或赴日工作的學員',
+   pitch:'30 堂課程對應 JLPT，搭配自學影音加強應試能力。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'日文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'JLPT N3 衝刺影音'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['準備 JLPT 各級檢定','赴日工作或求學前密集加強','想有系統地準備聽解與文法']},
+
+  {id:'ko-1on1-standard', name:'韓文一對一標準方案', categoryKeys:['foreign'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:34000,
+   validity:'購買後 180 天內使用完畢', audience:'準備 TOPIK 檢定或生活會話需求的學員',
+   pitch:'30 堂課程對應 TOPIK，生活、旅遊、商用主題皆備。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'韓文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['準備 TOPIK 各級檢定','喜愛韓劇韓綜想加強生活會話','短期赴韓旅遊或求學前惡補']},
+
+  {id:'de-1on1-standard', name:'德文一對一標準方案', categoryKeys:['foreign'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:35000,
+   validity:'購買後 180 天內使用完畢', audience:'生活、商用德文需求的學員',
+   pitch:'30 堂課程涵蓋生活、旅遊、商用主題，企業培訓可包班。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'德文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['計畫赴德工作、留學或移居','企業指派學習商用德文','希望紮實建立文法基礎']},
+
+  {id:'fr-1on1-standard', name:'法文一對一標準方案', categoryKeys:['foreign'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['1on1'], price:35000,
+   validity:'購買後 180 天內使用完畢', audience:'準備 DELF／DALF 檢定的學員',
+   pitch:'30 堂課程對應 DELF／DALF／TCF 檢定。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'booking', qty:30, label:'法文一對一線上課', note:'50 分鐘／堂，由顧問安排老師與時段'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'}
+   ],
+   suitFor:['準備 DELF／DALF／TCF 檢定','計畫赴法留學或工作','希望有系統地累積口說能力']},
+
+  {id:'flex-zh-trial', name:'中文彈性團體體驗方案', categoryKeys:['zh'], salesTag:'promo', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['group-live'], price:3600,
+   validity:'依當期梯次開課日至結束日', audience:'想找同好一起學習的學員',
+   pitch:'4 堂直播體驗，感受固定時段團體上課的節奏。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'group-live', qty:4, label:'中文彈性團體直播課', note:'50 分鐘／堂，固定時段開課'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'30 天'}
+   ],
+   suitFor:['想找同好一起學習、喜歡小組互動','每週有固定時段可以上課','預算考量，希望比一對一更划算']},
+
+  {id:'flex-zh-standard', name:'中文彈性團體標準方案', categoryKeys:['zh'], salesTag:'hot', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['group-live'], price:9600,
+   validity:'依當期梯次開課日至結束日', audience:'跟隨固定梯次完成整期課程的學員',
+   pitch:'12 堂一期搭配指定教材，跟隨固定同儕完成整期課程。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'group-live', qty:12, label:'中文彈性團體直播課', note:'50 分鐘／堂，一期課程'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'生活會話影音包'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'60 天'}
+   ],
+   suitFor:['想透過團體討論練習口說與聽力反應','每週有固定時段可以上課','預算考量，希望比一對一更划算']},
+
+  {id:'flex-en-standard', name:'英文彈性團體標準方案', categoryKeys:['foreign'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['group-live'], price:10200,
+   validity:'依當期梯次開課日至結束日', audience:'跟隨固定梯次完成整期課程的學員',
+   pitch:'12 堂一期，主題式練習口說與聽力，跟同好一起學。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'group-live', qty:12, label:'英文彈性團體直播課', note:'50 分鐘／堂，一期課程'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'60 天'}
+   ],
+   suitFor:['想透過團體討論練習口說與聽力反應','每週有固定時段可以上課','預算考量，希望比一對一更划算']},
+
+  {id:'self-zh-pack', name:'中文自學影音組合方案', categoryKeys:['zh'], salesTag:'promo', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['self-paced'], price:2400,
+   validity:'購買後 365 天內可反覆觀看', audience:'想搭配正課自主複習的學員',
+   pitch:'三門自學影音課程，隨時看、依自己步調複習。',
+   rulesSummary:'數位內容依規定不適用退費，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'中文發音強化影音'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'生活會話影音包'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'文化速覽影音（茶道・書法）'}
+   ],
+   suitFor:['已在上正課、想額外加強複習','時間零碎、想利用空檔自學','想先熟悉教材內容再報名正課']},
+
+  {id:'culture-zh-single', name:'文化體驗單場方案', categoryKeys:['culture'], salesTag:null, mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['activity'], price:1200,
+   validity:'依報名場次當日使用', audience:'想體驗單一文化主題的學員',
+   pitch:'單場茶道體驗直播，輕鬆認識中華文化。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'activity', qty:1, label:'活動', note:'茶道體驗場次'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'14 天'}
+   ],
+   suitFor:['對中華文化有興趣、想輕鬆體驗','想找非語言課程的主題活動','外派來台想快速認識在地文化']},
+
+  {id:'culture-zh-season', name:'文化主題季票方案', categoryKeys:['culture'], salesTag:'new', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['activity'], price:3200,
+   validity:'依當季 3 場活動日期使用', audience:'想連續參加多場文化主題活動的學員',
+   pitch:'茶道、書法、時事聊天，一次報名參加當季 3 場直播體驗。',
+   rulesSummary:'請假、改期、退費依本方案規則辦理，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'activity', qty:3, label:'活動', note:'茶道／書法／時事聊天，共 3 場'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'30 天'}
+   ],
+   suitFor:['想連續參加多場主題活動','對中華文化有興趣、想深入體驗','想結識同樣對文化有興趣的同好']},
+
+  {id:'corp-training-custom', name:'企業線上培訓客製方案', categoryKeys:['corp'], salesTag:null, mode:'advisor-quote',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['group-live'], price:null,
+   validity:'依合約約定期間使用', audience:'企業內訓、員工分批分時段上課',
+   pitch:'依員工人數與學習目標客製排課，線上進行，員工可分批分時段上課。',
+   rulesSummary:'請假、改期、退費依合約條款辦理，由顧問於報價時一併說明。',
+   includes:[
+     {type:'group-live', qty:'依合約', label:'企業內訓直播課', note:'梯次時段與堂數依合約約定'},
+     {type:'membership', qty:1, label:'企業會員卡', note:'員工分批登入使用'}
+   ],
+   suitFor:['企業想為部門或全員安排語言培訓','需要企業月結發票與客製報表','員工分批分時段上課，不影響排班']},
+
+  {id:'cert-teacher-2026', name:'2026 師資認證線上課程方案', categoryKeys:['cert'], salesTag:'new', mode:'advisor-quote',
+   deliveryKeys:['online'], scheduleKey:'semester', formatKeys:['group-live'], price:null,
+   validity:'依梯次開課日至結業日', audience:'欲取得國際華語教師認證的學員',
+   pitch:'118 小時線上直播訓練，取得 TLI 國際華語教師認證。',
+   rulesSummary:'報名需先經顧問資格確認，退費依合約條款辦理。',
+   includes:[
+     {type:'group-live', qty:118, label:'師資認證直播課程', note:'118 小時，分梯次上課'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'教學觀摩影音庫'}
+   ],
+   suitFor:['想取得國際華語教師認證','現職華語教師想強化教學方法','計畫赴海外任教中文教師']},
+
+  {id:'semester-zh-campus', name:'中文學期密集班（實體校區）', categoryKeys:['zh'], salesTag:null, mode:'advisor-quote',
+   deliveryKeys:['offline'], scheduleKey:'semester', formatKeys:['1on1'], price:null,
+   validity:'依校區學期起訖日使用', audience:'需要在台密集學習、申請學生簽證的學員',
+   pitch:'實體校區學期密集班，週時數達申請學生簽證所需條件。',
+   rulesSummary:'請假、退費依校區學則辦理，詳細條款由校區顧問說明。',
+   includes:[
+     {type:'booking', qty:'依學期', label:'學期密集班實體課', note:'依校區課表安排上課'},
+     {type:'activity', qty:2, label:'活動', note:'校園文化活動 2 場'}
+   ],
+   suitFor:['計畫在台長期學習、需申請學生簽證','希望有實體教室與同儕互動','想全天密集沉浸式學習']},
+
+  {id:'chatroom-pass-90', name:'聊天室 90 天強化方案', categoryKeys:['zh'], salesTag:'promo', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['chatroom'], price:1800,
+   validity:'購買後 90 天內開放使用', audience:'想額外加強口說練習頻率的學員',
+   pitch:'90 天聊天室權限，隨時找老師或同儕練習口說。',
+   rulesSummary:'數位內容依規定不適用退費，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'90 天'},
+     {type:'self-paced', qty:1, label:'自學影音課程', note:'生活會話影音包'}
+   ],
+   suitFor:['已在上正課、想增加口說練習頻率','希望不受限於排課時段、隨時練習','搭配自學影音複習後想立即實作']},
+
+  {id:'membership-annual', name:'TLI 全效會員卡年繳方案', categoryKeys:['zh'], salesTag:'new', mode:'online-direct',
+   deliveryKeys:['online'], scheduleKey:'flexible', formatKeys:['chatroom','self-paced'], price:6000,
+   validity:'購買後 365 天內使用', audience:'長期自學、重視聊天室與影音庫使用權益的學員',
+   pitch:'一次擁有全年聊天室權限與自學影音全庫觀看權益。',
+   rulesSummary:'數位內容依規定不適用退費，詳細條款於購買頁揭露。',
+   includes:[
+     {type:'membership', qty:1, label:'TLI 全效會員卡', note:'含聊天室與影音庫權益'},
+     {type:'chatroom', qty:1, label:'聊天室權限', note:'365 天'},
+     {type:'self-paced', qty:'全庫', label:'自學影音課程', note:'自學影音全庫觀看'}
+   ],
+   suitFor:['已完成正課、想長期維持語感','重視聊天室與影音庫的長期使用權益','想用會員價持續累積學習']}
 ];
 
-var activeFilters = { lang:new Set(), category:new Set(), mode:new Set(), level:new Set() };
+/* ===== 組合包資料（第一層：由 2–3 個銷售方案組成，組合價低於方案原價加總） ===== */
+var PACKAGES = [
+  {id:'pkg-zh-starter', name:'中文起步組合包', planIds:['zh-1on1-trial','self-zh-pack','chatroom-pass-90'], comboPrice:14500,
+   pitch:'體驗一對一課＋自學影音＋聊天室權限，新手起步一次到位。'},
+  {id:'pkg-zh-fulltrack', name:'中文全效組合包', planIds:['zh-1on1-standard','flex-zh-standard','membership-annual'], comboPrice:44800,
+   pitch:'一對一標準課＋彈性團體課＋全效會員卡，個人課與團體課雙軌並行。'},
+  {id:'pkg-en-boost', name:'英文加強組合包', planIds:['en-1on1-trial','flex-en-standard'], comboPrice:21000,
+   pitch:'一對一體驗課先抓弱點，再加入團體直播課持續練習。'},
+  {id:'pkg-culture-explorer', name:'文化探索組合包', planIds:['culture-zh-single','culture-zh-season','chatroom-pass-90'], comboPrice:5400,
+   pitch:'單場體驗＋當季文化季票＋聊天室權限，深度認識中華文化。'}
+];
+function packageOriginalTotal(pkg){
+  return pkg.planIds.reduce(function(sum, pid){
+    var p = planById(pid);
+    return sum + (p && p.price ? p.price : 0);
+  }, 0);
+}
+function planById(id){ return PLANS.filter(function(p){ return p.id === id; })[0]; }
+function packageById(id){ return PACKAGES.filter(function(p){ return p.id === id; })[0]; }
+function fmtPrice(n){ return 'NT$' + n.toLocaleString('en-US'); }
+function includesSummaryLine(plan){
+  return plan.includes.map(function(item){
+    var label = PRODUCT_TYPE_LABEL[item.type] || item.label;
+    var unit = {booking:'堂','group-live':'堂','self-paced':'門',activity:'場'}[item.type] || '';
+    if(typeof item.qty === 'number' && unit) return label + ' ' + item.qty + unit;
+    if(typeof item.qty === 'number') return label;
+    return label + ' ' + item.qty;
+  }).join('＋');
+}
+
+var activeFilters = { category:new Set(), delivery:new Set(), schedule:new Set(), format:new Set(), priceBand:new Set() };
+var searchKeyword = '';
+var PLAN_VISIBLE_STEP = 8;
+var visibleCount = PLAN_VISIBLE_STEP;
 
 function fillTabs(){
+  /* 分類標籤：多選 chips（沿用 .pill-sm 樣式，可複選） */
   var wrap = document.getElementById('pillCategory');
   var dict = tliDict();
   wrap.innerHTML = '';
-  CATEGORIES.forEach(function(c){
+  CATEGORY_DEFS.forEach(function(c){
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'tab-btn' + (activeFilters.category.has(c.key) ? ' active' : '');
-    b.textContent = dict[c.labelKey];
+    b.className = 'pill-sm' + (activeFilters.category.has(c.key) ? ' active' : '');
+    b.textContent = dict[c.labelKey] || c.fallback;
     b.onclick = function(){
-      if(activeFilters.category.has(c.key)){
-        activeFilters.category.delete(c.key);
-      }else{
-        activeFilters.category.clear();
-        activeFilters.category.add(c.key);
-      }
+      if(activeFilters.category.has(c.key)){ activeFilters.category.delete(c.key); }
+      else { activeFilters.category.add(c.key); }
+      visibleCount = PLAN_VISIBLE_STEP;
       fillTabs();
-      renderCards();
+      renderPlans();
     };
     wrap.appendChild(b);
   });
-  var eventsPill = document.createElement('a');
-  eventsPill.className = 'tab-btn tab-link';
-  eventsPill.href = 'p09_events.html';
-  eventsPill.textContent = dict.nav_events;
-  wrap.appendChild(eventsPill);
 }
 function fillPills(){
   var dict = tliDict();
@@ -491,36 +804,56 @@ function fillPills(){
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'pill-sm' + (activeFilters[key].has(def.key) ? ' active' : '');
-      b.textContent = dict[def.labelKey];
+      b.textContent = dict[def.labelKey] || def.fallback;
       b.onclick = function(){
         if(activeFilters[key].has(def.key)){ activeFilters[key].delete(def.key); }
         else { activeFilters[key].add(def.key); }
+        visibleCount = PLAN_VISIBLE_STEP;
         fillPills();
-        renderCards();
+        renderPlans();
       };
       wrap.appendChild(b);
     });
   }
-  fill('pillLang', LANG_DEFS, 'lang');
-  fill('pillMode', MODE_DEFS, 'mode');
-  fill('pillLevel', LEVEL_DEFS, 'level');
+  fill('pillDelivery', DELIVERY_DEFS, 'delivery');
+  fill('pillSchedule', SCHEDULE_DEFS, 'schedule');
+  fill('pillFormat', FORMAT_DEFS, 'format');
+  fill('pillPriceBand', PRICEBAND_DEFS, 'priceBand');
+}
+function onSearchInput(){
+  var input = document.getElementById('searchInput');
+  searchKeyword = input ? input.value.trim().toLowerCase() : '';
+  visibleCount = PLAN_VISIBLE_STEP;
+  renderPlans();
 }
 function clearPills(){
   Object.keys(activeFilters).forEach(function(k){ activeFilters[k].clear(); });
+  searchKeyword = '';
+  var input = document.getElementById('searchInput');
+  if(input) input.value = '';
+  visibleCount = PLAN_VISIBLE_STEP;
   fillTabs();
   fillPills();
-  renderCards();
+  renderPlans();
 }
-function cardMatches(c){
-  if(activeFilters.lang.size && !activeFilters.lang.has(c.langKey)) return false;
-  if(activeFilters.category.size && !activeFilters.category.has(c.categoryKey)) return false;
-  if(activeFilters.mode.size){
-    var anyM = c.modeKeys.some(function(m){ return activeFilters.mode.has(m); });
-    if(!anyM) return false;
+function planMatches(p){
+  if(activeFilters.category.size){
+    var anyC = p.categoryKeys.some(function(k){ return activeFilters.category.has(k); });
+    if(!anyC) return false;
   }
-  if(activeFilters.level.size){
-    var anyL = c.levelKeys.some(function(lv){ return activeFilters.level.has(lv); });
-    if(!anyL) return false;
+  if(activeFilters.delivery.size){
+    var anyD = p.deliveryKeys.some(function(k){ return activeFilters.delivery.has(k); });
+    if(!anyD) return false;
+  }
+  if(activeFilters.schedule.size && !activeFilters.schedule.has(p.scheduleKey)) return false;
+  if(activeFilters.format.size){
+    var anyF = p.formatKeys.some(function(k){ return activeFilters.format.has(k); });
+    if(!anyF) return false;
+  }
+  if(activeFilters.priceBand.size && !activeFilters.priceBand.has(priceBandOf(p.price))) return false;
+  if(searchKeyword){
+    var hay = (p.name + ' ' + p.pitch).toLowerCase();
+    if(hay.indexOf(searchKeyword) === -1) return false;
   }
   return true;
 }
@@ -528,72 +861,116 @@ function currentSortKey(){
   var sel = document.getElementById('sortSel');
   return sel ? sel.value : 'reco';
 }
-function sortedCourses(list){
+function sortedPlans(list){
   var key = currentSortKey();
   var copy = list.slice();
-  if(key === 'new') copy.sort(function(a,b){ return b.added - a.added; });
-  else if(key === 'price') copy.sort(function(a,b){ return a.priceRank - b.priceRank; });
-  else copy.sort(function(a,b){ return a.rank - b.rank; });
+  if(key === 'new') copy.sort(function(a,b){ return PLANS.indexOf(b) - PLANS.indexOf(a); });
+  else if(key === 'price') copy.sort(function(a,b){ return (a.price===null?1e9:a.price) - (b.price===null?1e9:b.price); });
+  else copy.sort(function(a,b){
+    var order = {hot:0, promo:1, 'new':1, null:2};
+    return (order[a.salesTag] - order[b.salesTag]) || (PLANS.indexOf(a) - PLANS.indexOf(b));
+  });
   return copy;
 }
-function cardHtml(c, featured){
+function planCardHtml(p){
   var dict = tliDict();
-  var dtClass = 'dt-' + (c.dt || 1);
-  var badge = dict[c.badgeKey] || '';
-  var modeLabel = c.modeKeys.map(function(mk){
-    var md = MODE_DEFS.filter(function(m){ return m.key === mk; })[0];
-    return md ? dict[md.labelKey] : '';
-  }).join('／');
-  return '<div class="course-card'+(featured?' featured':'')+'">'+
-    '<a class="card-media-wrap" href="'+c.href+'" aria-hidden="true" tabindex="-1">'+
+  var dtClass = 'dt-' + ((PLANS.indexOf(p) % 3) + 1);
+  var badge = PLAN_BADGE[p.id] || '';
+  var tagHtml = p.salesTag ? '<span class="card-mode-badge tag-'+p.salesTag+'">'+SALES_TAG_LABEL[p.salesTag]+'</span>' : '';
+  var priceHtml = p.price !== null ? fmtPrice(p.price) : (dict.p02_price_quote || '顧問報價');
+  var buyBtn = p.mode === 'online-direct'
+    ? '<a class="btn btn-accent btn-sm" href="../會員區/m13_checkout.html?plan='+p.id+'">立即購買</a>'
+    : '';
+  return '<div class="course-card">'+
+    '<a class="card-media-wrap" href="p03_course_detail.html?plan='+p.id+'" aria-hidden="true" tabindex="-1">'+
       '<div class="card-media '+dtClass+'"></div>'+
       '<span class="card-lang-badge">'+badge+'</span>'+
-      '<span class="card-mode-badge">'+modeLabel+'</span>'+
+      tagHtml+
     '</a>'+
     '<div class="card-body">'+
-      (featured && c.highlightKey ? '<div class="card-highlight">'+dict[c.highlightKey]+'</div>' : '')+
-      '<a class="card-title-link" href="'+c.href+'"><h3>'+dict[c.titleKey]+'</h3></a>'+
-      '<p class="card-pitch">'+dict[c.pitchKey]+'</p>'+
-      '<div class="card-facts"><b>'+dict[c.fact1Key]+'</b><span class="dot">・</span><span>'+dict[c.fact2Key]+'</span></div>'+
-      '<div class="card-price">'+dict.p02_price_quote+'</div>'+
-      '<div class="card-foot">'+
-        '<a class="text-link-sm" href="p06_trial.html?type=trial'+(c.slug?('&course='+c.slug):'')+'">'+dict.footer_link_trial+'</a>'+
-        '<a class="text-link" href="'+c.href+'">'+dict.p02_card_view+'</a>'+
+      '<a class="card-title-link" href="p03_course_detail.html?plan='+p.id+'"><h3>'+p.name+'</h3></a>'+
+      '<p class="card-pitch">'+includesSummaryLine(p)+'</p>'+
+      '<div class="card-facts"><b>'+p.validity+'</b></div>'+
+      '<div class="card-price">'+priceHtml+'</div>'+
+      '<div class="card-foot" style="gap:8px;">'+
+        '<a class="btn btn-outline btn-sm" href="p03_course_detail.html?plan='+p.id+'">查看方案</a>'+
+        buyBtn+
       '</div>'+
     '</div>'+
   '</div>';
 }
-function renderCards(){
-  /* 寬卡（featuredPos）固定置頂／置底，標準卡依排序置中；
-     全部併入單一 grid（6 欄，寬卡 span3／標準卡 span2）＋ auto-flow:dense，
-     篩選後卡數變動時能自動回填空格，不留孔洞 */
+function renderPlans(){
   var dict = tliDict();
-  var filtered = COURSES.filter(cardMatches);
-  var topFeatured = filtered.filter(function(c){ return c.featuredPos === 'top'; }).sort(function(a,b){ return a.rank - b.rank; });
-  var bottomFeatured = filtered.filter(function(c){ return c.featuredPos === 'bottom'; }).sort(function(a,b){ return a.rank - b.rank; });
-  var standards = sortedCourses(filtered.filter(function(c){ return !c.featuredPos; }));
-  var ordered = topFeatured.concat(standards, bottomFeatured);
+  var filtered = sortedPlans(PLANS.filter(planMatches));
+  var shown = filtered.slice(0, visibleCount);
 
   var grid = document.getElementById('cardGrid');
-  grid.innerHTML = ordered.map(function(c){ return cardHtml(c, !!c.featuredPos); }).join('');
-  grid.style.display = ordered.length === 0 ? 'none' : '';
+  grid.innerHTML = shown.map(planCardHtml).join('');
+  grid.style.display = filtered.length === 0 ? 'none' : '';
 
-  document.getElementById('resultsCount').innerHTML = tliFmt(dict.p02_results_count, {n: ordered.length});
-  document.getElementById('emptyState').classList.toggle('show', ordered.length === 0);
+  var moreRow = document.getElementById('loadMoreRow');
+  moreRow.classList.toggle('hide', visibleCount >= filtered.length);
+
+  document.getElementById('resultsCount').innerHTML = tliFmt(dict.p02_results_count, {n: filtered.length});
+  document.getElementById('emptyState').classList.toggle('show', filtered.length === 0);
 }
-function applySort(){ renderCards(); }
+function loadMorePlans(){
+  visibleCount += PLAN_VISIBLE_STEP;
+  renderPlans();
+}
+function applySort(){ visibleCount = PLAN_VISIBLE_STEP; renderPlans(); }
+
+function packageCardHtml(pkg){
+  var orig = packageOriginalTotal(pkg);
+  var planListHtml = pkg.planIds.map(function(pid){
+    var p = planById(pid);
+    if(!p) return '';
+    return '<li><a href="p03_course_detail.html?plan='+pid+'">'+p.name+'</a><span>'+fmtPrice(p.price)+'</span></li>';
+  }).join('');
+  return '<div class="package-card">'+
+    '<h3>'+pkg.name+'</h3>'+
+    '<p class="pkg-pitch">'+pkg.pitch+'</p>'+
+    '<ul class="pkg-plan-list">'+planListHtml+'</ul>'+
+    '<div class="pkg-price-row"><span class="pkg-price-orig">原價 '+fmtPrice(orig)+'</span><span class="pkg-price-combo">組合價 '+fmtPrice(pkg.comboPrice)+'</span></div>'+
+    '<div class="card-foot" style="gap:8px;">'+
+      '<a class="btn btn-outline btn-sm" href="p03_course_detail.html?plan='+pkg.id+'">查看組合包</a>'+
+      '<a class="btn btn-accent btn-sm" href="../會員區/m13_checkout.html?plan='+pkg.id+'">立即購買組合</a>'+
+    '</div>'+
+  '</div>';
+}
+function renderPackages(){
+  var grid = document.getElementById('packageGrid');
+  if(!grid) return;
+  grid.innerHTML = PACKAGES.map(packageCardHtml).join('');
+}
+
+/* URL 舊契約相容：p01／m08／p03 麵包屑仍連到舊 category 值（zh-1on1-online／flex／self-paced），
+   對應到新篩選模型的「型態」與「分類」條件，確保外部連結持續有效 */
+var LEGACY_CATEGORY_MAP = {
+  'zh-1on1-online': {category:'zh', format:'1on1'},
+  'flex': {format:'group-live'},
+  'self-paced': {format:'self-paced'}
+};
 function applyUrlFilter(){
   var params = new URLSearchParams(window.location.search);
   var catKey = params.get('category');
-  if(catKey){
-    var cat = CATEGORIES.filter(function(c){ return c.key === catKey; })[0];
-    if(cat) activeFilters.category.add(cat.key);
+  if(!catKey) return;
+  var newCat = CATEGORY_DEFS.filter(function(c){ return c.key === catKey; })[0];
+  if(newCat){
+    activeFilters.category.add(newCat.key);
+    return;
+  }
+  var legacy = LEGACY_CATEGORY_MAP[catKey];
+  if(legacy){
+    if(legacy.category) activeFilters.category.add(legacy.category);
+    if(legacy.format) activeFilters.format.add(legacy.format);
   }
 }
 function onLangApplied(lang){
   fillTabs();
   fillPills();
-  renderCards();
+  renderPlans();
+  renderPackages();
 }
 applyUrlFilter();
 </script>
@@ -787,31 +1164,42 @@ ja: {
 /* ===================== i18n：本頁專屬字典 I18N_PAGE（p02 線上課程） ===================== */
 var I18N_PAGE = {
 'zh-TW': {
-  meta_title: 'TLI Connect｜線上課程',
-  meta_description: 'TLI 線上課程總覽：一對一線上課、彈性團體直播、自學影音、文化線上課、企業線上培訓、師資認證，依語言、上課方式與程度篩選。',
-  p02_hero_h1: '線上課程',
-  p02_hero_lead: '依語言、上課方式與程度篩選，找到最適合你的班型與方案。',
-  p02_hero_stats: '12 門課・2 種上課方式・7 種語言',
-  p02_filter_lang: '語言', p02_filter_mode: '上課方式', p02_filter_level: '等級', p02_filter_clear: '清除篩選',
+  meta_title: 'TLI Connect｜銷售方案與組合包',
+  meta_description: 'TLI 銷售方案與組合包總覽：一對一、彈性團體直播、自學影音、文化活動、企業培訓、師資認證等方案，依分類、上課方式、制度與型態篩選。',
+  p02_hero_h1: '銷售方案與組合包',
+  p02_hero_lead: '依分類、上課方式、制度與型態篩選，找到最適合你的銷售方案或組合包。',
+  p02_hero_stats: '20 個銷售方案・4 組組合包・7 種語言',
+  p02_filter_clear: '清除篩選',
+  p02_filter_delivery: '上課方式', p02_filter_schedule: '制度', p02_filter_format: '型態', p02_filter_priceband: '價格帶',
+  p02_filter_search_ph: '搜尋方案名稱',
   p02_sort_label: '排序', p02_sort_reco: '推薦', p02_sort_new: '最新', p02_sort_price: '價格',
-  p02_results_count: '共 {n} 門課',
-  p02_empty_title: '目前篩選條件下沒有符合的課程',
-  p02_empty_desc: '試試調整篩選條件，或直接讓顧問幫您推薦合適的班型',
+  p02_results_count: '共 {n} 個方案',
+  p02_loadmore: '載入更多方案',
+  p02_empty_title: '目前篩選條件下沒有符合的方案',
+  p02_empty_desc: '試試調整篩選條件，或直接讓顧問幫您推薦合適的方案',
   p02_empty_cta: '找顧問幫我推薦',
+  p02_note_text: '自學課程與聊天室權益隨方案提供，可請顧問依目標組合專案方案。',
+  p02_note_cta: '聯繫顧問',
+  p02_package_title: '組合包',
+  p02_package_sub: '將常見的方案組合在一起，組合價低於個別方案原價加總',
   p02_closer_h2: '不知道怎麼選？',
   p02_closer_lead: '和顧問聊聊，或先測一次目前的程度',
   p02_closer_quiz: '2 分鐘程度快測 →',
   p02_closer_stat1_num: '1956', p02_closer_stat1_label: '年創校',
   p02_closer_stat2_num: '30 萬＋', p02_closer_stat2_label: '全球校友',
   p02_closer_stat3_num: '1 對 1', p02_closer_stat3_label: '每堂皆為專屬線上教室',
-  p02_card_view: '查看課程 →', p02_price_quote: '由顧問報價',
+  p02_card_view: '查看方案 →', p02_price_quote: '顧問報價',
+  p02_cat_zh: '中文', p02_cat_foreign: '外文', p02_cat_culture: '文化', p02_cat_corp: '商業', p02_cat_cert: '師培',
+  p02_delivery_online: '線上', p02_delivery_offline: '實體',
+  p02_sched_semester: '學期制', p02_sched_flexible: '彈性制',
+  p02_format_1on1: '一對一', p02_format_grouplive: '團體直播', p02_format_chatroom: '聊天室', p02_format_selfpaced: '自學', p02_format_activity: '活動',
+  p02_price_lt5k: '5,000 以下', p02_price_5to15k: '5,000–15,000', p02_price_15to35k: '15,000–35,000', p02_price_gt35k: '35,000 以上', p02_price_quote_band: '顧問報價',
   p02_cat_zh1on1: '一對一線上課', p02_cat_flex: '彈性團體直播', p02_cat_selfpaced: '自學影音',
-  p02_cat_culture: '文化線上課', p02_cat_corp: '企業線上培訓', p02_cat_cert: '師資認證',
   p02_mode_booking: '預約制', p02_mode_live: '直播制', p02_mode_ondemand: '隨選',
   p02_lang_zh: '中文', p02_lang_en: '英', p02_lang_ja: '日', p02_lang_ko: '韓', p02_lang_de: '德', p02_lang_fr: '法',
   p02_level_beginner: '入門', p02_level_elementary: '初級', p02_level_intermediate: '中級', p02_level_advanced: '高級',
   p02_badge_zh: '中', p02_badge_en: '英', p02_badge_ja: '日', p02_badge_ko: '韓', p02_badge_de: '德', p02_badge_fr: '法', p02_badge_corp: '企', p02_badge_cert: '證',
-  p02_c_zh1on1_title: '中文一對一線上課', p02_c_zh1on1_pitch: '資深老師 1 對 1 陪你練，自選時段與老師，全球最多校友選擇的中文教學法', p02_c_zh1on1_fact1: '50 分鐘／堂', p02_c_zh1on1_fact2: '自選老師', p02_c_zh1on1_highlight: '最多學員選擇．資深老師 1 對 1',
+  p02_c_zh1on1_title: '中文一對一線上課', p02_c_zh1on1_pitch: '資深老師 1 對 1 陪你練，提出方便時段由顧問安排老師，全球最多校友選擇的中文教學法', p02_c_zh1on1_fact1: '50 分鐘／堂', p02_c_zh1on1_fact2: '顧問安排', p02_c_zh1on1_highlight: '最多學員選擇．資深老師 1 對 1',
   p02_c_en1on1_title: '英文一對一線上課', p02_c_en1on1_pitch: '對應 TOEFL／IELTS／TOEIC／GEPT，11 級 CEFR 對照', p02_c_en1on1_fact1: '50 分鐘／堂', p02_c_en1on1_fact2: '對應多益／雅思',
   p02_c_jp1on1_title: '日文一對一線上課', p02_c_jp1on1_pitch: '對應 JLPT，提供 10 分鐘免費程度測試', p02_c_jp1on1_fact1: '50 分鐘／堂', p02_c_jp1on1_fact2: '對應 JLPT',
   p02_c_ko1on1_title: '韓文一對一線上課', p02_c_ko1on1_pitch: '對應 TOPIK，生活、旅遊、商用主題皆備', p02_c_ko1on1_fact1: '50 分鐘／堂', p02_c_ko1on1_fact2: '對應 TOPIK',
@@ -887,7 +1275,7 @@ ja: {
   p02_lang_zh: '中国語', p02_lang_en: '英語', p02_lang_ja: '日本語', p02_lang_ko: '韓国語', p02_lang_de: 'ドイツ語', p02_lang_fr: 'フランス語',
   p02_level_beginner: '入門', p02_level_elementary: '初級', p02_level_intermediate: '中級', p02_level_advanced: '上級',
   p02_badge_zh: '中', p02_badge_en: '英', p02_badge_ja: '日', p02_badge_ko: '韓', p02_badge_de: '独', p02_badge_fr: '仏', p02_badge_corp: '法人', p02_badge_cert: '認定',
-  p02_c_zh1on1_title: '中国語 1対1 オンライン', p02_c_zh1on1_pitch: '経験豊富な講師とマンツーマンで練習。講師と時間帯を自由に選べる、世界で最も選ばれている中国語学習法です。', p02_c_zh1on1_fact1: '1回50分', p02_c_zh1on1_fact2: '講師を選択可能', p02_c_zh1on1_highlight: '受講生に一番人気・ベテラン講師との一対一',
+  p02_c_zh1on1_title: '中国語 1対1 オンライン', p02_c_zh1on1_pitch: '経験豊富な講師とマンツーマンで練習。ご都合の良い時間をお伝えいただければアドバイザーが講師を手配、世界で最も選ばれている中国語学習法です。', p02_c_zh1on1_fact1: '1回50分', p02_c_zh1on1_fact2: 'アドバイザーが手配', p02_c_zh1on1_highlight: '受講生に一番人気・ベテラン講師との一対一',
   p02_c_en1on1_title: '英語 1対1 オンライン', p02_c_en1on1_pitch: 'TOEFL／IELTS／TOEIC／GEPTに対応、CEFR 11段階と対照できます。', p02_c_en1on1_fact1: '1回50分', p02_c_en1on1_fact2: 'TOEIC／IELTS対応',
   p02_c_jp1on1_title: '日本語 1対1 オンライン', p02_c_jp1on1_pitch: 'JLPTに対応、無料10分レベルチェック付きです。', p02_c_jp1on1_fact1: '1回50分', p02_c_jp1on1_fact2: 'JLPT対応',
   p02_c_ko1on1_title: '韓国語 1対1 オンライン', p02_c_ko1on1_pitch: 'TOPIKに対応、生活・旅行・ビジネスまで幅広いテーマをご用意しています。', p02_c_ko1on1_fact1: '1回50分', p02_c_ko1on1_fact2: 'TOPIK対応',
@@ -910,7 +1298,7 @@ var TLI_KB_I18N = {
   {id:'visa', chip:'簽證', q:'上課時數與簽證申請有什麼關係？', a:'台灣校區學期班課程如週時數達 15 小時，即符合申請學生簽證所需之上課證明條件，實際申請流程與文件請洽校區顧問確認。', short:'週時數達 15 小時的學期班即符合學生簽證申請條件。'},
   {id:'invoice', chip:'發票', q:'會開立發票嗎？', a:'是，完成付款後將依規定開立發票；企業包班客戶可申請月結發票，個人課程則於訂單完成後開立。', short:'付款完成後會開立發票，企業包班可申請月結。'},
   {id:'payment', chip:'付款方式', q:'有哪些付款方式？', a:'提供一次付清、訂金＋尾款、分期三種付款模式，實際適用方式依方案內容與顧問確認之訂單條件為準。', short:'可選一次付清、訂金＋尾款或分期，依方案與顧問確認條件為準。'},
-  {id:'format', chip:'上課方式', q:'一對一與彈性團體直播差在哪？', a:'一對一線上課是預約制，可自選老師與上課時段；彈性團體直播是固定時段開課、報名即可入班，費用通常更划算，若當期提供回放，錯過直播仍可補看。', short:'一對一是預約制可自選老師時段；團體直播是固定時段、費用較划算。'},
+  {id:'format', chip:'上課方式', q:'一對一與彈性團體直播差在哪？', a:'一對一線上課是預約制，你提出方便的時段，由顧問安排老師；彈性團體直播是固定時段開課、報名即可入班，費用通常更划算，若當期提供回放，錯過直播仍可補看。', short:'一對一是預約制、由顧問安排老師與時段；團體直播是固定時段、費用較划算。'},
   {id:'classroom', chip:'線上教室', q:'線上教室怎麼進入？連結會不會外流？', a:'上課前登入會員區，系統驗證身分後開放「進入教室」按鈕，一鍵進入當堂專屬 Zoom 教室；每堂課使用唯一會議並由老師於等候室放行，不提供可轉傳的連結。', short:'登入會員區後一鍵進教室，每堂唯一連結、老師等候室放行，不怕連結外流。'},
   {id:'pricing', chip:'價格與報價', q:'課程費用怎麼估算？', a:'費用依語言、上課方式（一對一／團體）與堂數而定，建議告知學習目標與時間，由顧問提供試算報價；也可直接預約試聽時一併確認費用。', short:'費用依語言、上課方式與堂數而定，可請顧問提供試算報價。'},
   {id:'trial', chip:'試聽', q:'可以先試聽嗎？', a:'可以，提供免費試聽課程，由顧問依您的程度與目標安排合適的試聽老師與時段，體驗後再決定是否報名。', short:'提供免費試聽，顧問會依程度與目標安排合適老師與時段。'},
@@ -922,7 +1310,7 @@ en: [
   {id:'visa', chip:'Student Visa', q:'How do class hours relate to visa applications?', a:'Semester courses at our Taiwan campuses with 15+ class hours per week meet the attendance requirement for a student visa application. Please confirm the exact process and documents with your campus advisor.', short:'Semester courses with 15+ weekly hours meet the student visa attendance requirement.'},
   {id:'invoice', chip:'Invoices', q:'Will I receive an invoice or receipt?', a:'Yes — an official invoice is issued after payment is completed. Corporate group-class clients may request monthly billing; individual courses are invoiced once the order is completed.', short:'An invoice is issued after payment; corporate clients can request monthly billing.'},
   {id:'payment', chip:'Payment Options', q:'What payment methods are available?', a:'We offer full payment, deposit + balance, or installment plans. The exact options depend on your course plan and the order terms confirmed with your advisor.', short:'Choose full payment, deposit + balance, or installments, per your advisor-confirmed plan.'},
-  {id:'format', chip:'Class Formats', q:'What’s the difference between 1-on-1 and flexible group livestream classes?', a:'1-on-1 online classes are booking-based — you choose your own teacher and time slot. Flexible group livestream classes run at fixed times and you simply enroll to join; they’re usually more affordable, and if a recording is offered that term, you can catch up if you miss the live session.', short:'1-on-1 is booking-based with your choice of teacher and time; group livestream runs on a fixed schedule and costs less.'},
+  {id:'format', chip:'Class Formats', q:'What’s the difference between 1-on-1 and flexible group livestream classes?', a:'1-on-1 online classes are booking-based — you submit your available times and our advisor arranges a teacher for you. Flexible group livestream classes run at fixed times and you simply enroll to join; they’re usually more affordable, and if a recording is offered that term, you can catch up if you miss the live session.', short:'1-on-1 is booking-based — our advisor arranges the teacher and time based on your availability; group livestream runs on a fixed schedule and costs less.'},
   {id:'classroom', chip:'Online Classroom', q:'How do I join the online classroom? Could the link leak to others?', a:'Log into the member area before class — once your identity is verified, the “Enter Classroom” button unlocks a one-click link to your dedicated Zoom session. Each class uses a unique meeting, and your teacher admits you from the waiting room, so there’s no shareable link that could leak.', short:'Log in to unlock a one-click link to your unique Zoom session; your teacher admits you from the waiting room.'},
   {id:'pricing', chip:'Pricing', q:'How is the course fee calculated?', a:'Pricing depends on the language, class format (1-on-1 or group), and number of lessons. Share your learning goals and timeline and an advisor will prepare a quote — or confirm pricing when you book a trial class.', short:'Pricing depends on language, format, and lesson count — ask your advisor for a quote.'},
   {id:'trial', chip:'Trial Class', q:'Can I try a class before signing up?', a:'Yes — we offer a free trial class. Your advisor will match you with a suitable teacher and time slot based on your level and goals, so you can decide after experiencing it.', short:'A free trial is available, matched to your level and goals before you commit.'},
@@ -934,7 +1322,7 @@ ja: [
   {id:'visa', chip:'学生ビザ', q:'授業時間数はビザ申請にどう関係しますか？', a:'台湾キャンパスの学期制コースで週15時間以上受講する場合、学生ビザ申請に必要な出席証明の条件を満たします。具体的な申請手続きや必要書類はキャンパスのアドバイザーにご確認ください。', short:'週15時間以上の学期制コースは学生ビザの出席条件を満たします。'},
   {id:'invoice', chip:'領収書', q:'領収書は発行されますか？', a:'はい、お支払い完了後に規定に基づき領収書を発行いたします。法人の団体クラスは月締め請求書の申請が可能で、個人受講は注文完了後に発行されます。', short:'お支払い後に領収書を発行、法人は月締め請求も可能です。'},
   {id:'payment', chip:'お支払い方法', q:'どのようなお支払い方法がありますか？', a:'一括払い、内金＋残金、分割払いの3種類がございます。実際にご利用いただける方法はプラン内容とアドバイザーが確認した注文条件によります。', short:'一括、内金＋残金、分割いずれかを選択でき、詳細はアドバイザーとの確認条件によります。'},
-  {id:'format', chip:'受講形式', q:'一対一とグループライブ配信の違いは何ですか？', a:'一対一のオンライン授業は予約制で、講師と時間帯をご自身で選べます。グループライブ配信は決まった時間に開講し、申込めばそのまま参加可能で、料金は比較的お得です。その回に録画提供がある場合は、見逃してもあとから視聴できます。', short:'一対一は予約制で講師・時間を選択可能、グループライブ配信は固定スケジュールで料金がお得です。'},
+  {id:'format', chip:'受講形式', q:'一対一とグループライブ配信の違いは何ですか？', a:'一対一のオンライン授業は予約制で、ご都合の良い時間帯をお伝えいただければ、アドバイザーが講師を手配します。グループライブ配信は決まった時間に開講し、申込めばそのまま参加可能で、料金は比較的お得です。その回に録画提供がある場合は、見逃してもあとから視聴できます。', short:'一対一は予約制でアドバイザーが講師と時間を手配、グループライブ配信は固定スケジュールで料金がお得です。'},
   {id:'classroom', chip:'オンライン教室', q:'オンライン教室にはどうやって入りますか？リンクが流出する心配はありませんか？', a:'授業前に会員エリアにログインし、本人確認後に「教室に入る」ボタンが表示され、ワンクリックでその回専用のZoom教室に入室できます。各授業は個別のミーティングを使用し、講師が待機室から入室を許可するため、転送可能なリンクは発行されません。', short:'ログイン後ワンクリックで専用Zoom教室へ、講師が待機室から許可するためリンク流出の心配はありません。'},
   {id:'pricing', chip:'料金・見積り', q:'コース料金はどのように算出されますか？', a:'料金は言語、受講形式（一対一／グループ）、レッスン回数によって異なります。学習目標とご希望の時期をお伝えいただければ、アドバイザーが見積りをご案内します。体験レッスンご予約時に料金を確認いただくことも可能です。', short:'料金は言語・受講形式・回数によって異なり、アドバイザーが見積りをご案内します。'},
   {id:'trial', chip:'体験レッスン', q:'事前に体験レッスンを受けられますか？', a:'はい、無料体験レッスンをご用意しています。アドバイザーがレベルと目標に合わせて講師と時間帯をご案内しますので、体験後に受講をご検討いただけます。', short:'無料体験レッスンがあり、レベルと目標に合わせて講師・時間をご案内します。'},

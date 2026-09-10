@@ -392,6 +392,24 @@ html,body{overflow-x:hidden;}
 .topbar{padding:0 16px;}
 }
 .phase2-pill{display:inline-block;background:#FFF4E0;border:1px solid #E8A23D;color:#8A5A00;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle;white-space:nowrap;}
+
+/* ==== 20260910q 新增：建立合約「會員」欄位改為單一欄位自動完成，同名同姓以 Email 分辨 ==== */
+.member-ac{position:relative;}
+.member-ac .ac-input-row{position:relative;display:flex;align-items:center;}
+.member-ac .ac-input-row input{padding-right:30px;}
+.member-ac .ac-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:none;background:none;color:var(--g500);font-size:16px;line-height:1;cursor:pointer;display:none;border-radius:50%;}
+.member-ac .ac-clear:hover{color:var(--g900);background:var(--g50);}
+.member-ac .ac-clear.show{display:block;}
+.member-ac .ac-list{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--g200);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.14);max-height:280px;overflow-y:auto;z-index:60;display:none;}
+.member-ac .ac-list.open{display:block;}
+.member-ac .ac-item{padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--g200);}
+.member-ac .ac-item:last-child{border-bottom:none;}
+.member-ac .ac-item:hover,.member-ac .ac-item.active{background:var(--g50);}
+.member-ac .ac-item .l1{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;flex-wrap:wrap;}
+.member-ac .ac-item .l2{font-size:11.5px;color:var(--g500);margin-top:2px;}
+.member-ac .ac-empty{padding:12px;font-size:12.5px;color:var(--g500);}
+.member-ac .ac-empty a{color:var(--navy);font-weight:600;cursor:pointer;}
+.member-selected-note{font-size:11.5px;color:var(--g500);margin-top:4px;}
 </style>
 </head>
 <body>
@@ -469,7 +487,14 @@ html,body{overflow-x:hidden;}
 
 <div class="modal-mask" id="newContractModal"><div class="modal">
 <h3>建立合約</h3>
-<div class="formrow"><label>會員</label><input type="text" id="nc_member" placeholder="輸入姓名搜尋會員"></div>
+<div class="formrow member-ac" id="ncMemberWrap"><label>會員</label>
+  <div class="ac-input-row">
+    <input type="text" id="nc_member" placeholder="輸入姓名或 Email" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="ncMemberList" oninput="onNcMemberInput(this.value)" onkeydown="onNcMemberKeydown(event)" onfocus="onNcMemberFocus()">
+    <button type="button" class="ac-clear" id="ncMemberClear" onclick="clearNcMember()" aria-label="清除已選會員">×</button>
+  </div>
+  <div class="ac-list" id="ncMemberList"></div>
+  <div class="member-selected-note" id="ncMemberNote">同名同姓時請以 Email 分辨候選項目。</div>
+</div>
 <div class="formrow"><label>關聯方案／訂單</label><input type="text" id="nc_order" placeholder="輸入訂單編號，例：ORD-2026-0083"></div>
 <div class="formrow"><label>合約類型</label><select id="nc_type"><option>一般標準合約（中文）</option><option>一般標準合約（英文）</option><option>一般標準合約（日文）</option><option>師資班合約</option><option>企業合約</option></select></div>
 <div class="formrow"><label>簽署方式</label><select id="nc_method"><option>線上</option><option>紙本</option></select></div>
@@ -805,11 +830,101 @@ function nowStr(){
   return '2026-08-25 '+p(d.getHours())+':'+p(d.getMinutes());
 }
 
-function openNewContract(){ document.getElementById('nc_member').value=''; document.getElementById('nc_order').value=''; document.getElementById('newContractModal').classList.add('open'); }
+/* 20260910q 新增：建立合約「會員」欄位改為單一欄位自動完成，示範資料含「陳雅婷」同名同姓（以 Email 分辨） */
+var CONTRACT_MEMBERS=[
+  {id:'m1',name:'王小明',email:'wang.ming@example.com',cls:'B',campus:'羅斯福'},
+  {id:'m2',name:'陳雅婷',email:'chen.yt01@example.com',cls:'G',campus:'士林'},
+  {id:'m3',name:'陳雅婷',email:'chen.yt02@example.com',cls:'C',campus:'台中'},
+  {id:'m4',name:'李佩珊',email:'li.ps@example.com',cls:'B',campus:'羅斯福'},
+  {id:'m5',name:'Sarah Chen',email:'sarah.chen@example.com',cls:'C',campus:'士林'},
+  {id:'m6',name:'佐藤 美咲',email:'satomi.sato@example.com',cls:'BIP',campus:'台中'}
+];
+var __ncSelectedMember=null;
+var __ncAcResults=[];
+var __ncAcActiveIndex=-1;
+function ncMemberMatch(m,q){
+  if(!q)return false;
+  var n=(m.name||'').toLowerCase(),e=(m.email||'').toLowerCase();
+  return n.indexOf(q)>-1||e.indexOf(q)>-1;
+}
+function onNcMemberInput(v){
+  __ncSelectedMember=null;
+  document.getElementById('ncMemberClear').classList.remove('show');
+  __ncAcActiveIndex=-1;
+  var q=(v||'').trim().toLowerCase();
+  var list=document.getElementById('ncMemberList');
+  if(!q){__ncAcResults=[];list.classList.remove('open');list.innerHTML='';return;}
+  __ncAcResults=CONTRACT_MEMBERS.filter(function(m){return ncMemberMatch(m,q);}).slice(0,8);
+  renderNcMemberList();
+}
+function onNcMemberFocus(){
+  var v=document.getElementById('nc_member').value.trim();
+  if(v)onNcMemberInput(v);
+}
+function renderNcMemberList(){
+  var list=document.getElementById('ncMemberList');
+  var input=document.getElementById('nc_member');
+  if(!__ncAcResults.length){
+    var q=input.value.trim();
+    if(!q){list.classList.remove('open');list.innerHTML='';input.setAttribute('aria-expanded','false');return;}
+    list.innerHTML='<div class="ac-empty">查無會員<br><span style="color:var(--g500)">請確認姓名或 Email，或至「會員管理」新增會員</span></div>';
+    list.classList.add('open');
+    input.setAttribute('aria-expanded','true');
+    return;
+  }
+  list.innerHTML=__ncAcResults.map(function(m,i){
+    return '<div class="ac-item'+(i===__ncAcActiveIndex?' active':'')+'" onmousedown="event.preventDefault();selectNcMember('+i+')">'+
+      '<div class="l1">'+m.name+' <span class="badge blue">'+m.cls+' 類</span><span class="badge grey">'+m.campus+'校</span></div>'+
+      '<div class="l2">'+m.email+'</div>'+
+    '</div>';
+  }).join('');
+  list.classList.add('open');
+  input.setAttribute('aria-expanded','true');
+}
+function onNcMemberKeydown(ev){
+  var list=document.getElementById('ncMemberList');
+  if(!list.classList.contains('open')||!__ncAcResults.length){
+    if(ev.key==='Escape')list.classList.remove('open');
+    return;
+  }
+  if(ev.key==='ArrowDown'){ev.preventDefault();__ncAcActiveIndex=Math.min(__ncAcActiveIndex+1,__ncAcResults.length-1);renderNcMemberList();}
+  else if(ev.key==='ArrowUp'){ev.preventDefault();__ncAcActiveIndex=Math.max(__ncAcActiveIndex-1,0);renderNcMemberList();}
+  else if(ev.key==='Enter'){ev.preventDefault();if(__ncAcActiveIndex>-1)selectNcMember(__ncAcActiveIndex);}
+  else if(ev.key==='Escape'){list.classList.remove('open');}
+}
+function selectNcMember(i){
+  var m=__ncAcResults[i];
+  if(!m)return;
+  __ncSelectedMember=m;
+  document.getElementById('nc_member').value=m.name+'〈'+m.email+'〉';
+  document.getElementById('ncMemberClear').classList.add('show');
+  document.getElementById('ncMemberList').classList.remove('open');
+}
+function clearNcMember(){
+  __ncSelectedMember=null;
+  var input=document.getElementById('nc_member');
+  input.value='';
+  document.getElementById('ncMemberClear').classList.remove('show');
+  document.getElementById('ncMemberList').classList.remove('open');
+  input.focus();
+}
+document.addEventListener('click',function(ev){
+  var wrap=document.getElementById('ncMemberWrap');
+  if(wrap&&!wrap.contains(ev.target))document.getElementById('ncMemberList').classList.remove('open');
+});
+
+function openNewContract(){
+  __ncSelectedMember=null;
+  document.getElementById('nc_member').value='';
+  document.getElementById('ncMemberClear').classList.remove('show');
+  document.getElementById('ncMemberList').classList.remove('open');
+  document.getElementById('nc_order').value='';
+  document.getElementById('newContractModal').classList.add('open');
+}
 function closeNewContract(){ document.getElementById('newContractModal').classList.remove('open'); }
 function submitNewContract(){
-  var member = document.getElementById('nc_member').value.trim();
-  if (!member){ showToast('請輸入會員姓名'); return; }
+  if (!__ncSelectedMember){ showToast('請從候選名單選取會員，同名同姓請以 Email 分辨'); return; }
+  var member = __ncSelectedMember.name;
   var type = document.getElementById('nc_type').value;
   var method = document.getElementById('nc_method').value;
   var order = document.getElementById('nc_order').value.trim() || '（未關聯訂單）';

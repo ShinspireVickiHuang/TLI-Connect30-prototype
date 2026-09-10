@@ -147,7 +147,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <h2>各資源類型使用量（近 30 天）</h2>
 <div class="tablewrap">
 <table>
-<thead><tr><th>資源類型</th><th>使用學生數</th><th>總使用次數／時數</th><th>平均每人使用量</th><th>出席率</th><th>未出席（no-show）率</th></tr></thead>
+<thead><tr><th>資源類型</th><th>使用學生數</th><th>總使用次數／時數</th><th>平均每人使用量</th><th>出席率</th><th>未出席（no-show）率</th><th>遲到率</th></tr></thead>
 <tbody id="usageTbody"></tbody>
 </table>
 </div>
@@ -158,10 +158,10 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <script>
 var USAGE_ROWS = [
-  {type:'自學影片', users:132, total:'2,480 分鐘', avg:'18.8 分鐘／人', attend:'－', noshow:'－'},
-  {type:'自學音檔', users:98, total:'1,140 分鐘', avg:'11.6 分鐘／人', attend:'－', noshow:'－'},
-  {type:'自我測驗', users:110, total:'356 次', avg:'3.2 次／人', attend:'－', noshow:'－'},
-  {type:'團體聊天室', users:76, total:'142 場次', avg:'1.9 場／人', attend:'87%', noshow:'13%'}
+  {type:'自學影片', users:132, total:'2,480 分鐘', avg:'18.8 分鐘／人', attend:'－', noshow:'－', late:'－'},
+  {type:'自學音檔', users:98, total:'1,140 分鐘', avg:'11.6 分鐘／人', attend:'－', noshow:'－', late:'－'},
+  {type:'自我測驗', users:110, total:'356 次', avg:'3.2 次／人', attend:'－', noshow:'－', late:'－'},
+  {type:'團體聊天室', users:76, total:'142 場次', avg:'1.9 場／人', attend:'87%', noshow:'13%', late:'－'}
 ];
 document.getElementById('usageKpiGrid').innerHTML = [
   {num:'124', lbl:'本學期已開通'},
@@ -172,7 +172,7 @@ document.getElementById('usageKpiGrid').innerHTML = [
   {num:'13%', lbl:'聊天室未出席率（近 30 天）'}
 ].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
 document.getElementById('usageTbody').innerHTML = USAGE_ROWS.map(function(r){
-  return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td></tr>';
+  return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td><td>'+r.late+'</td></tr>';
 }).join('');
 function exportCsv(){ toast('已產生使用報表 CSV（示範畫面，不會實際下載檔案）'); }
 

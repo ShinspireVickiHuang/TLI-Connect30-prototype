@@ -356,7 +356,19 @@ var EVENT_NOTIFS = [
  {key:'headcount_pending', name:'人頭對帳待確認', recipients:['財務','學校窗口'], channels:['Email'], timing:'daily', enabled:true},
  {key:'institution_invoice', name:'機構帳單已開立', recipients:['學校窗口','財務'], channels:['Email'], timing:'immediate', enabled:true},
  {key:'chatroom_full', name:'聊天室場次名額將滿', recipients:['學生','老師'], channels:['LINE 通知','站內'], timing:'immediate', enabled:true},
- {key:'consecutive_absent', name:'連續缺席達門檻', recipients:['HR','顧問'], channels:['Email','站內'], timing:'immediate', enabled:true}
+ {key:'consecutive_absent', name:'連續缺席達門檻', recipients:['HR','顧問'], channels:['Email','站內'], timing:'immediate', enabled:true},
+ /* 20260910m 新增：課後回饋雙向多輪對話的三個通知事件，示範畫面，資料為模擬數字 */
+ {key:'feedback_invite', name:'課後回饋邀請（課後 N 小時，依設定）', recipients:['學生'], channels:['Email','站內'], timing:'immediate', enabled:true},
+ {key:'feedback_reply', name:'回饋有新回覆', recipients:['學生','老師'], channels:['站內','Email'], timing:'immediate', enabled:true},
+ {key:'feedback_overdue', name:'回饋逾 N 天未填提醒（依設定）', recipients:['學生'], channels:['Email','站內'], timing:'daily', enabled:true},
+ /* 20260910p 新增：一對一「提出有空時間→顧問排課」三個通知事件，示範畫面，資料為模擬數字 */
+ {key:'schedule_request_sent', name:'排課需求已送出', recipients:['顧問'], channels:['站內','Email'], timing:'immediate', enabled:true},
+ {key:'schedule_arranged', name:'課程已安排', recipients:['學生'], channels:['Email','站內','LINE 通知'], timing:'immediate', enabled:true},
+ {key:'schedule_needs_adjust', name:'排課需求需調整', recipients:['學生'], channels:['Email','站內'], timing:'immediate', enabled:true},
+ /* 20260910p 新增：會員開通流程三個通知事件，示範畫面，資料為模擬數字 */
+ {key:'member_activation', name:'會員開通信（顧問建檔後即時，一次性連結有效期 N 小時，依設定）', recipients:['學生'], channels:['Email'], timing:'immediate', enabled:true},
+ {key:'member_activation_reminder', name:'尚未開通提醒（建檔後 N 天，依設定）', recipients:['學生','顧問'], channels:['Email','站內'], timing:'daily', enabled:true},
+ {key:'password_changed', name:'密碼已變更通知', recipients:['學生'], channels:['Email','站內'], timing:'immediate', enabled:true}
 ];
 function eventByKey(k){ return EVENT_NOTIFS.find(function(e){ return e.key===k; }); }
 function renderChipCell(evKey, field, options){
@@ -411,7 +423,28 @@ var TEMPLATES = [
  {id:'t7', name:'老師代課通知', channels:['站內'], enabled:true, content:{tc:'{課程}（{時間}）已安排代課老師，請留意課表更新。', en:'A substitute teacher has been assigned for {課程} at {時間}.', jp:'{課程}（{時間}）の代講講師が決まりました。'}},
  /* 20260910b 新增：企業員工請假時即時通知 HR，示範畫面，資料為模擬數字 */
  {id:'t8', name:'員工請假通知（給 HR）', channels:['Email'], enabled:true, vars:['{員工}','{課堂}','{時間}','{規則判定}'],
-  content:{tc:'HR 您好，員工 {員工} 已申請 {時間} 的 {課堂} 請假，規則判定：{規則判定}。如需覆核請至後台「B2B 企業客戶」查看。', en:'Dear HR, employee {員工} has requested leave for {課堂} at {時間}. Rule outcome: {規則判定}.', jp:'HR 様、社員 {員工} が {時間} の {課堂} の休暇を申請しました。判定結果：{規則判定}。'}}
+  content:{tc:'HR 您好，員工 {員工} 已申請 {時間} 的 {課堂} 請假，規則判定：{規則判定}。如需覆核請至後台「B2B 企業客戶」查看。', en:'Dear HR, employee {員工} has requested leave for {課堂} at {時間}. Rule outcome: {規則判定}.', jp:'HR 様、社員 {員工} が {時間} の {課堂} の休暇を申請しました。判定結果：{規則判定}。'}},
+ /* 20260910m 新增：課後回饋雙向多輪對話的三份範本，示範畫面，資料為模擬數字 */
+ {id:'t9', name:'課後回饋邀請', channels:['Email','站內'], enabled:true,
+  content:{tc:'{學生姓名} 您好，{課程}（{時間}）已完成，老師已送出課後紀錄，請至會員區填寫這堂課的回饋。', en:'Dear {學生姓名}, {課程} on {時間} has ended. The teacher has submitted the lesson record — please share your feedback in the member area.', jp:'{學生姓名} 様、{課程}（{時間}）が終了し、講師が授業記録を送信しました。会員ページでフィードバックをご記入ください。'}},
+ {id:'t10', name:'回饋有新回覆', channels:['站內','Email'], enabled:true, vars:['{收件人姓名}','{課程}','{時間}'],
+  content:{tc:'{收件人姓名} 您好，{課程}（{時間}）的回饋有新回覆，請至會員區或教師端查看。', en:'Dear {收件人姓名}, there is a new reply on the feedback for {課程} ({時間}). Please check it in the member area or teacher portal.', jp:'{收件人姓名} 様、{課程}（{時間}）のフィードバックに新しい返信があります。ご確認ください。'}},
+ {id:'t11', name:'回饋逾期未填提醒', channels:['Email','站內'], enabled:true,
+  content:{tc:'{學生姓名} 您好，{課程}（{時間}）的課後回饋尚未填寫，提醒您抽空完成，老師會依回饋調整教學內容。', en:'Dear {學生姓名}, feedback for {課程} ({時間}) is still pending. Please complete it when you have a moment.', jp:'{學生姓名} 様、{課程}（{時間}）のフィードバックがまだ未記入です。お手すきの際にご記入をお願いします。'}},
+ /* 20260910p 新增：一對一「提出有空時間→顧問排課」三份範本，示範畫面，資料為模擬數字 */
+ {id:'t12', name:'排課需求已送出（給顧問）', channels:['站內','Email'], enabled:true, vars:['{學生姓名}','{方案}','{提出時段}'],
+  content:{tc:'您好，學員 {學生姓名} 已提出 {方案} 的排課需求，提出時段：{提出時段}。請至排課頁面盡快安排。', en:'Hello, student {學生姓名} has submitted a scheduling request for {方案}. Requested times: {提出時段}. Please arrange it in the scheduling page.', jp:'学員 {學生姓名} が {方案} の予約希望を送信しました。希望時間帯：{提出時段}。予約ページで手配をお願いします。'}},
+ {id:'t13', name:'課程已安排', channels:['Email','站內','LINE 通知'], enabled:true, vars:['{學生姓名}','{方案}','{老師}','{時間}'],
+  content:{tc:'{學生姓名} 您好，您的 {方案} 課程已安排完成，授課老師：{老師}，上課時間：{時間}。詳情請至課表查看。', en:'Dear {學生姓名}, your {方案} class has been arranged. Teacher: {老師}, time: {時間}. See your schedule for details.', jp:'{學生姓名} 様、{方案}の授業手配が完了しました。講師：{老師}、時間：{時間}。詳細はスケジュールをご確認ください。'}},
+ {id:'t14', name:'排課需求需調整', channels:['Email','站內'], enabled:true, vars:['{學生姓名}','{方案}','{顧問留言}'],
+  content:{tc:'{學生姓名} 您好，您提出的 {方案} 排課時段目前無法安排，原因：{顧問留言}。請至課表重新提出有空時間。', en:'Dear {學生姓名}, the times you submitted for {方案} could not be arranged. Reason: {顧問留言}. Please submit new available times in your schedule.', jp:'{學生姓名} 様、ご提出いただいた{方案}の希望時間帯は手配できませんでした。理由：{顧問留言}。スケジュールページで新しい希望時間帯をご提出ください。'}},
+ /* 20260910p 新增：會員開通流程三份範本，示範畫面，資料為模擬數字 */
+ {id:'t15', name:'會員開通信', channels:['Email'], enabled:true, vars:['{學生姓名}','{開通連結}'],
+  content:{tc:'{學生姓名} 您好，您的 TLI Connect 會員帳號已建立，請於連結有效期限內完成開通：{開通連結}。連結逾期請聯繫您的顧問重新發送。', en:'Dear {學生姓名}, your TLI Connect member account has been created. Please activate it before the link expires: {開通連結}. If it expires, contact your advisor for a new link.', jp:'{學生姓名} 様、TLI Connect会員アカウントが作成されました。有効期限内にこちらのリンクから開通手続きを行ってください：{開通連結}。期限切れの場合は担当者までご連絡ください。'}},
+ {id:'t16', name:'尚未開通提醒', channels:['Email','站內'], enabled:true, vars:['{學生姓名}','{顧問}'],
+  content:{tc:'{學生姓名} 您好，您的會員帳號尚未完成開通，請盡速點擊開通信中的連結完成設定，如有問題請聯繫您的顧問 {顧問}。', en:'Dear {學生姓名}, your member account has not been activated yet. Please use the link in your activation email to complete setup, or contact your advisor {顧問} for help.', jp:'{學生姓名} 様、会員アカウントがまだ開通されていません。開通メール内のリンクから設定を完了してください。ご不明点は担当者 {顧問} までご連絡ください。'}},
+ {id:'t17', name:'密碼已變更通知', channels:['Email','站內'], enabled:true, vars:['{學生姓名}','{時間}'],
+  content:{tc:'{學生姓名} 您好，您的帳號密碼已於 {時間} 變更完成。如非本人操作，請立即聯繫客服處理。', en:'Dear {學生姓名}, your account password was changed at {時間}. If this wasn’t you, please contact support immediately.', jp:'{學生姓名} 様、アカウントのパスワードが {時間} に変更されました。心当たりがない場合は、直ちにサポートまでご連絡ください。'}}
 ];
 
 var SYSPARAMS = {orderExpireDays:3, leaveDeadlineHours:12, classroomEntryMinutes:15, bookingLeadHours:24, currency:'TWD', fxSource:'台灣銀行牌告匯率',
@@ -499,7 +532,8 @@ function saveTmpl(){
 }
 /* 範本預覽（20260910b 新增）：以示範值替換變數，顯示三語內容 */
 var PREVIEW_SAMPLE_VALUES = {'{學生姓名}':'王小明','{課程}':'中級會話班','{時間}':'2026-09-15 19:00',
-  '{員工}':'林佳蓉','{課堂}':'企業英文小組班','{規則判定}':'距上課 18 小時，符合企業合約取消時限，不計入免扣次數'};
+  '{員工}':'林佳蓉','{課堂}':'企業英文小組班','{規則判定}':'距上課 18 小時，符合企業合約取消時限，不計入免扣次數',
+  '{收件人姓名}':'王小明'};
 function fillPreviewVars(text){
   var out = text;
   Object.keys(PREVIEW_SAMPLE_VALUES).forEach(function(k){

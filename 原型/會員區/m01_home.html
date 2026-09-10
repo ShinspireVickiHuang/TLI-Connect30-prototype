@@ -235,15 +235,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .explore-link svg{width:15px;height:15px;flex:none;}
 @media(max-width:639px){.explore-link-text{display:none;}}
 
-/* ---------- 我的方案：三型態並列子卡 ---------- */
-.plan-subcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
-@media(max-width:700px){.plan-subcards{grid-template-columns:1fr;}}
-.plan-mini-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-bg);padding:12px;display:flex;flex-direction:column;}
-.plan-type-desc{margin:0 0 8px;font-size:11.5px;color:var(--c-muted);display:flex;align-items:center;flex-wrap:wrap;gap:6px;line-height:1.4;}
-.plan-mini-card h4{margin:0 0 6px;font-size:13.5px;line-height:1.35;}
-.plan-mini-card .pm-meta{font-size:12px;color:var(--c-muted);margin:0 0 4px;}
-.plan-mini-card .pm-actions{display:flex;gap:8px;margin-top:10px;}
-.plan-mini-card .pm-actions .btn{flex:1;}
+/* ---------- 我的方案：方案卡摘要（最多顯示 3 張，20260910k 改為方案層卡片） ---------- */
+.home-plan-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.home-plan-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-bg);padding:12px;}
+.home-plan-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.home-plan-card h4{margin:0 0 4px;font-size:13.5px;line-height:1.35;}
+.home-plan-card .pm-meta{font-size:12px;color:var(--c-muted);margin:0 0 6px;}
+.home-plan-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.home-plan-chips .chip{flex:none;min-width:0;padding:5px 10px;border-radius:20px;border:1px solid var(--c-border);background:#fff;font-size:11.5px;font-weight:600;color:var(--c-muted);cursor:default;min-height:0;display:inline-flex;}
+.badge-payer-self{background:#E6EEF8;color:var(--c-primary);}
+.badge-payer-company{background:#FCEBDC;color:var(--c-accent-dark);}
+.badge-payer-school{background:#F3E8FD;color:#6B21A8;}
 
 /* ---------- 待辦：規則驅動列表 ---------- */
 .todo-info-btn{width:20px;height:20px;border-radius:50%;border:1px solid var(--c-border);background:#fff;display:inline-flex;align-items:center;justify-content:center;color:var(--c-muted);cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;flex:none;line-height:1;padding:0;}
@@ -361,7 +363,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
       <div class="flex-between" style="gap:10px;">
         <div class="small muted" id="enterClassNotice" style="flex:1;">開課前 15 分鐘開放進入・距開課 <span id="enterClassCountdown">計算中…</span></div>
-        <button class="btn btn-primary btn-block hidden" id="enterClassBtn" onclick="openClassroomModal('中文一對一－會話進階','杜老師','明天（08/26，三）14:00–14:50')">進入線上教室</button>
+        <button class="btn btn-primary btn-block hidden" id="enterClassBtn" onclick="openClassroomModal('中文一對一－會話進階','杜老師','明天（08/26，三）14:00–14:50','l1','1on1')">進入線上教室</button>
         <button class="btn btn-outline" id="leaveQuickBtn" onclick="location.href='m05_leave.html?class=tomorrow'">請假</button>
       </div>
     </div>
@@ -369,42 +371,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card" style="margin-top:12px;">
       <div class="flex-between">
         <h3 style="margin:0;font-size:15px;">我的方案</h3>
-        <a href="m04_course_detail.html" class="small muted">查看詳情 ›</a>
+        <a href="m04_course_detail.html" class="small muted">查看全部方案 ›</a>
       </div>
-      <div class="plan-subcards">
-        <div class="plan-mini-card">
-          <p class="plan-type-desc">自己選老師與時間，一堂一堂預約<span class="badge badge-info">預約制</span></p>
-          <h4>中文一對一 50 分・30 堂方案</h4>
-          <div class="flex-between" style="margin-bottom:4px;">
-            <span style="font-size:22px;font-weight:800;">8 <span style="font-size:12px;font-weight:400;color:var(--c-muted);">／ 30 堂剩餘</span></span>
-            <span class="badge badge-warn">效期剩 14 天</span>
-          </div>
-          <div class="progress warn"><div style="width:27%;"></div></div>
-          <p class="pm-meta" style="margin-top:6px;">效期至 2026-09-08</p>
-          <div class="pm-actions">
-            <button class="btn btn-outline btn-sm" onclick="location.href='m02_booking.html'">預約</button>
-            <button class="btn btn-accent btn-sm" onclick="location.href='m06_renew.html'">續費</button>
-          </div>
+      <div class="home-plan-list">
+        <div class="home-plan-card">
+          <div class="home-plan-badges"><span class="badge badge-payer-self">自費</span><span class="badge badge-ok">生效中</span></div>
+          <h4>中文一對一 20 堂課程包</h4>
+          <p class="pm-meta">到期 2026-12-31</p>
+          <div class="home-plan-chips"><span class="chip">一對一 20 堂・剩 12</span></div>
+          <button class="btn btn-outline btn-sm btn-block" onclick="location.href='m03_schedule.html#request'">提出有空時間，請顧問排課</button>
         </div>
-        <div class="plan-mini-card">
-          <p class="plan-type-desc">固定班表，報名後照表上課<span class="badge badge-live">直播制</span></p>
-          <h4>TLI 彈性團體直播・中級會話直播班</h4>
-          <p class="pm-meta">林老師・本期第 4／12 週</p>
-          <p class="pm-meta">下次上課：08/25（二）19:00</p>
-          <div class="pm-actions">
-            <button class="btn btn-outline btn-sm" onclick="location.href='m03_schedule.html?class=flex-group'">查看班表</button>
-            <button class="btn btn-outline btn-sm" onclick="location.href='m05_leave.html?class=flex-group'">請假</button>
-          </div>
+        <div class="home-plan-card">
+          <div class="home-plan-badges"><span class="badge badge-payer-company">公司提供・和霖科技股份有限公司</span><span class="badge badge-ok">生效中</span></div>
+          <h4>商務華語企業培訓</h4>
+          <p class="pm-meta">合約至 2026-12-31</p>
+          <div class="home-plan-chips"><span class="chip">一對一時數池</span><span class="chip">聊天室・白名單</span></div>
+          <button class="btn btn-outline btn-sm btn-block" onclick="location.href='m03_schedule.html#request'">提出有空時間，請顧問排課</button>
         </div>
-        <div class="plan-mini-card">
-          <p class="plan-type-desc">隨時看，進度自動記錄<span class="badge badge-muted">自學</span></p>
-          <h4>發音基礎 20 講</h4>
-          <p class="pm-meta">已完成 12／20 講</p>
-          <div class="progress"><div style="width:60%;"></div></div>
-          <p class="pm-meta" style="margin-top:6px;">上次觀看 08/23</p>
-          <div class="pm-actions">
-            <button class="btn btn-outline btn-sm btn-block" onclick="location.href='m08_self_paced.html?course=c1&lesson=12'">繼續學習</button>
-          </div>
+        <div class="home-plan-card">
+          <div class="home-plan-badges"><span class="badge badge-payer-school">學校提供・範例州立大學</span><span class="badge badge-ok">生效中</span></div>
+          <h4>華語會話學期方案</h4>
+          <p class="pm-meta">到期 2026-11-30</p>
+          <div class="home-plan-chips"><span class="chip">聊天室・全員開放</span><span class="chip">自學 2 門</span></div>
+          <button class="btn btn-primary btn-sm btn-block" onclick="location.href='m08_self_paced.html'">繼續自學</button>
         </div>
       </div>
     </div>
@@ -706,10 +695,13 @@ function showZoomStep(step){
   document.getElementById('crFooterNote').classList.toggle('hidden', step==='unbound');
   document.getElementById('crEnterBtn').classList.toggle('hidden', step!=='step3');
 }
-function openClassroomModal(title,teacher,time){
+var _crLessonId=null, _crLessonType=null;
+function openClassroomModal(title,teacher,time,lessonId,lessonType){
   document.getElementById('zoomTitle').textContent=title;
   document.getElementById('zoomDetail').textContent='老師：'+teacher+'・'+time;
   document.getElementById('zoomOverlay').classList.remove('hidden');
+  _crLessonId=lessonId||null;
+  _crLessonType=lessonType||null;
   clearTimeout(window._crTimer);
   clearInterval(window._crCountdown);
   var email=getZoomEmail();
@@ -757,6 +749,10 @@ function retryClassroomEntry(){
 }
 function confirmEnterClassroom(){
   clearInterval(window._crCountdown);
+  if(_crLessonId && _crLessonType){
+    location.href='m16_classroom.html?lesson='+encodeURIComponent(_crLessonId)+'&type='+encodeURIComponent(_crLessonType);
+    return;
+  }
   showToast('身分驗證通過，正在為您導向專屬線上教室…');
   closeZoomModal();
 }
@@ -835,27 +831,27 @@ function getTodosByRole(role){
   var list = [];
   if(role==='default'){
     list = [
-      {type:'billing',overdue:true,title:'註冊費尾款逾期未繳',sub:'NT$1,500・原到期日 2026-08-22',due:new Date(2026,7,22),action:{label:'前往繳費',href:'m07_profile.html'}},
-      {type:'billing',overdue:false,title:'分期尾款未繳',sub:'NT$3,000・繳費期限 2026-08-31',due:new Date(2026,7,31),action:{label:'前往繳費',href:'m07_profile.html'}},
-      {type:'reminder',title:'明天 14:00 中文一對一・杜老師',sub:'會話進階・課前教材可先下載',due:new Date(2026,7,26,14,0),action:{label:'查看課表',href:'m03_schedule.html'}},
-      {type:'result',title:'改期申請已核准',sub:'08/13 已改至 08/06 14:00',due:new Date(2026,7,26),action:{label:'查看',href:'m04_course_detail.html?tab=1on1'}},
+      {type:'billing',overdue:true,title:'註冊費尾款逾期未繳',sub:'NT$1,500・原到期日 2026-08-22',due:new Date(2026,7,22),action:{label:'前往繳費',href:'m13_checkout.html?order=order-reg-tail'}},
+      {type:'billing',overdue:false,title:'分期尾款未繳',sub:'NT$3,000・繳費期限 2026-08-31',due:new Date(2026,7,31),action:{label:'前往繳費',href:'m13_checkout.html?order=order-installment-01'}},
+      {type:'reminder',title:'顧問已為你安排 08/26 一對一課',sub:'杜老師・會話進階・課前教材可先下載',due:new Date(2026,7,26,14,0),action:{label:'查看課表',href:'m03_schedule.html?class=individual-conversation'}},
+      {type:'result',title:'改期申請已核准',sub:'08/13 已改至 08/06 14:00',due:new Date(2026,7,26),action:{label:'查看',href:'m05_leave.html?record=rec-approved-0813#leaveRecordList'}},
       {type:'quiz',title:'單元測驗：聲調與拼音',sub:'課程配套測驗・開放中',due:new Date(2026,7,28),action:{label:'前往測驗',href:'m11_quiz.html'}},
       {type:'quiz',title:'單元測驗：日常會話',sub:'課程配套測驗・開放中',due:new Date(2026,8,2),action:{label:'前往測驗',href:'m11_quiz.html'}},
       {type:'quiz',title:'單元測驗：情境對話',sub:'課程配套測驗・開放中',due:new Date(2026,8,4),action:{label:'前往測驗',href:'m11_quiz.html'}},
-      {type:'expiring',title:'一對一方案效期即將到期',sub:'30 堂方案・效期剩 14 天（剩 8 堂）',due:new Date(2026,8,8),action:{label:'續費',href:'m06_renew.html'}},
-      {type:'expiring',title:'團體直播班本期即將結束',sub:'中級會話直播班・本期剩 2 週（第 10／12 週）',due:new Date(2026,8,10),action:{label:'查看班表',href:'m03_schedule.html?class=flex-group'}}
+      {type:'expiring',title:'一對一課程包堂數偏低',sub:'20 堂課程包・剩 12 堂・到期 2026-12-31',due:new Date(2026,8,8),action:{label:'續購課程包',href:'m06_renew.html'}},
+      {type:'expiring',title:'團體直播班本期即將結束',sub:'B1 班・本期剩 2 週（第 10／12 週）',due:new Date(2026,8,10),action:{label:'查看班表',href:'m03_schedule.html?class=flex-group'}}
     ];
     if(!feedbackDone){
       list.push(
-        {type:'feedback',title:'08/20（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,23),action:{label:'前往填寫',href:'m09_assessment.html'}},
-        {type:'feedback',title:'08/13（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,20),action:{label:'前往填寫',href:'m09_assessment.html'}},
-        {type:'feedback',title:'08/06（四）中文一對一課後回饋未填',sub:'陳老師・發音矯正',due:new Date(2026,7,13),action:{label:'前往填寫',href:'m09_assessment.html'}}
+        {type:'feedback',title:'08/20（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,23),action:{label:'前往填寫',href:'m09_assessment.html?lesson=r1'}},
+        {type:'feedback',title:'08/13（四）中文一對一課後回饋未填',sub:'杜老師・會話進階',due:new Date(2026,7,20),action:{label:'前往填寫',href:'m09_assessment.html?lesson=r2'}},
+        {type:'feedback',title:'08/06（四）中文一對一課後回饋未填',sub:'陳老師・發音矯正',due:new Date(2026,7,13),action:{label:'前往填寫',href:'m09_assessment.html?lesson=r3'}}
       );
     }
   } else if(role==='enterprise'){
     list = [
       {type:'enterprise',title:'本月免扣取消次數已用完',sub:'企業方案本月 2 次免扣額度已用完，之後取消將扣抵堂數',due:new Date(2026,7,25),action:{label:'查看規則',href:'m04_course_detail.html?tab=1on1'}},
-      {type:'reminder',title:'今天 16:00 商務會話・杜老師',sub:'可先預習教材',due:new Date(2026,7,25,16,0),action:{label:'查看課表',href:'m03_schedule.html'}},
+      {type:'reminder',title:'顧問已為你安排 08/25 商務會話課',sub:'杜老師・可先預習教材',due:new Date(2026,7,25,16,0),action:{label:'查看課表',href:'m03_schedule.html'}},
       {type:'result',title:'取消申請已受理',sub:'08/25（二）13:00 取消已生效，已扣抵本月額度',due:new Date(2026,7,25),action:{label:'查看',href:'m03_schedule.html'}},
       {type:'quiz',title:'單元測驗：商務會話',sub:'課程配套測驗・開放中',due:new Date(2026,7,29),action:{label:'前往測驗',href:'m11_quiz.html'}}
     ];

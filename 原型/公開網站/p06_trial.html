@@ -309,16 +309,30 @@ body.self-serve-mode .purpose-toggle{display:none;}
           <div class="slot-hint" id="calLegend">灰色日期代表當日無可預約時段</div>
           <div class="slot-hint" id="slotTimesHint"></div>
           <div class="slot-times" id="slotTimes"></div>
+          <p class="slot-hint" data-i18n="p06_slot_multi_hint">時段偏好可複選 2–3 個，供顧問安排時參考</p>
           <div class="selected-slot-line" id="selectedSlotLine"></div>
         </div>
 
-        <div class="form-block" id="teacherPickBlock" style="display:none;">
-          <span class="form-label"><span data-i18n="p06_label_teacher">選擇老師（可略過，由系統配對）</span></span>
-          <div class="teacher-pick-group" id="teacherPickGroup">
-            <button type="button" class="teacher-pick" data-teacher="wang" onclick="selectTeacher('wang')" data-i18n="p06_teacher_wang">王老師</button>
-            <button type="button" class="teacher-pick" data-teacher="li" onclick="selectTeacher('li')" data-i18n="p06_teacher_li">李老師</button>
-            <button type="button" class="teacher-pick" data-teacher="chen" onclick="selectTeacher('chen')" data-i18n="p06_teacher_chen">陳老師</button>
-            <button type="button" class="teacher-pick active" data-teacher="" onclick="selectTeacher('')" data-i18n="p06_teacher_auto">由系統配對</button>
+        <div class="form-block" id="trialGoalBlock" style="display:none;">
+          <span class="form-label"><span data-i18n="p06_label_goal">想學的目標（可略過）</span></span>
+          <select id="trialGoal" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:10px 11px;font-size:14px;font-family:inherit;min-height:44px;">
+            <option value="" data-i18n="p06_goal_none">請選擇（可略過）</option>
+            <option value="daily" data-i18n="p06_goal_daily">生活會話</option>
+            <option value="business" data-i18n="p06_goal_business">商務會話</option>
+            <option value="exam" data-i18n="p06_goal_exam">檢定衝刺</option>
+            <option value="pronunciation" data-i18n="p06_goal_pronunciation">發音矯正</option>
+            <option value="culture" data-i18n="p06_goal_culture">文化體驗</option>
+          </select>
+          <textarea id="trialNote" rows="2" placeholder="備註（選填）" data-i18n-ph="p06_note_ph" style="width:100%;margin-top:10px;border:1px solid var(--c-border);border-radius:8px;padding:10px 11px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+        </div>
+
+        <div class="form-block" id="teacherShowcaseBlock" style="display:none;">
+          <span class="form-label"><span data-i18n="p06_label_teacher_showcase">師資介紹</span></span>
+          <p class="slot-hint" data-i18n="p06_teacher_showcase_hint">體驗課由顧問依你的時段與目標安排合適老師，無法在此指定老師</p>
+          <div class="teacher-pick-group" id="teacherShowcaseGroup">
+            <span class="teacher-pick" style="cursor:default;" data-i18n="p06_teacher_wang">王老師</span>
+            <span class="teacher-pick" style="cursor:default;" data-i18n="p06_teacher_li">李老師</span>
+            <span class="teacher-pick" style="cursor:default;" data-i18n="p06_teacher_chen">陳老師</span>
           </div>
         </div>
 
@@ -328,6 +342,7 @@ body.self-serve-mode .purpose-toggle{display:none;}
         </div>
 
         <div id="trialPaymentBlock" style="display:none;">
+          <p class="slot-hint" id="advisorAssignNote" data-i18n="p06_advisor_assign_note">顧問將依你的時段為你安排老師並通知，完成付款即送出。</p>
           <div class="selfserve-price" id="selfservePriceNote">
             <span data-i18n="p06_selfserve_price_label">體驗課費用</span>
             <strong data-i18n="p06_selfserve_price_value">NT$390</strong>
@@ -432,10 +447,11 @@ var MONTH_NAMES_EN = ['January','February','March','April','May','June','July','
 /* 示範用半小時時段池，實際串接時改由後端回傳當日可約時段 */
 var SLOT_POOL = ['09:00','09:30','10:00','10:30','11:00','13:30','14:00','14:30','15:30','16:00','16:30','19:00','19:30','20:00'];
 
+var MAX_SLOT_PREFS = 3;
 var bookState = {
   purpose:'consult', langs:new Set(), level:null, format:'online', campus:null,
-  name:'', email:'', phone:'', contactTime:null, teacher:'',
-  slotDateLabel:null, slotTime:null, slotTimeEnd:null, courseLabelKey:null
+  name:'', email:'', phone:'', contactTime:null, goal:'', note:'',
+  slotDateLabel:null, slotPrefs:[], courseLabelKey:null
 };
 /* 是否為自助購買體驗課流程（由 p03「選時段購買體驗課」導入，帶 ?plan=trial） */
 var isSelfServeTrial = false;
@@ -499,18 +515,13 @@ function setPurpose(type){
   var isTrial = (type === 'trial');
   document.querySelectorAll('.purpose-pill').forEach(function(p){ p.classList.toggle('active', p.dataset.type === type); });
   document.getElementById('trialSlotBlock').style.display = isTrial ? 'block' : 'none';
-  document.getElementById('teacherPickBlock').style.display = isTrial ? 'block' : 'none';
+  document.getElementById('trialGoalBlock').style.display = isTrial ? 'block' : 'none';
+  document.getElementById('teacherShowcaseBlock').style.display = isTrial ? 'block' : 'none';
   document.getElementById('trialPaymentBlock').style.display = isTrial ? 'block' : 'none';
   document.getElementById('consultTimeBlock').style.display = isTrial ? 'none' : 'block';
   document.getElementById('contactFieldsBlock').style.display = isTrial ? 'none' : 'block';
   document.getElementById('submitBookingBtn').style.display = isTrial ? 'none' : 'block';
   updateValidity();
-}
-function selectTeacher(id){
-  bookState.teacher = id;
-  document.querySelectorAll('#teacherPickGroup .teacher-pick').forEach(function(b){
-    b.classList.toggle('active', b.getAttribute('data-teacher') === id);
-  });
 }
 
 /* ===== 試聽時段：月曆選日期 ===== */
@@ -602,8 +613,7 @@ function calChangeMonth(delta){
 function selectCalDate(d){
   calSelectedDate = d;
   bookState.slotDateLabel = formatSlotDayLabel(d);
-  bookState.slotTime = null;
-  bookState.slotTimeEnd = null;
+  bookState.slotPrefs = [];
   renderCalendar();
   renderSlotTimes();
   updateValidity();
@@ -623,24 +633,34 @@ function renderSlotTimes(){
   hintEl.style.display = 'none';
   times.forEach(function(t){
     var end = calAddMinutes(t, 30);
+    var picked = bookState.slotPrefs.some(function(sp){ return sp.time === t; });
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'chip-opt slot-time-chip';
-    if(t === bookState.slotTime) b.classList.add('active');
+    if(picked) b.classList.add('active');
     b.textContent = t + '–' + end;
-    b.onclick = function(){ selectSlotTime(t, end); };
+    b.onclick = function(){ toggleSlotTime(t, end); };
     wrap.appendChild(b);
   });
   var line = document.getElementById('selectedSlotLine');
-  if(bookState.slotTime && bookState.slotTimeEnd){
-    line.textContent = tliFmt(dict.p06_selected_slot_line, {date: bookState.slotDateLabel, time: bookState.slotTime, end: bookState.slotTimeEnd});
+  if(bookState.slotPrefs.length){
+    var timesText = bookState.slotPrefs.map(function(sp){ return sp.time+'–'+sp.end; }).join('、');
+    line.textContent = tliFmt(dict.p06_selected_slot_line, {date: bookState.slotDateLabel, times: timesText});
     line.style.display = 'block';
   } else {
     line.style.display = 'none';
   }
 }
-function selectSlotTime(t, end){
-  bookState.slotTime = t;
-  bookState.slotTimeEnd = end;
+function toggleSlotTime(t, end){
+  var idx = bookState.slotPrefs.findIndex(function(sp){ return sp.time === t; });
+  if(idx !== -1){
+    bookState.slotPrefs.splice(idx, 1);
+  } else {
+    if(bookState.slotPrefs.length >= MAX_SLOT_PREFS){
+      showToast(tliDict().p06_slot_max_hint);
+      return;
+    }
+    bookState.slotPrefs.push({time:t, end:end});
+  }
   renderSlotTimes();
   updateValidity();
 }
@@ -659,7 +679,7 @@ function computeMissing(){
   if(!bookState.level) m.push('p06_label_level');
   if(bookState.format === 'onsite' && !bookState.campus) m.push('p06_missing_campus');
   if(bookState.purpose === 'trial'){
-    if(!bookState.slotTime) m.push('p06_missing_slot');
+    if(bookState.slotPrefs.length === 0) m.push('p06_missing_slot');
   } else {
     if(!bookState.name) m.push('p06_field_name_label');
     if(!bookState.email || bookState.email.indexOf('@') === -1) m.push('p06_field_email_label');
@@ -684,15 +704,22 @@ function updateValidity(){
     hint.style.display = 'none';
   }
 }
-/* ===== 自助購買體驗課：選好時段（老師可略過）後導向結帳頁付款 ===== */
+/* ===== 自助購買體驗課：選好時段偏好（顧問將依此安排老師）後導向結帳頁付款 =====
+   契約變更：slot=（單一時段＋teacher=）改為 prefs=（日期＋多個時段偏好，無老師）；
+   m13_checkout.html 仍讀 slot／teacher 顯示已選時段與老師名，尚未跟進改讀 prefs，見任務回報缺口。 */
 function goToPayment(){
   if(computeMissing().length || !calSelectedDate) return;
   var y = calSelectedDate.getFullYear();
   var mo = String(calSelectedDate.getMonth()+1).padStart(2,'0');
   var da = String(calSelectedDate.getDate()).padStart(2,'0');
-  var slot = y+'-'+mo+'-'+da+' '+bookState.slotTime;
-  var url = '../會員區/m13_checkout.html?plan=trial&slot=' + encodeURIComponent(slot);
-  if(bookState.teacher) url += '&teacher=' + encodeURIComponent(bookState.teacher);
+  var timesText = bookState.slotPrefs.map(function(sp){ return sp.time; }).join(',');
+  var prefs = y+'-'+mo+'-'+da+'|'+timesText;
+  var url = '../會員區/m13_checkout.html?plan=trial&prefs=' + encodeURIComponent(prefs);
+  var goal = document.getElementById('trialGoal') ? document.getElementById('trialGoal').value : '';
+  var note = document.getElementById('trialNote') ? document.getElementById('trialNote').value.trim() : '';
+  bookState.goal = goal; bookState.note = note;
+  if(goal) url += '&goal=' + encodeURIComponent(goal);
+  if(note) url += '&note=' + encodeURIComponent(note);
   window.location.href = url;
 }
 
@@ -710,7 +737,8 @@ function buildBookingSteps(){
     tliFmt(dict.p06_step_added_todo, {name:(bookState.name || dict.p06_default_student)})
   ];
   if(bookState.purpose === 'trial'){
-    steps.push(tliFmt(dict.p06_step_slot_locked, {date:bookState.slotDateLabel, time:bookState.slotTime}));
+    var timesText = bookState.slotPrefs.map(function(sp){ return sp.time; }).join('、');
+    steps.push(tliFmt(dict.p06_step_slot_locked, {date:bookState.slotDateLabel, time:timesText}));
   }
   return steps;
 }
@@ -729,7 +757,7 @@ function submitBooking(){
   rv.scrollIntoView({behavior:'smooth', block:'start'});
 }
 function resetBooking(){
-  bookState.slotTime = null; bookState.slotTimeEnd = null; bookState.slotDateLabel = null;
+  bookState.slotPrefs = []; bookState.slotDateLabel = null;
   calSelectedDate = null;
   var today = calToday();
   calViewYear = today.getFullYear();
@@ -1031,9 +1059,12 @@ var I18N_PAGE = {
   p06_onsite_link: '前往官網報名 →',
   p06_field_name_label: '姓名', p06_field_email_label: 'Email', p06_field_phone_label: '手機（或 LINE ID）',
   p06_ph_name: '請輸入姓名', p06_ph_email: '請輸入 Email', p06_ph_phone: '請輸入手機號碼或 LINE ID',
-  p06_label_slot: '選擇試聽時段', p06_slot_hint: '線上一對一體驗課，30 分鐘',
-  p06_label_teacher: '選擇老師（可略過，由系統配對）',
-  p06_teacher_wang: '王老師', p06_teacher_li: '李老師', p06_teacher_chen: '陳老師', p06_teacher_auto: '由系統配對',
+  p06_label_slot: '選擇試聽時段', p06_slot_hint: '線上一對一體驗課，30 分鐘', p06_slot_multi_hint: '時段偏好可複選 2–3 個，供顧問安排時參考', p06_slot_max_hint: '最多選 3 個時段偏好',
+  p06_label_goal: '想學的目標（可略過）', p06_goal_none: '請選擇（可略過）', p06_goal_daily: '生活會話', p06_goal_business: '商務會話', p06_goal_exam: '檢定衝刺', p06_goal_pronunciation: '發音矯正', p06_goal_culture: '文化體驗',
+  p06_note_ph: '備註（選填）',
+  p06_label_teacher_showcase: '師資介紹', p06_teacher_showcase_hint: '體驗課由顧問依你的時段與目標安排合適老師，無法在此指定老師',
+  p06_teacher_wang: '王老師', p06_teacher_li: '李老師', p06_teacher_chen: '陳老師',
+  p06_advisor_assign_note: '顧問將依你的時段為你安排老師並通知，完成付款即送出。',
   p06_selfserve_price_label: '體驗課費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（模擬金額）',
   p06_go_payment_btn: '前往付款',
   p06_label_contact_time: '方便聯繫時段', p06_submit_btn: '送出預約',
@@ -1055,7 +1086,7 @@ var I18N_PAGE = {
   p06_step_added_todo: '已加入顧問今日待辦（{name}）',
   p06_step_slot_locked: '已鎖定 {date} {time} 線上教室，開課前 15 分鐘從會員區進入',
   p06_default_student: '學員', p06_group_online: '線上組',
-  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '已選 {date}{time}–{end}',
+  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '已選 {date}　{times}',
   p06_cal_title_fmt: '{year} 年 {month} 月', p06_cal_prev_aria: '上一月', p06_cal_next_aria: '下一月',
   p06_cal_pick_date_hint: '請先在上方月曆選擇日期',
   p06_course_banner: '已依您點選的課程「{course}」帶入語言，如需調整可自行修改。',
@@ -1105,9 +1136,12 @@ en: {
   p06_onsite_link: 'Register on our official website →',
   p06_field_name_label: 'Name', p06_field_email_label: 'Email', p06_field_phone_label: 'Mobile (or LINE ID)',
   p06_ph_name: 'Enter your name', p06_ph_email: 'Enter your email', p06_ph_phone: 'Enter your mobile number or LINE ID',
-  p06_label_slot: 'Choose a trial time slot', p06_slot_hint: '30-minute online 1-on-1 trial class',
-  p06_label_teacher: 'Choose a teacher (optional — we can match one for you)',
-  p06_teacher_wang: 'Teacher Wang', p06_teacher_li: 'Teacher Li', p06_teacher_chen: 'Teacher Chen', p06_teacher_auto: 'Auto-match',
+  p06_label_slot: 'Choose a trial time slot', p06_slot_hint: '30-minute online 1-on-1 trial class', p06_slot_multi_hint: 'Pick 2–3 preferred times to give your advisor flexibility', p06_slot_max_hint: 'You can pick up to 3 preferred times',
+  p06_label_goal: 'Your learning goal (optional)', p06_goal_none: 'Select (optional)', p06_goal_daily: 'Everyday conversation', p06_goal_business: 'Business conversation', p06_goal_exam: 'Exam prep', p06_goal_pronunciation: 'Pronunciation coaching', p06_goal_culture: 'Culture experience',
+  p06_note_ph: 'Notes (optional)',
+  p06_label_teacher_showcase: 'Our Teachers', p06_teacher_showcase_hint: 'Your advisor will match you with a suitable teacher based on your time and goals — you cannot pick a teacher here',
+  p06_teacher_wang: 'Teacher Wang', p06_teacher_li: 'Teacher Li', p06_teacher_chen: 'Teacher Chen',
+  p06_advisor_assign_note: 'Your advisor will assign a teacher based on your selected times and notify you — submitting payment completes your booking.',
   p06_selfserve_price_label: 'Trial class fee', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '(demo amount)',
   p06_go_payment_btn: 'Proceed to Payment',
   p06_label_contact_time: 'Best time to reach you', p06_submit_btn: 'Submit Booking',
@@ -1129,7 +1163,7 @@ en: {
   p06_step_added_todo: 'Added to advisor’s to-do list for today ({name})',
   p06_step_slot_locked: 'Reserved for {date} {time} in the online classroom — join from the member area 15 minutes before class',
   p06_default_student: 'Student', p06_group_online: 'the online team',
-  p06_slot_day_fmt: '{month}/{date} ({weekday})', p06_selected_slot_line: 'Selected: {date} {time}–{end}',
+  p06_slot_day_fmt: '{month}/{date} ({weekday})', p06_selected_slot_line: 'Selected: {date}  {times}',
   p06_cal_title_fmt: '{month} {year}', p06_cal_prev_aria: 'Previous month', p06_cal_next_aria: 'Next month',
   p06_cal_pick_date_hint: 'Please choose a date from the calendar above',
   p06_course_banner: 'Language auto-filled from the course you selected, “{course}.” Feel free to adjust it.',
@@ -1179,9 +1213,12 @@ ja: {
   p06_onsite_link: '公式サイトで申し込む →',
   p06_field_name_label: 'お名前', p06_field_email_label: 'Email', p06_field_phone_label: '携帯電話番号（またはLINE ID）',
   p06_ph_name: 'お名前を入力してください', p06_ph_email: 'Emailを入力してください', p06_ph_phone: '携帯電話番号またはLINE IDを入力してください',
-  p06_label_slot: '体験レッスンの時間帯を選択', p06_slot_hint: 'オンライン一対一体験レッスン、30分間',
-  p06_label_teacher: '講師を選択（任意・未選択の場合はシステムが自動マッチング）',
-  p06_teacher_wang: '王先生', p06_teacher_li: '李先生', p06_teacher_chen: '陳先生', p06_teacher_auto: 'システムに任せる',
+  p06_label_slot: '体験レッスンの時間帯を選択', p06_slot_hint: 'オンライン一対一体験レッスン、30分間', p06_slot_multi_hint: '希望時間帯は2～3個複数選択可（アドバイザーの調整用）', p06_slot_max_hint: '希望時間帯は最大3個まで選択できます',
+  p06_label_goal: '学習目標（任意）', p06_goal_none: '選択してください（任意）', p06_goal_daily: '日常会話', p06_goal_business: 'ビジネス会話', p06_goal_exam: '検定対策', p06_goal_pronunciation: '発音矯正', p06_goal_culture: '文化体験',
+  p06_note_ph: '備考（任意）',
+  p06_label_teacher_showcase: '講師紹介', p06_teacher_showcase_hint: '体験レッスンはアドバイザーがご希望の時間帯と目標に応じて講師を手配します。こちらでは講師を指定できません',
+  p06_teacher_wang: '王先生', p06_teacher_li: '李先生', p06_teacher_chen: '陳先生',
+  p06_advisor_assign_note: 'アドバイザーがご希望の時間帯に応じて講師を手配しご連絡します。お支払い完了で送信されます。',
   p06_selfserve_price_label: '体験レッスン費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（デモ金額）',
   p06_go_payment_btn: 'お支払いへ進む',
   p06_label_contact_time: 'ご連絡可能な時間帯', p06_submit_btn: '予約を送信',
@@ -1203,7 +1240,7 @@ ja: {
   p06_step_added_todo: '本日のアドバイザー対応リストに追加しました（{name}）',
   p06_step_slot_locked: '{date} {time} のオンライン教室を確保しました。授業開始15分前に会員エリアからご入室ください',
   p06_default_student: '受講者', p06_group_online: 'オンライングループ',
-  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '選択済み：{date}{time}–{end}',
+  p06_slot_day_fmt: '{month}/{date}（{weekday}）', p06_selected_slot_line: '選択済み：{date}　{times}',
   p06_cal_title_fmt: '{year}年{month}月', p06_cal_prev_aria: '前の月', p06_cal_next_aria: '次の月',
   p06_cal_pick_date_hint: '上のカレンダーで日付を選択してください',
   p06_course_banner: '選択されたコース「{course}」に基づき言語を自動入力しました。必要に応じて変更できます。',
@@ -1252,7 +1289,7 @@ var TLI_KB_I18N = {
   {id:'visa', chip:'簽證', q:'上課時數與簽證申請有什麼關係？', a:'台灣校區學期班課程如週時數達 15 小時，即符合申請學生簽證所需之上課證明條件，實際申請流程與文件請洽校區顧問確認。', short:'週時數達 15 小時的學期班即符合學生簽證申請條件。'},
   {id:'invoice', chip:'發票', q:'會開立發票嗎？', a:'是，完成付款後將依規定開立發票；企業包班客戶可申請月結發票，個人課程則於訂單完成後開立。', short:'付款完成後會開立發票，企業包班可申請月結。'},
   {id:'payment', chip:'付款方式', q:'有哪些付款方式？', a:'提供一次付清、訂金＋尾款、分期三種付款模式，實際適用方式依方案內容與顧問確認之訂單條件為準。', short:'可選一次付清、訂金＋尾款或分期，依方案與顧問確認條件為準。'},
-  {id:'format', chip:'上課方式', q:'一對一與彈性團體直播差在哪？', a:'一對一線上課是預約制，可自選老師與上課時段；彈性團體直播是固定時段開課、報名即可入班，費用通常更划算，若當期提供回放，錯過直播仍可補看。', short:'一對一是預約制可自選老師時段；團體直播是固定時段、費用較划算。'},
+  {id:'format', chip:'上課方式', q:'一對一與彈性團體直播差在哪？', a:'一對一線上課由你提出有空的時段，顧問依時段為你安排老師與上課時間；彈性團體直播是固定時段開課、報名即可入班，費用通常更划算，若當期提供回放，錯過直播仍可補看。', short:'一對一由你提出有空時段、顧問安排老師與時間；團體直播是固定時段、費用較划算。'},
   {id:'classroom', chip:'線上教室', q:'線上教室怎麼進入？連結會不會外流？', a:'上課前登入會員區，系統驗證身分後開放「進入教室」按鈕，一鍵進入當堂專屬 Zoom 教室；每堂課使用唯一會議並由老師於等候室放行，不提供可轉傳的連結。', short:'登入會員區後一鍵進教室，每堂唯一連結、老師等候室放行，不怕連結外流。'},
   {id:'pricing', chip:'價格與報價', q:'課程費用怎麼估算？', a:'費用依語言、上課方式（一對一／團體）與堂數而定，建議告知學習目標與時間，由顧問提供試算報價；也可直接預約試聽時一併確認費用。', short:'費用依語言、上課方式與堂數而定，可請顧問提供試算報價。'},
   {id:'trial', chip:'試聽', q:'可以先試聽嗎？', a:'可以，提供免費試聽課程，由顧問依您的程度與目標安排合適的試聽老師與時段，體驗後再決定是否報名。', short:'提供免費試聽，顧問會依程度與目標安排合適老師與時段。'},
@@ -1264,7 +1301,7 @@ en: [
   {id:'visa', chip:'Student Visa', q:'How do class hours relate to visa applications?', a:'Semester courses at our Taiwan campuses with 15+ class hours per week meet the attendance requirement for a student visa application. Please confirm the exact process and documents with your campus advisor.', short:'Semester courses with 15+ weekly hours meet the student visa attendance requirement.'},
   {id:'invoice', chip:'Invoices', q:'Will I receive an invoice or receipt?', a:'Yes — an official invoice is issued after payment is completed. Corporate group-class clients may request monthly billing; individual courses are invoiced once the order is completed.', short:'An invoice is issued after payment; corporate clients can request monthly billing.'},
   {id:'payment', chip:'Payment Options', q:'What payment methods are available?', a:'We offer full payment, deposit + balance, or installment plans. The exact options depend on your course plan and the order terms confirmed with your advisor.', short:'Choose full payment, deposit + balance, or installments, per your advisor-confirmed plan.'},
-  {id:'format', chip:'Class Formats', q:'What’s the difference between 1-on-1 and flexible group livestream classes?', a:'1-on-1 online classes are booking-based — you choose your own teacher and time slot. Flexible group livestream classes run at fixed times and you simply enroll to join; they’re usually more affordable, and if a recording is offered that term, you can catch up if you miss the live session.', short:'1-on-1 is booking-based with your choice of teacher and time; group livestream runs on a fixed schedule and costs less.'},
+  {id:'format', chip:'Class Formats', q:'What’s the difference between 1-on-1 and flexible group livestream classes?', a:'For 1-on-1 online classes, you submit the times you’re available and your advisor assigns a teacher and schedule for you. Flexible group livestream classes run at fixed times and you simply enroll to join; they’re usually more affordable, and if a recording is offered that term, you can catch up if you miss the live session.', short:'1-on-1: you submit available times and your advisor assigns a teacher and time; group livestream runs on a fixed schedule and costs less.'},
   {id:'classroom', chip:'Online Classroom', q:'How do I join the online classroom? Could the link leak to others?', a:'Log into the member area before class — once your identity is verified, the “Enter Classroom” button unlocks a one-click link to your dedicated Zoom session. Each class uses a unique meeting, and your teacher admits you from the waiting room, so there’s no shareable link that could leak.', short:'Log in to unlock a one-click link to your unique Zoom session; your teacher admits you from the waiting room.'},
   {id:'pricing', chip:'Pricing', q:'How is the course fee calculated?', a:'Pricing depends on the language, class format (1-on-1 or group), and number of lessons. Share your learning goals and timeline and an advisor will prepare a quote — or confirm pricing when you book a trial class.', short:'Pricing depends on language, format, and lesson count — ask your advisor for a quote.'},
   {id:'trial', chip:'Trial Class', q:'Can I try a class before signing up?', a:'Yes — we offer a free trial class. Your advisor will match you with a suitable teacher and time slot based on your level and goals, so you can decide after experiencing it.', short:'A free trial is available, matched to your level and goals before you commit.'},
@@ -1276,7 +1313,7 @@ ja: [
   {id:'visa', chip:'学生ビザ', q:'授業時間数はビザ申請にどう関係しますか？', a:'台湾キャンパスの学期制コースで週15時間以上受講する場合、学生ビザ申請に必要な出席証明の条件を満たします。具体的な申請手続きや必要書類はキャンパスのアドバイザーにご確認ください。', short:'週15時間以上の学期制コースは学生ビザの出席条件を満たします。'},
   {id:'invoice', chip:'領収書', q:'領収書は発行されますか？', a:'はい、お支払い完了後に規定に基づき領収書を発行いたします。法人の団体クラスは月締め請求書の申請が可能で、個人受講は注文完了後に発行されます。', short:'お支払い後に領収書を発行、法人は月締め請求も可能です。'},
   {id:'payment', chip:'お支払い方法', q:'どのようなお支払い方法がありますか？', a:'一括払い、内金＋残金、分割払いの3種類がございます。実際にご利用いただける方法はプラン内容とアドバイザーが確認した注文条件によります。', short:'一括、内金＋残金、分割いずれかを選択でき、詳細はアドバイザーとの確認条件によります。'},
-  {id:'format', chip:'受講形式', q:'一対一とグループライブ配信の違いは何ですか？', a:'一対一のオンライン授業は予約制で、講師と時間帯をご自身で選べます。グループライブ配信は決まった時間に開講し、申込めばそのまま参加可能で、料金は比較的お得です。その回に録画提供がある場合は、見逃してもあとから視聴できます。', short:'一対一は予約制で講師・時間を選択可能、グループライブ配信は固定スケジュールで料金がお得です。'},
+  {id:'format', chip:'受講形式', q:'一対一とグループライブ配信の違いは何ですか？', a:'一対一のオンライン授業は、ご希望の時間帯を提出いただくと、アドバイザーが講師とスケジュールを手配します。グループライブ配信は決まった時間に開講し、申込めばそのまま参加可能で、料金は比較的お得です。その回に録画提供がある場合は、見逃してもあとから視聴できます。', short:'一対一はご希望の時間帯を提出しアドバイザーが講師と時間を手配、グループライブ配信は固定スケジュールで料金がお得です。'},
   {id:'classroom', chip:'オンライン教室', q:'オンライン教室にはどうやって入りますか？リンクが流出する心配はありませんか？', a:'授業前に会員エリアにログインし、本人確認後に「教室に入る」ボタンが表示され、ワンクリックでその回専用のZoom教室に入室できます。各授業は個別のミーティングを使用し、講師が待機室から入室を許可するため、転送可能なリンクは発行されません。', short:'ログイン後ワンクリックで専用Zoom教室へ、講師が待機室から許可するためリンク流出の心配はありません。'},
   {id:'pricing', chip:'料金・見積り', q:'コース料金はどのように算出されますか？', a:'料金は言語、受講形式（一対一／グループ）、レッスン回数によって異なります。学習目標とご希望の時期をお伝えいただければ、アドバイザーが見積りをご案内します。体験レッスンご予約時に料金を確認いただくことも可能です。', short:'料金は言語・受講形式・回数によって異なり、アドバイザーが見積りをご案内します。'},
   {id:'trial', chip:'体験レッスン', q:'事前に体験レッスンを受けられますか？', a:'はい、無料体験レッスンをご用意しています。アドバイザーがレベルと目標に合わせて講師と時間帯をご案内しますので、体験後に受講をご検討いただけます。', short:'無料体験レッスンがあり、レベルと目標に合わせて講師・時間をご案内します。'},

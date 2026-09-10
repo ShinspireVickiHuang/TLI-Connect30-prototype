@@ -294,34 +294,39 @@ html,body{overflow-x:hidden;}
 <script>
 
 var SKUS = [
- {id:'skuC01', name:'中文一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'skuC02', name:'英語一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'skuC03', name:'中文彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC04', name:'英語彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC05', name:'自學影音課程包（中文基礎）', line:'Connect（線上）', system:'自學影音課', unit:'套', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'隨選', status:'上架'},
- {id:'skuC06', name:'文化主題線上工作坊－茶道體驗', line:'Connect（線上）', system:'文化主題線上課', unit:'場', duration:'90 分鐘', cat:'活動', tax:'應稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC07', name:'企業華語線上培訓（團體班）', line:'Connect（線上）', system:'企業線上培訓', unit:'期', duration:'依合約', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'skuC08', name:'線上華語師資認證班 24 小時', line:'Connect（線上）', system:'線上師資認證', unit:'期', duration:'24 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku01', name:'中文一對一 50 分鐘 1 堂', line:'中文', system:'中文一對一', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku02', name:'學期班 Lv.5–8 一期', line:'中文', system:'學期班', unit:'期', duration:'16 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku03', name:'教材《新實用華語》上冊', line:'中文', system:'學期班', unit:'冊', duration:'－', cat:'教材', tax:'應稅', material:'新實用華語（上冊）', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku04', name:'入學註冊費', line:'中文', system:'學期班', unit:'次', duration:'－', cat:'註冊費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku05', name:'小組班（4 人）90 分鐘 1 堂', line:'中文', system:'小組班', unit:'堂', duration:'90 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku06', name:'線上課 60 分鐘 1 堂', line:'中文', system:'線上課', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku07', name:'文化體驗活動－茶道體驗', line:'中文', system:'文化課', unit:'場', duration:'2 小時', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku08', name:'英語一對一 50 分鐘 1 堂', line:'外文', system:'英語課程', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', status:'上架'},
- {id:'sku09', name:'日語學期班 一期', line:'外文', system:'日語課程', unit:'期', duration:'12 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku10', name:'華語師資培訓認證班 32 小時', line:'師資班', system:'師資認證班', unit:'期', duration:'32 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', status:'上架'},
- {id:'sku11', name:'師培教材包', line:'師資班', system:'師資認證班', unit:'套', duration:'－', cat:'教材', tax:'應稅', material:'師培教材包', deliveryMode:'直播制', status:'上架'},
- {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
- {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架'}
+ {id:'skuC01', name:'中文一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'一對一', status:'上架'},
+ {id:'skuC02', name:'英語一對一線上課 50 分鐘 1 堂', line:'Connect（線上）', system:'一對一線上課', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'一對一', status:'上架'},
+ {id:'skuC03', name:'中文彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'skuC04', name:'英語彈性團體直播班 一期（8 堂）', line:'Connect（線上）', system:'彈性團體直播', unit:'期', duration:'8 堂', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'skuC05', name:'自學影音課程包（中文基礎）', line:'Connect（線上）', system:'自學影音課', unit:'套', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'隨選', courseType:'自學影音', status:'上架'},
+ {id:'skuC06', name:'文化主題線上工作坊－茶道體驗', line:'Connect（線上）', system:'文化主題線上課', unit:'場', duration:'90 分鐘', cat:'活動', tax:'應稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'skuC07', name:'企業華語線上培訓（團體班）', line:'Connect（線上）', system:'企業線上培訓', unit:'期', duration:'依合約', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'skuC08', name:'線上華語師資認證班 24 小時', line:'Connect（線上）', system:'線上師資認證', unit:'期', duration:'24 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'skuC09', name:'中文團體聊天室（會員權益）', line:'Connect（線上）', system:'團體聊天室', unit:'期', duration:'不限', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'團體聊天室', status:'上架'},
+ {id:'sku01', name:'中文一對一 50 分鐘 1 堂', line:'中文', system:'中文一對一', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'一對一', status:'上架'},
+ {id:'sku02', name:'學期班 Lv.5–8 一期', line:'中文', system:'學期班', unit:'期', duration:'16 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku03', name:'教材《新實用華語》上冊', line:'中文', system:'學期班', unit:'冊', duration:'－', cat:'教材', tax:'應稅', material:'新實用華語（上冊）', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku04', name:'入學註冊費', line:'中文', system:'學期班', unit:'次', duration:'－', cat:'註冊費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku05', name:'小組班（4 人）90 分鐘 1 堂', line:'中文', system:'小組班', unit:'堂', duration:'90 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku06', name:'線上課 60 分鐘 1 堂', line:'中文', system:'線上課', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'一對一', status:'上架'},
+ {id:'sku07', name:'文化體驗活動－茶道體驗', line:'中文', system:'文化課', unit:'場', duration:'2 小時', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku08', name:'英語一對一 50 分鐘 1 堂', line:'外文', system:'英語課程', unit:'堂', duration:'50 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'預約制', courseType:'一對一', status:'上架'},
+ {id:'sku09', name:'日語學期班 一期', line:'外文', system:'日語課程', unit:'期', duration:'12 週', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'sku10', name:'華語師資培訓認證班 32 小時', line:'師資班', system:'師資認證班', unit:'期', duration:'32 小時', cat:'學費', tax:'免稅', material:'', deliveryMode:'直播制', courseType:'團體直播', status:'上架'},
+ {id:'sku11', name:'師培教材包', line:'師資班', system:'師資認證班', unit:'套', duration:'－', cat:'教材', tax:'應稅', material:'師培教材包', deliveryMode:'直播制', courseType:'', status:'上架'},
+ {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'上架'},
+ {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', courseType:'', status:'下架'}
 ];
 var AUD_ALL = ['B','G','C','BIP'];
 var CHANNEL_ALL = ['公開網站','顧問建訂單','企業專案'];
 var WEEKDAYS = ['一','二','三','四','五','六','日'];
-/* 包含上課型態（20260910f 新增）：方案是否含團體聊天室型態，決定學員能否看到並報名聊天室場次（見 m14_chat_booking.html）；
-   與 SKU 的 deliveryMode（預約制／直播制…）是各自獨立的欄位，一個方案可同時勾選多種上課型態 */
+/* 包含上課型態（20260910k 改為唯讀推導）：方案挑選了哪些產品（items），型態就由產品的 courseType 帶出來，
+   顯示成徽章摘要，不再手動勾選；決定學員能否看到並報名聊天室場次（見 m14_chat_booking.html） */
 var COURSE_TYPE_OPTIONS = ['一對一','團體直播','團體聊天室','自學影音'];
+function pkgCourseTypes(p){
+  var types = (p.items||[]).map(function(it){ var s = skuById(it.sku); return s ? s.courseType : null; }).filter(Boolean);
+  return types.filter(function(v,i){ return types.indexOf(v)===i; });
+}
 function courseTypeBadgeHtml(list){
   list = list || [];
   if (!list.length) return '<span class="small">未設定</span>';
@@ -365,12 +370,11 @@ var PACKAGES = [
   ],
   channel:['公開網站','顧問建訂單'], periodStart:'2026-09-01', periodEnd:'2027-02-28',
   schedule:null,
-  creditRule:{type:'once', totalQty:20, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:20},
   status:'上架'},
  {id:'pk2', name:'中文彈性團體直播班 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   salesMode:'direct', requireLogin:true,
-  courseTypes:['團體直播','團體聊天室'],
-  items:[{sku:'skuC03',qty:1}],
+  items:[{sku:'skuC03',qty:1},{sku:'skuC09',qty:1}],
   audiences:['B','G','C','BIP'], prices:{B:9800,G:9500,C:10800,BIP:10200}, consultantQuote:{B:true,G:false},
   discountRules:[
     {id:'dr_pk2_1', name:'開學早鳥優惠', kind:'pct', value:5, audiences:['B','G','C','BIP'], valuesByAud:{}, periodStart:'2026-09-01', periodEnd:'2026-09-30', stackable:true, status:'上架'}
@@ -380,7 +384,7 @@ var PACKAGES = [
   ],
   channel:['公開網站','顧問建訂單','企業專案'], periodStart:'2026-09-01', periodEnd:'2027-01-31',
   schedule:{weekdays:['二','四'], time:'19:30', weeks:8, capacity:15},
-  creditRule:{type:'monthly_reset', monthlyQty:8, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:16},
   status:'上架'},
  {id:'pk3', name:'自學影音課程包（中文基礎）方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   salesMode:'direct', requireLogin:true,
@@ -390,7 +394,7 @@ var PACKAGES = [
   discountRules:[], promoCodes:[],
   channel:['公開網站'], periodStart:'', periodEnd:'',
   schedule:null,
-  creditRule:{type:'once', totalQty:1, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:1},
   status:'上架'},
  {id:'pk4', name:'企業華語線上培訓方案（企業專案）', type:'pkg', nameEn:'', nameJa:'', desc:'',
   salesMode:'advisor', requireLogin:false,
@@ -400,7 +404,7 @@ var PACKAGES = [
   discountRules:[], promoCodes:[],
   channel:['企業專案'], periodStart:'', periodEnd:'',
   schedule:{weekdays:['六'], time:'09:00', weeks:8, capacity:20},
-  creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:0},
   status:'下架'},
  {id:'pk5', name:'中文一對一 30 堂＋教材＋註冊費', type:'pkg', nameEn:'', nameJa:'', desc:'',
   salesMode:'direct', requireLogin:true,
@@ -410,7 +414,7 @@ var PACKAGES = [
   discountRules:[], promoCodes:[],
   channel:['公開網站','顧問建訂單'], periodStart:'2026-09-01', periodEnd:'2027-02-28',
   schedule:null,
-  creditRule:{type:'once', totalQty:30, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:30},
   status:'上架'},
  {id:'pk6', name:'學期班 Lv.5–8 一期方案', type:'pkg', nameEn:'', nameJa:'', desc:'',
   salesMode:'direct', requireLogin:true,
@@ -425,7 +429,7 @@ var PACKAGES = [
   ],
   channel:['公開網站','顧問建訂單','企業專案'], periodStart:'2026-09-01', periodEnd:'2027-01-31',
   schedule:null,
-  creditRule:{type:'once', totalQty:32, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:32},
   status:'上架'},
  {id:'pk7', name:'客製化企業華語專案方案（示範）', type:'pkg', nameEn:'', nameJa:'', desc:'依企業客戶需求由顧問自組課程項目之專案型方案，價格另議。示範畫面，資料為模擬數字。',
   salesMode:'advisor', requireLogin:false,
@@ -435,7 +439,7 @@ var PACKAGES = [
   discountRules:[], promoCodes:[],
   channel:['企業專案'], periodStart:'', periodEnd:'',
   schedule:null,
-  creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
+  creditRule:{type:'once', totalQty:0},
   planType:'project',
   projectClient:'和霖科技股份有限公司',
   projectItems:[
@@ -530,7 +534,7 @@ function creditRuleLabel(p){
   }
   var cr = p.creditRule;
   if (!cr) return '<span class="small">未設定</span>';
-  if (cr.type === 'monthly_reset') return '<span class="badge green">每月重置 '+cr.monthlyQty+' 堂</span>';
+  if (cr.type === 'monthly_quota') return cr.quotaQty ? '<span class="badge teal" style="background:#E4F5EE;color:var(--teal)">每月配給 '+cr.quotaQty+' 堂</span>' : '<span class="small">未設定</span>';
   return cr.totalQty ? '<span class="badge grey">一次性 '+cr.totalQty+' 堂</span>' : '<span class="small">未設定</span>';
 }
 
@@ -545,7 +549,7 @@ function renderMainTable(){
       var isProject = p.planType === 'project';
       rows.push({type:'pkg', id:p.id, name:p.name, isProject:isProject, salesMode: p.salesMode || 'direct',
         delivery: pkgDeliveryBadgeHtml(p),
-        courseTypesCell: courseTypeBadgeHtml(p.courseTypes),
+        courseTypesCell: courseTypeBadgeHtml(pkgCourseTypes(p)),
         compose: isProject ? ((p.projectItems||[]).length + ' 項課程（專案自組）') : (p.items.length + ' 項課程'),
         credit: creditRuleLabel(p),
         aud: audBadges(p.audiences), price: pkgPriceLabel(p),
@@ -558,7 +562,7 @@ function renderMainTable(){
     BUNDLES.forEach(function(b){
       var bundlePkgs = b.packages.map(pkgById).filter(Boolean);
       var bundleCourseTypes = [];
-      bundlePkgs.forEach(function(p){ (p.courseTypes||[]).forEach(function(t){ if (bundleCourseTypes.indexOf(t)===-1) bundleCourseTypes.push(t); }); });
+      bundlePkgs.forEach(function(p){ pkgCourseTypes(p).forEach(function(t){ if (bundleCourseTypes.indexOf(t)===-1) bundleCourseTypes.push(t); }); });
       rows.push({type:'bundle', id:b.id, name:b.name, salesMode: b.salesMode || 'direct',
         delivery: bundleDeliveryBadge(b),
         courseTypesCell: courseTypeBadgeHtml(bundleCourseTypes),
@@ -750,12 +754,10 @@ function onComposeQty(pid, el){
 }
 
 function renderPkgBasicPanel(p){
-  p.nameEn = p.nameEn || ''; p.nameJa = p.nameJa || ''; p.desc = p.desc || ''; p.courseTypes = p.courseTypes || [];
+  p.nameEn = p.nameEn || ''; p.nameJa = p.nameJa || ''; p.desc = p.desc || '';
   var modes = pkgDeliveryModes(p);
-  var courseTypeBoxes = COURSE_TYPE_OPTIONS.map(function(ct){
-    var checked = p.courseTypes.indexOf(ct) > -1 ? 'checked' : '';
-    return '<label style="display:inline-block;margin:0 18px 8px 0;font-size:13.5px"><input type="checkbox" class="chk" value="'+ct+'" '+checked+' onchange="onCourseTypeToggle(\''+p.id+'\',this)"> '+ct+'</label>';
-  }).join('');
+  var derivedCourseTypes = pkgCourseTypes(p);
+  var courseTypeSummary = derivedCourseTypes.length ? courseTypeBadgeHtml(derivedCourseTypes) : '<span class="small">尚未於「組成」分頁挑選產品</span>';
   var scheduleHtml = '';
   if (modes.indexOf('直播制') > -1){
     var sc = p.schedule || {weekdays:[], time:'', weeks:'', capacity:''};
@@ -791,15 +793,9 @@ function renderPkgBasicPanel(p){
     '<div class="formrow" id="requireLoginRow-'+p.id+'" style="'+(p.salesMode==='advisor'?'display:none':'')+'"><label>是否需登入才能購買</label>' +
       '<label class="small"><input type="checkbox" class="chk" '+(p.requireLogin?'checked':'')+' onchange="onPkgField(\''+p.id+'\',\'requireLogin\',this.checked)"> 需登入（未登入導向註冊／登入頁再結帳）</label></div>' +
     '<div class="formrow"><label>上課方式</label><div class="static">'+pkgDeliveryBadgeHtml(p)+'　<span class="small">由組成課程帶出，此處唯讀；若組成含多種上課方式則全部列出。</span></div></div>' +
-    '<div class="formrow"><label>包含上課型態</label><div>'+courseTypeBoxes+'</div>' +
-    '<div class="hint">勾選此方案涵蓋的上課型態；勾選「團體聊天室」的方案，購買後才會在會員區看到並可報名聊天室場次。一個方案可勾選多種型態。</div></div>' +
+    '<div class="formrow"><label>包含上課型態</label><div class="static">'+courseTypeSummary+'</div>' +
+    '<div class="hint">由「組成」分頁挑選的產品帶出，此處唯讀；挑選含「團體聊天室」的產品，方案購買後才會在會員區看到並可報名聊天室場次。</div></div>' +
     '</div>' + scheduleHtml;
-}
-function onCourseTypeToggle(pid, el){
-  var p = pkgById(pid);
-  p.courseTypes = p.courseTypes || [];
-  if (el.checked){ if (p.courseTypes.indexOf(el.value)===-1) p.courseTypes.push(el.value); }
-  else { p.courseTypes = p.courseTypes.filter(function(t){ return t !== el.value; }); }
 }
 function onSalesModeChange(pid, val){
   var p = pkgById(pid);
@@ -860,24 +856,32 @@ function renderPkgPriceAudPanel(p){
 
   var projectHtml = p.planType === 'project' ? renderProjectCard(p) : '';
 
-  p.creditRule = p.creditRule || {type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false};
+  p.creditRule = p.creditRule || {type:'once', totalQty:0, quotaQty:0, quotaDay:1, carryOver:false};
   var cr = p.creditRule;
-  var resetDayOptions = '';
-  for (var d=1; d<=28; d++){ resetDayOptions += '<option value="'+d+'"'+(cr.resetDay===d?' selected':'')+'>每月 '+d+' 日</option>'; }
-  var creditFieldsHtml = cr.type === 'monthly_reset' ?
+  var creditTypes = pkgCourseTypes(p);
+  var hasOneOnOne = creditTypes.indexOf('一對一') > -1;
+  var hasGroupLive = creditTypes.indexOf('團體直播') > -1;
+  var showCreditRule = (p.planType !== 'enterprise_pool' && p.planType !== 'project') && hasOneOnOne && !hasGroupLive;
+  var quotaDayOptions = '';
+  for (var qd=1; qd<=28; qd++){ quotaDayOptions += '<option value="'+qd+'"'+(cr.quotaDay===qd?' selected':'')+'>每月 '+qd+' 日</option>'; }
+  var creditTypeRadio = '<div class="formrow"><label>計算方式</label>' +
+    '<label style="margin-right:16px;font-size:13px"><input type="radio" name="creditType-'+p.id+'" value="once" '+(cr.type!=='monthly_quota'?'checked':'')+' onchange="onCreditTypeChange(\''+p.id+'\',this)"> 一次性扣抵（預設）</label>' +
+    '<label style="font-size:13px"><input type="radio" name="creditType-'+p.id+'" value="monthly_quota" '+(cr.type==='monthly_quota'?'checked':'')+' onchange="onCreditTypeChange(\''+p.id+'\',this)"> 每月配給（訂閱型）</label>' +
+    '</div>';
+  var quotaFieldsHtml = cr.type === 'monthly_quota' ?
     ('<div class="grid2">' +
-     '<div class="formrow"><label>每月重置堂數</label><input type="number" min="1" value="'+cr.monthlyQty+'" onchange="onCreditField(\''+p.id+'\',\'monthlyQty\',Number(this.value)||0)"></div>' +
-     '<div class="formrow"><label>重置日</label><select onchange="onCreditField(\''+p.id+'\',\'resetDay\',Number(this.value))">'+resetDayOptions+'</select></div>' +
+     '<div class="formrow"><label>配給堂數</label><input type="number" min="1" value="'+cr.quotaQty+'" onchange="onCreditField(\''+p.id+'\',\'quotaQty\',Number(this.value)||0)"></div>' +
+     '<div class="formrow"><label>配給日</label><select onchange="onCreditField(\''+p.id+'\',\'quotaDay\',Number(this.value))">'+quotaDayOptions+'</select></div>' +
      '</div>' +
-     '<label style="display:block;font-size:13px;margin-bottom:6px"><input type="checkbox" class="chk" '+(cr.carryOver?'checked':'')+' onchange="onCreditCarryToggle(\''+p.id+'\',this)"> 未用完堂數是否累積到下個月</label>' +
-     '<div class="hint">到重置日系統自動把可用堂數補滿；未勾選累積時，當月未用堂數作廢，常用於彈性團體直播等方案。</div>') :
+     '<label style="display:block;font-size:13px;margin-bottom:6px"><input type="checkbox" class="chk" '+(cr.carryOver?'checked':'')+' onchange="onCreditCarryToggle(\''+p.id+'\',this)"> 未用完堂數是否累積到下期</label>' +
+     '<div class="hint">每期配給日系統補滿可用堂數；適用訂閱型一對一課程包（例如每月配給 4 堂）。</div>') :
     ('<div class="formrow" style="max-width:200px"><label>總堂數</label><input type="number" min="0" value="'+cr.totalQty+'" onchange="onCreditField(\''+p.id+'\',\'totalQty\',Number(this.value)||0)"></div>' +
-     '<div class="hint">學生在方案效期內共可使用的總堂數，用完為止，不會每月重置。</div>');
-  var creditRuleHtml = (p.planType === 'enterprise_pool' || p.planType === 'project') ? '' : ('<div class="card"><h3 style="margin-top:0">堂數規則</h3>' +
-    '<div class="formrow"><label>計算方式</label>' +
-    '<label style="margin-right:16px;font-size:13px"><input type="radio" name="creditType-'+p.id+'" value="once" '+(cr.type==='once'?'checked':'')+' onchange="onCreditTypeChange(\''+p.id+'\',this)"> 一次性堂數</label>' +
-    '<label style="font-size:13px"><input type="radio" name="creditType-'+p.id+'" value="monthly_reset" '+(cr.type==='monthly_reset'?'checked':'')+' onchange="onCreditTypeChange(\''+p.id+'\',this)"> 每月重置堂數</label>' +
-    '</div>' + creditFieldsHtml + '</div>');
+     '<div class="hint">學生在方案效期內共可使用的總堂數，用完為止。</div>');
+  var chatCapHtml = creditTypes.indexOf('團體聊天室') > -1 ?
+    '<div class="hint" style="margin-top:10px">聊天室每週可報名場次上限：依設定</div>' : '';
+  var creditRuleHtml = showCreditRule ?
+    ('<div class="card"><h3 style="margin-top:0">堂數規則</h3>' + creditTypeRadio + quotaFieldsHtml + chatCapHtml + '</div>') :
+    (chatCapHtml ? '<div class="card"><h3 style="margin-top:0">堂數規則</h3>'+chatCapHtml+'</div>' : '');
 
   var priceHtml;
   if (p.planType === 'project'){
@@ -1036,12 +1040,14 @@ function onCreditTypeChange(pid, el){
   var p = pkgById(pid);
   p.creditRule.type = el.value;
   renderPkgPriceAudPanel(p);
-}
-function onCreditField(pid, field, val){
-  pkgById(pid).creditRule[field] = val;
+  renderMainTable();
 }
 function onCreditCarryToggle(pid, el){
   pkgById(pid).creditRule.carryOver = el.checked;
+}
+function onCreditField(pid, field, val){
+  pkgById(pid).creditRule[field] = val;
+  renderMainTable();
 }
 function onAudToggle(pid, el){
   var p = pkgById(pid);
@@ -1608,7 +1614,7 @@ function createNewPackage(){
     discountRules:[], promoCodes:[],
     channel:[], periodStart:'', periodEnd:'',
     schedule:null,
-    creditRule:{type:'once', totalQty:0, monthlyQty:0, resetDay:1, carryOver:false},
+    creditRule:{type:'once', totalQty:0},
     status:'草稿'};
   PACKAGES.push(p);
   openPkgDetail(id);

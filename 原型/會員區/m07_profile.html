@@ -55,16 +55,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(min-width:1024px){.bottom-nav{display:none;}}
 .content{max-width:960px;margin:0 auto;padding:18px 16px calc(var(--bottomnav-h) + 24px);}
 @media(min-width:1024px){.content{padding:26px 32px 40px;}}
-.page-sub{color:var(--c-muted);font-size:13px;margin:0 0 18px;}
-.section-title{font-size:15px;font-weight:700;margin:24px 0 12px;}
-.section-title.first{margin-top:4px;}
-.card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+.page-h{font-size:19px;font-weight:700;margin:2px 0 4px;}
+.page-sub{color:var(--c-muted);font-size:13px;margin:0 0 14px;}
+.notif-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.notif-table th{text-align:center;padding:6px 8px;color:var(--c-muted);font-weight:700;font-size:11.5px;border-bottom:1px solid var(--c-border);}
+.notif-table th:first-child{text-align:left;}
+.notif-table td{padding:8px;text-align:center;border-top:1px solid var(--c-border);}
+.notif-table td:first-child{text-align:left;font-weight:600;}
+.notif-table .switch{margin:0 auto;}
+.section-title{font-size:15px;font-weight:700;margin:13px 0 7px;}
+.section-title.first{margin-top:0;}
+.card{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:11px;}
 .card + .card{margin-top:12px;}
 .flex-between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
 .stack{display:flex;flex-direction:column;gap:10px;}
 .muted{color:var(--c-muted);}
 .small{font-size:12px;}
-.divider{border:none;border-top:1px solid var(--c-border);margin:14px 0;}
+.divider{border:none;border-top:1px solid var(--c-border);margin:7px 0;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;min-height:44px;}
 .btn-primary{background:var(--c-primary);color:#fff;}
 .btn-primary:hover{background:var(--c-primary-dark);}
@@ -77,7 +84,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .badge-info{background:#E6EEF8;color:var(--c-primary);}
 .badge-warn{background:#FCEBDC;color:var(--c-accent-dark);}
 .badge-ok{background:#E4F5F0;color:#0B6B52;}
-.list-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--c-border);}
+.list-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--c-border);}
 .list-row:first-child{border-top:none;padding-top:0;}
 .list-row .icon-box{width:38px;height:38px;border-radius:9px;background:var(--c-bg);display:flex;align-items:center;justify-content:center;flex:none;color:var(--c-primary);}
 .list-row .icon-box svg{width:18px;height:18px;}
@@ -109,7 +116,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
 .field label{font-size:13px;font-weight:700;}
 .field label .hint{display:block;font-size:11.5px;color:var(--c-muted);font-weight:400;margin-top:2px;}
-.pm-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:12px;margin-top:10px;}
+.pm-card{border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:12px;margin-top:8px;}
 .pm-card:first-child{margin-top:0;}
 .pm-brand{width:38px;height:26px;border-radius:5px;background:var(--c-bg);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:var(--c-primary);flex:none;}
 .pm-body{flex:1;min-width:0;}
@@ -174,164 +181,72 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </button>
       <div class="bell-panel" id="bellPanel">
         <h4>通知</h4>
-        <div class="bell-item"><span class="b-dot"></span><div><p>你的方案將於 14 天後到期</p><span>今天 09:20</span></div></div>
+        <div class="bell-item"><span class="b-dot"></span><div><p>你的付款卡片即將到期，請確認付款方式</p><span>今天 09:20</span></div></div>
       </div>
     </div>
   </header>
 
   <main class="content">
+    <p class="page-h">帳號與設定</p>
+    <p class="page-sub">個人資料、上課時區與語言、通知偏好、登入安全與付款方式管理</p>
+
     <div class="card" id="profileCard">
       <div class="flex-between">
         <div style="display:flex;gap:12px;align-items:center;">
           <div class="avatar-lg" id="avatarInitials">EJ</div>
           <div>
             <h3 style="margin:0 0 2px;font-size:16px;" id="profileNameDisplay">Emma Johnson</h3>
-            <span class="badge badge-info">一般會員（B）</span>
+            <span class="small muted" id="profileEmailDisplay">emma.johnson@example.com</span>
           </div>
         </div>
         <button class="btn btn-outline btn-sm" onclick="openProfileEdit()">編輯</button>
       </div>
       <div class="divider"></div>
-      <div class="stack" style="gap:6px;">
-        <div class="small"><strong>Email：</strong><span id="profileEmailDisplay">emma.johnson@example.com</span></div>
-        <div class="small"><strong>電話：</strong><span id="profilePhoneDisplay">+886 912-345-678</span></div>
-        <div class="small"><strong>語言：</strong><span id="profileLangDisplay">中文</span></div>
-        <div class="small"><strong>時區：</strong><span id="profileTzDisplay">Asia/Taipei（UTC+8）</span></div>
-        <div class="small"><strong>所屬組織／公司：</strong><span id="profileOrgDisplay">－</span></div>
-        <div class="small"><strong>學習目標：</strong><span id="profileGoalDisplay">通過 TLI-CPT 中高級檢定，強化商務會話</span></div>
-      </div>
+      <div class="small"><strong>手機：</strong><span id="profilePhoneDisplay">+886 912-345-678</span></div>
     </div>
 
-    <div class="section-title">所屬組織</div>
-    <div class="card" id="orgCard">
-      <div class="flex-between">
-        <span class="badge badge-ok">企業員工學員</span>
-        <span class="demo-tag">示範畫面，資料為模擬數字</span>
-      </div>
-      <div class="divider"></div>
-      <div class="stack" style="gap:6px;">
-        <div class="small"><strong>企業名稱：</strong><span id="orgCompanyName">和霖科技股份有限公司</span></div>
-        <div class="small"><strong>部門：</strong><span id="orgDept">研發部</span></div>
-        <div class="small"><strong>所屬廠區：</strong><span id="orgSite">美國廠區</span></div>
-        <div class="small"><strong>廠區時區：</strong><span id="orgSiteTz">美國太平洋時間（UTC-7，夏令）</span></div>
-        <div class="small"><strong>合約期間：</strong><span id="orgContractPeriod">2026-01-01～2026-12-31</span></div>
-        <div class="small"><strong>HR 聯絡窗口：</strong><span id="orgHrContact">企業 HR 服務信箱（hr-support@example.com，示範）</span></div>
-      </div>
-      <div class="divider"></div>
-      <div class="flex-between" style="flex-wrap:wrap;gap:8px;">
-        <div>
-          <div class="small" style="font-weight:700;">顯示時區</div>
-          <div class="small muted" id="tzDisplayHint">目前顯示：台北時間</div>
-        </div>
-        <div class="seg" id="tzDisplaySeg">
-          <button class="active" onclick="setDisplayTz('taipei')">台北時間</button>
-          <button onclick="setDisplayTz('local')">美國廠區當地</button>
-        </div>
-      </div>
-      <p class="small muted" style="margin:8px 0 0;">此偏好只影響本頁與課表時間顯示方式，不影響出席與扣時數判定；判定一律以企業合約設定的基準時區為準。</p>
-      <div class="divider"></div>
-      <div class="privacy-row">
-        <p class="small" style="margin:0;flex:1;min-width:200px;">你的出席、時數、進度與老師的企業評語會提供所屬企業 HR 查閱。</p>
-        <button class="btn btn-outline btn-sm" onclick="openHrInfoModal()">了解詳情</button>
-      </div>
-    </div>
-
-    <div class="section-title">學習</div>
+    <div class="section-title first">上課時區與語言</div>
     <div class="card">
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='m09_assessment.html'">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 14l2 2 4-4"/></svg></div>
-        <div class="body"><h4>學習評量</h4><p>老師回饋、四技能程度、課堂與測驗紀錄</p></div>
+      <div class="small"><strong>語言：</strong><span id="profileLangDisplay">中文</span></div>
+      <div class="small" style="margin-top:6px;"><strong>時區：</strong><span id="profileTzDisplay">Asia/Taipei（UTC+8）</span></div>
+    </div>
+
+    <div class="section-title">通知偏好</div>
+    <div class="card">
+      <div style="overflow-x:auto;">
+      <table class="notif-table">
+        <thead><tr><th></th><th>Email</th><th>LINE</th><th>站內</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>課程提醒</td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+          </tr>
+          <tr>
+            <td>課程到期提醒</td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox"><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+          </tr>
+          <tr>
+            <td>活動與課程訊息</td>
+            <td><label class="switch"><input type="checkbox"><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox"><span class="track"></span></label></td>
+            <td><label class="switch"><input type="checkbox" checked><span class="track"></span></label></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="section-title">登入與安全</div>
+    <div class="card">
+      <div class="list-row" style="cursor:pointer;" onclick="openPasswordSheet()">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="body"><h4>變更密碼</h4><p>定期更換密碼可提升帳號安全性</p></div>
         <div class="trail"><span class="small muted">›</span></div>
       </div>
-    </div>
-
-    <div class="section-title">訂單與付款</div>
-    <div class="chip-row" id="orderFilterChips">
-      <button class="chip selected" onclick="setOrderFilter('all',this)">全部</button>
-      <button class="chip" onclick="setOrderFilter('unpaid',this)">待繳款</button>
-    </div>
-    <div class="card">
-      <div id="orderListWrap"></div>
-      <div class="empty-state hidden" id="orderEmpty" style="padding:12px 0;">
-        <p class="small muted" style="margin:0;">沒有符合條件的訂單紀錄。</p>
-      </div>
-      <div class="hidden" id="orderMoreWrap" style="text-align:center;margin-top:10px;">
-        <button class="btn btn-outline btn-sm" onclick="showMoreOrders()">載入更多（還有 <span id="orderMoreCount">0</span> 筆）</button>
-      </div>
-    </div>
-
-    <div class="flex-between">
-      <div class="section-title" style="margin-bottom:0;">付款方式管理</div>
-      <button class="btn btn-outline btn-sm" onclick="openAddCardSheet()">新增付款方式</button>
-    </div>
-    <div class="card">
-      <div id="paymentMethodList"></div>
-    </div>
-    <div class="card" style="margin-top:12px;">
-      <div class="flex-between">
-        <h4 style="margin:0;font-size:13.5px;">預設發票資訊</h4>
-        <button class="btn btn-outline btn-sm" onclick="openInvoiceEdit()">編輯</button>
-      </div>
-      <div class="stack" style="gap:4px;margin-top:10px;">
-        <div class="small"><strong>發票類型：</strong><span id="invoiceTypeDisplay">個人・電子發票（載具）</span></div>
-        <div class="small"><strong>手機條碼載具：</strong><span id="invoiceCarrierDisplay">/ABC-1234</span></div>
-        <div class="small"><strong>統一編號／抬頭：</strong><span id="invoiceTaxDisplay">未設定</span></div>
-      </div>
-    </div>
-
-    <div class="section-title">合約</div>
-    <div class="card">
-      <div id="contractListWrap"></div>
-      <div class="empty-state hidden" id="contractEmpty" style="padding:12px 0;">
-        <p class="small muted" style="margin:0;">目前沒有合約紀錄。</p>
-      </div>
-      <div class="hidden" id="contractMoreWrap" style="text-align:center;margin-top:10px;">
-        <button class="btn btn-outline btn-sm" onclick="showMoreContracts()">載入更多（還有 <span id="contractMoreCount">0</span> 筆）</button>
-      </div>
-    </div>
-
-    <div class="section-title">通知設定</div>
-    <div class="card">
-      <div class="check-line">
-        <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
-        <div class="cl-body">課程提醒<div class="cl-note">上課前提醒、請假與改期結果</div></div>
-      </div>
-      <div class="check-line">
-        <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
-        <div class="cl-body">續費提醒<div class="cl-note">堂數與效期即將到期時通知</div></div>
-      </div>
-      <div class="check-line">
-        <label class="switch"><input type="checkbox"><span class="track"></span></label>
-        <div class="cl-body">活動與課程訊息<div class="cl-note">新課程與活動通知</div></div>
-      </div>
-    </div>
-
-    <div class="section-title">其他</div>
-    <div class="card">
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='../公開網站/p01_home.html'">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg></div>
-        <div class="body"><h4>回到 TLI 官網</h4><p>查看最新消息與品牌介紹</p></div>
-        <div class="trail"><span class="small muted">›</span></div>
-      </div>
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='../公開網站/p02_courses.html'">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
-        <div class="body"><h4>瀏覽全部課程</h4><p>探索更多課程與方案</p></div>
-        <div class="trail"><span class="small muted">›</span></div>
-      </div>
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='m11_quiz.html'">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <div class="body"><h4>線上測驗</h4><p>檢視測驗紀錄與待完成測驗</p></div>
-        <div class="trail"><span class="small muted">›</span></div>
-      </div>
-      <div class="list-row" style="cursor:pointer;" onclick="location.href='m12_enterprise_report.html'">
-        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l6-4 6 4v12"/><path d="M14 21v-7l4-2v9"/><path d="M9 12h2M9 16h2"/></svg></div>
-        <div class="body"><h4>企業學習報告（企業管理者）</h4><p>查看團隊學習成效總覽</p></div>
-        <div class="trail"><span class="small muted">›</span></div>
-      </div>
-    </div>
-
-    <div class="section-title">登入裝置與安全</div>
-    <div class="card">
       <div class="list-row" style="cursor:pointer;" onclick="openSecuritySheet()">
         <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg></div>
         <div class="body"><h4>登入裝置與安全</h4><p>上次登入：今天 08:12・iPhone 15・台北</p></div>
@@ -339,8 +254,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
       <div class="list-row">
         <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="body"><h4>Zoom 帳號綁定</h4><p id="zoomBindStatus">尚未綁定</p></div>
-        <div class="trail"><button class="btn btn-outline btn-sm" onclick="openZoomBindSheet()">更換</button></div>
+        <div class="body"><h4>Zoom 帳號綁定</h4><p id="zoomBindStatus">尚未綁定</p><p class="small muted" style="margin:1px 0 0;">依此 Email 自動放行進教室，不必等老師核准</p></div>
+        <div class="trail"><button class="btn btn-outline btn-sm" id="zoomBindActionBtn" onclick="openZoomBindSheet()">更換</button></div>
+      </div>
+    </div>
+
+    <div class="flex-between">
+      <div class="section-title" style="margin-bottom:8px;">付款方式管理</div>
+      <button class="btn btn-outline btn-sm" onclick="openAddCardSheet()">新增付款方式</button>
+    </div>
+    <div class="card">
+      <div id="paymentMethodList"></div>
+      <div class="divider"></div>
+      <div class="flex-between">
+        <div class="small"><strong>收據載具預設：</strong><span id="invoiceCarrierDisplay">/ABC-1234</span></div>
+        <button class="btn btn-outline btn-sm" onclick="openInvoiceEdit()">編輯</button>
       </div>
     </div>
 
@@ -357,57 +285,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </nav>
 </div>
 
-<div class="sheet-overlay hidden" id="hrInfoOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3>資料提供 HR 查閱說明</h3>
-    <p class="muted small">依企業合約約定，以下資料會提供所屬企業 HR 查閱，用於團隊學習成效管理；其餘個人資料不會提供。</p>
-    <div class="divider"></div>
-    <div class="stack" style="gap:12px;">
-      <div>
-        <div class="small" style="font-weight:700;color:#0B6B52;">會提供 HR 查閱</div>
-        <ul class="small muted hr-list">
-          <li>出席紀錄（出席／請假／缺席）</li>
-          <li>學習時數與課堂堂數</li>
-          <li>學習進度（聽說讀寫四技能）</li>
-          <li>老師填寫給 HR 的簡短管理提示摘要</li>
-        </ul>
-      </div>
-      <div>
-        <div class="small" style="font-weight:700;color:#B42318;">不會提供 HR 查閱</div>
-        <ul class="small muted hr-list">
-          <li>老師給你個人的課堂學習回饋（學員可見評語）</li>
-          <li>你的訂單、付款與發票資訊</li>
-          <li>你的登入裝置與帳號安全紀錄</li>
-        </ul>
-      </div>
-    </div>
-    <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="document.getElementById('hrInfoOverlay').classList.add('hidden')">關閉</button>
-  </div>
-</div>
-
-<div class="sheet-overlay hidden" id="orderOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h3 id="oTitle">－</h3>
-    <p class="muted small" id="oDate">－</p>
-    <div class="divider"></div>
-    <div class="stack" style="gap:6px;">
-      <div class="small"><strong>品項：</strong><span id="oItem">－</span></div>
-      <div class="small"><strong>金額：</strong><span id="oAmount">－</span></div>
-      <div class="small"><strong>付款方式：</strong><span id="oPayment">－</span></div>
-      <div class="small"><strong>付款渠道：</strong><span id="oChannel">－</span></div>
-      <div class="small"><strong>發票狀態：</strong><span id="oInvoice">－</span></div>
-    </div>
-    <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="document.getElementById('orderOverlay').classList.add('hidden')">關閉</button>
-  </div>
-</div>
-
 <div class="sheet-overlay hidden" id="logoutOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
     <h3>確定要登出嗎？</h3>
-    <p class="muted small">登出後需要重新登入才能查看課表與方案。</p>
+    <p class="muted small">登出後需要重新登入才能繼續使用會員區各項功能。</p>
     <div class="stack" style="margin-top:14px;">
       <button class="btn btn-danger-outline btn-block" onclick="doLogout()">確認登出</button>
       <button class="btn btn-outline btn-block" onclick="document.getElementById('logoutOverlay').classList.add('hidden')">取消</button>
@@ -436,6 +318,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="divider"></div>
     <button class="btn btn-danger-outline btn-block" onclick="revokeAllOtherDevices()">登出所有其他裝置</button>
     <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="document.getElementById('securityOverlay').classList.add('hidden')">關閉</button>
+  </div>
+</div>
+
+<div class="sheet-overlay hidden" id="passwordOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3>變更密碼</h3>
+    <div class="field" style="margin-top:14px;"><label for="pwCurrent">目前密碼</label><input id="pwCurrent" type="password"></div>
+    <div class="field"><label for="pwNew">新密碼</label><input id="pwNew" type="password"></div>
+    <div class="field"><label for="pwConfirm">確認新密碼</label><input id="pwConfirm" type="password"></div>
+    <div class="stack" style="margin-top:8px;">
+      <button class="btn btn-primary btn-block" onclick="savePassword()">儲存</button>
+      <button class="btn btn-outline btn-block" onclick="document.getElementById('passwordOverlay').classList.add('hidden')">取消</button>
+    </div>
   </div>
 </div>
 
@@ -478,8 +374,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <option value="America/Los_Angeles（UTC-7）">America/Los_Angeles（UTC-7）</option>
       </select>
     </div>
-    <div class="field"><label for="editOrg">所屬組織／公司<span class="hint">企業（G）或師資班（BIP）學員請填寫；一般學員可留空</span></label><input id="editOrg" type="text" placeholder="例：宏達精密股份有限公司"></div>
-    <div class="field"><label for="editGoal">學習目標</label><textarea id="editGoal" rows="2"></textarea></div>
     <div class="stack">
       <button class="btn btn-primary btn-block" onclick="saveProfile()">儲存</button>
       <button class="btn btn-outline btn-block" onclick="closeProfileEdit()">取消</button>
@@ -523,10 +417,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="sheet-overlay hidden" id="invoiceEditOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h3>編輯預設發票資訊</h3>
-    <div class="field"><label for="editInvoiceType">發票類型</label>
+    <h3>編輯收據載具預設</h3>
+    <div class="field"><label for="editInvoiceType">收據類型</label>
       <select id="editInvoiceType" onchange="toggleInvoiceTaxField()">
-        <option value="carrier">個人・電子發票（手機條碼載具）</option>
+        <option value="carrier">個人・電子收據（手機條碼載具）</option>
         <option value="company">公司・統一編號（三聯式）</option>
       </select>
     </div>
@@ -542,153 +436,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="toast hidden" id="toast">已儲存</div>
 
 <script>
-/* ================= B2B 所屬組織與顯示時區偏好（v2 新增，資料為模擬數字） ================= */
-function setDisplayTz(mode){
-  document.querySelectorAll('#tzDisplaySeg button').forEach(function(b,i){
-    b.classList.toggle('active', (mode==='taipei'&&i===0)||(mode==='local'&&i===1));
-  });
-  document.getElementById('tzDisplayHint').textContent = mode==='local' ? '目前顯示：美國廠區當地（美國太平洋時間）' : '目前顯示：台北時間';
-  showToast(mode==='local' ? '顯示時區已切換為美國廠區當地（僅影響顯示，不影響扣時數判定）' : '顯示時區已切換為台北時間（僅影響顯示，不影響扣時數判定）');
-}
-function openHrInfoModal(){ document.getElementById('hrInfoOverlay').classList.remove('hidden'); }
-
 function toggleBell(){document.getElementById('bellPanel').classList.toggle('open');}
 document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
 });
 function toggleDoc(id){document.getElementById(id).classList.toggle('open');}
 
-/* ===== 訂單與付款（示範資料，依日期新到舊排序＋狀態篩選＋預設 10 筆＋載入更多） ===== */
-var ORDERS_LIST=[
-  {id:'o2',title:'分期尾款帳單',sortDate:'2026-08-31',date:'到期 2026-08-31',item:'中文一對一 50 分・30 堂方案（第 2 期）',amountTWD:3000,payment:'分期（3 期）',channel:'－（尚未付款）',invoice:'待收款完成後開立',unpaid:true},
-  {id:'o1',title:'ORD-2026-0210',sortDate:'2026-02-10',date:'2026-02-10',item:'中文一對一 50 分・30 堂方案',amountTWD:27000,payment:'分期（3 期）',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345678',unpaid:false},
-  {id:'o3',title:'ORD-2026-0210（第 3 期尾款）',sortDate:'2026-09-30',date:'到期 2026-09-30',item:'中文一對一 50 分・30 堂方案（第 3 期）',amountTWD:3000,payment:'分期（3 期）',channel:'－（尚未付款）',invoice:'待收款完成後開立',unpaid:true},
-  {id:'o4',title:'ORD-2026-0728',sortDate:'2026-07-28',date:'2026-07-28',item:'商務華語情境 16 講（自學課程）',amountTWD:6800,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345512',unpaid:false},
-  {id:'o5',title:'ORD-2026-0701',sortDate:'2026-07-01',date:'2026-07-01',item:'TLI 彈性團體直播・中級會話直播班',amountTWD:14400,payment:'一次付清',channel:'藍新金流・ATM 虛擬帳號',invoice:'已開立 AB-12345399',unpaid:false},
-  {id:'o6',title:'ORD-2026-0510',sortDate:'2026-05-10',date:'2026-05-10',item:'中文一對一 50 分・20 堂方案（續費）',amountTWD:18000,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345201',unpaid:false},
-  {id:'o7',title:'ORD-2026-0322',sortDate:'2026-03-22',date:'2026-03-22',item:'發音基礎 20 講（自學課程）',amountTWD:4200,payment:'一次付清',channel:'藍新金流・超商代碼',invoice:'已開立 AB-12345087',unpaid:false},
-  {id:'o8',title:'ORD-2026-0210b',sortDate:'2026-02-10',date:'2026-02-10',item:'教材加購包',amountTWD:1200,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12345020',unpaid:false},
-  {id:'o9',title:'ORD-2025-1115',sortDate:'2025-11-15',date:'2025-11-15',item:'中文一對一 25 分・20 堂方案',amountTWD:15000,payment:'訂金＋尾款',channel:'藍新金流・信用卡',invoice:'已開立 AB-12344711',unpaid:false},
-  {id:'o10',title:'ORD-2025-0830',sortDate:'2025-08-30',date:'2025-08-30',item:'TLI 彈性團體直播・初級會話直播班',amountTWD:12800,payment:'一次付清',channel:'Stripe・海外信用卡',invoice:'已開立 AB-12344305',unpaid:false},
-  {id:'o11',title:'ORD-2025-0412',sortDate:'2025-04-12',date:'2025-04-12',item:'中文一對一 50 分・30 堂方案（首購）',amountTWD:27000,payment:'分期（6 期）',channel:'藍新金流・信用卡',invoice:'已開立 AB-12343820',unpaid:false},
-  {id:'o12',title:'ORD-2025-0108',sortDate:'2025-01-08',date:'2025-01-08',item:'入學分級測驗報名費',amountTWD:500,payment:'一次付清',channel:'藍新金流・信用卡',invoice:'已開立 AB-12343102',unpaid:false}
-].sort(function(a,b){ return new Date(b.sortDate) - new Date(a.sortDate); });
-var ORDER_PAGE_SIZE=10;
-var orderFilter='all', orderShown=ORDER_PAGE_SIZE;
-function setOrderFilter(f,btn){
-  orderFilter=f;
-  orderShown=ORDER_PAGE_SIZE;
-  document.querySelectorAll('#orderFilterChips .chip').forEach(function(c){c.classList.remove('selected');});
-  btn.classList.add('selected');
-  renderOrderList();
-}
-function filteredOrders(){
-  return ORDERS_LIST.filter(function(o){ return orderFilter==='all' || (orderFilter==='unpaid' && o.unpaid); });
-}
-function renderOrderList(){
-  var list=filteredOrders();
-  var wrap=document.getElementById('orderListWrap');
-  var empty=document.getElementById('orderEmpty');
-  var moreWrap=document.getElementById('orderMoreWrap');
-  if(list.length===0){
-    wrap.innerHTML='';
-    empty.classList.remove('hidden');
-    moreWrap.classList.add('hidden');
-    return;
-  }
-  empty.classList.add('hidden');
-  var shown=list.slice(0,orderShown);
-  wrap.innerHTML=shown.map(function(o){
-    return '<div class="list-row">'+
-      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>'+
-      '<div class="body"><h4>'+o.title+'</h4><p>'+o.item+'・<span data-money="'+o.amountTWD+'">'+tliFmt(o.amountTWD,CURRENT_CURRENCY)+'</span>'+(o.unpaid?'・<span style="color:#B42318;">未繳</span>':'')+'</p></div>'+
-      '<div class="trail"><button class="btn btn-outline btn-sm" onclick="openOrder(\''+o.id+'\')">詳情</button></div>'+
-    '</div>';
-  }).join('');
-  var remain=list.length-shown.length;
-  if(remain>0){
-    moreWrap.classList.remove('hidden');
-    document.getElementById('orderMoreCount').textContent=remain;
-  }else{
-    moreWrap.classList.add('hidden');
-  }
-}
-function showMoreOrders(){ orderShown+=ORDER_PAGE_SIZE; renderOrderList(); }
-function openOrder(id){
-  var o=ORDERS_LIST.filter(function(x){return x.id===id;})[0];
-  if(!o) return;
-  document.getElementById('oTitle').textContent=o.title;
-  document.getElementById('oDate').textContent=o.date;
-  document.getElementById('oItem').textContent=o.item;
-  document.getElementById('oAmount').textContent=tliFmt(o.amountTWD,CURRENT_CURRENCY);
-  document.getElementById('oPayment').textContent=o.payment;
-  document.getElementById('oChannel').textContent=o.channel;
-  document.getElementById('oInvoice').textContent=o.invoice;
-  document.getElementById('orderOverlay').classList.remove('hidden');
-}
-
-/* ===== 合約（示範資料，生效中優先分組、組內依簽署日新到舊排序＋預設 10 筆＋載入更多） ===== */
-var CONTRACTS_LIST=[
-  {id:'ct1',no:'CT-2026-0210',signedAt:'2026-02-10',active:true,detail:'合約內容：中文一對一 50 分・30 堂方案，效期至 2026-09-08，簽署人 Emma Johnson。'},
-  {id:'ct2',no:'CT-2026-0701',signedAt:'2026-07-01',active:true,detail:'合約內容：TLI 彈性團體直播・中級會話直播班，本期 12 週，簽署人 Emma Johnson。'},
-  {id:'ct3',no:'CT-2025-1115',signedAt:'2025-11-15',active:false,detail:'合約內容：中文一對一 25 分・20 堂方案，效期已於 2026-03-15 到期，簽署人 Emma Johnson。'},
-  {id:'ct4',no:'CT-2025-0830',signedAt:'2025-08-30',active:false,detail:'合約內容：TLI 彈性團體直播・初級會話直播班，已於 2025-12-31 期滿，簽署人 Emma Johnson。'},
-  {id:'ct5',no:'CT-2025-0412',signedAt:'2025-04-12',active:false,detail:'合約內容：中文一對一 50 分・30 堂方案（首購），效期已於 2025-10-05 到期，簽署人 Emma Johnson。'},
-  {id:'ct6',no:'CT-2025-0108',signedAt:'2025-01-08',active:false,detail:'合約內容：入學分級測驗服務條款，已於測驗完成後失效，簽署人 Emma Johnson。'},
-  {id:'ct7',no:'CT-2024-1105',signedAt:'2024-11-05',active:false,detail:'合約內容：發音基礎 20 講（自學課程）授權條款，已於 2025-02-20 到期，簽署人 Emma Johnson。'},
-  {id:'ct8',no:'CT-2024-0820',signedAt:'2024-08-20',active:false,detail:'合約內容：商務華語情境 16 講（自學課程）授權條款，已於 2025-08-18 到期，簽署人 Emma Johnson。'},
-  {id:'ct9',no:'CT-2024-0615',signedAt:'2024-06-15',active:false,detail:'合約內容：TLI 彈性團體直播・日常會話直播班，已於 2025-06-30 期滿，簽署人 Emma Johnson。'},
-  {id:'ct10',no:'CT-2024-0210',signedAt:'2024-02-10',active:false,detail:'合約內容：中文一對一 50 分・10 堂方案，效期已於 2024-08-15 到期，簽署人 Emma Johnson。'},
-  {id:'ct11',no:'CT-2023-1101',signedAt:'2023-11-01',active:false,detail:'合約內容：旅遊華語會話 12 講（自學課程）授權條款，已於 2024-02-01 到期，簽署人 Emma Johnson。'},
-  {id:'ct12',no:'CT-2023-0605',signedAt:'2023-06-05',active:false,detail:'合約內容：初次入學註冊服務條款，已於課程結束後失效，簽署人 Emma Johnson。'}
-].sort(function(a,b){
-  if(a.active!==b.active) return a.active ? -1 : 1;
-  return new Date(b.signedAt) - new Date(a.signedAt);
-});
-var CONTRACT_PAGE_SIZE=10;
-var contractShown=CONTRACT_PAGE_SIZE;
-function renderContractList(){
-  var wrap=document.getElementById('contractListWrap');
-  var empty=document.getElementById('contractEmpty');
-  var moreWrap=document.getElementById('contractMoreWrap');
-  if(CONTRACTS_LIST.length===0){
-    wrap.innerHTML='';
-    empty.classList.remove('hidden');
-    moreWrap.classList.add('hidden');
-    return;
-  }
-  empty.classList.add('hidden');
-  var shown=CONTRACTS_LIST.slice(0,contractShown);
-  var html='';
-  var lastGroup=null;
-  shown.forEach(function(c){
-    var group=c.active?'生效中':'已到期';
-    if(group!==lastGroup){
-      html+='<div class="list-group-label">'+group+'</div>';
-      lastGroup=group;
-    }
-    html+='<div class="list-row">'+
-      '<div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>'+
-      '<div class="body"><h4>課程合約 '+c.no+'</h4><p>簽署日 '+c.signedAt+'・'+(c.active?'生效中':'已到期')+'</p></div>'+
-      '<div class="trail"><button class="btn btn-outline btn-sm" onclick="toggleDoc(\'contractDetail-'+c.id+'\')">檢視</button></div>'+
-    '</div>'+
-    '<div class="doc-detail" id="contractDetail-'+c.id+'">'+c.detail+'</div>';
-  });
-  wrap.innerHTML=html;
-  var remain=CONTRACTS_LIST.length-shown.length;
-  if(remain>0){
-    moreWrap.classList.remove('hidden');
-    document.getElementById('contractMoreCount').textContent=remain;
-  }else{
-    moreWrap.classList.add('hidden');
-  }
-}
-function showMoreContracts(){ contractShown+=CONTRACT_PAGE_SIZE; renderContractList(); }
 function doLogout(){
   location.href='../公開網站/p07_login_register.html';
 }
 
-var PROFILE={name:'Emma Johnson',email:'emma.johnson@example.com',phone:'+886 912-345-678',lang:'中文',tz:'Asia/Taipei（UTC+8）',org:'',goal:'通過 TLI-CPT 中高級檢定，強化商務會話',avatarStyle:0};
+var PROFILE={name:'Emma Johnson',email:'emma.johnson@example.com',phone:'+886 912-345-678',lang:'中文',tz:'Asia/Taipei（UTC+8）',avatarStyle:0};
 var AVATAR_COLORS=['var(--c-primary)','var(--c-accent)','var(--c-secondary)'];
 var toastTimer=null;
 
@@ -703,8 +461,6 @@ function renderProfile(){
   document.getElementById('profilePhoneDisplay').textContent=PROFILE.phone;
   document.getElementById('profileLangDisplay').textContent=PROFILE.lang;
   document.getElementById('profileTzDisplay').textContent=PROFILE.tz;
-  document.getElementById('profileOrgDisplay').textContent=PROFILE.org||'－（一般學員未填寫）';
-  document.getElementById('profileGoalDisplay').textContent=PROFILE.goal;
   var av=document.getElementById('avatarInitials');
   av.textContent=initials(PROFILE.name);
   av.style.background=AVATAR_COLORS[PROFILE.avatarStyle % AVATAR_COLORS.length];
@@ -715,8 +471,6 @@ function openProfileEdit(){
   document.getElementById('editPhone').value=PROFILE.phone;
   document.getElementById('editLang').value=PROFILE.lang;
   document.getElementById('editTz').value=PROFILE.tz;
-  document.getElementById('editOrg').value=PROFILE.org;
-  document.getElementById('editGoal').value=PROFILE.goal;
   var avp=document.getElementById('avatarEditPreview');
   avp.textContent=initials(PROFILE.name);
   avp.style.background=AVATAR_COLORS[PROFILE.avatarStyle % AVATAR_COLORS.length];
@@ -735,11 +489,24 @@ function saveProfile(){
   PROFILE.phone=document.getElementById('editPhone').value.trim()||PROFILE.phone;
   PROFILE.lang=document.getElementById('editLang').value;
   PROFILE.tz=document.getElementById('editTz').value;
-  PROFILE.org=document.getElementById('editOrg').value.trim();
-  PROFILE.goal=document.getElementById('editGoal').value.trim()||PROFILE.goal;
   renderProfile();
   closeProfileEdit();
   showToast('個人資料已儲存');
+}
+function openPasswordSheet(){
+  document.getElementById('pwCurrent').value='';
+  document.getElementById('pwNew').value='';
+  document.getElementById('pwConfirm').value='';
+  document.getElementById('passwordOverlay').classList.remove('hidden');
+}
+function savePassword(){
+  var cur=document.getElementById('pwCurrent').value;
+  var nw=document.getElementById('pwNew').value;
+  var confirm=document.getElementById('pwConfirm').value;
+  if(!cur||!nw){ showToast('請輸入目前密碼與新密碼'); return; }
+  if(nw!==confirm){ showToast('兩次輸入的新密碼不一致'); return; }
+  document.getElementById('passwordOverlay').classList.add('hidden');
+  showToast('密碼已更新（示範）');
 }
 
 /* ===== 付款方式管理 ===== */
@@ -815,12 +582,12 @@ function saveNewCard(){
   showToast('付款方式已新增');
 }
 
-/* ===== 預設發票資訊 ===== */
+/* ===== 收據載具預設 ===== */
 var INVOICE_DEFAULT={type:'carrier',carrier:'/ABC-1234',tax:''};
 function renderInvoiceDefault(){
-  document.getElementById('invoiceTypeDisplay').textContent = INVOICE_DEFAULT.type==='carrier' ? '個人・電子發票（載具）' : '公司・統一編號（三聯式）';
-  document.getElementById('invoiceCarrierDisplay').textContent = INVOICE_DEFAULT.type==='carrier' ? INVOICE_DEFAULT.carrier : '－';
-  document.getElementById('invoiceTaxDisplay').textContent = INVOICE_DEFAULT.type==='company' ? (INVOICE_DEFAULT.tax||'未設定') : '未設定';
+  var el=document.getElementById('invoiceCarrierDisplay');
+  if(!el) return;
+  el.textContent = INVOICE_DEFAULT.type==='carrier' ? INVOICE_DEFAULT.carrier : ('統一編號 '+(INVOICE_DEFAULT.tax||'未設定'));
 }
 function toggleInvoiceTaxField(){
   var isCompany=document.getElementById('editInvoiceType').value==='company';
@@ -840,7 +607,7 @@ function saveInvoiceDefault(){
   INVOICE_DEFAULT.tax=document.getElementById('editInvoiceTax').value.trim();
   renderInvoiceDefault();
   document.getElementById('invoiceEditOverlay').classList.add('hidden');
-  showToast('發票資訊已儲存');
+  showToast('收據載具已儲存');
 }
 function showToast(msg){
   var t=document.getElementById('toast');
@@ -876,7 +643,9 @@ function maskEmail(email){
 function renderZoomBindStatus(){
   var email=getZoomEmail();
   var el=document.getElementById('zoomBindStatus');
+  var btn=document.getElementById('zoomBindActionBtn');
   el.textContent = email ? ('已綁定：'+maskEmail(email)) : '尚未綁定';
+  if(btn) btn.textContent = email ? '更換' : '設定 Zoom 登入 Email';
 }
 function openZoomBindSheet(){
   document.getElementById('zoomBindInput').value = getZoomEmail() || '';
@@ -923,8 +692,6 @@ renderProfile();
 renderPaymentMethods();
 renderInvoiceDefault();
 renderZoomBindStatus();
-renderOrderList();
-renderContractList();
 </script>
 </body>
 </html>

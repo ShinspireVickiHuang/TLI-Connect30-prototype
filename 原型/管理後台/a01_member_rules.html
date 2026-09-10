@@ -55,6 +55,7 @@ tr.rowlink:hover{background:#F8FAFD;}
 .badge.orange{background:#FCE9DA;color:var(--orange);}
 .badge.grey{background:var(--g200);color:var(--g500);}
 .badge.red{background:#FBE7E7;color:#C0392B;}
+.badge.purple{background:#F3E8FD;color:#6B21A8;}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
 .tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
 cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
@@ -300,6 +301,24 @@ html,body{overflow-x:hidden;}
 </div>
 
 <div class="card">
+<h2>會員開通方式</h2>
+<div class="desc" style="margin-bottom:12px">設定會員建檔後如何取得帳號登入權限，套用於後續新建會員與批次匯入會員；既有會員的開通狀態不受影響。</div>
+<div class="formrow">
+<label style="display:flex;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--g900);margin-bottom:10px;cursor:pointer">
+<input type="radio" name="activationMode" id="actModeLink" value="link" checked style="margin-top:2px">
+<span>一次性開通連結（預設）：寄送開通連結，有效
+<input type="number" id="activationLinkHours" value="72" min="1" style="width:56px;padding:3px 6px;border:1px solid var(--g200);border-radius:4px;font-size:12.5px;font-family:inherit;margin:0 3px">
+小時，逾時需重新寄發，時數依系統參數設定調整</span>
+</label>
+<label style="display:flex;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--g900);cursor:pointer">
+<input type="radio" name="activationMode" id="actModePassword" value="password" style="margin-top:2px">
+<span>預設密碼＋首次登入強制改密碼：寄送初始密碼，會員第一次登入時系統強制要求變更密碼</span>
+</label>
+</div>
+<button class="btn" onclick="saveActivationSetting()">儲存</button>
+</div>
+
+<div class="card">
 <div class="toolrow">
 <div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="searchInput" placeholder="搜尋姓名／Email／手機／會員編號" oninput="onSearchInput(this)"></div>
 <div class="colsetwrap">
@@ -312,6 +331,8 @@ html,body{overflow-x:hidden;}
 <div class="chipgroup" id="chipTier"><span class="glabel">分類：</span></div>
 <div class="chipgroup" id="chipCampus"><span class="glabel">校區：</span></div>
 <div class="chipgroup" id="chipStatus"><span class="glabel">狀態：</span></div>
+<div class="chipgroup" id="chipActivation"><span class="glabel">開通：</span></div>
+<div class="chipgroup" id="chipOwnership"><span class="glabel">歸屬：</span></div>
 <div class="chipgroup"><span class="glabel">企業／機構：</span><select class="orgsel" id="orgSelect" onchange="onOrgChange(this)"><option value="">全部</option></select></div>
 <div class="chipgroup daterange"><span class="glabel">建立日期：</span><input type="date" id="dateFrom" onchange="onDateChange()"> <span class="small">～</span> <input type="date" id="dateTo" onchange="onDateChange()"></div>
 <button class="clearlink" onclick="clearAllFilters()">清除全部篩選</button>
@@ -401,6 +422,23 @@ var STATUSES = ['在學','休學','已退費'];
 var ADVISORS = ['顧問 A','顧問 B','顧問 C','顧問 D'];
 var TIERS = ['B','G','C','BIP'];
 var ORGS_BG = ['大西華國際股份有限公司','瑞新企業股份有限公司','安泰保經股份有限公司','國際文教基金會','裕發精密工業股份有限公司','匯泰金融顧問股份有限公司'];
+var INST_ORG = '範例州立大學';
+/* 歸屬（規則跟方案走，不跟會員身分走）：同一會員可能同時有自費／企業／機構來源的方案，多重歸屬用「多重」徽章標示 */
+var OWNERSHIP_LABEL = {self:'自費', enterprise:'企業', institution:'機構', multi:'多重'};
+function ownershipBadge(key){
+  var cls = key==='enterprise'?'blue':(key==='institution'?'orange':(key==='multi'?'purple':'grey'));
+  return '<span class="badge '+cls+'">'+OWNERSHIP_LABEL[key]+'</span>';
+}
+function computeOwnership(i, tier, org){
+  var types=[];
+  if (org) types.push('enterprise');
+  var rInst = seededRand(i*151+41);
+  if (rInst < 0.08) types.push('institution');
+  var rSelf = seededRand(i*173+43);
+  if (types.length===0 || rSelf < 0.5) types.push('self');
+  return types;
+}
+function ownershipKeyOf(types){ return types.length>1 ? 'multi' : types[0]; }
 
 function seededRand(seed){
   var x = Math.sin(seed*9301+49297)*233280;
@@ -423,22 +461,37 @@ function makeMember(i){
   var advisor = ADVISORS[Math.floor(r5*4)];
   var org = (tier==='B'||tier==='G') ? ORGS_BG[i % ORGS_BG.length] : '';
   var dayOffset = Math.floor(seededRand(i*17+11)*820);
+  var joinedStr = addDays('2024-05-01', dayOffset);
+  var ownership = computeOwnership(i, tier, org);
+  var ownershipKey = ownershipKeyOf(ownership);
+  /* 開通狀態（示範）：約 12% 未開通，確保示範資料涵蓋建檔後尚未開通的情境 */
+  var activated = seededRand(i*211+61) >= 0.12;
+  var actSentDate = addDays(joinedStr, Math.floor(seededRand(i*233+67)*3));
+  var actHour = 8 + Math.floor(seededRand(i*257+71)*10);
+  var actMin = Math.floor(seededRand(i*271+73)*60);
+  var activationSentAt = actSentDate+' '+padNum(actHour,2)+':'+padNum(actMin,2);
   return {
     id:'m'+i,
     memberNo:'M'+padNum(100001+i,8),
     name:surname+given,
+    activated:activated,
+    activationKey: activated ? 'activated' : 'unactivated',
+    activationSentAt:activationSentAt,
     gender:(i%2===0)?'男':'女',
     tier:tier, campus:campus, status:status, advisor:advisor,
     org:org, taxId: org ? padNum((10000000+(i*37)%89999999),8) : '',
     phone:'09'+padNum((10000000+(i*91)%89999999)%100000000,8),
     email:'member'+(i+1)+'@example.com',
-    joined: addDays('2024-05-01', dayOffset),
+    joined: joinedStr,
     tags:[],
     notes: (i%9===0) ? ['首次諮詢由官網試聽表單導入，對日常會話課有興趣。'] : [],
     consultLog: [
       {t: addDays('2024-05-01', dayOffset+3), who:advisor, note:'完成分級測驗，安排入班。'},
     ],
-    courses: (i%3===0) ? ['日常會話學期班 Lv.'+(1+(i%8))] : ['中文一對一 50 分鐘（進行中）']
+    courses: (i%3===0) ? ['日常會話學期班 Lv.'+(1+(i%8))] : ['中文一對一 50 分鐘（進行中）'],
+    ownership: ownership,
+    ownershipKey: ownershipKey,
+    instOrg: ownership.indexOf('institution')>-1 ? INST_ORG : ''
   };
 }
 var TOTAL_SEED = 16238;
@@ -446,9 +499,41 @@ var MEMBERS = [];
 for (var gi=0; gi<TOTAL_SEED; gi++){ MEMBERS.push(makeMember(gi)); }
 var nextNewId = TOTAL_SEED + 1;
 
+/* ================= 示範會員「有課程學員」（Emma）：同時有自費／企業／機構三種來源，跨頁（會員區 m01/m02/m03/m05/m07）示範資料一致 ================= */
+var EMMA_PLANS = [
+  {planId:'plan-a', name:'中文一對一 20 堂課程包', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'生效中，到期 2026-12-31'},
+  {planId:'plan-b', name:'彈性團體直播・中級會話 B1 班', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組＋團體直播班規則', status:'第 4／12 週，到期 2026-10-15'},
+  {planId:'plan-c', name:'商務華語企業培訓（公司提供）', payer:'公司提供', source:'企業合約・和霖科技股份有限公司', ruleGroup:'企業合約覆寫（需 HR 核准、廠區時區）', status:'合約至 2026-12-31'},
+  {planId:'plan-d', name:'華語會話學期方案（學校提供）', payer:'學校提供', source:'機構授權・範例州立大學', ruleGroup:'機構授權規則', status:'3 個月期程，到期 2026-11-30'},
+  {planId:'plan-e', name:'自學影音組合包', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'買斷，不限期'},
+  {planId:'plan-adv', name:'商務華語進階方案', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'生效中，到期 2026-11-30'},
+  {planId:'plan-culture', name:'文化與聽力強化方案', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'已到期 2026-06-30'}
+];
+var EMMA_MEMBER = {
+  id:'m-emma-demo',
+  memberNo:'M10000001',
+  name:'Emma Johnson',
+  gender:'女',
+  tier:'B', campus:'羅斯福', status:'在學', advisor:'顧問 A',
+  org:'和霖科技股份有限公司', taxId:padNum(12345678,8),
+  phone:'0912-345-678',
+  email:'emma.johnson@example.com',
+  joined:'2024-08-20',
+  activated:true, activationKey:'activated', activationSentAt:'2024-08-20 09:15',
+  tags:['跨方案示範'],
+  notes:['示範會員：同時持有自費／企業／機構三種來源的方案，用於驗證規則跟方案走、不跟身分走。'],
+  consultLog:[{t:'2024-08-23', who:'顧問 A', note:'完成分級測驗，安排入班；另同步企業合約與機構授權開通。'}],
+  courses:['中文一對一 20 堂課程包（進行中）','彈性團體直播・中級會話 B1 班（進行中）'],
+  ownership:['self','enterprise','institution'],
+  ownershipKey:'multi',
+  instOrg:INST_ORG,
+  demoPlans:EMMA_PLANS
+};
+MEMBERS.unshift(EMMA_MEMBER);
+
 /* ================= 狀態 ================= */
 var searchTerm = '';
-var filters = {tier:[], campus:[], status:[], org:''};
+var filters = {tier:[], campus:[], status:[], org:'', ownership:[], activation:[]};
 var dateFrom = '', dateTo = '';
 var sortKey = 'joined', sortDir = 'desc';
 var pageSize = 50;
@@ -461,7 +546,9 @@ var COL_DEFS = [
   {key:'tier', label:'分類', sortable:true, always:true},
   {key:'campus', label:'校區', sortable:true, always:true},
   {key:'org', label:'企業／機構', sortable:false, always:false},
+  {key:'ownership', label:'歸屬', sortable:false, always:true},
   {key:'status', label:'狀態', sortable:true, always:true},
+  {key:'activation', label:'開通狀態', sortable:true, always:true},
   {key:'joined', label:'建立日期', sortable:true, always:false},
   {key:'advisor', label:'對應顧問', sortable:true, always:false},
   {key:'email', label:'Email', sortable:false, always:false},
@@ -475,6 +562,9 @@ function memberStatusBadge(s){
   if (s === '休學') return '<span class="badge grey">休學</span>';
   return '<span class="badge red">已退費</span>';
 }
+function activationBadge(activated){
+  return activated ? '<span class="badge green">已開通</span>' : '<span class="badge grey">未開通</span>';
+}
 
 /* ================= 篩選／排序／分頁 ================= */
 function getFiltered(){
@@ -486,6 +576,8 @@ function getFiltered(){
     if (filters.campus.length && filters.campus.indexOf(m.campus)===-1) return false;
     if (filters.status.length && filters.status.indexOf(m.status)===-1) return false;
     if (filters.org && m.org !== filters.org) return false;
+    if (filters.ownership.length && filters.ownership.indexOf(m.ownershipKey)===-1) return false;
+    if (filters.activation.length && filters.activation.indexOf(m.activationKey)===-1) return false;
     if (dateFrom && m.joined < dateFrom) return false;
     if (dateTo && m.joined > dateTo) return false;
     return true;
@@ -527,6 +619,19 @@ function renderChipBars(){
   statusWrap.innerHTML = '<span class="glabel">狀態：</span>' + STATUSES.map(function(s){
     return '<button type="button" class="fchip'+(filters.status.indexOf(s)>-1?' active':'')+'" onclick="toggleFilter(\'status\',\''+s+'\')">'+s+'</button>';
   }).join('');
+  var ownershipWrap = document.getElementById('chipOwnership');
+  if (ownershipWrap){
+    ownershipWrap.innerHTML = '<span class="glabel">歸屬：</span>' + ['self','enterprise','institution','multi'].map(function(k){
+      return '<button type="button" class="fchip'+(filters.ownership.indexOf(k)>-1?' active':'')+'" onclick="toggleFilter(\'ownership\',\''+k+'\')">'+OWNERSHIP_LABEL[k]+'</button>';
+    }).join('');
+  }
+  var activationWrap = document.getElementById('chipActivation');
+  if (activationWrap){
+    var activationLabel = {activated:'已開通', unactivated:'未開通'};
+    activationWrap.innerHTML = '<span class="glabel">開通：</span>' + ['activated','unactivated'].map(function(k){
+      return '<button type="button" class="fchip'+(filters.activation.indexOf(k)>-1?' active':'')+'" onclick="toggleFilter(\'activation\',\''+k+'\')">'+activationLabel[k]+'</button>';
+    }).join('');
+  }
   var orgSel = document.getElementById('orgSelect');
   if (orgSel.options.length <= 1){
     ORGS_BG.forEach(function(o){ var opt=document.createElement('option'); opt.value=o; opt.textContent=o; orgSel.appendChild(opt); });
@@ -553,7 +658,7 @@ function onDateChange(){
 function onSearchInput(el){ searchTerm = el.value; currentPage = 1; renderTable(); }
 function clearAllFilters(){
   searchTerm=''; document.getElementById('searchInput').value='';
-  filters = {tier:[], campus:[], status:[], org:''};
+  filters = {tier:[], campus:[], status:[], org:'', ownership:[], activation:[]};
   dateFrom=''; dateTo='';
   currentPage = 1;
   renderChipBars();
@@ -594,8 +699,10 @@ function cellHtml(col, m){
     case 'name': return m.name;
     case 'tier': return tierBadge(m.tier);
     case 'campus': return m.campus;
-    case 'org': return m.org || '<span class="small">－</span>';
+    case 'org': return m.org || (m.instOrg ? m.instOrg+'<span class="small">（機構）</span>' : '<span class="small">－</span>');
+    case 'ownership': return ownershipBadge(m.ownershipKey);
     case 'status': return memberStatusBadge(m.status);
+    case 'activation': return activationBadge(m.activated);
     case 'joined': return m.joined;
     case 'advisor': return m.advisor;
     case 'email': return m.email;
@@ -707,6 +814,17 @@ function doBatchNotify(){
 }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
+/* ================= 會員開通方式設定 ================= */
+function saveActivationSetting(){
+  var mode = document.querySelector('input[name="activationMode"]:checked').value;
+  if (mode === 'link'){
+    var hours = document.getElementById('activationLinkHours').value || '72';
+    toast('已儲存會員開通方式：一次性開通連結（有效 '+hours+' 小時）');
+  } else {
+    toast('已儲存會員開通方式：預設密碼＋首次登入強制改密碼');
+  }
+}
+
 /* ================= 詳情／新增 抽屜 ================= */
 var currentDrawerId = null;
 var currentDrawerTab = 'basic';
@@ -739,9 +857,47 @@ function drawerTab(name){
   var m = MEMBERS.find(function(x){return x.id===currentDrawerId;});
   renderDrawerBody(m);
 }
+/* 依會員的歸屬（ownership）合成方案清單：示範會員 Emma 有固定 5 筆完整資料，其餘會員依歸屬型態合成 1～2 筆概略資料 */
+function memberPlanRows(m){
+  if (m.demoPlans) return m.demoPlans;
+  var rows = [];
+  if (m.ownership.indexOf('self')>-1){
+    rows.push({planId:'-', name:'自費課程方案', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'生效中'});
+  }
+  if (m.ownership.indexOf('enterprise')>-1){
+    rows.push({planId:'-', name:'企業培訓方案（公司提供）', payer:'公司提供', source:'企業合約・'+(m.org||'（企業名稱未設定）'), ruleGroup:'企業合約覆寫', status:'生效中'});
+  }
+  if (m.ownership.indexOf('institution')>-1){
+    rows.push({planId:'-', name:'學期授權方案（學校提供）', payer:'學校提供', source:'機構授權・'+(m.instOrg||INST_ORG), ruleGroup:'機構授權規則', status:'生效中'});
+  }
+  return rows;
+}
+/* 帳號區：建檔後的開通狀態與操作。未開通會員才顯示開通信寄出時間與重寄／複製連結操作 */
+function accountSectionHtml(m){
+  var html = '<div class="card" style="margin:14px 0 0;padding:14px;background:var(--g50)">' +
+    '<h2 style="font-size:13px;margin:0 0 10px">帳號</h2>' +
+    '<div class="kv"><span>開通狀態</span><span>'+activationBadge(m.activated)+'</span></div>' +
+    '<div class="kv"><span>建檔日</span><span>'+m.joined+'</span></div>';
+  if (!m.activated){
+    html += '<div class="kv"><span>開通信寄出時間</span><span>'+(m.activationSentAt||'－')+'</span></div>' +
+      '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<button class="btn ghost" onclick="resendActivation()">重寄開通信</button>' +
+      '<button class="btn ghost" onclick="copyActivationLink()">複製開通連結</button>' +
+      '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+function resendActivation(){
+  var m = MEMBERS.find(function(x){return x.id===currentDrawerId;});
+  if (m) m.activationSentAt = new Date().toISOString().slice(0,10)+' '+new Date().toTimeString().slice(0,5);
+  toast('開通信已重新寄出');
+  drawerTab('basic');
+}
+function copyActivationLink(){ toast('開通連結已複製到剪貼簿'); }
 function renderDrawerBody(m){
-  var tabs = ['basic','class','orders','courses','consult','notes'];
-  var labels = {basic:'基本', class:'分類與企業關聯', orders:'訂單', courses:'課程', consult:'諮詢紀錄', notes:'備註'};
+  var tabs = ['basic','class','ownership','orders','courses','consult','notes'];
+  var labels = {basic:'基本', class:'分類與企業關聯', ownership:'歸屬與方案', orders:'訂單', courses:'課程', consult:'諮詢紀錄', notes:'備註'};
   var tabsHtml = '<div class="tabs">' + tabs.map(function(t){
     return '<button class="'+(t===currentDrawerTab?'active':'')+'" onclick="drawerTab(\''+t+'\')">'+labels[t]+'</button>';
   }).join('') + '</div>';
@@ -755,6 +911,7 @@ function renderDrawerBody(m){
       '<div class="formrow"><label>所屬校區</label><select id="fld_campus">'+CAMPUSES.map(function(c){return '<option'+(c===m.campus?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>' +
       '<div class="formrow"><label>會員狀態</label><select id="fld_status">'+STATUSES.map(function(s){return '<option'+(s===m.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>' +
       '<div class="kv"><span>加入日期</span><span>'+m.joined+'</span></div>' +
+      accountSectionHtml(m) +
       '<button class="btn" style="margin-top:12px" onclick="saveBasicTab()">儲存</button>';
   } else if (currentDrawerTab === 'class'){
     body = '<div class="formrow"><label>分類代碼</label><select id="fld_tier">'+TIERS.map(function(t){return '<option'+(t===m.tier?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>' +
@@ -763,6 +920,14 @@ function renderDrawerBody(m){
       '<div class="formrow"><label>對應顧問</label><select id="fld_advisor">'+ADVISORS.map(function(a){return '<option'+(a===m.advisor?' selected':'')+'>'+a+'</option>';}).join('')+'</select></div>' +
       '<div class="hint" style="margin-bottom:10px">分類與企業關聯只影響「誰能看到、誰能買哪些銷售方案」；訂單的付款方式在建單時獨立選擇，不受此分類連動。</div>' +
       '<button class="btn" onclick="saveClassTab()">儲存</button>';
+  } else if (currentDrawerTab === 'ownership'){
+    var planRows = memberPlanRows(m);
+    body = '<div class="desc" style="margin-bottom:10px">此會員目前的歸屬與方案（'+ownershipBadge(m.ownershipKey)+'）：規則跟著方案走，不跟會員身分走——同一會員可能同時持有自費／企業／機構來源的方案，各自套用不同規則組。</div>' +
+      (planRows.length===0 ? '<p class="small">目前沒有生效中的方案。</p>' :
+      '<div class="tablewrap"><table><tr><th>方案名稱</th><th>付費方</th><th>合約來源</th><th>套用規則組</th><th>狀態</th></tr>' +
+      planRows.map(function(p){
+        return '<tr><td>'+p.name+'</td><td>'+p.payer+'</td><td>'+p.source+'</td><td>'+p.ruleGroup+'</td><td>'+p.status+'</td></tr>';
+      }).join('') + '</table></div>');
   } else if (currentDrawerTab === 'orders'){
     body = '<div class="desc" style="margin-bottom:10px">此處僅顯示會員的訂單摘要，完整明細請至「訂單」查看：</div>' +
       '<div class="tablewrap"><table><tr><th>訂單編號</th><th>商品內容</th><th>狀態</th></tr>' +
@@ -830,6 +995,8 @@ function renderNewMemberForm(){
 function saveNewMember(){
   var name = document.getElementById('nm_name').value.trim();
   if (!name){ toast('請輸入姓名'); return; }
+  var nmOrg = document.getElementById('nm_org').value;
+  var nmOwnership = nmOrg ? ['enterprise'] : ['self'];
   var m = {
     id:'mnew'+nextNewId, memberNo:'M'+padNum(100001+nextNewId-1,8), name:name,
     gender:document.getElementById('nm_gender').value,
@@ -837,10 +1004,12 @@ function saveNewMember(){
     email:document.getElementById('nm_email').value,
     campus:document.getElementById('nm_campus').value,
     tier:document.getElementById('nm_tier').value,
-    org:document.getElementById('nm_org').value,
+    org:nmOrg,
     taxId:'', status:'在學', advisor:document.getElementById('nm_advisor').value,
     joined:new Date().toISOString().slice(0,10),
-    tags:[], notes:[], consultLog:[], courses:[]
+    tags:[], notes:[], consultLog:[], courses:[],
+    ownership:nmOwnership, ownershipKey:ownershipKeyOf(nmOwnership), instOrg:'',
+    activated:false, activationKey:'unactivated', activationSentAt:new Date().toISOString().slice(0,10)+' '+new Date().toTimeString().slice(0,5)
   };
   nextNewId++;
   MEMBERS.unshift(m);
@@ -956,7 +1125,9 @@ function doWizImport(){
       id:'mimp'+nextNewId, memberNo:'M'+padNum(100001+nextNewId-1,8), name:r.name,
       gender:'－', phone:'', email:r.email, campus:r.campus, tier:r.tier, org:'', taxId:'',
       status:'在學', advisor:ADVISORS[0], joined:new Date().toISOString().slice(0,10),
-      tags:['批次匯入'], notes:[], consultLog:[], courses:[]
+      tags:['批次匯入'], notes:[], consultLog:[], courses:[],
+      ownership:['self'], ownershipKey:'self', instOrg:'',
+      activated:false, activationKey:'unactivated', activationSentAt:new Date().toISOString().slice(0,10)+' '+new Date().toTimeString().slice(0,5)
     };
     nextNewId++;
     MEMBERS.unshift(m);

@@ -460,8 +460,21 @@ html,body{overflow-x:hidden;}
                 <button type="button" class="chip" onclick="tliSwitchSchedMode('flex')">直播制</button>
                 <button type="button" class="chip" id="chipOverdue" onclick="toggleQueueOverdue(this)">逾 3 天未排</button>
               </div>
+              <div class="queueChips" id="queueStatusChips" style="margin-top:6px;">
+                <button type="button" class="chip active" data-qstatus="pending" onclick="setQueueStatus('pending')">待顧問安排</button>
+                <button type="button" class="chip" data-qstatus="arranged" onclick="setQueueStatus('arranged')">已安排</button>
+                <button type="button" class="chip" data-qstatus="needs_adjust" onclick="setQueueStatus('needs_adjust')">需調整</button>
+              </div>
+              <div class="queueChips" id="queuePlanChips" style="margin-top:6px;">
+                <button type="button" class="chip active" data-qplan="all" onclick="setQueuePlan('all')">方案來源：全部</button>
+                <button type="button" class="chip" data-qplan="plan-a" onclick="setQueuePlan('plan-a')">自費一對一</button>
+                <button type="button" class="chip" data-qplan="plan-c" onclick="setQueuePlan('plan-c')">企業合約</button>
+              </div>
             </div>
             <div id="studentQueue"></div>
+            <div style="text-align:center;margin-top:10px;">
+              <button type="button" class="btn sm" id="queueLoadMoreBtn" style="display:none;" onclick="loadMoreQueue()">載入更多</button>
+            </div>
           </div>
           <div class="card" id="suggestCard" style="display:none;">
             <h2>建議老師與時段</h2>
@@ -791,14 +804,46 @@ var BOOKINGS=[
   {teacher:'t4',room:'r4',day:2,hour:18,label:'Kelly 老師・既有學生（日文一對一）'}
 ];
 
+/* 排課需求（付費方：plan-a 自費一對一／plan-c 企業合約）；狀態隨顧問動作變化，見 REQ_STATUS_META */
 var ALL_STUDENTS=[
-  {id:'std1',name:'Emma Chen',lang:'中文',classType:'一對一',level:'Lv.4',campus:'士林',mode:'online',prefer:[{day:1,hour:19},{day:2,hour:19}],preferLabel:'週二三晚上 19:00–20:00',waitDays:4,expiryDate:'2026-09-15',priority:2},
-  {id:'std2',name:'王小明',lang:'中文',classType:'小組班',level:'Lv.2',campus:'羅斯福',mode:'online',prefer:[{day:0,hour:14},{day:3,hour:14}],preferLabel:'週一四下午 14:00–15:00',waitDays:6,expiryDate:'2026-10-02',priority:3},
-  {id:'std3',name:'Sophie Lin',lang:'日文',classType:'一對一',level:'N3',campus:'台中',mode:'online',prefer:[{day:2,hour:18},{day:4,hour:18}],preferLabel:'週三五晚上 18:00–19:00',waitDays:2,expiryDate:'2026-08-29',priority:2},
-  {id:'std4',name:'陳建宏',lang:'中文',classType:'一對一',level:'Lv.6',campus:'羅斯福',mode:'online',prefer:[{day:4,hour:20}],preferLabel:'週五晚上 20:00–21:00',note:'原課程因李老師請假順延，需優先安排',waitDays:1,expiryDate:'2026-09-05',priority:1},
-  {id:'std5',name:'黃冠霖',lang:'中文',classType:'一對一',level:'Lv.3',campus:'士林',mode:'onsite',prefer:[{day:1,hour:19},{day:3,hour:19}],preferLabel:'週二四晚上 19:00–20:00',waitDays:3,expiryDate:'2026-09-20',priority:2},
-  {id:'std6',name:'李文彬',lang:'中文',classType:'一對一',level:'Lv.5',campus:'羅斯福',mode:'onsite',prefer:[{day:0,hour:14}],preferLabel:'週一下午 14:00–15:00',waitDays:5,expiryDate:'2026-09-10',priority:2}
+  {id:'std1',name:'Emma Chen',lang:'中文',classType:'一對一',level:'Lv.4',campus:'士林',mode:'online',prefer:[{day:1,hour:19},{day:2,hour:19}],preferLabel:'週二三晚上 19:00–20:00',waitDays:4,expiryDate:'2026-09-15',priority:2,planId:'plan-a',submittedAt:'08/21 10:00',status:'pending'},
+  {id:'std2',name:'王小明',lang:'中文',classType:'小組班',level:'Lv.2',campus:'羅斯福',mode:'online',prefer:[{day:0,hour:14},{day:3,hour:14}],preferLabel:'週一四下午 14:00–15:00',waitDays:6,expiryDate:'2026-10-02',priority:3,planId:'plan-a',submittedAt:'08/19 15:40',status:'pending'},
+  {id:'std3',name:'Sophie Lin',lang:'日文',classType:'一對一',level:'N3',campus:'台中',mode:'online',prefer:[{day:2,hour:18},{day:4,hour:18}],preferLabel:'週三五晚上 18:00–19:00',waitDays:2,expiryDate:'2026-08-29',priority:2,planId:'plan-a',submittedAt:'08/23 09:10',status:'pending'},
+  {id:'std4',name:'陳建宏',lang:'中文',classType:'一對一',level:'Lv.6',campus:'羅斯福',mode:'online',prefer:[{day:4,hour:20}],preferLabel:'週五晚上 20:00–21:00',note:'原課程因李老師請假順延，需優先安排',waitDays:1,expiryDate:'2026-09-05',priority:1,planId:'plan-c',submittedAt:'08/24 08:30',status:'pending'},
+  {id:'std5',name:'黃冠霖',lang:'中文',classType:'一對一',level:'Lv.3',campus:'士林',mode:'onsite',prefer:[{day:1,hour:19},{day:3,hour:19}],preferLabel:'週二四晚上 19:00–20:00',waitDays:3,expiryDate:'2026-09-20',priority:2,planId:'plan-a',submittedAt:'08/22 11:00',status:'pending'},
+  {id:'std6',name:'李文彬',lang:'中文',classType:'一對一',level:'Lv.5',campus:'羅斯福',mode:'onsite',prefer:[{day:0,hour:14}],preferLabel:'週一下午 14:00–15:00',waitDays:5,expiryDate:'2026-09-10',priority:2,planId:'plan-a',submittedAt:'08/20 14:20',status:'pending'},
+  {id:'std7',name:'林佳穎',lang:'中文',classType:'一對一',level:'Lv.5',campus:'士林',mode:'online',prefer:[{day:0,hour:14}],preferLabel:'週一 14:00–15:00',waitDays:2,expiryDate:'2026-09-25',priority:2,planId:'plan-a',submittedAt:'08/23 13:15',status:'pending'},
+  {id:'std8',name:'張雅婷',lang:'中文',classType:'一對一',level:'Lv.3',campus:'高雄',mode:'online',prefer:[{day:1,hour:18},{day:3,hour:18}],preferLabel:'週二四晚上 18:00–19:00',note:'企業員工，需儘快安排',waitDays:7,expiryDate:'2026-09-18',priority:1,planId:'plan-c',submittedAt:'08/18 09:05',status:'pending'},
+  {id:'std9',name:'山田太郎',lang:'日文',classType:'一對一',level:'N4',campus:'台中',mode:'online',prefer:[{day:2,hour:18}],preferLabel:'週三 18:00–19:00',waitDays:1,expiryDate:'2026-10-05',priority:3,planId:'plan-a',submittedAt:'08/24 10:40',status:'pending'},
+  {id:'std10',name:'王大同',lang:'中文',classType:'一對一',level:'Lv.7',campus:'羅斯福',mode:'online',prefer:[{day:0,hour:14},{day:1,hour:19}],preferLabel:'週一下午 14:00–15:00、週二晚上 19:00–20:00',waitDays:9,expiryDate:'2026-09-08',priority:1,planId:'plan-c',submittedAt:'08/16 16:00',status:'pending'},
+  {id:'std11',name:'吳建霖',lang:'中文',classType:'一對一',level:'Lv.2',campus:'士林',mode:'online',prefer:[{day:3,hour:19}],preferLabel:'週四 19:00–20:00',waitDays:3,expiryDate:'2026-10-12',priority:2,planId:'plan-a',submittedAt:'08/22 08:50',status:'pending'},
+  {id:'std12',name:'林思妤',lang:'日文',classType:'一對一',level:'N3',campus:'台中',mode:'online',prefer:[{day:4,hour:18}],preferLabel:'週五 18:00–19:00',waitDays:4,expiryDate:'2026-09-30',priority:2,planId:'plan-a',submittedAt:'08/21 17:30',status:'pending'},
+  {id:'std13',name:'陳美惠',lang:'中文',classType:'一對一',level:'Lv.4',campus:'羅斯福',mode:'online',prefer:[{day:0,hour:14},{day:3,hour:14}],preferLabel:'週一四下午 14:00–15:00',waitDays:5,expiryDate:'2026-09-22',priority:2,planId:'plan-c',submittedAt:'08/20 09:00',status:'pending'},
+  {id:'std14',name:'Kevin Wu',lang:'中文',classType:'一對一',level:'Lv.6',campus:'高雄',mode:'online',prefer:[{day:1,hour:18}],preferLabel:'週二 18:00–19:00',waitDays:2,expiryDate:'2026-10-01',priority:3,planId:'plan-a',submittedAt:'08/23 15:20',status:'pending'},
+  {id:'std15',name:'張小華',lang:'中文',classType:'一對一',level:'Lv.1',campus:'士林',mode:'online',prefer:[{day:2,hour:19}],preferLabel:'週三 19:00–20:00',waitDays:6,expiryDate:'2026-09-14',priority:2,planId:'plan-a',submittedAt:'08/19 11:10',status:'pending'},
+  {id:'std16',name:'林小雅',lang:'日文',classType:'一對一',level:'N2',campus:'台中',mode:'online',prefer:[{day:2,hour:18},{day:4,hour:18}],preferLabel:'週三五 18:00–19:00',waitDays:1,expiryDate:'2026-10-20',priority:3,planId:'plan-c',submittedAt:'08/24 14:05',status:'pending'},
+  {id:'std17',name:'黃冠霖(企業)',lang:'中文',classType:'一對一',level:'Lv.5',campus:'羅斯福',mode:'online',prefer:[{day:3,hour:19}],preferLabel:'週四 19:00–20:00',note:'課程即將到期，優先處理',waitDays:8,expiryDate:'2026-09-05',priority:1,planId:'plan-a',submittedAt:'08/17 10:30',status:'pending'}
 ];
+var PLAN_META_C07={
+  'plan-a':{payer:'self',payerLabel:'自費'},
+  'plan-c':{payer:'company',payerLabel:'公司提供'}
+};
+function payerBadgeHtml(planId){
+  var p=PLAN_META_C07[planId]||PLAN_META_C07['plan-a'];
+  var color = p.payer==='company' ? 'background:#EAF6F2;color:#0B6B52;' : 'background:#E6EEF8;color:var(--primary);';
+  return '<span class="badge muted" style="'+color+'">'+p.payerLabel+'</span>';
+}
+/* 已安排／需調整的排課需求記錄（示範資料，供狀態篩選示範） */
+var ARRANGED_LOG=[
+  {id:'arr1',name:'李文彬',lang:'中文',classType:'一對一',planId:'plan-a',submittedAt:'08/12 09:00',arrangedTeacher:'林老師',arrangedTime:'週一 14:00–15:00'},
+  {id:'arr2',name:'黃冠霖',lang:'中文',classType:'一對一',planId:'plan-c',submittedAt:'08/13 10:30',arrangedTeacher:'李老師',arrangedTime:'週二 19:00–20:00'}
+];
+var NEEDS_ADJUST_LOG=[
+  {id:'na1',name:'許雅涵',lang:'中文',classType:'一對一',planId:'plan-c',submittedAt:'08/14 13:20',advisorNote:'提出的時段目前老師名額已滿，請再提供一個備選時段'}
+];
+var queueVisibleCount=10;
+var curQueueStatus='pending';
+var curQueuePlan='all';
 var PRIORITY_LABEL={1:'高',2:'中',3:'低'};
 var queueChipOverdue=false;
 var queueIds=ALL_STUDENTS.filter(function(s){return s.mode==='online';}).map(function(s){return s.id;});
@@ -901,7 +946,26 @@ function toggleQueueOverdue(btn){
   btn.classList.toggle('active',queueChipOverdue);
   renderQueue();
 }
+/* ================= 排課需求收件匣：狀態（待顧問安排／已安排／需調整）與方案來源篩選 ================= */
+function setQueueStatus(s){
+  curQueueStatus=s;
+  queueVisibleCount=10;
+  document.querySelectorAll('#queueStatusChips .chip').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-qstatus')===s); });
+  selectedStudentId=null;
+  var sc=document.getElementById('suggestCard');
+  if(sc) sc.style.display='none';
+  renderQueue();
+}
+function setQueuePlan(p){
+  curQueuePlan=p;
+  queueVisibleCount=10;
+  document.querySelectorAll('#queuePlanChips .chip').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-qplan')===p); });
+  renderQueue();
+}
+function loadMoreQueue(){ queueVisibleCount+=10; renderQueue(); }
 function renderQueue(){
+  if(curQueueStatus==='arranged'){ renderQueueArranged(); return; }
+  if(curQueueStatus==='needs_adjust'){ renderQueueNeedsAdjust(); return; }
   var q=currentQueue();
   var searchEl=document.getElementById('queueSearch');
   var kw=(searchEl?searchEl.value:'').trim().toLowerCase();
@@ -911,6 +975,7 @@ function renderQueue(){
     });
   }
   if(queueChipOverdue){ q=q.filter(function(s){return (s.waitDays||0)>3;}); }
+  if(curQueuePlan!=='all'){ q=q.filter(function(s){return s.planId===curQueuePlan;}); }
   var sortEl=document.getElementById('queueSort');
   var sortBy=sortEl?sortEl.value:'waitDesc';
   q=q.slice().sort(function(a,b){
@@ -922,16 +987,86 @@ function renderQueue(){
   });
   document.getElementById('queueCount').textContent=q.length+' 筆';
   var box=document.getElementById('studentQueue');
-  if(!q.length){box.innerHTML='<div class="queueEmpty">沒有符合條件的待排課學生。</div>';return;}
-  box.innerHTML=q.map(function(s){
+  var moreBtn=document.getElementById('queueLoadMoreBtn');
+  if(!q.length){
+    box.innerHTML='<div class="queueEmpty">沒有符合條件的排課需求。</div>';
+    moreBtn.style.display='none';
+    return;
+  }
+  var shown=q.slice(0,queueVisibleCount);
+  box.innerHTML=shown.map(function(s){
     var overdue=(s.waitDays||0)>3;
     return '<div class="queue-item'+(s.id===selectedStudentId?' selected':'')+'" onclick="tliSelectStudent(\''+s.id+'\')">'+
-      '<div class="name">'+s.name+'</div>'+
-      '<div class="meta">'+s.lang+'・'+s.classType+'・'+s.level+'／'+s.campus+'校<br>偏好：'+s.preferLabel+'</div>'+
+      '<div class="name">'+s.name+' '+payerBadgeHtml(s.planId)+'</div>'+
+      '<div class="meta">'+s.lang+'・'+s.classType+'・'+s.level+'／'+s.campus+'校<br>提出的有空時段：'+s.preferLabel+'<br>送出時間：'+s.submittedAt+'</div>'+
       '<div class="waitmeta'+(overdue?' overdue':'')+'"><span>等待 <b>'+s.waitDays+'</b> 天</span><span>課時到期 <b>'+s.expiryDate+'</b></span><span>優先級 <b>'+(PRIORITY_LABEL[s.priority]||'－')+'</b></span></div>'+
       (s.note?'<div class="flag"><svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M12 3.5 22 20.5H2z"/><line x1="12" y1="9.5" x2="12" y2="14"/><line x1="12" y1="16.7" x2="12" y2="16.9"/></svg> '+s.note+'</div>':'')+
+      '<div style="display:flex;gap:8px;margin-top:8px;">'+
+        '<button type="button" class="btn sm primary" onclick="event.stopPropagation();tliSelectStudent(\''+s.id+'\')">安排</button>'+
+        '<button type="button" class="btn sm" onclick="event.stopPropagation();openNeedsAdjustModal(\''+s.id+'\')">需調整</button>'+
+      '</div>'+
     '</div>';
   }).join('');
+  moreBtn.style.display = q.length>queueVisibleCount ? '' : 'none';
+}
+function renderQueueArranged(){
+  var sc=document.getElementById('suggestCard'); if(sc) sc.style.display='none';
+  document.getElementById('queueLoadMoreBtn').style.display='none';
+  var list=ARRANGED_LOG.slice().sort(function(a,b){return b.submittedAt.localeCompare(a.submittedAt);});
+  if(curQueuePlan!=='all') list=list.filter(function(r){return r.planId===curQueuePlan;});
+  document.getElementById('queueCount').textContent=list.length+' 筆';
+  var box=document.getElementById('studentQueue');
+  if(!list.length){ box.innerHTML='<div class="queueEmpty">目前沒有已安排的排課需求。</div>'; return; }
+  box.innerHTML=list.map(function(r){
+    return '<div class="queue-item">'+
+      '<div class="name">'+r.name+' '+payerBadgeHtml(r.planId)+'</div>'+
+      '<div class="meta">'+r.lang+'・'+r.classType+'<br>送出時間：'+r.submittedAt+'</div>'+
+      '<div class="waitmeta"><span>已安排：<b>'+r.arrangedTeacher+'</b>・'+r.arrangedTime+'</span></div>'+
+    '</div>';
+  }).join('');
+}
+function renderQueueNeedsAdjust(){
+  var sc=document.getElementById('suggestCard'); if(sc) sc.style.display='none';
+  document.getElementById('queueLoadMoreBtn').style.display='none';
+  var list=NEEDS_ADJUST_LOG.slice();
+  if(curQueuePlan!=='all') list=list.filter(function(r){return r.planId===curQueuePlan;});
+  document.getElementById('queueCount').textContent=list.length+' 筆';
+  var box=document.getElementById('studentQueue');
+  if(!list.length){ box.innerHTML='<div class="queueEmpty">目前沒有需調整的排課需求。</div>'; return; }
+  box.innerHTML=list.map(function(r){
+    return '<div class="queue-item">'+
+      '<div class="name">'+r.name+' '+payerBadgeHtml(r.planId)+'</div>'+
+      '<div class="meta">'+r.lang+'・'+r.classType+'<br>送出時間：'+r.submittedAt+'</div>'+
+      '<div class="flag">顧問留言：'+r.advisorNote+'</div>'+
+    '</div>';
+  }).join('');
+}
+var needsAdjustTargetId=null;
+function openNeedsAdjustModal(id){
+  needsAdjustTargetId=id;
+  var s=studentById(id);
+  if(!s) return;
+  openModal('需調整：'+s.name,
+    '<p style="font-size:13px;color:var(--gray-600);margin:0 0 10px;">留言給學員，說明目前無法依提出的時段安排的原因，學員會收到通知。</p>'+
+    '<textarea id="needsAdjustNote" rows="3" style="width:100%;border:1px solid var(--gray-300);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;" placeholder="例如：該時段老師名額已滿，請再提供一個備選時段"></textarea>',
+    '<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="submitNeedsAdjust()">送出留言</button>'
+  );
+}
+function submitNeedsAdjust(){
+  var s=studentById(needsAdjustTargetId);
+  if(!s) return;
+  var noteEl=document.getElementById('needsAdjustNote');
+  var note=(noteEl?noteEl.value:'').trim();
+  if(!note){ tliToast('請先輸入留言內容'); return; }
+  NEEDS_ADJUST_LOG.unshift({id:'na-'+s.id,name:s.name,lang:s.lang,classType:s.classType,planId:s.planId,submittedAt:s.submittedAt,advisorNote:note});
+  queueIds=queueIds.filter(function(qid){return qid!==s.id;});
+  closeModal();
+  tliToast('已通知學員：'+s.name+' 的排課需求需調整');
+  if(selectedStudentId===s.id){
+    selectedStudentId=null;
+    var sc2=document.getElementById('suggestCard'); if(sc2) sc2.style.display='none';
+  }
+  renderQueue();
 }
 
 function renderSuggestions(student){
@@ -999,8 +1134,10 @@ function tliConfirmSchedule(){
   if(!pendingList.length)return;
   var summaries=pendingList.map(function(p){
     var t=teacherById(p.teacherId);
-    BOOKINGS.push({teacher:p.teacherId,room:pickRoom(t.campus,{day:p.day,hour:p.hour}),day:p.day,hour:p.hour,label:t.name+'・'+studentById(p.studentId).name});
-    return studentById(p.studentId).name+' → '+t.name+' '+slotLabel({day:p.day,hour:p.hour});
+    var st=studentById(p.studentId);
+    BOOKINGS.push({teacher:p.teacherId,room:pickRoom(t.campus,{day:p.day,hour:p.hour}),day:p.day,hour:p.hour,label:t.name+'・'+st.name});
+    ARRANGED_LOG.unshift({id:'arr-'+st.id+'-'+Date.now(),name:st.name,lang:st.lang,classType:st.classType,planId:st.planId,submittedAt:st.submittedAt,arrangedTeacher:t.name,arrangedTime:slotLabel({day:p.day,hour:p.hour})});
+    return st.name+' → '+t.name+' '+slotLabel({day:p.day,hour:p.hour});
   });
   var doneIds=pendingList.map(function(p){return p.studentId;}).filter(function(v,i,a){return a.indexOf(v)===i;});
   queueIds=queueIds.filter(function(id){return doneIds.indexOf(id)===-1;});

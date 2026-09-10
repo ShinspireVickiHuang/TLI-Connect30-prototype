@@ -107,6 +107,7 @@ tr.clickable:hover{background:var(--gray-50);}
 .badge.c{background:#fdf0e6;color:var(--accent);}
 .badge.bip{background:#f3e8fd;color:#7a3ed9;}
 .badge.ok{background:var(--secondary-light);color:var(--secondary);}
+.badge.warn{background:#fff4e5;color:#b54708;}
 .badge.muted{background:var(--gray-100);color:var(--gray-500);}
 .badge.danger{background:var(--danger-light);color:var(--danger);}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--gray-300);background:#fff;font-size:12.5px;font-family:inherit;cursor:pointer;color:var(--gray-700);}
@@ -349,9 +350,13 @@ html,body{overflow-x:hidden;}
             <option value="">最新測驗等級：全部</option>
             <option value="Lv.4">Lv.4</option><option value="Lv.5">Lv.5</option><option value="Lv.6">Lv.6</option><option value="Lv.7">Lv.7</option><option value="N4">N4</option><option value="華語 Lv.3">華語 Lv.3</option><option value="未測驗">未測驗</option>
           </select>
+          <select id="fActivation" onchange="tliFilter()">
+            <option value="">開通狀態：全部</option>
+            <option value="未開通">未開通</option><option value="已開通">已開通</option>
+          </select>
         </div>
         <table id="stuTable">
-          <thead><tr><th>姓名</th><th>會員分類</th><th>校區</th><th>剩餘課時</th><th>效期</th><th>狀態</th><th>最新測驗等級</th><th></th></tr></thead>
+          <thead><tr><th>姓名</th><th>會員分類</th><th>校區</th><th>剩餘課時</th><th>效期</th><th>狀態</th><th>開通狀態</th><th>最新測驗等級</th><th></th></tr></thead>
           <tbody id="stuBody"></tbody>
         </table>
         <div class="empty" id="emptyRow" style="display:none;">沒有符合條件的學生</div>
@@ -380,12 +385,13 @@ html,body{overflow-x:hidden;}
 
 <script>
 var STUDENTS=[
-  {id:'wang01',name:'王大同',cls:'B',campus:'羅斯福',hours:12,expire:'2026-11-20',status:'學習中',testLevel:'Lv.6'},
-  {id:'chen01',name:'陳美惠',cls:'G',campus:'士林',hours:0,expire:'2026-11-01',status:'學習中',testLevel:'N4'},
-  {id:'emma01',name:'Emma Chen',cls:'C',campus:'士林',hours:0,expire:'2026-10-01',status:'停止中',testLevel:'華語 Lv.3'},
-  {id:'yamada01',name:'山田太郎',cls:'BIP',campus:'台中',hours:20,expire:'2027-01-15',status:'學習中',testLevel:'Lv.7'},
-  {id:'li01',name:'李文彬',cls:'B',campus:'羅斯福',hours:5,expire:'2026-08-01',status:'學習中',testLevel:'Lv.5'},
-  {id:'zhang01',name:'張雅婷',cls:'G',campus:'高雄',hours:8,expire:'2026-12-10',status:'學習中',testLevel:'Lv.4'}
+  {id:'wang01',name:'王大同',cls:'B',campus:'羅斯福',hours:12,expire:'2026-11-20',status:'學習中',testLevel:'Lv.6',activation:'已開通'},
+  {id:'chen01',name:'陳美惠',cls:'G',campus:'士林',hours:0,expire:'2026-11-01',status:'學習中',testLevel:'N4',activation:'已開通'},
+  {id:'emma01',name:'Emma Chen',cls:'C',campus:'士林',hours:0,expire:'2026-10-01',status:'停止中',testLevel:'華語 Lv.3',activation:'已開通'},
+  {id:'yamada01',name:'山田太郎',cls:'BIP',campus:'台中',hours:20,expire:'2027-01-15',status:'學習中',testLevel:'Lv.7',activation:'已開通'},
+  {id:'li01',name:'李文彬',cls:'B',campus:'羅斯福',hours:5,expire:'2026-08-01',status:'學習中',testLevel:'Lv.5',activation:'已開通'},
+  {id:'zhang01',name:'張雅婷',cls:'G',campus:'高雄',hours:8,expire:'2026-12-10',status:'學習中',testLevel:'Lv.4',activation:'已開通'},
+  {id:'chenjh01',name:'陳建宏',cls:'C',campus:'羅斯福',hours:0,expire:'2026-09-15',status:'學習中',testLevel:'未測驗',activation:'未開通'}
 ];
 function statusBadge(s){
   if(s==='學習中')return '<span class="badge ok">學習中</span>';
@@ -393,6 +399,10 @@ function statusBadge(s){
   return '<span class="badge danger">已流失</span>';
 }
 function classBadge(c){return '<span class="badge '+c.toLowerCase()+'">'+c+'</span>';}
+function activationBadge(a){
+  if(a==='未開通') return '<span class="badge warn">未開通</span>';
+  return '<span class="badge muted">已開通</span>';
+}
 function renderStudents(list){
   var body=document.getElementById('stuBody');
   body.innerHTML=list.map(function(s){
@@ -400,6 +410,7 @@ function renderStudents(list){
       '<td>'+s.name+'</td><td>'+classBadge(s.cls)+'</td><td>'+s.campus+'校</td>'+
       '<td>'+s.hours+' 堂</td><td>'+s.expire+(s.expire<'2026-08-25'?' <span class="badge warn" style="background:#fff4e5;color:#b54708;">已過期</span>':'')+'</td>'+
       '<td>'+statusBadge(s.status)+'</td>'+
+      '<td>'+activationBadge(s.activation)+'</td>'+
       '<td>'+(s.testLevel||'未測驗')+'</td>'+
       '<td><a class="btn sm" href="c03_student_detail.html?id='+s.id+'">查看</a></td></tr>';
   }).join('');
@@ -411,8 +422,9 @@ function tliFilter(){
   var fp=document.getElementById('fCampus').value;
   var fs=document.getElementById('fStatus').value;
   var ft=document.getElementById('fTestLevel').value;
+  var fa=document.getElementById('fActivation').value;
   var list=STUDENTS.filter(function(s){
-    return (!q||s.name.indexOf(q)>-1)&&(!fc||s.cls===fc)&&(!fp||s.campus===fp)&&(!fs||s.status===fs)&&(!ft||(s.testLevel||'未測驗')===ft);
+    return (!q||s.name.indexOf(q)>-1)&&(!fc||s.cls===fc)&&(!fp||s.campus===fp)&&(!fs||s.status===fs)&&(!ft||(s.testLevel||'未測驗')===ft)&&(!fa||s.activation===fa);
   });
   renderStudents(list);
 }

@@ -39,6 +39,7 @@
   .stage2{background:var(--g100);border-radius:12px;padding:24px 26px;margin-top:8px}
   .stage2 .card{background:#fff}
 .hero-single{grid-template-columns:minmax(0,720px);}
+  .small{font-size:12px;color:#6b7280;margin-left:6px}
 </style>
 </head>
 <body>
@@ -86,9 +87,10 @@
         <li><a href="原型/會員區/m10_events.html">我的活動</a></li>
         <li><a href="原型/會員區/m11_quiz.html">線上測驗</a></li>
         <li><a href="原型/會員區/m12_enterprise_report.html">企業學習報告</a></li>
-        <li><a href="原型/會員區/m13_checkout.html?plan=1on1">結帳</a></li>
-        <li><a href="原型/會員區/m15_payment_gateway.html?gw=newebpay&amp;order=DEMO&amp;amount=0">金流付款頁示意（藍新／Stripe 導轉）</a></li>
+        <li><a href="原型/會員區/m13_checkout.html?plan=1on1">結帳</a><span class="small"> 流程頁，從課程頁「購買」、試聽選時段、活動付費報名、待辦「前往繳費」、方案「續購／加購」進入</span></li>
+        <li><a href="原型/會員區/m15_payment_gateway.html?gw=newebpay&amp;order=DEMO&amp;amount=0">金流付款頁示意（藍新／Stripe 導轉）</a><span class="small"> 流程頁，由結帳頁「前往付款」導轉進入</span></li>
         <li><a href="原型/會員區/m14_chat_booking.html">團體聊天室報名</a></li>
+        <li><a href="原型/會員區/m16_classroom.html?lesson=l1&amp;type=1on1&amp;state=open">進入線上教室</a><span class="small"> 流程頁，從課表、首頁待辦、方案、聊天室、活動的「進入教室」進入；開課前 15 分鐘開放</span></li>
       </ol>
     </div>
     <div class="card">
@@ -206,6 +208,7 @@
       <ol>
         <li><a href="原型/公開網站/p12_referral.html?ref=REF-SEA07">轉介落地頁（帶代碼）</a></li>
         <li><a href="原型/公開網站/p12_referral.html">轉介落地頁（無代碼）</a></li>
+        <li><a href="原型/公開網站/p13_activate.html?token=demo&amp;mode=link&amp;state=ok">會員帳號開通</a><span class="small"> 流程頁，顧問建檔後寄出的開通信連結進入；含逾期重寄與預設密碼模式</span></li>
         <li><a href="原型/代理商端/r01_dashboard.html">代理商端</a></li>
       </ol>
       <p class="pointer">→ TLI 後台：<a href="原型/管理後台/a20_agents.html">代理商管理</a></p>

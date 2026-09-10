@@ -103,6 +103,21 @@ cursor:pointer;font-family:inherit;}
 .savebar{display:flex;gap:10px;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--g200);}
 .savedhint{font-size:12px;color:var(--teal);display:none;}
 .savedhint.show{display:inline;}
+/* ---- 聊天室場次介紹：篩選列與抽屜（20260910j 新增） ---- */
+.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.filterbar select,.filterbar input{padding:7px 10px;border:1px solid var(--g200);border-radius:6px;
+font-size:13px;font-family:inherit;}
+.drawer-mask{display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:150;}
+.drawer-mask.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:92vw;background:#fff;
+box-shadow:-8px 0 24px rgba(16,24,40,.18);z-index:151;transform:translateX(100%);transition:transform .2s;
+display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.drawer-head h2{font-size:16px;margin:0 0 4px;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--g500);line-height:1;padding:2px 6px;}
+.drawer-close:hover{color:var(--g900);}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px 40px;}
 /* 自學課程內容 */
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
 .tabs button{background:none;border:none;padding:10px 16px;font-size:13.5px;color:var(--g500);
@@ -286,6 +301,7 @@ html,body{overflow-x:hidden;}
 <div class="tabs">
 <button class="active" onclick="contentTopTab(this,'website')">網站內容區塊</button>
 <button onclick="contentTopTab(this,'selfstudy')">自學課程內容</button>
+<button onclick="contentTopTab(this,'chatintro')">聊天室場次介紹</button>
 </div>
 
 <div id="a08toppanels">
@@ -300,8 +316,92 @@ html,body{overflow-x:hidden;}
 <div id="scListWrap"></div>
 <div class="card" id="scDetailWrap" style="display:none"></div>
 </div>
+
+<div class="tabpanel" id="a08toppanel-chatintro">
+<div class="card">
+<div class="small" style="margin-bottom:12px;color:var(--g500)">維護各場團體聊天室的學員端介紹內容（主題簡介、適合等級、老師簡介、討論題綱、事前準備、語言）。場次本身由教師端建立，此處僅編輯介紹內容並決定是否發佈；面向沿用教師端設定的權益群組，不可於此變更。</div>
+<div class="filterbar">
+<input type="text" id="ciSearchInput" placeholder="搜尋主題" oninput="ciApplyFilter()">
+<select id="ciStatusFilter" onchange="ciApplyFilter()">
+<option value="">全部狀態</option>
+<option value="缺介紹">缺介紹</option>
+<option value="草稿">草稿</option>
+<option value="已發佈">已發佈</option>
+</select>
+<input type="date" id="ciDateFrom" onchange="ciApplyFilter()"><span class="small">～</span><input type="date" id="ciDateTo" onchange="ciApplyFilter()">
+<button class="btn ghost" onclick="ciResetFilter()">清除篩選</button>
+</div>
+<div class="tablewrap"><table id="ciTable"></table></div>
+<p class="hint" id="ciEmpty" style="display:none;text-align:center;padding:18px 0">找不到符合條件的場次。</p>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+<span class="small" id="ciCountLabel"></span>
+<button class="btn ghost" id="ciLoadMoreBtn" onclick="ciLoadMore()">載入更多</button>
+</div>
+</div>
+</div>
 </div>
 
+</div>
+</div>
+
+<div class="drawer-mask" id="ciDrawerMask">
+<div class="drawer">
+<div class="drawer-head">
+<div><h2 id="ci_title"></h2><div class="small" id="ci_sub"></div></div>
+<button class="drawer-close" onclick="closeCiDrawer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+<div class="drawer-body">
+<div id="ci_missingHint" class="hint" style="display:none;color:#C0392B;margin-bottom:10px">學員端會顯示預設說明，建議補介紹。</div>
+<div class="fieldgroup">
+<span class="flabel">主題簡介</span>
+<textarea id="ci_summary" rows="3" placeholder="用 2–3 句話說明這場聊天室的內容與練習重點" style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;box-sizing:border-box"></textarea>
+</div>
+<div class="formrow" style="max-width:220px">
+<label>適合等級</label>
+<select id="ci_level">
+<option value="不限">不限</option>
+<option value="初階">初階</option>
+<option value="中階">中階</option>
+<option value="中高階">中高階</option>
+<option value="高階">高階</option>
+</select>
+</div>
+<div class="formrow" style="max-width:320px">
+<label>帶領老師</label>
+<select id="ci_teacher" onchange="onCiTeacherChange(this.value)"></select>
+</div>
+<div class="fieldgroup">
+<span class="flabel">老師一句簡介</span>
+<textarea id="ci_teacherIntro" rows="2" placeholder="如：資深中文教師，擅長生活會話與文化融入教學。" style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;box-sizing:border-box"></textarea>
+</div>
+<div class="fieldgroup">
+<span class="flabel">討論題綱</span>
+<div class="itemlist" id="ci_pointsWrap"></div>
+<button class="btn ghost" id="ci_addPointBtn" onclick="ciAddPoint()">＋ 新增題綱</button>
+</div>
+<div class="formrow">
+<label>事前準備（選填）</label>
+<input type="text" id="ci_prep" placeholder="如：請先複習教材第 1–2 課常用句型">
+</div>
+<div class="formrow" style="max-width:220px">
+<label>語言</label>
+<select id="ci_lang"><option>中文</option><option>英語</option><option>日語</option><option>韓語</option><option>德語</option><option>法語</option></select>
+</div>
+<div class="fieldgroup">
+<span class="flabel">封面圖</span>
+<div class="imgph" id="ci_coverBox" onclick="ciMockUploadCover()">點擊上傳圖片</div>
+</div>
+<div class="fieldgroup">
+<span class="flabel">主題範本</span>
+<div class="small" style="margin-bottom:8px;color:var(--g500)">一鍵帶入範本內容，帶入後仍可自行調整。</div>
+<div class="chiprow" id="ci_templateChips"></div>
+</div>
+<div class="savebar">
+<button class="btn ghost" onclick="ciSave(false)">儲存草稿</button>
+<button class="btn orange" onclick="ciSave(true)">發佈</button>
+<span class="savedhint" id="ci_savedHint">已儲存</span>
+</div>
+</div>
 </div>
 </div>
 <script>
@@ -628,6 +728,7 @@ function contentTopTab(btn, name){
   document.querySelectorAll('#a08toppanels > .tabpanel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('a08toppanel-'+name).classList.add('active');
   if (name === 'selfstudy') renderScList();
+  if (name === 'chatintro') renderCiTable();
 }
 
 var SELFSTUDY_COURSES = [
@@ -818,6 +919,206 @@ function toggleScPreview(){
 }
 renderScList();
 
+/* ================= 聊天室場次介紹（20260910j 新增） ================= */
+var CI_TEACHERS = ['林俊傑','陳美惠','Michael Turner','王淑芬','佐藤直樹']; // 名單與「老師管理」在職老師示範資料一致
+var CI_TEACHER_INTRO = {
+  '林俊傑':'資深中文教師，擅長生活會話與文化融入教學。',
+  '陳美惠':'中階中文教師，善於帶領初學者建立開口信心。',
+  'Michael Turner':'資深英語教師，專長商務英語與口說練習。',
+  '王淑芬':'中文教師，擅長日常對話與初階發音矯正。',
+  '佐藤直樹':'日語教師，專長生活日語與文法基礎建立。'
+};
+var CI_ENT_NAMES = ['和霖科技股份有限公司','裕發國際貿易有限公司','瑞新金融顧問股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司']; // 與教師端「可授課時段」示範企業名一致
+var CI_INST_NAMES = ['合作大學（示範）'];
+var CI_TEMPLATES = [
+  {name:'日常對話練習', summary:'鎖定日常生活情境，透過簡單提問與情境模擬，讓學員練習開口說中文，適合累積基礎會話信心。', level:'初階', points:['分享今天做了哪些事','描述你最喜歡的一餐','練習問路與指路對話'], prep:'請先複習教材第 1–2 課常用句型。'},
+  {name:'職場情境會話', summary:'模擬會議、面試、電話應對等職場情境，訓練學員在專業場合使用得體的中文表達。', level:'中高階', points:['自我介紹與工作背景說明','模擬一段簡短的會議發言','練習禮貌性婉拒或提出建議的說法'], prep:'請先準備一段 1 分鐘的自我介紹草稿。'},
+  {name:'文化體驗分享', summary:'從節慶、飲食、生活習慣切入，讓學員在輕鬆對話中認識台灣文化並練習相關詞彙。', level:'不限', points:['分享自己國家的一個節慶習俗','聊聊最近吃過印象深刻的台灣料理','討論台灣與自己國家生活習慣的差異'], prep:''}
+];
+
+/* 示範資料：場次日期時間、面向為模擬排定值，狀態涵蓋缺介紹／草稿／已發佈三種 */
+var CHAT_INTRO_SESSIONS = [
+ {id:'ci1', date:'2026-09-14', time:'09:00', topic:'日常對話練習', teacher:'林俊傑', audienceGroup:'all', audienceTarget:null, status:'已發佈', updated:'2026-08-20', summary:'鎖定日常生活情境，練習開口說中文，適合累積基礎會話信心。', level:'初階', teacherIntro:CI_TEACHER_INTRO['林俊傑'], points:['分享今天做了哪些事','描述你最喜歡的一餐','練習問路與指路對話'], prep:'請先複習教材第 1–2 課常用句型。', lang:'中文', cover:'cover_ci1.jpg'},
+ {id:'ci2', date:'2026-09-14', time:'14:00', topic:'職場情境會話', teacher:'Michael Turner', audienceGroup:'enterprise', audienceTarget:CI_ENT_NAMES[0], status:'已發佈', updated:'2026-08-21', summary:'模擬會議與面試情境，訓練學員在專業場合使用得體英語表達。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['Michael Turner'], points:['自我介紹與工作背景說明','模擬一段簡短的會議發言','練習禮貌性婉拒的說法'], prep:'請先準備一段 1 分鐘的自我介紹草稿。', lang:'英語', cover:'cover_ci2.jpg'},
+ {id:'ci3', date:'2026-09-15', time:'10:00', topic:'文化體驗分享', teacher:'陳美惠', audienceGroup:'all', audienceTarget:null, status:'草稿', updated:'2026-08-22', summary:'從節慶與飲食切入，認識台灣文化並練習相關詞彙。', level:'不限', teacherIntro:CI_TEACHER_INTRO['陳美惠'], points:['分享自己國家的一個節慶習俗','聊聊印象深刻的台灣料理',''], prep:'', lang:'中文', cover:''},
+ {id:'ci4', date:'2026-09-15', time:'18:00', topic:'旅遊實用會話', teacher:'王淑芬', audienceGroup:'all', audienceTarget:null, status:'缺介紹', updated:'—', summary:'', level:'不限', teacherIntro:'', points:['','',''], prep:'', lang:'中文', cover:''},
+ {id:'ci5', date:'2026-09-16', time:'11:00', topic:'新聞時事討論', teacher:'林俊傑', audienceGroup:'institution', audienceTarget:CI_INST_NAMES[0], status:'已發佈', updated:'2026-08-19', summary:'挑選近期新聞話題，練習表達個人看法與討論用語。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['林俊傑'], points:['分享一則你關心的新聞','練習用中文摘要新聞重點','討論新聞事件對生活的影響'], prep:'請先瀏覽一則中文新聞標題。', lang:'中文', cover:'cover_ci5.jpg'},
+ {id:'ci6', date:'2026-09-16', time:'19:00', topic:'飲食文化交流', teacher:'佐藤直樹', audienceGroup:'all', audienceTarget:null, status:'草稿', updated:'2026-08-18', summary:'分享台日飲食文化差異，練習點餐與飲食相關詞彙。', level:'初階', teacherIntro:CI_TEACHER_INTRO['佐藤直樹'], points:['分享一道你喜歡的家鄉料理','練習餐廳點餐對話',''], prep:'', lang:'日語', cover:''},
+ {id:'ci7', date:'2026-09-17', time:'09:00', topic:'租屋與生活資訊', teacher:'陳美惠', audienceGroup:'enterprise', audienceTarget:CI_ENT_NAMES[1], status:'缺介紹', updated:'—', summary:'', level:'不限', teacherIntro:'', points:['','',''], prep:'', lang:'中文', cover:''},
+ {id:'ci8', date:'2026-09-17', time:'15:00', topic:'面試模擬對話', teacher:'Michael Turner', audienceGroup:'all', audienceTarget:null, status:'已發佈', updated:'2026-08-23', summary:'模擬求職面試情境，練習常見面試問答與應對技巧。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['Michael Turner'], points:['練習自我介紹與求職動機說明','模擬回答常見面試問題','練習詢問薪資與職務內容的說法'], prep:'請先準備一份簡短的自我介紹。', lang:'英語', cover:'cover_ci8.jpg'},
+ {id:'ci9', date:'2026-09-18', time:'10:00', topic:'節慶文化分享', teacher:'王淑芬', audienceGroup:'all', audienceTarget:null, status:'已發佈', updated:'2026-08-17', summary:'介紹台灣傳統節慶習俗，練習節慶相關詞彙與問答。', level:'初階', teacherIntro:CI_TEACHER_INTRO['王淑芬'], points:['介紹一個你熟悉的節慶','分享節慶的傳統習俗','練習節慶祝賀語'], prep:'', lang:'中文', cover:'cover_ci9.jpg'},
+ {id:'ci10', date:'2026-09-18', time:'16:00', topic:'商務書信寫作', teacher:'林俊傑', audienceGroup:'enterprise', audienceTarget:CI_ENT_NAMES[2], status:'草稿', updated:'2026-08-24', summary:'練習商務書信常用開頭與結尾用語，建立正式書信架構。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['林俊傑'], points:['練習書信開頭問候語','練習正式請求的表達方式',''], prep:'', lang:'中文', cover:''},
+ {id:'ci11', date:'2026-09-19', time:'09:00', topic:'觀光景點介紹', teacher:'陳美惠', audienceGroup:'all', audienceTarget:null, status:'已發佈', updated:'2026-08-16', summary:'練習介紹台灣知名觀光景點，累積導覽相關詞彙。', level:'初階', teacherIntro:CI_TEACHER_INTRO['陳美惠'], points:['介紹一個你去過的景點','練習描述景點特色','練習推薦景點給朋友的說法'], prep:'', lang:'中文', cover:'cover_ci11.jpg'},
+ {id:'ci12', date:'2026-09-19', time:'17:00', topic:'健康與運動話題', teacher:'佐藤直樹', audienceGroup:'all', audienceTarget:null, status:'缺介紹', updated:'—', summary:'', level:'不限', teacherIntro:'', points:['','',''], prep:'', lang:'日語', cover:''},
+ {id:'ci13', date:'2026-09-20', time:'11:00', topic:'科技新知交流', teacher:'Michael Turner', audienceGroup:'institution', audienceTarget:CI_INST_NAMES[0], status:'草稿', updated:'2026-08-25', summary:'討論近期科技產品與趨勢，練習相關英語詞彙。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['Michael Turner'], points:['分享一項你關注的科技產品','討論新科技對生活的影響',''], prep:'', lang:'英語', cover:''},
+ {id:'ci14', date:'2026-09-20', time:'19:00', topic:'家庭生活對話', teacher:'王淑芬', audienceGroup:'all', audienceTarget:null, status:'已發佈', updated:'2026-08-15', summary:'練習描述家庭成員與日常生活，累積家庭相關詞彙。', level:'初階', teacherIntro:CI_TEACHER_INTRO['王淑芬'], points:['介紹你的家庭成員','分享一個家庭日常習慣','練習週末計畫的表達'], prep:'', lang:'中文', cover:'cover_ci14.jpg'},
+ {id:'ci15', date:'2026-09-21', time:'09:00', topic:'傳統節日習俗', teacher:'林俊傑', audienceGroup:'all', audienceTarget:null, status:'缺介紹', updated:'—', summary:'', level:'不限', teacherIntro:'', points:['','',''], prep:'', lang:'中文', cover:''},
+ {id:'ci16', date:'2026-09-21', time:'14:00', topic:'線上會議溝通技巧', teacher:'Michael Turner', audienceGroup:'enterprise', audienceTarget:CI_ENT_NAMES[3], status:'已發佈', updated:'2026-08-14', summary:'練習線上會議常用表達，包含開場、發言與結尾用語。', level:'中高階', teacherIntro:CI_TEACHER_INTRO['Michael Turner'], points:['練習會議開場問候語','練習表達贊成與反對意見','練習會議結尾總結的說法'], prep:'', lang:'英語', cover:'cover_ci16.jpg'},
+ {id:'ci17', date:'2026-09-22', time:'10:00', topic:'興趣嗜好交流', teacher:'陳美惠', audienceGroup:'all', audienceTarget:null, status:'草稿', updated:'2026-08-13', summary:'分享彼此的興趣嗜好，練習休閒活動相關詞彙。', level:'初階', teacherIntro:CI_TEACHER_INTRO['陳美惠'], points:['介紹一項你的興趣','分享最近參加的休閒活動',''], prep:'', lang:'中文', cover:''},
+ {id:'ci18', date:'2026-09-22', time:'18:00', topic:'校園生活分享', teacher:'佐藤直樹', audienceGroup:'institution', audienceTarget:CI_INST_NAMES[0], status:'已發佈', updated:'2026-08-12', summary:'分享校園生活點滴，練習描述課程與社團活動。', level:'初階', teacherIntro:CI_TEACHER_INTRO['佐藤直樹'], points:['介紹你正在修的一門課','分享一個社團活動經驗','練習邀約同學的說法'], prep:'', lang:'日語', cover:'cover_ci18.jpg'}
+];
+
+var CI_PAGE_SIZE = 10;
+var ciShown = CI_PAGE_SIZE;
+var ciCurId = null;
+var ciPoints = [];
+
+function ciStatusBadge(s){
+  if (s==='已發佈') return '<span class="badge green">已發佈</span>';
+  if (s==='草稿') return '<span class="badge grey">草稿</span>';
+  return '<span class="badge red">缺介紹</span>';
+}
+function ciAudienceText(s){
+  if (s.audienceGroup==='enterprise') return '指定企業：'+s.audienceTarget;
+  if (s.audienceGroup==='institution') return '指定學校：'+s.audienceTarget;
+  return '全部有權益者';
+}
+function ciFiltered(){
+  var q = document.getElementById('ciSearchInput').value.trim();
+  var status = document.getElementById('ciStatusFilter').value;
+  var from = document.getElementById('ciDateFrom').value;
+  var to = document.getElementById('ciDateTo').value;
+  var list = CHAT_INTRO_SESSIONS.filter(function(s){
+    if (q && s.topic.indexOf(q)===-1) return false;
+    if (status && s.status!==status) return false;
+    if (from && s.date<from) return false;
+    if (to && s.date>to) return false;
+    return true;
+  });
+  /* 缺介紹的場次排最前，其餘依日期時間排序 */
+  list.sort(function(a,b){
+    var am = a.status==='缺介紹' ? 0 : 1, bm = b.status==='缺介紹' ? 0 : 1;
+    if (am!==bm) return am-bm;
+    var ka = a.date+a.time, kb = b.date+b.time;
+    return ka<kb ? -1 : (ka>kb ? 1 : 0);
+  });
+  return list;
+}
+function ciApplyFilter(){ ciShown = CI_PAGE_SIZE; renderCiTable(); }
+function ciResetFilter(){
+  document.getElementById('ciSearchInput').value = '';
+  document.getElementById('ciStatusFilter').value = '';
+  document.getElementById('ciDateFrom').value = '';
+  document.getElementById('ciDateTo').value = '';
+  ciApplyFilter();
+}
+function ciLoadMore(){ ciShown += CI_PAGE_SIZE; renderCiTable(); }
+function renderCiTable(){
+  var list = ciFiltered();
+  var t = document.getElementById('ciTable');
+  t.innerHTML = '<tr><th>場次日期時間</th><th>主題</th><th>老師</th><th>面向</th><th>介紹狀態</th><th>最後編輯</th><th></th></tr>';
+  list.slice(0, ciShown).forEach(function(s){
+    var tr = document.createElement('tr');
+    tr.className = 'rowlink';
+    tr.onclick = function(){ openCiDrawer(s.id); };
+    var hint = s.status==='缺介紹' ? '<div class="hint" style="color:#C0392B">學員端會顯示預設說明，建議補介紹</div>' : '';
+    tr.innerHTML = '<td>'+s.date+' '+s.time+'</td><td>'+s.topic+'</td><td>'+s.teacher+'</td><td>'+ciAudienceText(s)+'</td>' +
+      '<td>'+ciStatusBadge(s.status)+hint+'</td><td class="small">'+s.updated+'</td>' +
+      '<td><a href="javascript:void(0)" onclick="event.stopPropagation();openCiDrawer(\''+s.id+'\')">編輯</a></td>';
+    t.appendChild(tr);
+  });
+  document.getElementById('ciEmpty').style.display = list.length ? 'none' : '';
+  var shownCount = Math.min(ciShown, list.length);
+  document.getElementById('ciCountLabel').textContent = list.length ? ('顯示 '+shownCount+' ／ 共 '+list.length+' 筆') : '';
+  document.getElementById('ciLoadMoreBtn').style.display = (list.length>ciShown) ? '' : 'none';
+}
+
+function ciById(id){ return CHAT_INTRO_SESSIONS.find(function(s){ return s.id===id; }); }
+function renderCiPoints(){
+  var wrap = document.getElementById('ci_pointsWrap');
+  wrap.innerHTML = ciPoints.map(function(v, idx){
+    return '<div class="itemrow" style="cursor:default;gap:8px">' +
+      '<input type="text" value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="題綱 '+(idx+1)+'" style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit" oninput="ciPoints['+idx+']=this.value">' +
+      (ciPoints.length>3 ? '<button class="btn ghost" style="padding:6px 10px" onclick="ciRemovePoint('+idx+')">－</button>' : '') +
+      '</div>';
+  }).join('');
+  document.getElementById('ci_addPointBtn').style.display = ciPoints.length>=5 ? 'none' : '';
+}
+function ciAddPoint(){ if (ciPoints.length<5){ ciPoints.push(''); renderCiPoints(); } }
+function ciRemovePoint(idx){ if (ciPoints.length>3){ ciPoints.splice(idx,1); renderCiPoints(); } }
+
+function onCiTeacherChange(name){
+  var introEl = document.getElementById('ci_teacherIntro');
+  var s = ciById(ciCurId);
+  /* 換老師時預設帶入該老師的一句簡介，仍可自行修改 */
+  if (!s || s.teacher !== name || !s.teacherIntro){
+    introEl.value = CI_TEACHER_INTRO[name] || '';
+  }
+}
+function ciTemplateChipsHtml(){
+  return CI_TEMPLATES.map(function(tpl, idx){
+    return '<button onclick="ciApplyTemplate('+idx+')">帶入：'+tpl.name+'</button>';
+  }).join('');
+}
+function ciApplyTemplate(idx){
+  var tpl = CI_TEMPLATES[idx];
+  document.getElementById('ci_summary').value = tpl.summary;
+  document.getElementById('ci_level').value = tpl.level;
+  document.getElementById('ci_prep').value = tpl.prep;
+  ciPoints = tpl.points.slice();
+  while (ciPoints.length<3) ciPoints.push('');
+  renderCiPoints();
+  toast('已帶入範本「'+tpl.name+'」，可再自行調整內容');
+}
+
+function openCiDrawer(id){
+  ciCurId = id;
+  var s = ciById(id);
+  document.getElementById('ci_title').textContent = s.topic;
+  document.getElementById('ci_sub').textContent = s.date+' '+s.time+'（台北時間）｜'+ciAudienceText(s);
+  document.getElementById('ci_missingHint').style.display = (s.status==='缺介紹') ? '' : 'none';
+  document.getElementById('ci_summary').value = s.summary || '';
+  document.getElementById('ci_level').value = s.level || '不限';
+  var teacherSel = document.getElementById('ci_teacher');
+  teacherSel.innerHTML = CI_TEACHERS.map(function(n){ return '<option'+(n===s.teacher?' selected':'')+'>'+n+'</option>'; }).join('');
+  document.getElementById('ci_teacherIntro').value = s.teacherIntro || CI_TEACHER_INTRO[s.teacher] || '';
+  ciPoints = (s.points && s.points.length ? s.points.slice() : ['','','']);
+  while (ciPoints.length<3) ciPoints.push('');
+  renderCiPoints();
+  document.getElementById('ci_prep').value = s.prep || '';
+  document.getElementById('ci_lang').value = s.lang || '中文';
+  document.getElementById('ci_coverBox').textContent = s.cover ? '已上傳：'+s.cover : '點擊上傳圖片';
+  document.getElementById('ci_templateChips').innerHTML = ciTemplateChipsHtml();
+  document.getElementById('ciDrawerMask').classList.add('open');
+  document.querySelector('#ciDrawerMask .drawer').classList.add('open');
+}
+function closeCiDrawer(){
+  document.getElementById('ciDrawerMask').classList.remove('open');
+  document.querySelector('#ciDrawerMask .drawer').classList.remove('open');
+  ciCurId = null;
+}
+function ciMockUploadCover(){
+  var s = ciById(ciCurId);
+  s.cover = 'cover_'+s.id+'.jpg';
+  document.getElementById('ci_coverBox').textContent = '已上傳：'+s.cover;
+}
+function ciSave(publish){
+  var s = ciById(ciCurId);
+  s.summary = document.getElementById('ci_summary').value.trim();
+  s.level = document.getElementById('ci_level').value;
+  s.teacher = document.getElementById('ci_teacher').value;
+  s.teacherIntro = document.getElementById('ci_teacherIntro').value.trim();
+  s.points = ciPoints.map(function(p){ return p.trim(); }).filter(function(p){ return p; });
+  s.prep = document.getElementById('ci_prep').value.trim();
+  s.lang = document.getElementById('ci_lang').value;
+  if (publish && !s.summary){
+    toast('請先填寫主題簡介，才能發佈');
+    return;
+  }
+  s.status = publish ? '已發佈' : '草稿';
+  s.updated = '2026-09-10';
+  renderCiTable();
+  document.getElementById('ci_missingHint').style.display = 'none';
+  var hint = document.getElementById('ci_savedHint');
+  hint.textContent = publish ? '已發佈' : '已儲存草稿';
+  hint.classList.add('show');
+  setTimeout(function(){ hint.classList.remove('show'); }, 2500);
+  toast(publish ? '已發佈「'+s.topic+'」的介紹內容' : '已儲存草稿');
+}
+document.getElementById('ciDrawerMask').addEventListener('click', function(e){
+  if (e.target.id === 'ciDrawerMask') closeCiDrawer();
+});
+renderCiTable();
 
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');

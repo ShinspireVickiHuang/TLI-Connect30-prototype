@@ -91,6 +91,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .plan-pick h4{margin:0 0 4px;font-size:14px;}
 .plan-pick p{margin:0;font-size:12.5px;color:var(--c-muted);}
 .demo-note{font-size:12px;color:#9A4A0F;background:#FFF8EE;border:1px solid #F3DFB8;border-radius:8px;padding:8px 12px;margin-bottom:14px;}
+.banner{border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:13px;display:flex;gap:9px;align-items:flex-start;}
+.banner-info{background:#E6EEF8;color:var(--c-primary-dark);border:1px solid #C7DAF0;font-weight:700;}
 .ref-tag{background:#E4F5F0;color:#0B6B52;border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;margin-top:8px;display:none;}
 .ref-tag.show{display:block;}
 .success-wrap{text-align:center;padding:40px 16px;}
@@ -175,6 +177,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div id="checkoutForm">
       <div class="page-h">結帳</div>
       <p class="page-sub">確認方案內容，填寫付款與發票資訊後送出訂單。</p>
+      <div class="banner banner-info hidden" id="existingOrderBanner"></div>
       <div class="demo-note">示範畫面，資料為模擬數字，實際金額與付款結果請以正式系統為準。</div>
       <div class="field-required-note"><span class="req-mark">*</span> 為必填欄位</div>
 
@@ -204,11 +207,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <div class="small muted">示範畫面，活動名稱與時間為模擬資料。</div>
       </div>
 
-      <div class="section-title" id="trialSlotSectionTitle" style="display:none;">已選試聽時段</div>
+      <div class="section-title" id="trialSlotSectionTitle" style="display:none;">已提交的時段偏好</div>
       <div class="card" id="trialSlotCard" style="display:none;">
-        <div class="order-row"><span>時段</span><span id="trialSlotDisplay">－</span></div>
-        <div class="order-row" id="trialTeacherRow" style="display:none;"><span>老師</span><span id="trialTeacherDisplay">－</span></div>
-        <div class="small muted">示範畫面，正式時段以會員區課表為準。</div>
+        <div class="order-row"><span>日期</span><span id="trialDateDisplay">－</span></div>
+        <div class="order-row"><span>時段偏好</span><span id="trialSlotDisplay">－</span></div>
+        <div class="order-row" id="trialGoalRow" style="display:none;"><span>想學的目標</span><span id="trialGoalDisplay">－</span></div>
+        <div class="order-row" id="trialNoteRow" style="display:none;"><span>備註</span><span id="trialNoteDisplayField">－</span></div>
+        <div class="small muted">顧問會依你提出的時段安排老師並通知，正式時段以會員區課表為準。</div>
       </div>
 
       <div class="section-title" id="qtySectionTitle">數量／期間</div>
@@ -392,13 +397,13 @@ document.addEventListener('click',function(e){
 /* ============ 方案資料（示範金額，非實際定價） ============ */
 var PLANS = {
   'trial': {
-    key:'trial', name:'體驗課（單堂）', desc:'30 分鐘線上一對一體驗課，可自選或由系統配對老師，付款完成即確認時段。',
+    key:'trial', name:'體驗課（單堂）', desc:'30 分鐘線上一對一體驗課，你提出有空的時段，顧問依此安排老師，付款完成即確認時段。',
     unitLabel:'堂數', options:[
       {value:'1', label:'1 堂（示範 NT$390）', price:390}
     ]
   },
   '1on1': {
-    key:'1on1', name:'一對一課程包', desc:'華語一對一線上課程，可自選老師與時段。',
+    key:'1on1', name:'一對一課程包', desc:'華語一對一線上課程，購買後於會員區「課表」提出有空時間，由顧問安排老師與時段。',
     unitLabel:'課程堂數', options:[
       {value:'10', label:'10 堂（示範 NT$12,000）', price:12000},
       {value:'30', label:'30 堂（示範 NT$33,000）', price:33000},
@@ -433,6 +438,23 @@ function getParam(name){
   var m = new RegExp('[?&]'+name+'=([^&]*)').exec(window.location.search);
   return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
 }
+/* ============ 從首頁待辦「前往繳費」深連結帶入：?order=<id>，預帶該筆訂單金額與期別 ============
+   示範資料對應會員區/m01_home.html 待辦清單裡的欠款項目；正式版應由訂單 API 依 id 查詢。 */
+var ORDER_DEMO = {
+  'order-reg-tail': {name:'註冊費尾款', amount:1500, note:'原到期日 2026-08-22，已逾期'},
+  'order-installment-01': {name:'分期尾款（第 2 期）', amount:3000, note:'繳費期限 2026-08-31'}
+};
+function renderExistingOrderBanner(){
+  var banner = document.getElementById('existingOrderBanner');
+  if(!banner) return;
+  var o = ORDER_DEMO[getParam('order')];
+  if(o){
+    banner.textContent = '繳納：'+o.name+' NT$'+o.amount.toLocaleString('zh-Hant')+'（'+o.note+'）';
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+}
 /* 機構授權方案改由大學支付，不可在此結帳；?plan=university 一律導向說明頁 */
 var isUniversityPlan = getParam('plan') === 'university';
 /* 付費活動報名結帳；?plan=event&event=<id>，活動 id 由外部頁面（如 p09）決定，
@@ -455,28 +477,44 @@ function resolveEventInfo(){
 }
 var currentPlanKey = PLANS[getParam('plan')] ? getParam('plan') : '1on1';
 
-/* ============ 體驗課自助購買：讀取 p06 帶入的 slot／teacher 參數並顯示 ============ */
-var TEACHER_NAME_MAP = {wang:'王老師', li:'李老師', chen:'陳老師'};
-function formatTrialSlot(raw){
-  /* raw 格式為 p06 帶入的「YYYY-MM-DD HH:mm」，示範用簡易格式化 */
-  var m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})$/.exec(raw);
-  if(!m) return raw;
-  return m[1]+'/'+m[2]+'/'+m[3]+' '+m[4];
+/* ============ 體驗課自助購買：讀取 p06 帶入的 prefs／goal／note 參數並顯示 ============
+   契約：prefs=YYYY-MM-DD|HH:mm,HH:mm（日期＋多個時段偏好，不含老師——一對一不自選老師，
+   由顧問依提出的時段安排）。 */
+var GOAL_LABEL_MAP = {work:'職場溝通', travel:'旅遊會話', exam:'考試準備（如 TOCFL）', life:'日常生活會話', other:'其他'};
+function formatTrialPrefs(raw){
+  /* raw 格式為 p06 帶入的「YYYY-MM-DD|HH:mm,HH:mm」，回傳 {date, times} */
+  var parts = (raw||'').split('|');
+  var datePart = parts[0] || '';
+  var timesPart = parts[1] || '';
+  var dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
+  var date = dm ? (dm[1]+'/'+dm[2]+'/'+dm[3]) : datePart;
+  var times = timesPart ? timesPart.split(',').join('、') : '－';
+  return {date: date, times: times};
 }
 function renderTrialSlotCard(){
-  var slotRaw = getParam('slot');
-  var teacher = getParam('teacher');
-  var show = currentPlanKey === 'trial' && !!slotRaw;
+  var prefsRaw = getParam('prefs');
+  var goal = getParam('goal');
+  var note = getParam('note');
+  var show = currentPlanKey === 'trial' && !!prefsRaw;
   document.getElementById('trialSlotSectionTitle').style.display = show ? 'block' : 'none';
   document.getElementById('trialSlotCard').style.display = show ? 'block' : 'none';
   if(show){
-    document.getElementById('trialSlotDisplay').textContent = formatTrialSlot(slotRaw);
-    var teacherRow = document.getElementById('trialTeacherRow');
-    if(teacher && TEACHER_NAME_MAP[teacher]){
-      teacherRow.style.display = 'flex';
-      document.getElementById('trialTeacherDisplay').textContent = TEACHER_NAME_MAP[teacher];
+    var f = formatTrialPrefs(prefsRaw);
+    document.getElementById('trialDateDisplay').textContent = f.date;
+    document.getElementById('trialSlotDisplay').textContent = f.times;
+    var goalRow = document.getElementById('trialGoalRow');
+    if(goal){
+      goalRow.style.display = 'flex';
+      document.getElementById('trialGoalDisplay').textContent = GOAL_LABEL_MAP[goal] || goal;
     } else {
-      teacherRow.style.display = 'none';
+      goalRow.style.display = 'none';
+    }
+    var noteRow = document.getElementById('trialNoteRow');
+    if(note){
+      noteRow.style.display = 'flex';
+      document.getElementById('trialNoteDisplayField').textContent = note;
+    } else {
+      noteRow.style.display = 'none';
     }
   }
 }
@@ -804,7 +842,7 @@ function submitOrder(){
   }
 
   var orderNo = 'TLI'+(new Date().getFullYear())+'-'+String(Math.floor(Math.random()*900000+100000));
-  var isTrialOrder = currentPlanKey === 'trial' && !!getParam('slot');
+  var isTrialOrder = currentPlanKey === 'trial' && !!getParam('prefs');
   /* 活動報名的名稱／時間在送出當下就寫進 orderData，成功頁直接讀這裡，
      不再回頭查 EVENTS 字典，避免字典查無資料時被靜默替換成別的活動 */
   var eventInfoAtSubmit = isEventOrder ? resolveEventInfo() : null;
@@ -813,7 +851,7 @@ function submitOrder(){
     payMethod: payMethod,
     invoiceSummary: buildInvoiceSummary(),
     isTrialOrder: isTrialOrder,
-    trialSlot: getParam('slot') || '',
+    trialSlot: getParam('prefs') || '',
     isEventOrder: isEventOrder,
     eventId: isEventOrder ? currentEventId : '',
     eventName: eventInfoAtSubmit ? eventInfoAtSubmit.name : '',
@@ -917,7 +955,8 @@ function showSuccessPanel(orderData){
   } else if(orderData.isTrialOrder){
     document.getElementById('successTitle').textContent = '試聽時段已確認';
     document.getElementById('successLead').textContent = '付款完成即確認時段，顧問會在試聽後聯繫你。';
-    trialNote.textContent = '已確認時段：'+formatTrialSlot(orderData.trialSlot);
+    var pf = formatTrialPrefs(orderData.trialSlot);
+    trialNote.textContent = '已提交時段偏好：'+pf.date+' '+pf.times+'，顧問將依此安排老師並通知你';
     trialNote.style.display = 'block';
     document.getElementById('successNote').textContent = '開課前 15 分鐘可從會員區「進入教室」按鈕進入線上教室。';
     addToCalBtn.style.display = 'inline-flex';
@@ -960,6 +999,7 @@ function checkPaidReturn(){
   return true;
 }
 
+renderExistingOrderBanner();
 if(isUniversityPlan){
   document.getElementById('checkoutForm').classList.add('hidden');
   document.getElementById('universityNotice').classList.remove('hidden');

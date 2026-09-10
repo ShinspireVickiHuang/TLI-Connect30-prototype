@@ -144,6 +144,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .aud-badge.all{background:#E4F5F0;color:#0B6B52;border-color:#BFE6D8;}
 .aud-badge.ent{background:#E6EEF8;color:var(--c-primary);border-color:#C7DAF0;}
 .aud-badge.inst{background:#FCEBDC;color:var(--c-accent-dark);border-color:#F3D3B0;}
+/* ---------- 介紹狀態小標籤（20260910j 新增：草稿／已發佈） ---------- */
+.status-chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;margin-left:6px;}
+.status-chip.draft{background:var(--c-bg);color:var(--c-muted);border:1px solid var(--c-border);}
+.status-chip.published{background:#E4F5F0;color:#0B6B52;border:1px solid #BFE6D8;}
 </style>
 </head>
 <body>
@@ -282,11 +286,43 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <select class="field-select hidden" id="chatFormAudienceTarget" style="margin-top:8px"></select>
       <div class="small muted" style="margin-top:4px;">全部有權益者：合約／方案含團體聊天室型態者皆可報名；指定企業／學校僅該企業員工或學校學生可報名。</div>
     </div>
+    <div class="sheet-sec">
+      <div class="lbl">主題簡介</div>
+      <textarea class="field-input" id="chatFormSummary" rows="3" maxlength="150" placeholder="用 2–3 句話說明這場聊天室的內容與練習重點"></textarea>
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">適合等級</div>
+      <select class="field-select" id="chatFormLevel">
+        <option value="不限">不限</option>
+        <option value="初階">初階</option>
+        <option value="中階">中階</option>
+        <option value="中高階">中高階</option>
+        <option value="高階">高階</option>
+      </select>
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">老師一句簡介</div>
+      <textarea class="field-input" id="chatFormTeacherIntro" rows="2" maxlength="60" placeholder="如：資深中文教師，擅長生活會話與文化融入教學。"></textarea>
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">討論題綱</div>
+      <div class="stack" id="chatFormPointsWrap"></div>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="addChatPoint()" id="chatFormAddPointBtn">＋ 新增題綱</button>
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">事前準備（選填）</div>
+      <input type="text" class="field-input" id="chatFormPrep" maxlength="60" placeholder="如：請先複習教材第 1–2 課常用句型">
+    </div>
+    <div class="sheet-sec">
+      <div class="lbl">語言</div>
+      <select class="field-select" id="chatFormLang"><option>中文</option><option>英語</option><option>日語</option><option>韓語</option><option>德語</option><option>法語</option></select>
+    </div>
     <div class="stack">
       <button class="btn btn-primary btn-block" id="chatFormSubmitBtn" onclick="submitChatForm()">建立場次</button>
       <button class="btn btn-danger btn-block hidden" id="chatFormCancelBtn" onclick="cancelChatSession()">取消場次</button>
       <button class="btn btn-outline btn-block" onclick="closeChatForm()">關閉</button>
     </div>
+    <p class="small muted" style="margin-top:10px;">介紹由教研在後台發布後才顯示於學員端。</p>
   </div>
 </div>
 
@@ -343,6 +379,10 @@ var CHAT_TYPE_CAP = 30;
    企業名單與 a04_packages.html、a19_b2b_enterprise.html 的示範企業名一致，不自創名稱；學校僅一個示範對象。 */
 var CHAT_ENT_NAMES = ['和霖科技股份有限公司','裕發國際貿易有限公司','瑞新金融顧問股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司'];
 var CHAT_INST_NAMES = ['合作大學（示範）'];
+/* ---------- 場次介紹欄位（20260910j 新增）：主題簡介、適合等級、老師一句簡介、討論題綱、事前準備、語言 ----------
+   此表單只能存草稿；介紹須由教研在「內容管理」後台發布後才會顯示於學員端。 */
+var CURRENT_TEACHER_NAME = '林俊傑'; // 示範登入教師，名單與「老師管理」在職老師示範資料一致
+var CURRENT_TEACHER_INTRO_DEFAULT = '資深中文教師，擅長生活會話與文化融入教學。';
 function chatAudienceLabel(session){
   if (session.audienceGroup === 'enterprise') return '指定企業：'+(session.audienceTarget||'（未指定）');
   if (session.audienceGroup === 'institution') return '指定學校：'+(session.audienceTarget||'（未指定）');
@@ -354,7 +394,12 @@ function chatAudienceBadgeClass(session){
   return 'all';
 }
 var chatSessions = {
-  '2-6':{topic:'日常對話練習', audienceGroup:'institution', audienceTarget:CHAT_INST_NAMES[0], registered:4, capacity:20}
+  '2-6':{topic:'日常對話練習', audienceGroup:'institution', audienceTarget:CHAT_INST_NAMES[0], registered:4, capacity:20,
+    summary:'鎖定日常生活情境，透過簡單提問與情境模擬，讓學員練習開口說中文，適合累積基礎會話信心。', level:'初階',
+    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['分享今天做了哪些事','描述你最喜歡的一餐','練習問路與指路對話'], prep:'請先複習教材第 1–2 課常用句型。', lang:'中文', introStatus:'已發佈'},
+  '4-2':{topic:'職場情境會話', audienceGroup:'all', audienceTarget:null, registered:0, capacity:20,
+    summary:'模擬會議、面試等職場情境，訓練學員使用得體的中文表達。', level:'中高階',
+    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['自我介紹與工作背景說明','模擬一段簡短的會議發言',''], prep:'', lang:'中文', introStatus:'草稿'}
 };
 function chatMarkedKeys(){ return Object.keys(chatSessions); }
 
@@ -526,6 +571,28 @@ function onChatAudienceGroupChange(val){
   populateChatAudienceTarget(val, null);
 }
 var chatFormKey = null;
+var chatFormPoints = [];
+/* 討論題綱固定 3–5 條；render/新增/移除 */
+function renderChatPoints(){
+  var wrap = document.getElementById('chatFormPointsWrap');
+  wrap.innerHTML = chatFormPoints.map(function(v, idx){
+    return '<div style="display:flex;gap:6px;align-items:center;">' +
+      '<input type="text" class="field-input" style="flex:1" maxlength="40" value="'+(v||'').replace(/"/g,'&quot;')+'" placeholder="題綱 '+(idx+1)+'" oninput="chatFormPoints['+idx+']=this.value">' +
+      (chatFormPoints.length>3 ? '<button type="button" class="btn btn-outline" style="padding:8px 10px;min-height:auto" onclick="removeChatPoint('+idx+')">－</button>' : '') +
+      '</div>';
+  }).join('');
+  document.getElementById('chatFormAddPointBtn').style.display = chatFormPoints.length>=5 ? 'none' : '';
+}
+function addChatPoint(){
+  if (chatFormPoints.length>=5) return;
+  chatFormPoints.push('');
+  renderChatPoints();
+}
+function removeChatPoint(idx){
+  if (chatFormPoints.length<=3) return;
+  chatFormPoints.splice(idx,1);
+  renderChatPoints();
+}
 function openChatForm(key, cellEl){
   chatFormKey = key;
   var session = chatSessions[key];
@@ -541,6 +608,14 @@ function openChatForm(key, cellEl){
   document.getElementById('chatFormCapHint').textContent = '型態上限 '+CHAT_TYPE_CAP+'（待定）・可視需求下修，不可超過上限';
   document.getElementById('chatFormSubmitBtn').textContent = session ? '儲存變更' : '建立場次';
   document.getElementById('chatFormCancelBtn').classList.toggle('hidden', !session);
+  document.getElementById('chatFormSummary').value = session ? (session.summary||'') : '';
+  document.getElementById('chatFormLevel').value = session ? (session.level||'不限') : '不限';
+  document.getElementById('chatFormTeacherIntro').value = session ? (session.teacherIntro||CURRENT_TEACHER_INTRO_DEFAULT) : CURRENT_TEACHER_INTRO_DEFAULT;
+  chatFormPoints = (session && session.points && session.points.length) ? session.points.slice() : ['','',''];
+  while (chatFormPoints.length<3) chatFormPoints.push('');
+  renderChatPoints();
+  document.getElementById('chatFormPrep').value = session ? (session.prep||'') : '';
+  document.getElementById('chatFormLang').value = session ? (session.lang||'中文') : '中文';
   document.getElementById('chatFormOverlay').classList.remove('hidden');
 }
 function closeChatForm(){
@@ -569,7 +644,16 @@ function submitChatForm(){
   if(isNaN(capacity) || capacity<1) capacity = CHAT_TYPE_CAP;
   if(capacity>CHAT_TYPE_CAP) capacity = CHAT_TYPE_CAP;
   var existing = chatSessions[chatFormKey];
-  chatSessions[chatFormKey] = {topic:topic, audienceGroup:audienceGroup, audienceTarget:audienceTarget, capacity:capacity, registered: existing ? existing.registered : 0};
+  var summary = document.getElementById('chatFormSummary').value.trim();
+  var level = document.getElementById('chatFormLevel').value;
+  var teacherIntro = document.getElementById('chatFormTeacherIntro').value.trim();
+  var points = chatFormPoints.map(function(p){ return p.trim(); }).filter(function(p){ return p; });
+  var prep = document.getElementById('chatFormPrep').value.trim();
+  var lang = document.getElementById('chatFormLang').value;
+  /* 教師端只能存草稿：已發佈的介紹內容不因教師編輯其他欄位而被打回草稿；尚未發佈者填了簡介即存為草稿 */
+  var introStatus = (existing && existing.introStatus === '已發佈') ? '已發佈' : (summary ? '草稿' : (existing ? existing.introStatus : undefined));
+  chatSessions[chatFormKey] = {topic:topic, audienceGroup:audienceGroup, audienceTarget:audienceTarget, capacity:capacity, registered: existing ? existing.registered : 0,
+    summary:summary, level:level, teacherIntro:teacherIntro, points:points, prep:prep, lang:lang, introStatus:introStatus};
   var cell = grid.querySelector('.slot-cell[data-key="'+chatFormKey+'"]');
   if(cell){
     cell.classList.add('chatmark');
@@ -619,8 +703,9 @@ function renderSessionList(){
     var card = document.createElement('div');
     card.className = 'session-card';
     var audBadgeHtml = '<span class="aud-badge '+chatAudienceBadgeClass(s)+'">'+chatAudienceLabel(s)+'</span>';
+    var introBadgeHtml = s.introStatus ? '<span class="status-chip '+(s.introStatus==='已發佈'?'published':'draft')+'">'+s.introStatus+'</span>' : '';
     card.innerHTML =
-      '<div class="s-top"><div class="s-title">'+s.topic+'</div></div>'+
+      '<div class="s-top"><div class="s-title">'+s.topic+introBadgeHtml+'</div></div>'+
       '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額 '+s.capacity+'（型態上限 '+CHAT_TYPE_CAP+'，待定）<br>面向：'+audBadgeHtml+'</div>'+
       '<div class="s-actions"></div>';
     var actions = card.querySelector('.s-actions');

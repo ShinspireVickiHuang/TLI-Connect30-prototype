@@ -167,6 +167,37 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .rules-card li:last-child{margin-bottom:0;}
 .action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px;}
 .action-row .btn{flex:1;min-width:120px;}
+
+/* ---------- 方案層 → 權益層（20260910k 重構：一位會員可同時有自費／公司提供／學校提供多筆方案） ---------- */
+.plan-filter-row{margin-bottom:14px;}
+.plan-card-outer{border:1px solid var(--c-border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;}
+.plan-summary{display:flex;align-items:flex-start;gap:12px;width:100%;border:none;background:none;padding:16px;text-align:left;cursor:pointer;font-family:inherit;color:inherit;}
+.plan-summary:hover{background:var(--c-bg);}
+.plan-summary-main{flex:1;min-width:0;}
+.plan-summary-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px;}
+.plan-summary h3{margin:0 0 4px;font-size:15.5px;}
+.plan-summary .pm-expiry{font-size:12px;color:var(--c-muted);margin:0;}
+.plan-chevron{width:18px;height:18px;color:var(--c-muted);flex:none;margin-top:4px;transition:transform .15s;}
+.plan-summary[aria-expanded="true"] .plan-chevron{transform:rotate(180deg);}
+.badge-payer-self{background:#E6EEF8;color:var(--c-primary);}
+.badge-payer-company{background:#FCEBDC;color:var(--c-accent-dark);}
+.badge-payer-school{background:#F3E8FD;color:#6B21A8;}
+.entitlement-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;}
+.chip.static{cursor:default;}
+.plan-detail{display:none;border-top:1px solid var(--c-border);padding:16px;background:var(--c-bg);}
+.plan-detail.open{display:block;}
+.entitlement-block{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:14px;}
+.entitlement-block + .entitlement-block{margin-top:12px;}
+.entitlement-block h4{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.billing-block{background:#fff;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:14px;margin-top:12px;}
+.billing-block h4{margin:0 0 4px;font-size:13.5px;}
+.action-note{font-size:12px;color:var(--c-muted);margin:6px 0 0;}
+.plan-list-empty{padding:28px 16px;text-align:center;color:var(--c-muted);font-size:13px;}
+.self-course-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--c-border);}
+.self-course-row:first-child{border-top:none;padding-top:0;}
+.self-course-row .sc-body{flex:1;min-width:0;}
+.self-course-row .sc-body h5{margin:0 0 4px;font-size:13px;font-weight:700;}
+.self-course-row .progress{margin-top:4px;}
 </style>
 </head>
 <body>
@@ -215,220 +246,526 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <main class="content">
   <div id="viewDefault">
     <p class="page-h" style="margin-top:2px;">我的方案</p>
-    <p class="page-sub">依方案型態分頁查看剩餘堂數、使用紀錄與規則</p>
+    <p class="page-sub">你的方案可能同時來自自費、公司或學校，點方案展開查看使用狀況與可執行的動作</p>
 
-    <div class="tabs" id="planTypeTabs">
-      <button class="tab-btn" data-plantab="1on1" onclick="setPlanTab('1on1',this)">一對一課程包</button>
-      <button class="tab-btn" data-plantab="group" onclick="setPlanTab('group',this)">團體直播班</button>
-      <button class="tab-btn" data-plantab="self" onclick="setPlanTab('self',this)">自學課程</button>
+    <div class="tabs" id="m04TopTabs">
+      <button class="tab-btn active" data-m04tab="plans" onclick="setM04Tab('plans',this)">我的方案</button>
+      <button class="tab-btn" data-m04tab="billing" onclick="setM04Tab('billing',this)">帳務總覽</button>
     </div>
 
-    <!-- ===== 一對一課程包 ===== -->
-    <div class="tab-panel" id="plantab-1on1">
-      <div class="card">
-        <div class="flex-between">
-          <div>
-            <span class="badge badge-info">中文一對一・50 分</span>
-            <span class="badge badge-info">預約制</span>
-            <h3 style="margin:8px 0 2px;font-size:16px;">30 堂方案</h3>
-            <p class="small muted" style="margin:0;">單價 <span data-money="900">NT$900</span>／堂・購買日 2026-02-10</p>
-          </div>
-          <span class="badge badge-warn">效期剩 14 天</span>
-        </div>
-        <div style="margin:14px 0 6px;" class="flex-between">
-          <span style="font-size:26px;font-weight:800;">8 <span style="font-size:13px;font-weight:400;color:var(--c-muted);">／ 30 堂剩餘</span></span>
-        </div>
-        <div class="progress warn"><div style="width:27%;"></div></div>
-        <div class="flex-between" style="margin-top:8px;">
-          <span class="small muted">效期至 2026-09-08</span>
-        </div>
-      </div>
+    <div class="tab-panel active" id="m04panel-plans">
 
-      <div class="section-title first">使用紀錄</div>
-      <div class="chip-row" id="filter-1on1">
-        <button class="chip selected" onclick="filterUsage('1on1','all',this)">全部</button>
-        <button class="chip" onclick="filterUsage('1on1','attended',this)">已出席</button>
-        <button class="chip" onclick="filterUsage('1on1','changed',this)">已取消／改期</button>
-      </div>
-      <div class="card table-wrap">
-        <table class="rec-table" id="table-1on1">
-          <thead><tr><th>日期</th><th>老師</th><th>狀態</th><th>備註</th><th></th></tr></thead>
-          <tbody>
-            <tr data-status="attended"><td>08/20（四）14:00</td><td>杜老師</td><td><span class="badge badge-ok">已出席</span></td><td>會話進階</td><td><button class="btn btn-outline btn-sm" id="fbToggleBtn" onclick="toggleFeedback()">填寫回饋</button></td></tr>
-            <tr data-status="attended"><td>08/13（四）14:00</td><td>杜老師</td><td><span class="badge badge-ok">已出席</span></td><td>會話進階・已評分</td><td></td></tr>
-            <tr data-status="attended"><td>08/06（四）14:00</td><td>陳老師</td><td><span class="badge badge-ok">已出席</span></td><td>發音矯正・已評分</td><td></td></tr>
-            <tr data-status="changed"><td>08/18（二）14:00</td><td>杜老師</td><td><span class="badge badge-info">已取消</span></td><td>提前 24 小時取消・已退回 1 堂</td><td></td></tr>
-            <tr data-status="changed"><td>08/11（二）09:00</td><td>陳老師</td><td><span class="badge badge-full">已取消</span></td><td>開課前 3 小時取消・逾期不退</td><td></td></tr>
-            <tr data-status="changed"><td>08/04（二）14:00</td><td>杜老師</td><td><span class="badge badge-info">已改期</span></td><td>改至 08/06 14:00</td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="feedback-form" id="fbForm" style="margin-top:10px;">
-        <div class="small" style="font-weight:700;">課程體驗</div>
-        <div class="star-pick" id="starExp">
-          <button onclick="pickStar('starExp',1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp',2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp',3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp',4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp',5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-        </div>
-        <div class="small" style="font-weight:700;margin-top:6px;">教學表現</div>
-        <div class="star-pick" id="starTeach">
-          <button onclick="pickStar('starTeach',1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach',2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach',3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach',4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach',5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-        </div>
-        <textarea class="field" style="width:100%;margin-top:8px;padding:9px 10px;border:1px solid var(--c-border);border-radius:8px;font-family:inherit;font-size:13px;" rows="2" placeholder="給校方的建議（選填）"></textarea>
-        <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="submitFeedback()">送出</button>
-      </div>
-
-      <div class="section-title">規則摘要</div>
-      <div class="card rules-card">
-        <ol>
-          <li>開課前 24 小時取消或改期不扣堂數，逾時扣抵 1 堂。</li>
-          <li>效期內未用完的堂數，效期到期即失效，不可延期。</li>
-          <li>續費可累加剩餘堂數與效期天數，續費當下立即生效。</li>
-        </ol>
-      </div>
-
-      <div class="section-title">合約與發票</div>
-      <div class="card">
-        <div class="list-row">
-          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>
-          <div class="body"><h4>課程合約</h4><p>簽署日 2026-02-10・生效中</p></div>
-          <div class="trail"><button class="btn btn-outline btn-sm" onclick="openDocPreview('課程合約 CT-2026-0210','合約編號 CT-2026-0210・中文一對一 50 分・30 堂方案・效期至 2026-09-08・簽署人：Emma Johnson')">查看</button></div>
-        </div>
-        <div class="list-row">
-          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
-          <div class="body"><h4>發票 AB-12345678</h4><p>2026-02-10・<span data-money="27000">NT$27,000</span></p></div>
-          <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12345678 已下載')">下載</button></div>
-        </div>
-        <div class="list-row">
-          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
-          <div class="body"><h4>分期尾款帳單</h4><p>到期日 2026-08-31・<span data-money="3000">NT$3,000</span>・未繳</p></div>
-          <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m07_profile.html'">前往繳費</button></div>
-        </div>
-      </div>
-
-      <div class="section-title">動作</div>
-      <div class="card action-row">
-        <button class="btn btn-outline" onclick="location.href='m02_booking.html'">預約</button>
-        <button class="btn btn-accent" onclick="location.href='m06_renew.html'">續費</button>
-        <button class="btn btn-danger-outline" onclick="openWithdrawModal('1on1')">退班</button>
-      </div>
+    <div class="chip-row plan-filter-row" id="planFilterChips">
+      <button class="chip selected" onclick="setPlanFilter('active','all',this)">生效中</button>
+      <button class="chip" onclick="setPlanFilter('all','all',this)">全部</button>
+      <button class="chip" onclick="setPlanFilter('expired','all',this)">查看已到期方案</button>
+      <button class="chip" onclick="setPlanFilter('all','self',this)">自費</button>
+      <button class="chip" onclick="setPlanFilter('all','company',this)">公司提供</button>
+      <button class="chip" onclick="setPlanFilter('all','school',this)">學校提供</button>
     </div>
 
-    <!-- ===== 團體直播班 ===== -->
-    <div class="tab-panel" id="plantab-group">
-      <div class="card" id="flex">
-        <div class="flex-between">
-          <div>
-            <span class="badge badge-live">直播制</span>
-            <h3 style="margin:8px 0 2px;font-size:16px;">TLI 彈性團體直播・中級會話直播班</h3>
-            <p class="small muted" style="margin:0;">固定班表：每週二、四 19:00–20:00・林老師・購買日 2026-07-01</p>
+    <div id="planListWrap">
+
+    <!-- ===== plan-a：中文一對一 20 堂課程包（自費） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-a" data-payer="self" data-status="active" data-types="1on1">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-a')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-self">自費</span>
+            <span class="badge badge-ok">生效中</span>
           </div>
-          <span class="badge badge-ok">上課中</span>
+          <h3>中文一對一 20 堂課程包</h3>
+          <p class="pm-expiry">到期 2026-12-31</p>
+          <div class="entitlement-chip-row"><span class="chip static">一對一 20 堂・剩 12</span></div>
         </div>
-        <div class="flex-between" style="margin-top:10px;">
-          <span class="small muted">本期進度：第 4／12 週・下次上課 08/25（二）19:00</span>
-        </div>
-        <div class="divider" style="margin:12px 0;"></div>
-        <div class="flex-between">
-          <span class="small muted">效期至 2026-12-31（每期 12 週）</span>
-        </div>
-        <div class="flex-between" style="margin-top:4px;">
-          <span class="small muted">本月剩餘</span>
-          <span class="small" style="font-weight:700;">5／8 堂・下次重置 2026-09-01</span>
-        </div>
-      </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-a">
 
-      <div class="section-title first">使用紀錄</div>
-      <div class="chip-row" id="filter-group">
-        <button class="chip selected" onclick="filterUsage('group','all',this)">全部</button>
-        <button class="chip" onclick="filterUsage('group','attended',this)">已出席</button>
-        <button class="chip" onclick="filterUsage('group','leave',this)">已請假</button>
-      </div>
-      <div class="card table-wrap">
-        <table class="rec-table" id="table-group">
-          <thead><tr><th>日期</th><th>班別</th><th>狀態</th><th>備註</th></tr></thead>
-          <tbody>
-            <tr data-status="attended"><td>08/20（四）19:00</td><td>中級會話直播班</td><td><span class="badge badge-ok">已出席</span></td><td>林老師</td></tr>
-            <tr data-status="leave"><td>08/18（二）19:00</td><td>中級會話直播班</td><td><span class="badge badge-info">已請假</span></td><td>已扣抵本月堂數</td></tr>
-            <tr data-status="attended"><td>08/13（四）19:00</td><td>中級會話直播班</td><td><span class="badge badge-ok">已出席</span></td><td>林老師</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <div class="entitlement-block">
+          <h4>一對一課程・中文一對一・50 分<span class="badge badge-info">預約制</span></h4>
+          <p class="small muted" style="margin:0;">單價 <span data-money="900">NT$900</span>／堂・購買日 2026-02-10</p>
+          <div style="margin:12px 0 6px;" class="flex-between">
+            <span style="font-size:24px;font-weight:800;">12 <span style="font-size:12.5px;font-weight:400;color:var(--c-muted);">／ 20 堂剩餘</span></span>
+          </div>
+          <div class="progress"><div style="width:60%;"></div></div>
+          <div class="flex-between" style="margin-top:8px;">
+            <span class="small muted">效期至 2026-12-31</span>
+          </div>
+          <div class="flex-between" style="margin-top:10px;" id="enterRow-a1on1"></div>
 
-      <div class="section-title">規則摘要</div>
-      <div class="card rules-card">
-        <ol>
-          <li>請假需於開課前提出，逾時視同缺席，仍計入本月堂數。</li>
-          <li>補課次數依方案規則另行公告。</li>
-          <li>每堂課後提供 7 天回放，逾期無法觀看。</li>
-        </ol>
-      </div>
+          <div class="section-title" style="margin:18px 0 10px;">使用紀錄</div>
+          <div class="chip-row" id="filter-a1on1">
+            <button class="chip selected" onclick="filterUsage('a1on1','all',this)">全部</button>
+            <button class="chip" onclick="filterUsage('a1on1','attended',this)">已出席</button>
+            <button class="chip" onclick="filterUsage('a1on1','changed',this)">已取消／改期</button>
+          </div>
+          <div class="table-wrap">
+            <table class="rec-table" id="table-a1on1">
+              <thead><tr><th>日期</th><th>老師</th><th>狀態</th><th>備註</th><th></th></tr></thead>
+              <tbody>
+                <tr data-status="attended"><td>08/20（四）14:00</td><td>杜老師</td><td><span class="badge badge-ok">已出席</span></td><td>會話進階</td><td><button class="btn btn-outline btn-sm" id="fbToggleBtn-a" onclick="toggleFeedback('fbForm-a')">填寫回饋</button></td></tr>
+                <tr data-status="attended"><td>08/13（四）14:00</td><td>杜老師</td><td><span class="badge badge-ok">已出席</span></td><td>會話進階・已評分</td><td></td></tr>
+                <tr data-status="attended"><td>08/06（四）14:00</td><td>陳老師</td><td><span class="badge badge-ok">已出席</span></td><td>發音矯正・已評分</td><td></td></tr>
+                <tr data-status="changed"><td>08/18（二）14:00</td><td>杜老師</td><td><span class="badge badge-info">已取消</span></td><td>提前 24 小時取消・已退回 1 堂</td><td></td></tr>
+                <tr data-status="changed"><td>08/11（二）09:00</td><td>陳老師</td><td><span class="badge badge-full">已取消</span></td><td>開課前 3 小時取消・逾期不退</td><td></td></tr>
+                <tr data-status="changed"><td>08/04（二）14:00</td><td>杜老師</td><td><span class="badge badge-info">已改期</span></td><td>改至 08/06 14:00</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="feedback-form" id="fbForm-a" style="margin-top:10px;">
+            <div class="small" style="font-weight:700;">課程體驗</div>
+            <div class="star-pick" id="starExp-a">
+              <button onclick="pickStar('starExp-a',1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp-a',2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp-a',3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp-a',4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starExp-a',5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            </div>
+            <div class="small" style="font-weight:700;margin-top:6px;">教學表現</div>
+            <div class="star-pick" id="starTeach-a">
+              <button onclick="pickStar('starTeach-a',1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach-a',2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach-a',3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach-a',4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button onclick="pickStar('starTeach-a',5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            </div>
+            <textarea class="field" style="width:100%;margin-top:8px;padding:9px 10px;border:1px solid var(--c-border);border-radius:8px;font-family:inherit;font-size:13px;" rows="2" placeholder="給校方的建議（選填）"></textarea>
+            <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="submitFeedback('fbForm-a','fbToggleBtn-a')">送出</button>
+          </div>
 
-      <div class="section-title">動作</div>
-      <div class="card action-row">
-        <button class="btn btn-outline" onclick="location.href='m03_schedule.html?class=flex-group'">查看班表</button>
-        <button class="btn btn-outline" onclick="location.href='m05_leave.html?class=flex-group'">請假</button>
-        <button class="btn btn-danger-outline" onclick="openWithdrawModal('group')">退班</button>
+          <div class="section-title" style="margin:18px 0 10px;">規則摘要</div>
+          <ol style="margin:0;padding-left:18px;font-size:13px;">
+            <li>開課前 24 小時取消或改期不扣堂數，逾時扣抵 1 堂。</li>
+            <li>效期內未用完的堂數，效期到期即失效，不可延期。</li>
+            <li>續購課程包可累加剩餘堂數與效期天數，完成續購後立即生效。</li>
+          </ol>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・自費</h4>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>
+            <div class="body"><h4>課程合約</h4><p>簽署日 2026-02-10・生效中</p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="openDocPreview('課程合約 CT-2026-0210','合約編號 CT-2026-0210・中文一對一 20 堂課程包・效期至 2026-12-31・簽署人：Emma Johnson')">查看</button></div>
+          </div>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>發票 AB-12345678</h4><p>2026-02-10・<span data-money="27000">NT$27,000</span></p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12345678 已下載')">下載</button></div>
+          </div>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>分期尾款帳單</h4><p>到期日 2026-08-31・<span data-money="3000">NT$3,000</span>・未繳</p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="location.href='m13_checkout.html?order=order-installment-01'">前往繳費</button></div>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="location.href='m03_schedule.html#request'">提出有空時間，請顧問排課</button>
+          <button class="btn btn-outline" onclick="location.href='m13_checkout.html?order=order-installment-01'">繳納分期尾款</button>
+          <button class="btn btn-accent" onclick="location.href='m06_renew.html'">續購課程包</button>
+        </div>
       </div>
     </div>
 
-    <!-- ===== 自學課程 ===== -->
-    <div class="tab-panel" id="plantab-self">
-      <div class="card">
-        <div class="flex-between">
-          <div>
-            <span class="badge badge-muted">自學</span>
-            <h3 style="margin:8px 0 2px;font-size:16px;">發音基礎 20 講</h3>
-            <p class="small muted" style="margin:0;">中文一對一・自學課程</p>
+    <!-- ===== plan-b：彈性團體直播・中級會話 B1 班（自費） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-b" data-payer="self" data-status="active" data-types="group">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-b')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-self">自費</span>
+            <span class="badge badge-ok">上課中</span>
           </div>
-          <span class="badge badge-ok">進行中</span>
+          <h3>彈性團體直播・中級會話 B1 班</h3>
+          <p class="pm-expiry">到期 2026-10-15</p>
+          <div class="entitlement-chip-row"><span class="chip static">團體直播 B1 班・第 4／12 週</span></div>
         </div>
-        <div style="margin:14px 0 6px;" class="flex-between">
-          <span style="font-size:26px;font-weight:800;">12 <span style="font-size:13px;font-weight:400;color:var(--c-muted);">／ 20 講已完成</span></span>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-b">
+
+        <div class="entitlement-block">
+          <h4>團體直播・中級會話 B1 班<span class="badge badge-live">直播制</span></h4>
+          <p class="small muted" style="margin:0;">固定班表：每週二、四 19:00–20:00・林老師・購買日 2026-07-01</p>
+          <div class="flex-between" style="margin-top:10px;">
+            <span class="small muted">本期進度：第 4／12 週・下次上課 08/25（二）19:00</span>
+          </div>
+          <div class="flex-between" style="margin-top:8px;" id="enterRow-bgroup"></div>
+          <div class="divider" style="margin:12px 0;"></div>
+          <div class="flex-between">
+            <span class="small">已上 8／24 堂・請假 1（核准 1）・缺席 0</span>
+          </div>
+          <div class="flex-between" style="margin-top:4px;">
+            <span class="small muted">剩餘補課次數（依設定）</span>
+          </div>
+
+          <div class="section-title" style="margin:18px 0 10px;">本班規則</div>
+          <ol style="margin:0;padding-left:18px;font-size:13px;">
+            <li>單堂線上請假：開課前依設定時數內可請假，逾時記缺席。</li>
+            <li>錄影回放僅開放給「請假已核准者」，核准後依設定天數內可看。</li>
+            <li>補課限同級班，每期次數依設定。</li>
+            <li>退出本班須提前依設定天數申請，逾時不退。</li>
+            <li>缺席、遲到會記入學員成效。</li>
+          </ol>
+
+          <div class="section-title" style="margin:18px 0 10px;">近期堂次</div>
+          <div class="table-wrap">
+            <table class="rec-table" id="table-b-upcoming">
+              <thead><tr><th>日期</th><th>班別</th><th>請假狀態</th><th>動作</th></tr></thead>
+              <tbody id="groupUpcomingBody-b"></tbody>
+            </table>
+          </div>
+
+          <div class="section-title" style="margin:18px 0 10px;">使用紀錄</div>
+          <div class="chip-row" id="filter-bgroup">
+            <button class="chip selected" onclick="filterUsage('bgroup','all',this)">全部</button>
+            <button class="chip" onclick="filterUsage('bgroup','attended',this)">已出席</button>
+            <button class="chip" onclick="filterUsage('bgroup','leave',this)">已請假</button>
+          </div>
+          <div class="table-wrap">
+            <table class="rec-table" id="table-bgroup">
+              <thead><tr><th>日期</th><th>班別</th><th>狀態</th><th>備註</th></tr></thead>
+              <tbody>
+                <tr data-status="attended"><td>08/20（四）19:00</td><td>B1 班</td><td><span class="badge badge-ok">已出席</span></td><td>林老師</td></tr>
+                <tr data-status="leave"><td>08/18（二）19:00</td><td>B1 班</td><td><span class="badge badge-info">已請假</span></td><td>已核准</td></tr>
+                <tr data-status="attended"><td>08/13（四）19:00</td><td>B1 班</td><td><span class="badge badge-ok">已出席</span></td><td>林老師</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-title" style="margin:18px 0 10px;">補課</div>
+          <div id="groupMakeupCard-b"></div>
         </div>
-        <div class="progress"><div style="width:60%;"></div></div>
-        <div class="flex-between" style="margin-top:8px;">
-          <span class="small muted">上次觀看 08/23</span>
+
+        <div class="billing-block">
+          <h4>帳務・自費</h4>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 2h9l5 5v15H6z"/></svg></div>
+            <div class="body"><h4>課程合約</h4><p>簽署日 2026-07-01・生效中</p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="openDocPreview('課程合約 CT-2026-0701','合約編號 CT-2026-0701・彈性團體直播・中級會話 B1 班・本期 12 週・簽署人：Emma Johnson')">查看</button></div>
+          </div>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>發票 AB-12345399</h4><p>2026-07-01・<span data-money="14400">NT$14,400</span></p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12345399 已下載')">下載</button></div>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="location.href='m03_schedule.html?class=flex-group'">查看班表</button>
+          <button class="btn btn-outline" onclick="location.href='m05_leave.html?class=flex-group'">本堂請假</button>
+          <button class="btn btn-danger-outline" onclick="openWithdrawModal('plan-b')">申請退出 B1 班</button>
         </div>
       </div>
+    </div>
 
-      <div class="section-title first">使用紀錄</div>
-      <div class="chip-row" id="filter-self">
-        <button class="chip selected" onclick="filterUsage('self','all',this)">全部</button>
-        <button class="chip" onclick="filterUsage('self','done',this)">已完成</button>
+    <!-- ===== plan-c：商務華語企業培訓（公司提供） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-c" data-payer="company" data-status="active" data-types="1on1,chat">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-c')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-company">公司提供・和霖科技股份有限公司</span>
+            <span class="badge badge-ok">生效中</span>
+          </div>
+          <h3>商務華語企業培訓</h3>
+          <p class="pm-expiry">合約至 2026-12-31</p>
+          <div class="entitlement-chip-row">
+            <span class="chip static">一對一時數池・依設定</span>
+            <span class="chip static">聊天室・白名單</span>
+          </div>
+        </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-c">
+
+        <div class="entitlement-block">
+          <h4>一對一課程・企業時數池<span class="badge badge-info">預約制</span></h4>
+          <p class="small" style="margin:0 0 4px;">本人本月可用時數：依部門配額（依設定）</p>
+          <p class="small muted" style="margin:0;">時數池餘額查詢與部門配額請洽 HR，扣時數規則依企業合約設定。</p>
+          <div class="flex-between" style="margin-top:10px;" id="enterRow-c1on1"></div>
+        </div>
+
+        <div class="entitlement-block">
+          <h4>團體聊天室・白名單</h4>
+          <p class="small muted" style="margin:0;">僅開放企業指定人員報名，場次與規則同一般會員聊天室。</p>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・由公司提供</h4>
+          <div class="stack" style="gap:6px;">
+            <div class="small"><strong>企業名稱：</strong>和霖科技股份有限公司</div>
+            <div class="small"><strong>時數池餘額：</strong>依設定</div>
+            <div class="small"><strong>HR 聯絡窗口：</strong>企業 HR 服務信箱（hr-support@example.com，示範）</div>
+          </div>
+          <p class="action-note">此方案由公司提供，無金額、無發票；異動請洽 HR。</p>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="location.href='m03_schedule.html#request'">提出有空時間，請顧問排課</button>
+          <button class="btn btn-outline" onclick="location.href='m14_chat_booking.html'">報名聊天室場次</button>
+          <button class="btn btn-outline" onclick="showToast('時數池餘額：依部門配額設定，詳情請洽 HR')">查看時數池餘額</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== plan-d：華語會話學期方案（學校提供） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-d" data-payer="school" data-status="active" data-types="chat,self">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-d')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-school">學校提供・範例州立大學</span>
+            <span class="badge badge-ok">生效中</span>
+          </div>
+          <h3>華語會話學期方案</h3>
+          <p class="pm-expiry">到期 2026-11-30（3 個月期程）</p>
+          <div class="entitlement-chip-row">
+            <span class="chip static">聊天室・全員開放</span>
+            <span class="chip static">自學 2 門</span>
+          </div>
+        </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-d">
+
+        <div class="entitlement-block">
+          <h4>團體聊天室・全員開放</h4>
+          <p class="small muted" style="margin:0;">學校授權範圍內學生皆可報名，本週可報名場次請至聊天室頁面查看。</p>
+        </div>
+
+        <div class="entitlement-block">
+          <h4>自學影音・2 門</h4>
+          <div class="self-course-row">
+            <div class="sc-body">
+              <h5>發音基礎 20 講</h5>
+              <p class="small muted" style="margin:0;">已完成 12／20 講</p>
+              <div class="progress"><div style="width:60%;"></div></div>
+            </div>
+          </div>
+          <div class="self-course-row">
+            <div class="sc-body">
+              <h5>商務書信寫作 8 講</h5>
+              <p class="small muted" style="margin:0;">尚未開始</p>
+              <div class="progress"><div style="width:0%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・由學校提供</h4>
+          <div class="stack" style="gap:6px;">
+            <div class="small"><strong>學校名稱：</strong>範例州立大學</div>
+            <div class="small"><strong>到期日：</strong>2026-11-30</div>
+            <div class="small"><strong>學校窗口：</strong>語言中心服務信箱（school-support@example.edu，示範）</div>
+          </div>
+          <p class="action-note">此方案由學校提供，無金額、無發票；到期由學校決定是否展延。</p>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="location.href='m14_chat_booking.html'">報名聊天室場次</button>
+          <button class="btn btn-primary" onclick="location.href='m08_self_paced.html?plan=plan-d'">繼續自學</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== plan-e：自學影音組合包（自費） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-e" data-payer="self" data-status="active" data-types="self">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-e')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-self">自費</span>
+            <span class="badge badge-ok">已買斷・不限期</span>
+          </div>
+          <h3>自學影音組合包</h3>
+          <p class="pm-expiry">買斷，不限期</p>
+          <div class="entitlement-chip-row"><span class="chip static">自學 3 門</span></div>
+        </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-e">
+
+        <div class="entitlement-block">
+          <h4>自學影音・3 門</h4>
+          <div class="self-course-row">
+            <div class="sc-body">
+              <h5>發音基礎 20 講</h5>
+              <p class="small muted" style="margin:0;">已完成 12／20 講・上次觀看 08/23</p>
+              <div class="progress"><div style="width:60%;"></div></div>
+            </div>
+          </div>
+          <div class="self-course-row">
+            <div class="sc-body">
+              <h5>商務書信寫作 8 講</h5>
+              <p class="small muted" style="margin:0;">尚未開始</p>
+              <div class="progress"><div style="width:0%;"></div></div>
+            </div>
+          </div>
+          <div class="self-course-row">
+            <div class="sc-body">
+              <h5>旅遊華語會話 12 講</h5>
+              <p class="small muted" style="margin:0;">尚未開始</p>
+              <div class="progress"><div style="width:0%;"></div></div>
+            </div>
+          </div>
+          <div class="section-title" style="margin:18px 0 10px;">規則摘要</div>
+          <ol style="margin:0;padding-left:18px;font-size:13px;">
+            <li>課程不限期，可不限次數重複觀看。</li>
+            <li>教材可下載留存，影片僅限線上觀看不可下載。</li>
+          </ol>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・自費</h4>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>發票 AB-12345512</h4><p>2026-07-28・<span data-money="6800">NT$6,800</span></p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12345512 已下載')">下載</button></div>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-primary" onclick="location.href='m08_self_paced.html?plan=plan-e'">繼續學習</button>
+          <button class="btn btn-outline" onclick="location.href='../公開網站/p02_courses.html'">加購其他自學課程</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== plan-adv：商務華語進階方案（自費） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-adv" data-payer="self" data-status="active" data-types="1on1,self">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-adv')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-self">自費</span>
+            <span class="badge badge-ok">生效中</span>
+          </div>
+          <h3>商務華語進階方案</h3>
+          <p class="pm-expiry">到期 2026-11-30</p>
+          <div class="entitlement-chip-row">
+            <span class="chip static">一對一 10 堂・剩 4</span>
+            <span class="chip static">自學 6 門</span>
+          </div>
+        </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-adv">
+
+        <div class="entitlement-block">
+          <h4>一對一課程・中文一對一・50 分<span class="badge badge-info">預約制</span></h4>
+          <p class="small muted" style="margin:0;">購買日 2026-03-01</p>
+          <div style="margin:12px 0 6px;" class="flex-between">
+            <span style="font-size:24px;font-weight:800;">4 <span style="font-size:12.5px;font-weight:400;color:var(--c-muted);">／ 10 堂剩餘</span></span>
+          </div>
+          <div class="progress"><div style="width:40%;"></div></div>
+          <div class="flex-between" style="margin-top:8px;">
+            <span class="small muted">效期至 2026-11-30</span>
+          </div>
+        </div>
+
+        <div class="entitlement-block">
+          <h4>自學影音・6 門</h4>
+          <div class="self-course-row"><div class="sc-body"><h5>職場面試會話 10 講</h5><p class="small muted" style="margin:0;">已完成 10／10 講・上次觀看 03/02</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>華語寫作進階 16 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>職場簡報技巧 12 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>正式書信寫作進階 6 講</h5><p class="small muted" style="margin:0;">已完成 6／6 講・上次觀看 12/05</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>商務談判會話 14 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>職場溝通與應對 8 講</h5><p class="small muted" style="margin:0;">已完成 3／8 講・上次觀看 03/19</p><div class="progress"><div style="width:37%;"></div></div></div></div>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・自費</h4>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>發票 AB-12345601</h4><p>2026-03-01・—</p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12345601 已下載')">下載</button></div>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="location.href='m03_schedule.html#request'">提出有空時間，請顧問排課</button>
+          <button class="btn btn-primary" onclick="location.href='m08_self_paced.html?plan=plan-adv'">繼續學習</button>
+          <button class="btn btn-accent" onclick="location.href='m06_renew.html'">續購</button>
+          <button class="btn btn-outline" onclick="openDocPreview('發票 AB-12345601','發票編號 AB-12345601・商務華語進階方案・購買日 2026-03-01')">查看發票</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== plan-culture：文化與聽力強化方案（自費，已到期） ===== -->
+    <div class="plan-card-outer" data-plan-id="plan-culture" data-payer="self" data-status="expired" data-types="self">
+      <button class="plan-summary" aria-expanded="false" onclick="togglePlanDetail('plan-culture')">
+        <div class="plan-summary-main">
+          <div class="plan-summary-badges">
+            <span class="badge badge-payer-self">自費</span>
+            <span class="badge badge-warn">已到期</span>
+          </div>
+          <h3>文化與聽力強化方案</h3>
+          <p class="pm-expiry">已到期 2026-06-30</p>
+          <div class="entitlement-chip-row"><span class="chip static">自學 14 門</span></div>
+        </div>
+        <svg class="plan-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="plan-detail" id="detail-plan-culture">
+
+        <div class="entitlement-block">
+          <h4>自學影音・14 門</h4>
+          <p class="small muted" style="margin:0 0 10px;">方案已到期，自學課程仍可觀看至效期後一段期間（觀看期限依設定）。</p>
+          <div class="self-course-row"><div class="sc-body"><h5>新聞聽力進階 14 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>成語與慣用語 12 講</h5><p class="small muted" style="margin:0;">已完成 5／12 講・上次觀看 05/12</p><div class="progress"><div style="width:42%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>中華文化與歷史 8 講</h5><p class="small muted" style="margin:0;">已完成 3／8 講・上次觀看 09/18</p><div class="progress"><div style="width:38%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>兩岸用語對照 6 講</h5><p class="small muted" style="margin:0;">已完成 6／6 講・上次觀看 06/05</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>華語繞口令與趣味口說 6 講</h5><p class="small muted" style="margin:0;">已完成 2／6 講・上次觀看 02/14</p><div class="progress"><div style="width:33%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>生活華語聽力入門 10 講</h5><p class="small muted" style="margin:0;">已完成 4／10 講・上次觀看 07/20</p><div class="progress"><div style="width:40%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>華語數字與時間 8 講</h5><p class="small muted" style="margin:0;">已完成 8／8 講・上次觀看 06/15</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>華語俚語與網路用語 10 講</h5><p class="small muted" style="margin:0;">已完成 3／10 講・上次觀看 01/10</p><div class="progress"><div style="width:30%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>新聞聽力入門 10 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>台灣節慶文化 8 講</h5><p class="small muted" style="margin:0;">已完成 2／8 講・上次觀看 07/22</p><div class="progress"><div style="width:25%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>發音進階聲調練習 12 講</h5><p class="small muted" style="margin:0;">已完成 12／12 講・上次觀看 04/09</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>生活情境對話 16 講</h5><p class="small muted" style="margin:0;">已完成 7／16 講・上次觀看 01/15</p><div class="progress"><div style="width:44%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>華語寫作基礎 6 講</h5><p class="small muted" style="margin:0;">尚未開始</p><div class="progress"><div style="width:0%;"></div></div></div></div>
+          <div class="self-course-row"><div class="sc-body"><h5>文化與藝術賞析 10 講</h5><p class="small muted" style="margin:0;">已完成 10／10 講・上次觀看 07/11</p><div class="progress"><div style="width:100%;"></div></div></div></div>
+          <div class="section-title" style="margin:18px 0 10px;">規則摘要</div>
+          <ol style="margin:0;padding-left:18px;font-size:13px;">
+            <li>方案已到期，不可再新增觀看；已完成進度予以保留。</li>
+            <li>自學課程觀看期限依設定，超過期限後將無法繼續觀看。</li>
+          </ol>
+        </div>
+
+        <div class="billing-block">
+          <h4>帳務・自費</h4>
+          <div class="list-row">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8h20"/></svg></div>
+            <div class="body"><h4>發票 AB-12344903</h4><p>2025-03-01・—</p></div>
+            <div class="trail"><button class="btn btn-outline btn-sm" onclick="showToast('發票 AB-12344903 已下載')">下載</button></div>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-primary" onclick="location.href='m08_self_paced.html?plan=plan-culture'">繼續學習</button>
+          <button class="btn btn-outline" onclick="openDocPreview('發票 AB-12344903','發票編號 AB-12344903・文化與聽力強化方案・購買日 2025-03-01')">查看發票</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="plan-list-empty hidden" id="planListEmpty">目前沒有符合條件的方案。</div>
+
+    </div>
+    </div>
+
+    <div class="tab-panel" id="m04panel-billing">
+      <div class="chip-row" id="billingPlanChips">
+        <button class="chip selected" onclick="setBillingFilter('all',this)">全部方案</button>
+        <button class="chip" onclick="setBillingFilter('plan-a',this)">中文一對一 20 堂課程包</button>
+        <button class="chip" onclick="setBillingFilter('plan-b',this)">B1 班</button>
+        <button class="chip" onclick="setBillingFilter('plan-e',this)">自學影音組合包</button>
+        <button class="chip" onclick="setBillingFilter('plan-adv',this)">商務華語進階方案</button>
+        <button class="chip" onclick="setBillingFilter('plan-culture',this)">文化與聽力強化方案</button>
+      </div>
+      <div class="chip-row" id="billingStatusChips">
+        <button class="chip selected" onclick="setBillingStatus('all',this)">全部狀態</button>
+        <button class="chip" onclick="setBillingStatus('unpaid',this)">待繳</button>
+        <button class="chip" onclick="setBillingStatus('paid',this)">已繳</button>
       </div>
       <div class="card table-wrap">
-        <table class="rec-table" id="table-self">
-          <thead><tr><th>講次</th><th>完成日</th><th>狀態</th></tr></thead>
-          <tbody>
-            <tr data-status="done"><td>第 12 講・聲調總複習</td><td>08/23</td><td><span class="badge badge-ok">已完成</span></td></tr>
-            <tr data-status="done"><td>第 11 講・輕聲與變調</td><td>08/20</td><td><span class="badge badge-ok">已完成</span></td></tr>
-            <tr data-status="done"><td>第 10 講・聲母練習</td><td>08/17</td><td><span class="badge badge-ok">已完成</span></td></tr>
-          </tbody>
+        <table class="rec-table" id="billingTable">
+          <thead><tr><th>方案</th><th>項目</th><th>日期</th><th>金額</th><th>狀態</th><th></th></tr></thead>
+          <tbody id="billingTableBody"></tbody>
         </table>
       </div>
-      <div class="card" style="margin-top:12px;">
-        <div class="flex-between">
-          <div>
-            <h4 style="margin:0 0 2px;font-size:13.5px;">教材</h4>
-            <p class="small muted" style="margin:0;">《漢語口語》《漢語聽力》電子書、章節講義下載</p>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="toggleDoc('readerPreview')">查看教材</button>
-        </div>
-        <div class="doc-detail" id="readerPreview">電子書閱讀器：支援橫式／直式切換、頁碼跳轉、章節導覽預覽。</div>
+      <div class="hidden" id="billingMoreWrap" style="text-align:center;margin-top:10px;">
+        <button class="btn btn-outline btn-sm" onclick="showMoreBilling()">載入更多（還有 <span id="billingMoreCount">0</span> 筆）</button>
       </div>
-
-      <div class="section-title">規則摘要</div>
-      <div class="card rules-card">
-        <ol>
-          <li>課程效期內可不限次數重複觀看。</li>
-          <li>教材可下載留存，影片僅限線上觀看不可下載。</li>
-          <li>效期到期後將無法繼續觀看，請於到期前使用完畢。</li>
-        </ol>
-      </div>
-
-      <div class="section-title">動作</div>
-      <div class="card action-row">
-        <button class="btn btn-primary" onclick="location.href='m08_self_paced.html'">繼續學習</button>
-      </div>
+      <p class="small muted" style="margin-top:14px;">公司與學校提供的方案不產生個人帳務。</p>
     </div>
   </div>
 
@@ -543,26 +880,204 @@ function toggleBell(){document.getElementById('bellPanel').classList.toggle('ope
 document.addEventListener('click',function(e){
   if(!e.target.closest('.bell-btn')&&!e.target.closest('.bell-panel'))document.getElementById('bellPanel').classList.remove('open');
 });
-// 方案型態頁籤（一對一課程包／團體直播班／自學課程）
-function setPlanTab(name,btn){
-  document.querySelectorAll('#planTypeTabs .tab-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn){ btn.classList.add('active'); }
-  else {
-    var target=document.querySelector('#planTypeTabs .tab-btn[data-plantab="'+name+'"]');
-    if(target) target.classList.add('active');
-  }
-  document.querySelectorAll('#viewDefault > .tab-panel').forEach(function(p){p.classList.remove('active');});
-  var panel=document.getElementById('plantab-'+name);
-  if(panel) panel.classList.add('active');
-  try{
-    var url=new URL(location.href);
-    url.searchParams.set('tab',name);
-    history.replaceState(null,'',url);
-  }catch(e){}
+/* ---------- 方案層篩選（全部／生效中／查看已到期方案／依付費方） ---------- */
+var PLAN_FILTER = {status:'active', payer:'all'};
+function setPlanFilter(status,payer,btn){
+  PLAN_FILTER = {status:status, payer:payer};
+  document.querySelectorAll('#planFilterChips .chip').forEach(function(c){c.classList.remove('selected');});
+  if(btn) btn.classList.add('selected');
+  applyPlanFilter();
 }
-function getInitialPlanTab(){
-  var t=new URLSearchParams(location.search).get('tab');
-  return (t==='1on1'||t==='group'||t==='self') ? t : '1on1';
+function applyPlanFilter(){
+  var cards=document.querySelectorAll('.plan-card-outer');
+  var anyVisible=false;
+  cards.forEach(function(card){
+    var st=card.getAttribute('data-status');
+    var payer=card.getAttribute('data-payer');
+    var show=true;
+    if(PLAN_FILTER.status==='active' && st!=='active') show=false;
+    if(PLAN_FILTER.status==='expired' && st!=='expired') show=false;
+    if(PLAN_FILTER.payer!=='all' && payer!==PLAN_FILTER.payer) show=false;
+    card.classList.toggle('hidden', !show);
+    if(show) anyVisible=true;
+  });
+  var empty=document.getElementById('planListEmpty');
+  if(empty) empty.classList.toggle('hidden', anyVisible);
+}
+/* ---------- 方案卡展開／收合（第二層：權益逐項展開） ---------- */
+function togglePlanDetail(planId){
+  var card=document.querySelector('.plan-card-outer[data-plan-id="'+planId+'"]');
+  if(!card) return;
+  var btn=card.querySelector('.plan-summary');
+  var detail=card.querySelector('.plan-detail');
+  var open=detail.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open?'true':'false');
+}
+// 直達某筆方案：確保不被篩選隱藏、展開、捲動到該卡片
+function expandPlan(planId){
+  var card=document.querySelector('.plan-card-outer[data-plan-id="'+planId+'"]');
+  if(!card) return;
+  document.querySelectorAll('#planFilterChips .chip').forEach(function(c,i){c.classList.toggle('selected', i===1);});
+  setPlanFilter('all','all',document.querySelectorAll('#planFilterChips .chip')[1]);
+  var btn=card.querySelector('.plan-summary');
+  var detail=card.querySelector('.plan-detail');
+  detail.classList.add('open');
+  btn.setAttribute('aria-expanded','true');
+  setTimeout(function(){ card.scrollIntoView({behavior:'smooth', block:'start'}); }, 30);
+}
+// 依權益型態（1on1／group／self）找出第一筆含該型態的方案（供舊版 ?tab= 連結相容）
+function getPlanIdForType(type){
+  var order=['plan-a','plan-b','plan-c','plan-d','plan-e','plan-adv','plan-culture'];
+  for(var i=0;i<order.length;i++){
+    var card=document.querySelector('.plan-card-outer[data-plan-id="'+order[i]+'"]');
+    if(!card) continue;
+    var types=(card.getAttribute('data-types')||'').split(',');
+    if(types.indexOf(type)>-1) return order[i];
+  }
+  return null;
+}
+function initPlanFromQuery(){
+  var params=new URLSearchParams(location.search);
+  var tab=params.get('tab');
+  if(tab==='billing'){
+    var billingBtn=document.querySelector('#m04TopTabs .tab-btn[data-m04tab="billing"]');
+    setM04Tab('billing', billingBtn);
+    return;
+  }
+  var planId=params.get('plan');
+  if(planId){ expandPlan(planId); return; }
+  if(tab==='1on1'||tab==='group'||tab==='self'){
+    var pid=getPlanIdForType(tab);
+    if(pid) expandPlan(pid);
+  }
+}
+/* ---------- 頂層分頁：我的方案／帳務總覽 ---------- */
+function setM04Tab(name,btn){
+  document.querySelectorAll('#m04TopTabs .tab-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  document.getElementById('m04panel-plans').classList.toggle('active', name==='plans');
+  document.getElementById('m04panel-billing').classList.toggle('active', name==='billing');
+  if(name==='billing'){ renderBillingList(); }
+}
+/* ---------- 帳務總覽：僅列自費方案（plan-a／plan-b／plan-e）的訂單、發票、分期尾款 ---------- */
+var BILLING_LIST=[
+  {plan:'plan-a', planLabel:'中文一對一 20 堂課程包', title:'ORD-2026-0210', date:'2026-02-10', item:'中文一對一 20 堂課程包', amountTWD:27000, status:'paid', detail:'發票 AB-12345678・2026-02-10'},
+  {plan:'plan-a', planLabel:'中文一對一 20 堂課程包', title:'分期尾款（第 2 期）', date:'到期 2026-08-31', item:'中文一對一 20 堂課程包（第 2 期）', amountTWD:3000, status:'unpaid', detail:'尚未付款，請於到期日前繳納'},
+  {plan:'plan-a', planLabel:'中文一對一 20 堂課程包', title:'分期尾款（第 3 期）', date:'到期 2026-09-30', item:'中文一對一 20 堂課程包（第 3 期）', amountTWD:3000, status:'unpaid', detail:'尚未付款，請於到期日前繳納'},
+  {plan:'plan-b', planLabel:'B1 班', title:'ORD-2026-0701', date:'2026-07-01', item:'彈性團體直播・中級會話 B1 班', amountTWD:14400, status:'paid', detail:'發票 AB-12345399・2026-07-01'},
+  {plan:'plan-e', planLabel:'自學影音組合包', title:'ORD-2026-0728', date:'2026-07-28', item:'自學影音組合包（發音基礎 20 講／商務書信寫作 8 講／旅遊華語會話 12 講）', amountTWD:6800, status:'paid', detail:'發票 AB-12345512・2026-07-28'},
+  {plan:'plan-adv', planLabel:'商務華語進階方案', title:'ORD-2026-0301', date:'2026-03-01', item:'商務華語進階方案（一對一 10 堂／自學影音 6 門）', amountTWD:null, status:'paid', detail:'發票 AB-12345601・2026-03-01'},
+  {plan:'plan-culture', planLabel:'文化與聽力強化方案', title:'ORD-2025-0301', date:'2025-03-01', item:'文化與聽力強化方案（自學影音 14 門）', amountTWD:null, status:'paid', detail:'發票 AB-12344903・2025-03-01'},
+  {plan:'other', planLabel:'其他歷史訂單', title:'ORD-2026-0210b', date:'2026-02-10', item:'教材加購包', amountTWD:1200, status:'paid', detail:'發票 AB-12345020・2026-02-10'},
+  {plan:'other', planLabel:'其他歷史訂單', title:'ORD-2025-1115', date:'2025-11-15', item:'中文一對一 25 分・20 堂方案（已結束）', amountTWD:15000, status:'paid', detail:'發票 AB-12344711・2025-11-15'},
+  {plan:'other', planLabel:'其他歷史訂單', title:'ORD-2025-0108', date:'2025-01-08', item:'入學分級測驗報名費', amountTWD:500, status:'paid', detail:'發票 AB-12343102・2025-01-08'}
+];
+var BILLING_PAGE_SIZE=10;
+var billingFilter={plan:'all', status:'all'};
+var billingShown=BILLING_PAGE_SIZE;
+function setBillingFilter(plan,btn){
+  billingFilter.plan=plan;
+  billingShown=BILLING_PAGE_SIZE;
+  document.querySelectorAll('#billingPlanChips .chip').forEach(function(c){c.classList.remove('selected');});
+  if(btn) btn.classList.add('selected');
+  renderBillingList();
+}
+function setBillingStatus(status,btn){
+  billingFilter.status=status;
+  billingShown=BILLING_PAGE_SIZE;
+  document.querySelectorAll('#billingStatusChips .chip').forEach(function(c){c.classList.remove('selected');});
+  if(btn) btn.classList.add('selected');
+  renderBillingList();
+}
+function filteredBilling(){
+  return BILLING_LIST.filter(function(b){
+    if(billingFilter.plan!=='all' && b.plan!==billingFilter.plan) return false;
+    if(billingFilter.status!=='all' && b.status!==billingFilter.status) return false;
+    return true;
+  });
+}
+function renderBillingList(){
+  var list=filteredBilling();
+  var body=document.getElementById('billingTableBody');
+  var moreWrap=document.getElementById('billingMoreWrap');
+  var shown=list.slice(0,billingShown);
+  body.innerHTML=shown.map(function(b){
+    var statusBadge = b.status==='unpaid' ? '<span class="badge badge-warn">待繳</span>' : '<span class="badge badge-ok">已繳</span>';
+    var actionCell = b.status==='unpaid' ?
+      '<button class="btn btn-outline btn-sm" onclick="location.href=\'m13_checkout.html?order=order-installment-01\'">前往繳費</button>' :
+      '<button class="btn btn-outline btn-sm" onclick="openDocPreview(\''+b.title+'\',\''+b.detail+'\')">查看</button>';
+    var amountCell = (b.amountTWD==null) ? '—' : ('<span data-money="'+b.amountTWD+'">'+tliFmt(b.amountTWD,'TWD')+'</span>');
+    return '<tr><td>'+b.planLabel+'</td><td>'+b.item+'</td><td>'+b.date+'</td><td>'+amountCell+'</td><td>'+statusBadge+'</td><td>'+actionCell+'</td></tr>';
+  }).join('');
+  var remain=list.length-shown.length;
+  if(remain>0){
+    moreWrap.classList.remove('hidden');
+    document.getElementById('billingMoreCount').textContent=remain;
+  }else{
+    moreWrap.classList.add('hidden');
+  }
+}
+function showMoreBilling(){ billingShown+=BILLING_PAGE_SIZE; renderBillingList(); }
+/* ---------- 進入教室入口：只有在開課前 15 分鐘～結束前的可進入時段才顯示按鈕（示範「現在時間」與 m01 首頁一致；lesson id 對應 m16_classroom.html 示範資料） ---------- */
+var TLI_NOW = new Date(2026,7,25,10,0,0);
+/* 現在時間與 m01／m03 一致（08/25 10:00）；a1on1 對齊 m03 的 c0 堂次（09:50–10:40，陳老師），
+   示範「開課中，可直接進入」；其餘兩堂維持未到時間，示範「開課前 15 分鐘開放進入」的原因文字。 */
+var ENTER_LESSONS = {
+  'a1on1':{lessonId:'l1', type:'1on1', start:new Date(2026,7,25,9,50,0), end:new Date(2026,7,25,10,40,0), label:'今天（08/25，二）09:50 陳老師'},
+  'bgroup':{lessonId:'l2', type:'group', start:new Date(2026,7,25,19,0,0), end:new Date(2026,7,25,20,0,0), label:'今天（08/25，二）19:00 林老師'},
+  'c1on1':{lessonId:'l5', type:'1on1', start:new Date(2026,7,26,10,0,0), end:new Date(2026,7,26,10,50,0), label:'明天（08/26，三）10:00 陳老師'}
+};
+function renderEnterRows(){
+  Object.keys(ENTER_LESSONS).forEach(function(key){
+    var el=document.getElementById('enterRow-'+key);
+    if(!el) return;
+    var l=ENTER_LESSONS[key];
+    var enterOk = (TLI_NOW >= new Date(l.start.getTime()-15*60000)) && (TLI_NOW <= l.end);
+    if(enterOk){
+      el.innerHTML='<button class="btn btn-primary btn-sm" onclick="location.href=\'m16_classroom.html?lesson='+l.lessonId+'&type='+l.type+'\'">進入線上教室</button>';
+    }else{
+      el.innerHTML='<span class="small muted">下一堂：'+l.label+'・開課前 15 分鐘開放進入</span>';
+    }
+  });
+}
+var GROUP_UPCOMING_LESSONS = [
+ {date:'08/25（二）19:00', leaveStatus:'open'},
+ {date:'08/27（四）19:00', leaveStatus:'expired'},
+ {date:'09/01（二）19:00', leaveStatus:'pending'},
+ {date:'09/03（四）19:00', leaveStatus:'approved'}
+];
+function renderGroupUpcoming(){
+  var body = document.getElementById('groupUpcomingBody-b');
+  if (!body) return;
+  body.innerHTML = GROUP_UPCOMING_LESSONS.map(function(l){
+    var statusCell, actionCell;
+    if (l.leaveStatus === 'open'){
+      statusCell = '<span class="badge badge-info">可請假</span>';
+      actionCell = '<button class="btn btn-outline btn-sm" onclick="location.href=\'m05_leave.html?class=flex-group\'">請假</button>';
+    }else if (l.leaveStatus === 'expired'){
+      statusCell = '<span class="badge badge-warn">已逾請假時限</span>';
+      actionCell = '<span class="small muted">本堂將記為缺席</span>';
+    }else if (l.leaveStatus === 'pending'){
+      statusCell = '<span class="badge badge-info">已請假・待核准</span>';
+      actionCell = '<span class="small muted">等候顧問／HR 核准</span>';
+    }else{
+      statusCell = '<span class="badge badge-ok">已核准</span>';
+      actionCell = '<a href="javascript:void(0)" onclick="showToast(\'回放連結（示範，核准後開放，依設定天數內可看）\')">回放依設定天數內可看</a>';
+    }
+    return '<tr><td>'+l.date+'</td><td>B1 班</td><td>'+statusCell+'</td><td>'+actionCell+'</td></tr>';
+  }).join('');
+}
+/* ---------- 團體直播班（plan-b）：補課入口（次數依設定，用完不顯示按鈕） ---------- */
+var GROUP_MAKEUP_AVAILABLE = true; // 示範值：本期尚有名額；若為 false 則顯示原因文字、不顯示按鈕
+function renderGroupMakeup(){
+  var el = document.getElementById('groupMakeupCard-b');
+  if (!el) return;
+  if (GROUP_MAKEUP_AVAILABLE){
+    el.innerHTML = '<p class="small muted" style="margin:0 0 10px;">補課限同級班，於課表挑選同級別班次的空位候補。</p>' +
+      '<button class="btn btn-outline btn-block" onclick="location.href=\'m03_schedule.html?class=flex-group&makeup=1\'">申請補課</button>';
+  }else{
+    el.innerHTML = '<p class="small muted" style="margin:0;">本期補課次數已用完（依設定上限），如有特殊需求請聯繫顧問協助評估。</p>';
+  }
 }
 // 使用紀錄表格篩選（chip）
 function filterUsage(tab,filter,btn){
@@ -574,13 +1089,12 @@ function filterUsage(tab,filter,btn){
     tr.style.display = show ? '' : 'none';
   });
 }
-// 退班：需二次確認（點退班開啟確認視窗，需再次點擊「確認申請退班」才會送出）
+// 退出班級：僅適用固定班表的團體直播班（plan-b），需二次確認
 var _withdrawMap = {
-  '1on1':{title:'確認退班：中文一對一 30 堂方案',body:'退班後剩餘堂數與效期即失效，退費將依合約規則計算，需 3–5 個工作天處理，此動作無法復原。'},
-  'group':{title:'確認退班：中級會話直播班',body:'退班後本期剩餘堂數與課表資格即失效，退費將依合約規則計算，需 3–5 個工作天處理，此動作無法復原。'}
+  'plan-b':{title:'確認退出 B1 班',body:'退出後本期剩餘堂數與課表資格即失效，退費將依合約規則計算，需 3–5 個工作天處理，此動作無法復原。'}
 };
-function openWithdrawModal(planType){
-  var info=_withdrawMap[planType]||{title:'確認退班',body:'退班後方案即失效，此動作無法復原。'};
+function openWithdrawModal(planId){
+  var info=_withdrawMap[planId]||{title:'確認退出班級',body:'退出後方案即失效，此動作無法復原。'};
   document.getElementById('wdTitle').textContent=info.title;
   document.getElementById('wdBody').textContent=info.body;
   document.getElementById('withdrawOverlay').classList.remove('hidden');
@@ -588,16 +1102,16 @@ function openWithdrawModal(planType){
 function closeWithdrawModal(){ document.getElementById('withdrawOverlay').classList.add('hidden'); }
 function confirmWithdraw(){
   closeWithdrawModal();
-  showToast('退班申請已送出，客服將於 1 個工作天內與您聯繫確認');
+  showToast('退出申請已送出，客服將於 1 個工作天內與您聯繫確認');
 }
-function toggleFeedback(){document.getElementById('fbForm').classList.toggle('open');}
+function toggleFeedback(formId){document.getElementById(formId).classList.toggle('open');}
 function pickStar(groupId,n){
   var btns=document.querySelectorAll('#'+groupId+' button');
   btns.forEach(function(b,i){b.classList.toggle('on',i<n);});
 }
-function submitFeedback(){
-  document.getElementById('fbForm').classList.remove('open');
-  var btn=document.getElementById('fbToggleBtn');
+function submitFeedback(formId,btnId){
+  document.getElementById(formId).classList.remove('open');
+  var btn=document.getElementById(btnId);
   // 已送出後不再顯示可點擊的按鈕，改為一行狀態文字
   var span=document.createElement('span');
   span.className='small muted';
@@ -628,7 +1142,10 @@ function handleDemoStateChange(sel){
 }
 var _m04State=getMemberState();
 renderMemberState(_m04State);
-if(_m04State==='default'){ setPlanTab(getInitialPlanTab(),null); }
+renderGroupUpcoming();
+renderGroupMakeup();
+renderEnterRows();
+if(_m04State==='default'){ applyPlanFilter(); initPlanFromQuery(); }
 </script>
 
 <div class="sheet-overlay hidden" id="docPreviewOverlay">
@@ -642,10 +1159,10 @@ if(_m04State==='default'){ setPlanTab(getInitialPlanTab(),null); }
 <div class="sheet-overlay hidden" id="withdrawOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h3 id="wdTitle">確認退班</h3>
+    <h3 id="wdTitle">確認退出 B1 班</h3>
     <p class="muted small" id="wdBody">－</p>
     <div class="stack" style="margin-top:14px;">
-      <button class="btn btn-danger-outline btn-block" onclick="confirmWithdraw()">確認申請退班</button>
+      <button class="btn btn-danger-outline btn-block" onclick="confirmWithdraw()">確認申請退出 B1 班</button>
       <button class="btn btn-outline btn-block" onclick="closeWithdrawModal()">先不要</button>
     </div>
   </div>

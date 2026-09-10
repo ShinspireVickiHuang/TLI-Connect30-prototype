@@ -90,6 +90,12 @@ border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
 .note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;
 border-radius:6px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.switch{position:relative;display:inline-block;width:38px;height:22px;vertical-align:middle;}
+.switch input{opacity:0;width:0;height:0;position:absolute;}
+.switch .slider{position:absolute;inset:0;background:var(--g200);border-radius:22px;cursor:pointer;transition:.15s;}
+.switch .slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+.switch input:checked+.slider{background:var(--teal);}
+.switch input:checked+.slider:before{transform:translateX(16px);}
 .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
 .kv span:first-child{color:var(--g500);}
 .matrix td,.matrix th{text-align:center;}
@@ -258,6 +264,8 @@ html,body{overflow-x:hidden;}
 <div class="kv"><span>稅別</span><span id="d_tax">—</span></div>
 <div class="kv"><span>教材冊別</span><span id="d_material">—</span></div>
 <div class="kv"><span>狀態</span><span id="d_status">—</span></div>
+<div class="kv"><span>對應等級</span><span><span id="d_level">—</span> <a href="a17_master_data.html#levelrules" style="font-size:11.5px;color:var(--navy);text-decoration:underline;margin-left:6px">管理選項 →</a></span></div>
+<div class="kv"><span>課程評量</span><span id="d_assess">—</span></div>
 </div>
 </div>
 
@@ -318,6 +326,15 @@ html,body{overflow-x:hidden;}
 <select id="ec_delivery"><option value="">請選擇</option><option value="預約制">預約制</option><option value="直播制">直播制</option><option value="隨選">隨選</option><option value="實體（舊網站）">實體（舊網站）</option></select>
 <div class="hint">上課方式決定學生端如何預約或入班；銷售方案會自動帶出組成課程的上課方式。</div>
 </div>
+<div class="grid2">
+<div class="formrow"><label>對應等級</label><input type="text" id="ec_level" placeholder="例：Lv.5（留白代表待定）"></div>
+<div class="formrow"><label>課程評量</label><select id="ec_hasAssessment" onchange="onEcAssessmentChange(this)"><option value="0">無</option><option value="1">有</option></select></div>
+</div>
+<div class="grid2" id="ec_assessmentFields" style="display:none">
+<div class="formrow"><label>必須完成才算完課</label><label class="switch"><input type="checkbox" id="ec_assessRequired"><span class="slider"></span></label></div>
+<div class="formrow"><label>評量型式</label><select id="ec_assessType"><option value="">請選擇</option><option value="線上小測">線上小測</option><option value="作業上傳">作業上傳</option></select></div>
+</div>
+<div class="formrow" id="ec_assessPassRow" style="display:none"><label>及格門檻</label><input type="text" id="ec_assessPass" placeholder="依設定"></div>
 <div class="formrow"><label>狀態</label><select id="ec_status"><option value="上架">上架</option><option value="下架">下架</option></select></div>
 <div style="text-align:right;margin-top:10px">
 <button class="btn ghost" onclick="closeEditCourseDrawer()">取消</button>
@@ -350,6 +367,30 @@ var SKUS = [
  {id:'sku12', name:'台語會話 10 堂', line:'方言', system:'台語班', unit:'堂', duration:'60 分鐘', cat:'學費', tax:'免稅', material:'', deliveryMode:'實體（舊網站）', status:'上架'},
  {id:'sku13', name:'活動費－結業茶會', line:'中文', system:'學期班', unit:'場', duration:'－', cat:'活動', tax:'應稅', material:'', deliveryMode:'實體（舊網站）', status:'下架'}
 ];
+/* ==== 對應等級與課程評量（20260910m 新增）：與「等級測驗」分開設計，見 a17「等級與升等規則」====
+   level：本課對應的產品系列等級（留白代表待定，不編造數字）
+   hasAssessment：本課是否有課程評量；assessRequired：是否必須完成才算完課；assessType：評量型式；assessPass：及格門檻（依設定） */
+SKUS.forEach(function(s){
+  if (s.level === undefined) s.level = '';
+  if (s.hasAssessment === undefined) s.hasAssessment = false;
+  if (s.assessRequired === undefined) s.assessRequired = false;
+  if (s.assessType === undefined) s.assessType = '';
+  if (s.assessPass === undefined) s.assessPass = '';
+});
+(function(){
+  var d1 = SKUS.find(function(s){return s.id==='sku02';});
+  if (d1){ d1.level='Lv.5'; d1.hasAssessment=true; d1.assessRequired=true; d1.assessType='線上小測'; }
+  var d2 = SKUS.find(function(s){return s.id==='skuC03';});
+  if (d2){ d2.level='Lv.1'; d2.hasAssessment=true; d2.assessRequired=false; d2.assessType='作業上傳'; }
+  var d3 = SKUS.find(function(s){return s.id==='sku01';});
+  if (d3){ d3.level='Lv.1'; }
+})();
+function assessDisplayHtml(s){
+  if (!s.hasAssessment) return '<span class="badge grey">無</span>';
+  var badge = s.assessRequired ? '<span class="badge orange">必要</span>' : '<span class="badge blue">選做</span>';
+  var detail = (s.assessType || '型式待定') + '，及格門檻' + (s.assessPass || '依設定');
+  return badge + ' <span class="small">'+detail+'</span>';
+}
 // PACKAGES：與「銷售方案設定」共用同一份清單，用於反查「被哪些銷售方案引用」
 var PACKAGES = [
  {id:'pk0', name:'中文一對一線上課 20 堂方案', items:['skuC01']},
@@ -382,6 +423,8 @@ document.getElementById('d_delivery').innerHTML = deliveryBadge(S.deliveryMode);
 document.getElementById('d_tax').innerHTML = S.tax === '免稅' ? '<span class="badge green">免稅</span>' : '<span class="badge orange">應稅</span>';
 document.getElementById('d_material').textContent = S.material || '－';
 document.getElementById('d_status').innerHTML = S.status === '上架' ? '<span class="badge green">上架</span>' : '<span class="badge grey">下架</span>';
+document.getElementById('d_level').textContent = S.level || '待定';
+document.getElementById('d_assess').innerHTML = assessDisplayHtml(S);
 
 var usedBy = PACKAGES.filter(function(p){ return p.items.indexOf(S.id) > -1; });
 if (usedBy.length){
@@ -426,6 +469,12 @@ function openEditCourseDrawer(focusFieldId){
   document.getElementById('ec_tax').value = S.tax;
   document.getElementById('ec_material').value = S.material || '';
   document.getElementById('ec_delivery').value = S.deliveryMode || '';
+  document.getElementById('ec_level').value = S.level || '';
+  document.getElementById('ec_hasAssessment').value = S.hasAssessment ? '1' : '0';
+  document.getElementById('ec_assessRequired').checked = !!S.assessRequired;
+  document.getElementById('ec_assessType').value = S.assessType || '';
+  document.getElementById('ec_assessPass').value = S.assessPass || '';
+  onEcAssessmentChange(document.getElementById('ec_hasAssessment'));
   document.getElementById('ec_status').value = S.status;
   document.getElementById('editCourseDrawerMask').classList.add('open');
   document.getElementById('editCourseDrawer').classList.add('open');
@@ -442,6 +491,11 @@ function onEcCatChange(el){
   var freeCats = ['學費','註冊費'];
   document.getElementById('ec_tax').value = freeCats.indexOf(el.value) > -1 ? '免稅' : '應稅';
 }
+function onEcAssessmentChange(el){
+  var has = el.value === '1';
+  document.getElementById('ec_assessmentFields').style.display = has ? '' : 'none';
+  document.getElementById('ec_assessPassRow').style.display = has ? '' : 'none';
+}
 function saveEditCourseDrawer(){
   var name = document.getElementById('ec_name').value.trim();
   if (!name){ toast('請輸入課程名稱'); return; }
@@ -455,6 +509,11 @@ function saveEditCourseDrawer(){
   var newTax = document.getElementById('ec_tax').value;
   var newMaterial = document.getElementById('ec_material').value;
   var newStatus = document.getElementById('ec_status').value;
+  var newLevel = document.getElementById('ec_level').value.trim();
+  var newHasAssessment = document.getElementById('ec_hasAssessment').value === '1';
+  var newAssessRequired = newHasAssessment ? document.getElementById('ec_assessRequired').checked : false;
+  var newAssessType = newHasAssessment ? document.getElementById('ec_assessType').value : '';
+  var newAssessPass = newHasAssessment ? document.getElementById('ec_assessPass').value.trim() : '';
 
   var changed = [];
   function diff(label, oldV, newV){ if (String(oldV||'') !== String(newV||'')) changed.push(label); }
@@ -468,6 +527,11 @@ function saveEditCourseDrawer(){
   diff('教材冊別', S.material, newMaterial);
   diff('上課方式', S.deliveryMode, delivery);
   diff('狀態', S.status, newStatus);
+  diff('對應等級', S.level, newLevel);
+  diff('課程評量', S.hasAssessment, newHasAssessment);
+  diff('必須完成才算完課', S.assessRequired, newAssessRequired);
+  diff('評量型式', S.assessType, newAssessType);
+  diff('及格門檻', S.assessPass, newAssessPass);
 
   S.name = name;
   S.nameEn = newNameEn;
@@ -479,6 +543,11 @@ function saveEditCourseDrawer(){
   S.material = newMaterial;
   S.deliveryMode = delivery;
   S.status = newStatus;
+  S.level = newLevel;
+  S.hasAssessment = newHasAssessment;
+  S.assessRequired = newAssessRequired;
+  S.assessType = newAssessType;
+  S.assessPass = newAssessPass;
 
   document.getElementById('d_name').textContent = S.name;
   document.getElementById('d_unit').textContent = S.unit;
@@ -488,6 +557,8 @@ function saveEditCourseDrawer(){
   document.getElementById('d_tax').innerHTML = S.tax === '免稅' ? '<span class="badge green">免稅</span>' : '<span class="badge orange">應稅</span>';
   document.getElementById('d_material').textContent = S.material || '－';
   document.getElementById('d_status').innerHTML = S.status === '上架' ? '<span class="badge green">上架</span>' : '<span class="badge grey">下架</span>';
+  document.getElementById('d_level').textContent = S.level || '待定';
+  document.getElementById('d_assess').innerHTML = assessDisplayHtml(S);
 
   closeEditCourseDrawer();
   var summary = changed.length ? ('更新：'+changed.join('、')) : '重新儲存課程屬性（內容未變更）';
