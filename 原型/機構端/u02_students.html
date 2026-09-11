@@ -80,10 +80,6 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 .fchip{padding:6px 14px;border-radius:14px;border:1px solid var(--g200);background:#fff;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--g900);}
 .fchip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
-opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-align:center;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .enthead{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
 .enthead .entname{font-size:17px;font-weight:700;}
 .enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
@@ -95,7 +91,17 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .charthead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .charthead .ctitle{font-size:13.5px;font-weight:600;}
 .charthead .cval{font-size:12.5px;color:var(--g500);}
-/* ---- 聊天室報名設定（20260910f 新增） ---- */
+/* ---- 系所→班級分組（可摺疊，比照企業端 h03 員工明細 reprow 的摺疊手感） ---- */
+.collegegroup{border:1px solid var(--g200);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.collegegroup-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:var(--g50);}
+.collegegroup-head:hover{background:#EEF1F5;}
+.collegegroup-head .cg-name{font-size:14px;font-weight:600;}
+.collegegroup-head .cg-count{font-size:12px;color:var(--g500);margin-left:6px;font-weight:400;}
+.collegegroup-chevron{transition:transform .15s;color:var(--g500);flex-shrink:0;}
+.collegegroup.open .collegegroup-chevron{transform:rotate(90deg);}
+.collegegroup-body{display:none;padding:10px 14px 14px;}
+.collegegroup.open .collegegroup-body{display:block;}
+/* ---- 聊天室報名設定 ---- */
 .modewrap{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
 .modewrap label{font-size:13.5px;display:flex;align-items:center;gap:6px;cursor:pointer;}
 .wl-toolrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap;}
@@ -106,7 +112,6 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .searchbox{position:relative;max-width:280px;flex:1;min-width:180px;}
 .searchbox input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;box-sizing:border-box;}
 .searchbox .sicon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--g500);}
-.emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -149,26 +154,24 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳。</div>
+<div class="note" style="margin-bottom:14px">授權費與人頭費依合約設定，實際請款與對帳由貴校與 TLI 另行處理。</div>
 
 <div class="card">
 <div class="pagehead">
-<div><h1>學生名單</h1><div class="desc">僅供查看在學學生的開通、權益到期狀況與聊天室出席情形，無法於此修改或收款。</div></div>
+<div><h1>學生名單</h1><div class="desc">依系所、班級查看在學學生的開通、權益到期狀況與聊天室出席情形，無法於此修改或收款。</div></div>
 </div>
 <div class="filterbar">
-<input type="text" id="stuSearch" placeholder="搜尋學生姓名" oninput="renderStudentList()">
-<select id="stuTerm" onchange="renderStudentList()"><option value="">全部學期</option></select>
+<input type="text" id="stuSearch" placeholder="搜尋學生姓名" oninput="onFilterChange()">
+<select id="fCollege" onchange="onCollegeFilterChange()"><option value="">全部系所</option></select>
+<select id="fClass" onchange="onFilterChange()"><option value="">全部班級</option></select>
+<select id="stuTerm" onchange="onFilterChange()"><option value="">全部學期</option></select>
 <button type="button" class="fchip active" data-status="" onclick="setStuStatusFilter(this,'')">全部狀態</button>
 <button type="button" class="fchip" data-status="在學" onclick="setStuStatusFilter(this,'在學')">在學</button>
 <button type="button" class="fchip" data-status="已到期" onclick="setStuStatusFilter(this,'已到期')">已到期</button>
 </div>
-<div class="tablewrap">
-<table>
-<thead><tr><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>出席次數</th><th>未出席（no-show）次數</th><th>資源完成率</th><th>狀態</th></tr></thead>
-<tbody id="studentTbody"></tbody>
-</table>
-</div>
+<div id="studentGroups"></div>
 <p class="emptylist hidden" id="stuEmpty">找不到符合條件的學生。</p>
+<p class="small" id="stuCountNote" style="margin:6px 0 0"></p>
 </div>
 
 <div class="card" id="reconcileCard">
@@ -177,10 +180,14 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="desc">資金流：學生繳學費給大學，大學再依本期確認人頭數支付 TLI 授權費與人頭費；金額由貴校與 TLI 另行對帳，此處僅供確認開通名單與人頭數，不涉及金流。</div></div>
 <span class="badge grey" id="reconcileStatusBadge">待確認</span>
 </div>
-<div class="small" style="margin-bottom:12px;">本期開通人頭數（基準）：<b id="reconcileBaseNum">－</b> 人．目前預估人頭數：<b id="reconcileLiveNum">－</b> 人<span class="small">（同 a19 匯出的本期開通名單，此處列出部分樣本供逐筆確認）</span></div>
+<div class="small" style="margin-bottom:12px;">本期開通人頭數（基準）：<b id="reconcileBaseNum">－</b> 人．目前預估人頭數：<b id="reconcileLiveNum">－</b> 人<span class="small">（同「期程與課表」頁匯出的本期開通名單，此處依系所／班級列出樣本供逐筆確認）</span></div>
+<div class="filterbar">
+<select id="fReconcileCollege" onchange="onReconcileCollegeChange()"><option value="">全部系所</option></select>
+<select id="fReconcileClass" onchange="renderReconcile()"><option value="">全部班級</option></select>
+</div>
 <div class="tablewrap">
 <table>
-<thead><tr><th>學生姓名</th><th>開通日</th><th>對帳狀態</th><th>異議原因</th><th>操作</th></tr></thead>
+<thead><tr><th>系所</th><th>班級</th><th>學生姓名</th><th>開通日</th><th>對帳狀態</th><th>異議原因</th><th>操作</th></tr></thead>
 <tbody id="reconcileTbody"></tbody>
 </table>
 </div>
@@ -202,65 +209,193 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <script>
 function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
 function addDays(baseStr, days){ var d=new Date(baseStr+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+
+/* ===== 系所／班級（讀取 u04「系所與班級管理」自助維護清單，同瀏覽器換頁後同步；
+   本頁下拉選單與分組讀取此清單，管理請至「期程與課表」頁的「系所與班級管理」分頁。） ===== */
+var LS_COLLEGE_KEY = 'tliDemoOrgColleges';
+var LS_CLASS_KEY = 'tliDemoOrgClasses';
+function defaultOrgColleges(){
+  return [
+    {id:'c0', name:'商學院', status:'啟用'},
+    {id:'c1', name:'工學院', status:'啟用'},
+    {id:'c2', name:'外語學院', status:'啟用'},
+    {id:'c3', name:'人文學院', status:'啟用'},
+    {id:'c4', name:'理學院', status:'啟用'}
+  ];
+}
+function defaultOrgClasses(){
+  return [
+    {id:'cl0', collegeId:'c0', name:'企業管理系二年級 A 班', count:38, status:'啟用'},
+    {id:'cl1', collegeId:'c0', name:'企業管理系二年級 B 班', count:35, status:'啟用'},
+    {id:'cl2', collegeId:'c1', name:'資訊工程系三年級', count:42, status:'啟用'},
+    {id:'cl3', collegeId:'c1', name:'機械工程系二年級', count:33, status:'啟用'},
+    {id:'cl4', collegeId:'c2', name:'應用外語系三年級', count:29, status:'啟用'},
+    {id:'cl5', collegeId:'c3', name:'歷史系二年級', count:26, status:'啟用'},
+    {id:'cl6', collegeId:'c3', name:'中國文學系三年級', count:24, status:'啟用'},
+    {id:'cl7', collegeId:'c4', name:'應用數學系二年級', count:31, status:'啟用'}
+  ];
+}
+function loadOrgColleges(){
+  try{ var raw = localStorage.getItem(LS_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgColleges();
+}
+function loadOrgClasses(){
+  try{ var raw = localStorage.getItem(LS_CLASS_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgClasses();
+}
+var ORG_COLLEGES = loadOrgColleges();
+var ORG_CLASSES = loadOrgClasses();
+function collegeById(id){ return ORG_COLLEGES.find(function(c){ return c.id===id; }); }
+function classById(id){ return ORG_CLASSES.find(function(c){ return c.id===id; }); }
+function classesOfCollege(collegeId){ return ORG_CLASSES.filter(function(c){ return c.collegeId===collegeId; }); }
+function activeColleges(){ return ORG_COLLEGES.filter(function(c){ return c.status==='啟用'; }); }
+
+/* ===== 學生示範資料：依班級輪流分派，確保每個系所／班級都有學生樣本 ===== */
 var NAMES = ['John Miller','Emily Tran','David Park','Rachel Kim','Michael Brown','Sophia Garcia','Kevin Lee','Laura Chen','Daniel Wright','Olivia Martinez','Brian Wu','Natalie Scott','Amanda Lopez','Chris Nguyen','Jason Kim','Grace Liu'];
 function makeStudent(i){
   var r1=seededRand(i*7+11), r2=seededRand(i*11+13), r3=seededRand(i*13+17), r4=seededRand(i*17+19);
   var name = NAMES[i % NAMES.length] + (i>=NAMES.length ? ' '+(Math.floor(i/NAMES.length)+1) : '');
+  var cls = ORG_CLASSES[i % ORG_CLASSES.length];
   var term = i % 2 === 0 ? '2026 秋季班' : '2026 春季班';
   var openDate = addDays('2026-08-15', Math.floor(r1*20));
   var expiry = addDays(openDate, 120);
   var status = r2 < 0.85 ? '在學' : '已到期';
   var chatCount = Math.floor(r3*8);
   var completion = Math.floor(30+r4*65);
-  /* 聊天室出席／未出席（no-show）次數：示範資料，兩者合計不超過報名次數 */
   var noshowCount = chatCount>0 ? Math.min(chatCount, Math.floor(seededRand(i*61+43)*3)) : 0;
   var attendCount = chatCount - noshowCount;
-  return {id:'stu'+i, name:name, term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, attendCount:attendCount, noshowCount:noshowCount, completion:completion};
+  return {id:'stu'+i, name:name, collegeId: cls ? cls.collegeId : '', classId: cls ? cls.id : '', term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, attendCount:attendCount, noshowCount:noshowCount, completion:completion};
 }
-var STUDENTS = []; for (var i=0;i<24;i++) STUDENTS.push(makeStudent(i));
+var STUDENT_COUNT = 90;
+var STUDENTS = []; for (var i=0;i<STUDENT_COUNT;i++) STUDENTS.push(makeStudent(i));
+
+/* ===== 篩選狀態 ===== */
 var stuStatusFilter = '';
+var openColleges = {};
+var groupShown = {};
+var GROUP_PAGE_SIZE = 8;
 function setStuStatusFilter(btn, v){
   stuStatusFilter = v;
   document.querySelectorAll('.filterbar .fchip').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  renderStudentList();
+  onFilterChange();
 }
-(function initStuTermOptions(){
+(function initFilterOptions(){
+  var csel = document.getElementById('fCollege');
+  activeColleges().forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.name; csel.appendChild(o); });
+  refreshClassOptions();
   var terms = [];
   STUDENTS.forEach(function(s){ if (terms.indexOf(s.term)===-1) terms.push(s.term); });
   document.getElementById('stuTerm').innerHTML = '<option value="">全部學期</option>' + terms.map(function(t){ return '<option>'+t+'</option>'; }).join('');
 })();
+function refreshClassOptions(){
+  var collegeId = document.getElementById('fCollege').value;
+  var sel = document.getElementById('fClass');
+  var list = collegeId ? classesOfCollege(collegeId) : ORG_CLASSES;
+  sel.innerHTML = '<option value="">全部班級</option>' + list.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
+}
+function onCollegeFilterChange(){
+  refreshClassOptions();
+  document.getElementById('fClass').value = '';
+  onFilterChange();
+}
+function onFilterChange(){
+  groupShown = {};
+  renderStudentList();
+}
+function toggleCollegeGroup(collegeId){
+  openColleges[collegeId] = !openColleges[collegeId];
+  renderStudentList();
+}
+function showMoreInCollege(collegeId){
+  groupShown[collegeId] = (groupShown[collegeId] || GROUP_PAGE_SIZE) + GROUP_PAGE_SIZE;
+  openColleges[collegeId] = true;
+  renderStudentList();
+}
 function renderStudentList(){
   var term = document.getElementById('stuSearch').value.trim().toLowerCase();
   var termFilter = document.getElementById('stuTerm').value;
-  var rows = STUDENTS.filter(function(s){
+  var collegeFilter = document.getElementById('fCollege').value;
+  var classFilter = document.getElementById('fClass').value;
+  var filtered = STUDENTS.filter(function(s){
     if (term && s.name.toLowerCase().indexOf(term)===-1) return false;
     if (termFilter && s.term!==termFilter) return false;
     if (stuStatusFilter && s.status!==stuStatusFilter) return false;
+    if (collegeFilter && s.collegeId!==collegeFilter) return false;
+    if (classFilter && s.classId!==classFilter) return false;
     return true;
   });
-  document.getElementById('studentTbody').innerHTML = rows.map(function(s){
-    var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
-    return '<tr><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.attendCount+' 次</td><td>'+(s.noshowCount>0?'<span class="badge orange">'+s.noshowCount+' 次</span>':'0 次')+'</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
-  }).join('');
-  document.getElementById('stuEmpty').classList.toggle('hidden', rows.length>0);
+  var hasActiveFilter = !!(term || termFilter || stuStatusFilter || collegeFilter || classFilter);
+  var html = '';
+  var totalShown = 0;
+  activeColleges().forEach(function(c){
+    var list = filtered.filter(function(s){ return s.collegeId===c.id; });
+    if (!list.length) return;
+    totalShown += list.length;
+    var isOpen = hasActiveFilter ? true : !!openColleges[c.id];
+    var shown = Math.min(list.length, groupShown[c.id] || GROUP_PAGE_SIZE);
+    var rows = list.slice(0, shown).map(function(s){
+      var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
+      var cls = classById(s.classId);
+      return '<tr><td>'+(cls?cls.name:'－')+'</td><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.attendCount+' 次</td><td>'+(s.noshowCount>0?'<span class="badge orange">'+s.noshowCount+' 次</span>':'0 次')+'</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
+    }).join('');
+    var moreRemain = list.length - shown;
+    html += '<div class="collegegroup'+(isOpen?' open':'')+'" data-college="'+c.id+'">'+
+      '<div class="collegegroup-head" onclick="toggleCollegeGroup(\''+c.id+'\')">'+
+      '<span class="cg-name">'+c.name+'<span class="cg-count">（'+list.length+' 人）</span></span>'+
+      '<span class="collegegroup-chevron"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span>'+
+      '</div>'+
+      '<div class="collegegroup-body"><div class="tablewrap"><table>'+
+      '<thead><tr><th>班級</th><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>出席次數</th><th>未出席（no-show）次數</th><th>資源完成率</th><th>狀態</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>'+
+      (moreRemain>0 ? '<div style="text-align:center;padding:10px 0"><button class="btn ghost" onclick="showMoreInCollege(\''+c.id+'\')">載入更多（還有 '+moreRemain+' 位）</button></div>' : '')+
+      '</div></div>';
+  });
+  document.getElementById('studentGroups').innerHTML = html;
+  document.getElementById('stuEmpty').classList.toggle('hidden', totalShown>0);
+  document.getElementById('stuCountNote').textContent = totalShown>0 ? ('共 '+totalShown+' 位學生（樣本；全校在學學生數以「概況」頁為準）') : '';
 }
 renderStudentList();
 
-/* ===== 人頭對帳：資金流為學生繳學費給大學、大學依本期確認人頭數支付 TLI 授權費與人頭費（20260909f 新增） =====
-   基準人頭數 186 對齊 u01 期程卡「開通」人頭數；本表列出部分開通名單樣本供學校逐筆確認／提出異議，
-   異議原因對齊管理後台 a19 顧問端既有的三類：退學／未開始使用／重複。 */
+/* ===== 人頭對帳：資金流為學生繳學費給大學、大學依本期確認人頭數支付 TLI 授權費與人頭費 =====
+   基準人頭數 186 對齊「概況」頁與「期程與課表」頁合約摘要；本表依系所／班級各取一筆開通名單樣本供學校逐筆確認／提出異議，
+   異議原因對齊管理後台既有的三類：退學／未開始使用／重複。 */
 var RECONCILE_BASE = 186;
-var RECONCILE_ROWS = STUDENTS.slice(0, 8).map(function(s){
-  return {name:s.name, openDate:s.openDate, status:'pending', reason:null};
+var RECONCILE_ROWS = ORG_CLASSES.map(function(cls, idx){
+  var s = STUDENTS.filter(function(st){ return st.classId===cls.id; })[0] || STUDENTS[idx % STUDENTS.length];
+  return {name:s.name, openDate:s.openDate, collegeId:cls.collegeId, classId:cls.id, status:'pending', reason:null};
 });
 var reconcileConfirmed = false;
 
 function disputedCount(){ return RECONCILE_ROWS.filter(function(r){ return r.status==='disputed'; }).length; }
 function liveHeadcount(){ return RECONCILE_BASE - disputedCount(); }
 
+(function initReconcileFilterOptions(){
+  var csel = document.getElementById('fReconcileCollege');
+  activeColleges().forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.name; csel.appendChild(o); });
+  refreshReconcileClassOptions();
+})();
+function refreshReconcileClassOptions(){
+  var collegeId = document.getElementById('fReconcileCollege').value;
+  var sel = document.getElementById('fReconcileClass');
+  var list = collegeId ? classesOfCollege(collegeId) : ORG_CLASSES;
+  sel.innerHTML = '<option value="">全部班級</option>' + list.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
+}
+function onReconcileCollegeChange(){
+  refreshReconcileClassOptions();
+  document.getElementById('fReconcileClass').value = '';
+  renderReconcile();
+}
 function renderReconcile(){
-  document.getElementById('reconcileTbody').innerHTML = RECONCILE_ROWS.map(function(r, i){
+  var collegeFilter = document.getElementById('fReconcileCollege').value;
+  var classFilter = document.getElementById('fReconcileClass').value;
+  var rows = RECONCILE_ROWS.filter(function(r){
+    if (collegeFilter && r.collegeId!==collegeFilter) return false;
+    if (classFilter && r.classId!==classFilter) return false;
+    return true;
+  });
+  document.getElementById('reconcileTbody').innerHTML = rows.map(function(r){
+    var idx = RECONCILE_ROWS.indexOf(r);
     var statusCell, reasonCell, actionCell;
     if(r.status === 'confirmed'){
       statusCell = '<span class="badge green">已確認</span>';
@@ -274,12 +409,13 @@ function renderReconcile(){
       statusCell = '<span class="badge grey">待確認</span>';
       reasonCell = '－';
       actionCell =
-        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+i+',\'confirm\')">確認</button>' +
-        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+i+',\'退學\')">異議：退學</button>' +
-        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+i+',\'未開始使用\')">異議：未開始使用</button>' +
-        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+i+',\'重複\')">異議：重複</button>';
+        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+idx+',\'confirm\')">確認</button>' +
+        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+idx+',\'退學\')">異議：退學</button>' +
+        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+idx+',\'未開始使用\')">異議：未開始使用</button>' +
+        '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+idx+',\'重複\')">異議：重複</button>';
     }
-    return '<tr><td>'+r.name+'</td><td>'+r.openDate+'</td><td>'+statusCell+'</td><td>'+reasonCell+'</td><td>'+actionCell+'</td></tr>';
+    var cls = classById(r.classId);
+    return '<tr><td>'+(collegeById(r.collegeId)?collegeById(r.collegeId).name:'－')+'</td><td>'+(cls?cls.name:'－')+'</td><td>'+r.name+'</td><td>'+r.openDate+'</td><td>'+statusCell+'</td><td>'+reasonCell+'</td><td>'+actionCell+'</td></tr>';
   }).join('');
   updateReconcileSummary();
 }
@@ -308,8 +444,8 @@ function confirmHeadcount(){
 }
 renderReconcile();
 
-/* ===== 聊天室報名設定（20260910f 新增）=====
-   本校合約是否含「團體聊天室」上課型態，實際應由 a19_b2b_enterprise.html 的合約參數決定；
+/* ===== 聊天室報名設定 =====
+   本校合約是否含「團體聊天室」上課型態，實際應由機構授權合約參數決定；
    此處以常數示範「已含」的情境，若合約未含則顯示提示文字取代設定區。
    資金流：學生付學費給學校，學校付授權費與人頭費給 TLI；聊天室報名設定不涉及金流，僅決定誰能報名。
    模式：open＝全員開放（預設，在學學生皆可自主報名，受名額上限管控）；whitelist＝白名單（僅白名單內學生可報名）。 */
@@ -342,7 +478,7 @@ function renderChatSettingCard(){
       '<button class="btn ghost" onclick="chatWlBatch(false)">全部取消</button>' +
       '</div></div>' +
       '<div class="wl-list" id="chatWlList">' +
-      (list.length ? list.map(function(s){
+      (list.length ? list.slice(0,40).map(function(s){
         var checked = chatWhitelist[s.id] ? 'checked' : '';
         return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatWlToggle(\''+s.id+'\',this.checked)"><span class="wl-name">'+s.name+'</span><span class="small">'+s.term+'</span></div>';
       }).join('') : '<div class="emptylist">找不到符合條件的學生。</div>') +

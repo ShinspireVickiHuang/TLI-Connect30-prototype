@@ -62,6 +62,7 @@ border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space
 .btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
 .card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
 .card h2{font-size:15px;margin:0 0 12px;}
+.card .cardesc{font-size:12px;color:var(--g500);margin:-6px 0 12px;line-height:1.6;}
 .tablewrap{overflow-x:auto;max-width:100%;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
@@ -81,14 +82,27 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .enthead .entname{font-size:17px;font-weight:700;}
 .enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
 .statgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 4px;}
-.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;position:relative;}
 .statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
 .statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
 .chartgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .charthead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .charthead .ctitle{font-size:13.5px;font-weight:600;}
 .charthead .cval{font-size:12.5px;color:var(--g500);}
-/* 期程卡：本期 3 個月期程的週次進度與帳務狀態（不顯示金額） */
+/* ---- 合約摘要卡（i 浮層說明，比照企業端 h01） ---- */
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv:last-child{border-bottom:none;}
+.kv span:first-child{color:var(--g500);flex-shrink:0;max-width:42%;}
+.kv span:last-child{flex:1;min-width:0;text-align:right;}
+@media(max-width:600px){.kv{flex-direction:column;gap:4px;} .kv span:first-child{max-width:none;} .kv span:last-child{text-align:left;}}
+.contractgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+.info-btn{position:absolute;top:8px;right:8px;background:none;border:none;padding:2px;cursor:pointer;color:var(--g500);line-height:0;}
+.info-btn svg{width:13px;height:13px;display:block;}
+.info-pop{display:none;position:absolute;top:26px;right:0;width:220px;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);padding:10px 12px;font-size:11.5px;color:var(--g900);
+line-height:1.6;z-index:35;text-align:left;font-weight:400;}
+.info-pop.open{display:block;}
+/* ---- 期程卡：本期 3 個月期程的週次進度與帳務狀態（不顯示金額） ---- */
 .period-card .pc-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:14px;}
 .period-card .pc-week{font-size:13.5px;font-weight:700;}
 .period-card .pc-dates{font-size:12px;color:var(--g500);margin-top:2px;}
@@ -109,6 +123,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .topbar{padding:0 16px;margin:-16px -16px 18px;}
 .statgrid4{grid-template-columns:1fr 1fr;}
 .chartgrid{grid-template-columns:1fr;}
+.contractgrid{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
@@ -141,18 +156,25 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳。</div>
+<div class="note" style="margin-bottom:14px">授權費與人頭費依合約設定，實際請款與對帳由貴校與 TLI 另行處理。</div>
 
 <div class="card">
 <div class="enthead">
 <div><div class="entname">範例州立大學</div><div class="entperiod">合作方案：在學期間資源方案（影片／音檔／測驗／聊天室）</div>
 <div class="entperiod" style="margin-top:6px;display:flex;gap:18px;flex-wrap:wrap;">
 <span>合作期間：2026-01-01 ～ 2026-12-31</span>
-<span>本學期區間：2026-09-01 ～ 2027-01-15</span>
+<span>本學期區間：2026-09-01 ～ 2026-12-20</span>
 </div>
 </div>
 </div>
 <div class="statgrid4" id="kpiGrid"></div>
+</div>
+
+<div class="card">
+<h2>合約摘要</h2>
+<div class="cardesc">合約層資訊由 TLI 依合約設定，如需調整請洽顧問；本卡僅呈現結構，不涉及實際請款金流。</div>
+<div class="kv"><span>合作起訖</span><span>2026-01-01 ～ 2026-12-31</span></div>
+<div class="contractgrid" id="contractGrid"></div>
 </div>
 
 <div class="card period-card">
@@ -170,6 +192,12 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="billing-box"><div class="bb-lbl">授權費狀態</div><div class="bb-val"><span class="badge blue">已開立</span></div></div>
 <div class="billing-box"><div class="bb-lbl">人頭費狀態</div><div class="bb-val"><span class="badge grey">待對帳</span></div></div>
 </div>
+</div>
+
+<div class="card">
+<h2>依系所分佈</h2>
+<div class="cardesc">本期各系所開通人數與出席率，可至「<a href="u02_students.html">學生名單</a>」查看個別學生明細。</div>
+<div class="tablewrap"><table id="collegeStatsTable"></table></div>
 </div>
 
 <div class="chartgrid">
@@ -205,9 +233,74 @@ document.getElementById('kpiGrid').innerHTML = [
   {num:'41%', lbl:'聊天室使用率（近 30 天）'}
 ].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
 
-/* 期程進度卡：第 N 週／共 12 週為示範標模擬，不代表實際合作期程長度
-   人頭數改為「開通 N／已確認 N」：與 u02 學生名單頁的人頭對帳基準數一致（示範畫面，資料為模擬數字） */
+/* 期程進度卡：第 N 週／共 12 週為示範標，不代表實際合作期程長度
+   人頭數以「開通 N／已確認 N」呈現：與 u02 學生名單頁的人頭對帳基準數一致 */
 document.getElementById('pcHeadcount').textContent = '開通 186／已確認 183';
+
+/* ===== 系所／班級（讀取 u04「系所與班級管理」自助維護清單，同瀏覽器換頁後同步；
+   本頁僅讀取，不提供編輯，編輯請至「期程與課表」頁的「系所與班級管理」分頁。） ===== */
+var LS_COLLEGE_KEY = 'tliDemoOrgColleges';
+function defaultOrgColleges(){
+  return [
+    {id:'c0', name:'商學院', status:'啟用'},
+    {id:'c1', name:'工學院', status:'啟用'},
+    {id:'c2', name:'外語學院', status:'啟用'},
+    {id:'c3', name:'人文學院', status:'啟用'},
+    {id:'c4', name:'理學院', status:'啟用'}
+  ];
+}
+function loadOrgColleges(){
+  try{ var raw = localStorage.getItem(LS_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgColleges();
+}
+var ORG_COLLEGES = loadOrgColleges();
+
+/* ===== 合約摘要：授權費／人頭費金額待合約議定，一律留白顯示「依合約設定」；
+   本期應開通人數為合約預估規劃值，已開通人數與對帳狀態對齊 u02 人頭對帳的基準數（示範資料） ===== */
+var CURRENT_SEMESTER_HEADCOUNT = 186;
+var EXPECTED_HEADCOUNT = 190;
+var ICON_INFO='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="9.2" x2="10" y2="14"/><circle cx="10" cy="6.3" r="1" fill="currentColor" stroke="none"/></svg>';
+function toggleInfo(ev,id){
+  ev.stopPropagation();
+  document.querySelectorAll('.info-pop.open').forEach(function(p){ if (p.id!==id) p.classList.remove('open'); });
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+document.addEventListener('click', function(){ document.querySelectorAll('.info-pop.open').forEach(function(p){ p.classList.remove('open'); }); });
+function infoBtnHtml(id, label, ruleText){
+  return '<button class="info-btn" onclick="toggleInfo(event,\''+id+'\')" aria-label="'+label+'說明">'+ICON_INFO+'</button>'+
+    '<div class="info-pop" id="'+id+'">'+ruleText+'</div>';
+}
+function contractBoxHtml(id, label, value, ruleText){
+  return '<div class="statbox">'+infoBtnHtml(id, label, ruleText)+'<div class="num" style="font-size:16px">'+value+'</div><div class="lbl">'+label+'</div></div>';
+}
+document.getElementById('contractGrid').innerHTML =
+  contractBoxHtml('info-license','授權費（每期）','依合約設定','由 TLI 依合作條件與貴校議定，實際金額不於本頁顯示，請洽顧問確認。') +
+  contractBoxHtml('info-headfee','人頭費（每位開通學生）','依合約設定','依本期實際開通人數計算，單價由 TLI 依合作條件議定。') +
+  contractBoxHtml('info-cycle','計費週期','3 個月／12 週','與本期期程週期一致，每期結束後依開通人頭數與貴校對帳。') +
+  contractBoxHtml('info-expected','本期應開通人數', EXPECTED_HEADCOUNT+' 人','依合約規劃之預估開通人數，供貴校規劃參考；實際以下方「已開通人數」為準。') +
+  contractBoxHtml('info-opened','已開通人數', CURRENT_SEMESTER_HEADCOUNT+' 人','實際已開通 TLI 帳號之學生人數，為人頭費計費基礎；可至「學生名單」頁查看人頭對帳明細。') +
+  contractBoxHtml('info-reconcile','對帳狀態','<span class="badge grey">待對帳</span>','需貴校至「學生名單」頁完成人頭對帳確認後，才能產生本期帳單；目前尚有異議待處理。');
+
+/* ===== 依系所分佈：各系所開通人數與出席率（依合約本期開通人頭數比例分配的示範資料） ===== */
+function makeCollegeStats(){
+  var colleges = ORG_COLLEGES.filter(function(c){ return c.status==='啟用'; });
+  var n = colleges.length;
+  if (!n) return [];
+  var weights = colleges.map(function(c,i){ return 0.6 + seededRand(i*31+7); });
+  var wsum = weights.reduce(function(a,b){ return a+b; }, 0);
+  var used = 0;
+  return colleges.map(function(c,i){
+    var cnt = (i===n-1) ? Math.max(0, CURRENT_SEMESTER_HEADCOUNT-used) : Math.round(CURRENT_SEMESTER_HEADCOUNT*weights[i]/wsum);
+    used += cnt;
+    var att = 80 + Math.floor(seededRand(i*53+19)*16);
+    return {name:c.name, count:cnt, attendance:att};
+  });
+}
+var COLLEGE_STATS = makeCollegeStats();
+document.getElementById('collegeStatsTable').innerHTML = '<tr><th>系所</th><th>開通人數</th><th>出席率</th></tr>' +
+  COLLEGE_STATS.map(function(s){ return '<tr><td>'+s.name+'</td><td>'+s.count+' 人</td><td>'+s.attendance+'%</td></tr>'; }).join('') +
+  '<tr><td><b>合計</b></td><td><b>'+COLLEGE_STATS.reduce(function(a,s){return a+s.count;},0)+' 人</b></td><td>－</td></tr>';
 
 function buildLineChart(values, opts){
   var w=opts.w||480, h=opts.h||150, pad=26;

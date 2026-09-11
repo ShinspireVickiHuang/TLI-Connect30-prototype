@@ -59,9 +59,12 @@ border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);z-index:50;}
 .pagehead .desc{font-size:12.5px;color:var(--g500);margin-top:5px;line-height:1.6;}
 .btn{display:inline-block;background:var(--navy);color:#fff;border:none;padding:8px 14px;
 border-radius:6px;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap;font-family:inherit;}
+.btn.orange{background:var(--orange);}
+.btn.teal{background:var(--teal);}
 .btn.ghost{background:#fff;border:1px solid var(--g200);color:var(--g900);}
 .card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);}
 .card h2{font-size:15px;margin:0 0 12px;}
+.card .cardesc{font-size:12px;color:var(--g500);margin:-6px 0 12px;line-height:1.6;}
 .tablewrap{overflow-x:auto;max-width:100%;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{text-align:left;background:var(--g50);color:var(--g500);font-weight:600;padding:10px 12px;
@@ -71,15 +74,14 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 .badge.blue{background:#E7EEF8;color:var(--navy);}
 .badge.green{background:#E4F5EE;color:var(--teal);}
 .badge.grey{background:var(--g200);color:var(--g500);}
+.badge.orange{background:#FCEBDC;color:var(--orange);}
 .note{font-size:12px;color:#7a5b1f;background:#FFF8EE;border:1px solid #F3DFB8;padding:9px 11px;border-radius:6px;}
 .small{font-size:12px;color:var(--g500);}
+.hint{font-size:11.5px;color:var(--g500);margin-top:3px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
 background:#101828;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;
 opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.enthead{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
-.enthead .entname{font-size:17px;font-weight:700;}
-.enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
 .statgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 4px;}
 .statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;}
 .statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
@@ -88,6 +90,39 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .wk-cell-title{font-weight:600;margin-bottom:2px;}
 .wk-cell-sub{color:var(--g500);font-size:12px;}
 .wk-current{background:#F7FAFF;}
+/* ---- 分頁籤（合約／期程與課表／系所與班級管理／場次紀錄） ---- */
+.tabbar{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabbar button{background:none;border:none;padding:10px 16px;font-size:13.5px;color:var(--g500);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tabbar button.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy);}
+.tabbar button:hover{color:var(--navy);}
+.selfnote{font-size:12px;color:var(--g500);background:var(--g50);border:1px solid var(--g200);padding:9px 11px;border-radius:6px;margin-bottom:14px;}
+/* ---- 合約唯讀 ---- */
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--g200);font-size:13px;}
+.kv:last-child{border-bottom:none;}
+.kv span:first-child{color:var(--g500);flex-shrink:0;max-width:42%;}
+.kv span:last-child{flex:1;min-width:0;text-align:right;}
+@media(max-width:600px){.kv{flex-direction:column;gap:4px;} .kv span:first-child{max-width:none;} .kv span:last-child{text-align:left;}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+.formrow{margin-bottom:0;}
+.formrow label{display:block;font-size:12.5px;color:var(--g500);margin-bottom:4px;}
+.formrow input{width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit;}
+.formrow input:disabled{background:var(--g50);color:var(--g500);}
+/* ---- 系所與班級管理（自助維護，比照企業端 h05 部門管理） ---- */
+.mgmttable input,.mgmttable select{width:100%;padding:6px 8px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;}
+.mgmttable td{white-space:normal;}
+.errtext{color:#C0392B;font-size:12px;margin-top:8px;}
+.sumtext{font-size:12px;color:var(--g500);margin-top:8px;}
+.loglist{font-size:12px;color:var(--g500);margin-top:12px;border-top:1px dashed var(--g200);padding-top:8px;}
+.loglist .logrow{padding:3px 0;}
+.actionrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+/* ---- 場次紀錄篩選與清單 ---- */
+.filterrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px;}
+.filterrow .ff{min-width:160px;flex:1;}
+.filterrow .ff label{display:block;font-size:11.5px;color:var(--g500);margin-bottom:4px;}
+.filterrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+.emptylist{padding:16px 4px;font-size:12.5px;color:var(--g500);text-align:center;}
+.hidden{display:none!important;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -97,6 +132,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .main{padding:16px 16px 40px;}
 .topbar{padding:0 16px;margin:-16px -16px 18px;}
 .statgrid4{grid-template-columns:1fr 1fr;}
+.grid2{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -130,12 +166,68 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳；實際期程長度與課表以合作合約為準。</div>
+<div class="note" style="margin-bottom:14px">授權費與人頭費依合約設定，實際請款與對帳由貴校與 TLI 另行處理；本頁「期程與課表」「場次紀錄」僅呈現使用狀況。</div>
+
+<div class="pagehead">
+<div><h1>期程與課表</h1><div class="desc">查看合約摘要、3 個月期程安排、自行維護系所與班級，並追蹤實際上課場次與出席。</div></div>
+</div>
+
+<div class="tabbar">
+<button id="tabBtn_contract" onclick="setActiveTab('contract')">合約</button>
+<button id="tabBtn_program" onclick="setActiveTab('program')">期程與課表</button>
+<button id="tabBtn_orgmgmt" onclick="setActiveTab('orgmgmt')">系所與班級管理</button>
+<button id="tabBtn_sessions" onclick="setActiveTab('sessions')">場次紀錄</button>
+</div>
+
+<!-- ===== 分頁一：合約（唯讀） ===== -->
+<div id="tabPanel_contract">
+<div class="selfnote">由 TLI 依合約設定，異動請洽顧問。</div>
+
+<div class="card">
+<h2>合作期間</h2>
+<div class="kv"><span>合作起訖</span><span id="ctPeriodTxt">－</span></div>
+<div class="kv"><span>本學期區間</span><span id="ctSemesterTxt">－</span></div>
+</div>
+
+<div class="card">
+<h2>計費模式</h2>
+<div class="cardesc">資金流：學生 → 大學（學費）→ TLI（授權費＋人頭費）；TLI Connect 不向學生收款。</div>
+<div class="grid2">
+<div class="formrow"><label>授權費（每期）</label><input type="text" value="依合約設定" disabled></div>
+<div class="formrow"><label>人頭費（每位開通學生）</label><input type="text" value="依合約設定" disabled></div>
+</div>
+<div class="kv" style="margin-top:10px"><span>計費週期</span><span>3 個月／12 週</span></div>
+<div class="hint">實際金額與請款由貴校與 TLI 業務窗口另行議定與對帳，本頁不顯示金額與請款動作。</div>
+</div>
+
+<div class="card">
+<h2>學期設定</h2>
+<div class="cardesc">目前學期起訖與狀態，供對照「本期開通人頭數」所屬學期。</div>
+<div class="tablewrap"><table id="ctSemesterTable"></table></div>
+</div>
+
+<div class="card">
+<h2>資源包</h2>
+<div class="cardesc">各資源項目每週使用上限，由 TLI 依合約拍板設定。</div>
+<div class="tablewrap"><table id="ctResourceTable"></table></div>
+</div>
+
+<div class="card">
+<h2>學生數與機構窗口</h2>
+<div class="kv"><span>學生數</span><span id="ctStudentCountTxt">－</span></div>
+<div class="hint">學生數為資源包容量規劃依據；實際計費以「本期開通人頭數」（見「概況」「學生名單」頁人頭對帳）為準，統一由貴校付款。</div>
+<div class="kv" style="margin-top:10px"><span>機構窗口</span><span>王小華 國際處專員</span></div>
+<div class="kv"><span>聯絡方式</span><span>contact@example-state-u.edu</span></div>
+</div>
+
+</div>
+
+<!-- ===== 分頁二：期程與課表（既有內容） ===== -->
+<div id="tabPanel_program" hidden>
 
 <div class="card">
 <div class="pagehead">
-<div><h1>期程與課表</h1><div class="desc">3 個月合作期程的每週安排：大學負責半導體技能課程、TLI 負責半導體相關中文課程、Connect 提供自學資源任務與團體聊天室場次。</div></div>
-<button class="btn" onclick="exportCsv()">匯出 CSV</button>
+<div><h1 style="font-size:16px;">本期期程</h1><div class="desc">3 個月合作期程的每週安排：大學負責半導體技能課程、TLI 負責半導體相關中文課程、Connect 提供自學資源任務與團體聊天室場次。</div></div>
 </div>
 <div class="statgrid4" id="programKpiGrid"></div>
 </div>
@@ -161,53 +253,420 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 
 </div>
+
+<!-- ===== 分頁三：系所與班級管理（自助維護） ===== -->
+<div id="tabPanel_orgmgmt" hidden>
+<div class="selfnote">此設定由貴校自行維護，TLI 後台僅檢視。</div>
+
+<div class="card">
+<h2>系所管理</h2>
+<div class="cardesc">系所下仍有啟用中的班級時無法停用，請先停用該系所下所有班級。</div>
+<div class="tablewrap"><table id="collegeMgmtTable" class="mgmttable"></table></div>
+<div id="collegeMsg"></div>
+<div class="actionrow">
+<button class="btn ghost" onclick="addCollege()">＋ 新增系所</button>
+<button class="btn" onclick="saveCollegeSettings()">儲存系所設定</button>
+</div>
+<div class="loglist" id="orgLogListCollege"></div>
+</div>
+
+<div class="card">
+<h2>班級管理</h2>
+<div class="cardesc">班級人數為目前在班學生數（含尚未開通 TLI 帳號者），停用前請先將學生轉班或畢業結案。</div>
+<div class="tablewrap"><table id="classMgmtTable" class="mgmttable"></table></div>
+<div id="classMsg"></div>
+<div class="actionrow">
+<button class="btn ghost" onclick="addClass()">＋ 新增班級</button>
+<button class="btn" onclick="saveClassSettings()">儲存班級設定</button>
+</div>
+<div class="loglist" id="orgLogListClass"></div>
+</div>
+
+</div>
+
+<!-- ===== 分頁四：場次紀錄 ===== -->
+<div id="tabPanel_sessions" hidden>
+<div class="card">
+<h2>實際上課場次紀錄</h2>
+<div class="cardesc">列出各班級實際發生的上課場次與出席狀況，供貴校追蹤課程執行情形；不涉及金流。</div>
+<div class="filterrow">
+<div class="ff"><label>期間</label><select id="fSessPeriod" onchange="onSessionFilterChange()">
+<option value="4">近 4 週</option><option value="8" selected>近 8 週</option><option value="12">近 12 週</option><option value="all">全部</option>
+</select></div>
+<div class="ff"><label>系所</label><select id="fSessCollege" onchange="onSessionCollegeChange()"><option value="">全部系所</option></select></div>
+<div class="ff"><label>班級</label><select id="fSessClass" onchange="onSessionFilterChange()"><option value="">全部班級</option></select></div>
+</div>
+<div class="tablewrap"><table>
+<thead><tr><th>日期</th><th>系所</th><th>班級</th><th>型態</th><th>出席人數／應到人數</th><th>老師</th></tr></thead>
+<tbody id="sessionRecordTbody"></tbody>
+</table></div>
+<p class="emptylist hidden" id="sessionEmpty">找不到符合條件的場次紀錄。</p>
+<p class="small" id="sessionCountNote" style="margin:10px 0 0"></p>
+<div class="hidden" id="sessionMoreWrap" style="text-align:center;margin-top:10px">
+<button class="btn ghost" onclick="showMoreSessions()">載入更多（還有 <span id="sessionMoreCount">0</span> 筆）</button>
+</div>
+</div>
+</div>
+
+</div>
 </div>
 
 <script>
-/* 12 週期程為示範標模擬，實際期程長度與內容以合作合約為準 */
+function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
+function addDays(baseStr, days){ var d=new Date(baseStr+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function fmtNum(n){ return n.toLocaleString('zh-Hant'); }
+function nowStr(){ var d=new Date(); return d.toISOString().slice(0,16).replace('T',' '); }
+var TODAY_STR = '2026-09-11';
+
+/* ===== 系所／班級（共用示範清單，比照企業端 h05 部門／廠區：可在本頁自助維護，
+   變更寫入 localStorage，同瀏覽器開啟 u01／u02／u03 時會讀到最新清單；
+   正式環境應改為讀寫後端機構組織主檔，而非瀏覽器端儲存。） ===== */
+var LS_COLLEGE_KEY = 'tliDemoOrgColleges';
+var LS_CLASS_KEY = 'tliDemoOrgClasses';
+var LS_ORGLOG_KEY = 'tliDemoInstOrgLog';
+function defaultOrgColleges(){
+  return [
+    {id:'c0', name:'商學院', status:'啟用'},
+    {id:'c1', name:'工學院', status:'啟用'},
+    {id:'c2', name:'外語學院', status:'啟用'},
+    {id:'c3', name:'人文學院', status:'啟用'},
+    {id:'c4', name:'理學院', status:'啟用'}
+  ];
+}
+function defaultOrgClasses(){
+  /* count＝班級在班人數（含尚未開通 TLI 帳號者），與「已開通 TLI 帳號人數」是不同基準，僅供班級管理容量參考 */
+  return [
+    {id:'cl0', collegeId:'c0', name:'企業管理系二年級 A 班', count:38, status:'啟用'},
+    {id:'cl1', collegeId:'c0', name:'企業管理系二年級 B 班', count:35, status:'啟用'},
+    {id:'cl2', collegeId:'c1', name:'資訊工程系三年級', count:42, status:'啟用'},
+    {id:'cl3', collegeId:'c1', name:'機械工程系二年級', count:33, status:'啟用'},
+    {id:'cl4', collegeId:'c2', name:'應用外語系三年級', count:29, status:'啟用'},
+    {id:'cl5', collegeId:'c3', name:'歷史系二年級', count:26, status:'啟用'},
+    {id:'cl6', collegeId:'c3', name:'中國文學系三年級', count:24, status:'啟用'},
+    {id:'cl7', collegeId:'c4', name:'應用數學系二年級', count:31, status:'啟用'}
+  ];
+}
+function loadOrgColleges(){
+  try{ var raw = localStorage.getItem(LS_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgColleges();
+}
+function loadOrgClasses(){
+  try{ var raw = localStorage.getItem(LS_CLASS_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgClasses();
+}
+function saveOrgColleges(){ try{ localStorage.setItem(LS_COLLEGE_KEY, JSON.stringify(ORG_COLLEGES)); }catch(err){} }
+function saveOrgClasses(){ try{ localStorage.setItem(LS_CLASS_KEY, JSON.stringify(ORG_CLASSES)); }catch(err){} }
+function loadOrgLog(){
+  try{ var raw = localStorage.getItem(LS_ORGLOG_KEY); if (raw){ var arr = JSON.parse(raw); if (arr) return arr; } }catch(err){}
+  return [
+    {time:'2026-09-08 10:15', who:'王小華（機構管理者）', what:'新增班級「應用數學系二年級」'},
+    {time:'2026-09-09 09:40', who:'王小華（機構管理者）', what:'將「機械工程系二年級」班級人數更新為 33 人'}
+  ];
+}
+function saveOrgLogState(){ try{ localStorage.setItem(LS_ORGLOG_KEY, JSON.stringify(ORG_LOG)); }catch(err){} }
+function pushOrgLog(what){
+  ORG_LOG.unshift({time: nowStr(), who:'王小華（機構管理者）', what: what});
+  if (ORG_LOG.length > 20) ORG_LOG.length = 20;
+  saveOrgLogState();
+  renderOrgLog();
+}
+function renderOrgLog(){
+  var html = ORG_LOG.slice(0,6).map(function(l){ return '<div class="logrow">'+l.time+'　'+l.who+'　'+l.what+'</div>'; }).join('');
+  ['orgLogListCollege','orgLogListClass'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.innerHTML = '<div class="hint" style="margin-bottom:4px">修改紀錄</div>'+html;
+  });
+}
+var ORG_COLLEGES = loadOrgColleges();
+var ORG_CLASSES = loadOrgClasses();
+var ORG_LOG = loadOrgLog();
+function collegeById(id){ return ORG_COLLEGES.find(function(c){ return c.id===id; }); }
+function collegeName(id){ var c = collegeById(id); return c ? c.name : '－'; }
+function classesOfCollege(collegeId){ return ORG_CLASSES.filter(function(c){ return c.collegeId===collegeId; }); }
+
+/* ===== 分頁一：合約（唯讀）====== */
+var CONTRACT_START = '2026-01-01', CONTRACT_END = '2026-12-31';
+var SEMESTER_START = '2026-09-01', SEMESTER_END = '2026-12-20';
+var CURRENT_SEMESTER_HEADCOUNT = 186; /* 本學期開通人頭數（基準），與 u01／u02 人頭對帳一致 */
+function makeContractSemesters(){
+  var y = 2026;
+  return [
+    {name:(y-1)+' 秋季班', start:(y-1)+'-09-01', end:(y-1)+'-12-20', state:'已結束'},
+    {name:y+' 春季班', start:y+'-02-01', end:y+'-06-15', state:'已結束'},
+    {name:y+' 秋季班', start:y+'-09-01', end:y+'-12-20', state:'進行中'}
+  ];
+}
+function renderContractTab(){
+  document.getElementById('ctPeriodTxt').textContent = CONTRACT_START+' ～ '+CONTRACT_END;
+  document.getElementById('ctSemesterTxt').textContent = SEMESTER_START+' ～ '+SEMESTER_END;
+  var sems = makeContractSemesters();
+  var t1 = document.getElementById('ctSemesterTable');
+  t1.innerHTML = '<tr><th>學期名稱</th><th>起訖日期</th><th>狀態</th></tr>' + sems.map(function(s){
+    var badge = s.state==='進行中' ? '<span class="badge blue">進行中</span>' : '<span class="badge grey">已結束</span>';
+    return '<tr><td>'+s.name+'</td><td>'+s.start+' ～ '+s.end+'</td><td>'+badge+'</td></tr>';
+  }).join('');
+  var resources = [
+    {label:'影片'}, {label:'音檔'}, {label:'測驗'}, {label:'聊天室'}
+  ];
+  var t2 = document.getElementById('ctResourceTable');
+  t2.innerHTML = '<tr><th>資源項目</th><th>每週上限</th></tr>' + resources.map(function(r){
+    return '<tr><td>'+r.label+'</td><td><input type="text" value="" placeholder="由 TLI 拍板" disabled style="width:140px"></td></tr>';
+  }).join('');
+  document.getElementById('ctStudentCountTxt').textContent = '620 人';
+}
+
+/* ===== 分頁二：期程與課表（既有內容，未變更邏輯） ===== */
 var TOTAL_WEEKS = 12;
 var CURRENT_WEEK = 2;
 var UNI_SKILLS = ['半導體製程概論','潔淨室安全與規範','製程設備操作導論','良率與品質管理','設備維護基礎','資料分析與紀錄','跨部門協作實務','產線問題排除','自動化設備概念','法規與職業安全','專案實作演練','成果發表與總結'];
 var TLI_TOPICS = ['產業詞彙導入','工作場域對話','安全指示用語','會議與報告用語','跨部門溝通句型','數據與圖表描述','客訴與問題說明','簡報表達練習','面談與求職中文','情境角色扮演','綜合口語演練','期末成果發表'];
-/* 聊天室主題與帶領老師資料來源：教師端 t02_schedule.html 的 CHAT_SESSIONS 常數（C1/C2），照抄以確保跨頁一致 */
 var CHAT_TOPICS = ['日常對話練習','時事話題討論'];
 var TEACHERS = ['林老師（TLI）'];
+function renderProgramTab(){
+  document.getElementById('programKpiGrid').innerHTML = [
+    {num:CURRENT_WEEK+' ／ '+TOTAL_WEEKS, lbl:'目前週次'},
+    {num:String(CURRENT_SEMESTER_HEADCOUNT), lbl:'本期人頭數'},
+    {num:'12', lbl:'本期聊天室場次數'},
+    {num:'41%', lbl:'聊天室使用率（近 30 天）'}
+  ].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
 
-function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
+  var weekRows = '';
+  for (var w=1; w<=TOTAL_WEEKS; w++){
+    var isCurrent = w===CURRENT_WEEK;
+    var chatCount = 1;
+    weekRows += '<tr class="wk-row'+(isCurrent?' wk-current':'')+'">'+
+      '<td><div class="wk-cell-title">第 '+w+' 週</div>'+(isCurrent?'<span class="badge blue">本週</span>':'')+'</td>'+
+      '<td><div class="wk-cell-title">'+UNI_SKILLS[w-1]+'</div><div class="wk-cell-sub">範例州立大學開課</div></td>'+
+      '<td><div class="wk-cell-title">'+TLI_TOPICS[w-1]+'</div><div class="wk-cell-sub">TLI 老師授課</div></td>'+
+      '<td><div class="wk-cell-title">影片＋音檔＋單元測驗</div><div class="wk-cell-sub">自學資源任務</div></td>'+
+      '<td>'+chatCount+' 場<div class="wk-cell-sub">團體聊天室</div></td>'+
+      '</tr>';
+  }
+  document.getElementById('weekTbody').innerHTML = weekRows;
 
-document.getElementById('programKpiGrid').innerHTML = [
-  {num:CURRENT_WEEK+' ／ '+TOTAL_WEEKS, lbl:'目前週次'},
-  {num:'186', lbl:'本期人頭數'},
-  {num:'12', lbl:'本期聊天室場次數'},
-  {num:'41%', lbl:'聊天室使用率（近 30 天）'}
-].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
-
-var weekRows = '';
-for(var w=1; w<=TOTAL_WEEKS; w++){
-  var isCurrent = w===CURRENT_WEEK;
-  var chatCount = 1;
-  weekRows += '<tr class="wk-row'+(isCurrent?' wk-current':'')+'">'+
-    '<td><div class="wk-cell-title">第 '+w+' 週</div>'+(isCurrent?'<span class="badge blue">本週</span>':'')+'</td>'+
-    '<td><div class="wk-cell-title">'+UNI_SKILLS[w-1]+'</div><div class="wk-cell-sub">範例州立大學開課</div></td>'+
-    '<td><div class="wk-cell-title">'+TLI_TOPICS[w-1]+'</div><div class="wk-cell-sub">TLI 老師授課</div></td>'+
-    '<td><div class="wk-cell-title">影片＋音檔＋單元測驗</div><div class="wk-cell-sub">自學資源任務</div></td>'+
-    '<td>'+chatCount+' 場<div class="wk-cell-sub">團體聊天室</div></td>'+
-    '</tr>';
+  var sessionRows = '';
+  for (var w2=1; w2<=TOTAL_WEEKS; w2++){
+    var r1 = seededRand(w2*3+1), r2 = seededRand(w2*5+2);
+    var registered = 3 + Math.floor(r1*10);
+    var teacher = TEACHERS[w2 % TEACHERS.length];
+    var topic = CHAT_TOPICS[w2 % CHAT_TOPICS.length];
+    var status = w2 < CURRENT_WEEK ? '<span class="badge green">已完成</span>' : (w2 === CURRENT_WEEK ? '<span class="badge blue">本週場次</span>' : '<span class="badge grey">未開放報名</span>');
+    sessionRows += '<tr><td>第 '+w2+' 週</td><td>'+topic+'</td><td>'+teacher+'</td><td>週'+(1+Math.floor(r2*4))+' 14:00</td><td>已報名 '+registered+' 人</td><td>'+status+'</td></tr>';
+  }
+  document.getElementById('sessionTbody').innerHTML = sessionRows;
 }
-document.getElementById('weekTbody').innerHTML = weekRows;
 
-var sessionRows = '';
-for(var w2=1; w2<=TOTAL_WEEKS; w2++){
-  var r1 = seededRand(w2*3+1), r2 = seededRand(w2*5+2);
-  var registered = 3 + Math.floor(r1*10);
-  var teacher = TEACHERS[w2 % TEACHERS.length];
-  var topic = CHAT_TOPICS[w2 % CHAT_TOPICS.length];
-  var status = w2 < CURRENT_WEEK ? '<span class="badge green">已完成</span>' : (w2 === CURRENT_WEEK ? '<span class="badge blue">本週場次</span>' : '<span class="badge grey">未開放報名</span>');
-  sessionRows += '<tr><td>第 '+w2+' 週</td><td>'+topic+'</td><td>'+teacher+'</td><td>週'+(1+Math.floor(r2*4))+' 14:00</td><td>已報名 '+registered+' 人</td><td>'+status+'</td></tr>';
+/* ===== 分頁三：系所與班級管理 ===== */
+function showOrgMsg(elId, text, kind){
+  var el = document.getElementById(elId);
+  el.innerHTML = '<div class="'+(kind==='err'?'errtext':'sumtext')+'">'+text+'</div>';
 }
-document.getElementById('sessionTbody').innerHTML = sessionRows;
+function renderCollegeTable(){
+  var t = document.getElementById('collegeMgmtTable');
+  t.innerHTML = '<tr><th>系所名稱</th><th>班級數</th><th>狀態</th><th></th></tr>' +
+    ORG_COLLEGES.map(function(c){
+      var clsCount = classesOfCollege(c.id).length;
+      var actionBtn = '<button class="btn ghost" onclick="toggleCollegeStatus(\''+c.id+'\')">'+(c.status==='啟用'?'停用':'啟用')+'</button>';
+      return '<tr><td><input type="text" value="'+c.name+'" onchange="onCollegeNameChange(\''+c.id+'\',this.value)"></td>'+
+        '<td>'+clsCount+'</td>'+
+        '<td>'+(c.status==='啟用' ? '<span class="badge green">啟用</span>' : '<span class="badge grey">停用</span>')+'</td>'+
+        '<td>'+actionBtn+'</td></tr>';
+    }).join('');
+  document.getElementById('collegeMsg').innerHTML = '';
+  renderOrgLog();
+}
+function onCollegeNameChange(id, val){
+  var c = collegeById(id);
+  var name = val.trim();
+  if (!c || !name){ renderCollegeTable(); return; }
+  c.name = name;
+}
+function toggleCollegeStatus(id){
+  var c = collegeById(id);
+  if (!c) return;
+  if (c.status==='啟用'){
+    var activeCls = classesOfCollege(id).filter(function(x){ return x.status==='啟用'; });
+    if (activeCls.length>0){
+      showOrgMsg('collegeMsg', '「'+c.name+'」目前仍有 '+activeCls.length+' 個啟用中的班級，請先停用該系所下所有班級後才能停用系所。', 'err');
+      return;
+    }
+    c.status = '停用';
+  } else {
+    c.status = '啟用';
+  }
+  renderCollegeTable();
+  renderClassTable();
+}
+function addCollege(){
+  var idx = ORG_COLLEGES.length;
+  ORG_COLLEGES.push({id:'cnew'+Date.now(), name:'新系所'+(idx+1), status:'啟用'});
+  renderCollegeTable();
+}
+function saveCollegeSettings(){
+  saveOrgColleges();
+  pushOrgLog('更新系所設定');
+  toast('已儲存系所設定');
+}
+
+function classCollegeSelectHtml(cls){
+  return '<select onchange="onClassCollegeChange(\''+cls.id+'\',this.value)">' + ORG_COLLEGES.map(function(c){
+    return '<option value="'+c.id+'"'+(cls.collegeId===c.id?' selected':'')+'>'+c.name+'</option>';
+  }).join('') + '</select>';
+}
+function renderClassTable(){
+  var t = document.getElementById('classMgmtTable');
+  t.innerHTML = '<tr><th>班級名稱</th><th>所屬系所</th><th>班級人數</th><th>狀態</th><th></th></tr>' +
+    ORG_CLASSES.map(function(c){
+      var actionBtn = '<button class="btn ghost" onclick="toggleClassStatus(\''+c.id+'\')">'+(c.status==='啟用'?'停用':'啟用')+'</button>';
+      return '<tr><td><input type="text" value="'+c.name+'" onchange="onClassNameChange(\''+c.id+'\',this.value)"></td>'+
+        '<td>'+classCollegeSelectHtml(c)+'</td>'+
+        '<td><input type="number" min="0" value="'+c.count+'" oninput="onClassCountInput(\''+c.id+'\',this.value)"></td>'+
+        '<td>'+(c.status==='啟用' ? '<span class="badge green">啟用</span>' : '<span class="badge grey">停用</span>')+'</td>'+
+        '<td>'+actionBtn+'</td></tr>';
+    }).join('');
+  document.getElementById('classMsg').innerHTML = '';
+  renderOrgLog();
+}
+function classById(id){ return ORG_CLASSES.find(function(c){ return c.id===id; }); }
+function onClassNameChange(id, val){
+  var c = classById(id);
+  var name = val.trim();
+  if (!c || !name){ renderClassTable(); return; }
+  c.name = name;
+}
+function onClassCollegeChange(id, collegeId){
+  var c = classById(id);
+  if (!c) return;
+  c.collegeId = collegeId;
+  renderCollegeTable();
+}
+function onClassCountInput(id, val){
+  var c = classById(id);
+  if (!c) return;
+  c.count = Number(val)||0;
+}
+function toggleClassStatus(id){
+  var c = classById(id);
+  if (!c) return;
+  if (c.status==='啟用'){
+    if (c.count>0){
+      showOrgMsg('classMsg', '「'+c.name+'」目前仍有 '+c.count+' 位學生，請先將學生轉班或畢業結案後才能停用。', 'err');
+      return;
+    }
+    c.status = '停用';
+  } else {
+    c.status = '啟用';
+  }
+  renderClassTable();
+}
+function addClass(){
+  var idx = ORG_CLASSES.length;
+  var defCollege = ORG_COLLEGES[0] ? ORG_COLLEGES[0].id : '';
+  ORG_CLASSES.push({id:'clnew'+Date.now(), collegeId:defCollege, name:'新班級'+(idx+1), count:0, status:'啟用'});
+  renderClassTable();
+  renderCollegeTable();
+}
+function saveClassSettings(){
+  saveOrgClasses();
+  pushOrgLog('更新班級設定');
+  toast('已儲存班級設定');
+}
+
+/* ===== 分頁四：場次紀錄 ===== */
+var SESSION_TYPES = ['TLI 中文課','團體聊天室','大學技能課'];
+var SESSION_TEACHERS = ['林老師（TLI）','陳老師（TLI）','王老師（TLI）','學校授課教師'];
+function makeSessionRecords(){
+  var list = [];
+  var today = new Date(TODAY_STR+'T00:00:00');
+  for (var w=0; w<10; w++){
+    var weekStart = new Date(today); weekStart.setDate(today.getDate() - w*7);
+    ORG_CLASSES.forEach(function(cls, ci){
+      var r1 = seededRand(w*97+ci*13+3);
+      if (r1 < 0.15) return; /* 該班該週無場次 */
+      var type = SESSION_TYPES[(w+ci) % SESSION_TYPES.length];
+      var teacher = SESSION_TEACHERS[(w+ci*3) % SESSION_TEACHERS.length];
+      var total = 20 + Math.floor(seededRand(w*31+ci*7+11)*20);
+      var attend = Math.max(1, total - Math.floor(seededRand(w*41+ci*11+17)*6));
+      var d = new Date(weekStart); d.setDate(d.getDate() - (ci % 5));
+      list.push({date: d.toISOString().slice(0,10), collegeId: cls.collegeId, classId: cls.id, type: type, teacher: teacher, attend: attend, total: total});
+    });
+  }
+  list.sort(function(a,b){ return b.date.localeCompare(a.date); });
+  return list;
+}
+var SESSION_RECORDS = makeSessionRecords();
+var SESSION_PAGE_SIZE = 10, sessionShown = SESSION_PAGE_SIZE;
+(function initSessionFilterOptions(){
+  var sel = document.getElementById('fSessCollege');
+  ORG_COLLEGES.forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.name; sel.appendChild(o); });
+})();
+function refreshSessionClassOptions(){
+  var collegeId = document.getElementById('fSessCollege').value;
+  var sel = document.getElementById('fSessClass');
+  var list = collegeId ? classesOfCollege(collegeId) : ORG_CLASSES;
+  sel.innerHTML = '<option value="">全部班級</option>' + list.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
+}
+function onSessionCollegeChange(){ refreshSessionClassOptions(); onSessionFilterChange(); }
+function onSessionFilterChange(){ sessionShown = SESSION_PAGE_SIZE; renderSessionRecords(); }
+function showMoreSessions(){ sessionShown += SESSION_PAGE_SIZE; renderSessionRecords(); }
+function renderSessionRecords(){
+  var periodVal = document.getElementById('fSessPeriod').value;
+  var collegeId = document.getElementById('fSessCollege').value;
+  var classId = document.getElementById('fSessClass').value;
+  var today = new Date(TODAY_STR+'T00:00:00');
+  var full = SESSION_RECORDS.filter(function(r){
+    if (collegeId && r.collegeId!==collegeId) return false;
+    if (classId && r.classId!==classId) return false;
+    if (periodVal!=='all'){
+      var d = new Date(r.date+'T00:00:00');
+      var diffWeeks = Math.floor((today-d)/(7*24*3600*1000));
+      if (diffWeeks >= Number(periodVal)) return false;
+    }
+    return true;
+  });
+  var emptyEl = document.getElementById('sessionEmpty');
+  var moreWrap = document.getElementById('sessionMoreWrap');
+  var tbody = document.getElementById('sessionRecordTbody');
+  if (!full.length){
+    tbody.innerHTML='';
+    emptyEl.classList.remove('hidden');
+    moreWrap.classList.add('hidden');
+    document.getElementById('sessionCountNote').textContent = '共 0 筆場次紀錄';
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  var list = full.slice(0, sessionShown);
+  tbody.innerHTML = list.map(function(r){
+    return '<tr><td>'+r.date+'</td><td>'+collegeName(r.collegeId)+'</td><td>'+(classById(r.classId)?classById(r.classId).name:'－')+'</td>'+
+      '<td>'+r.type+'</td><td>'+r.attend+' ／ '+r.total+'</td><td>'+r.teacher+'</td></tr>';
+  }).join('');
+  var remain = full.length - list.length;
+  if (remain>0){ moreWrap.classList.remove('hidden'); document.getElementById('sessionMoreCount').textContent = remain; }
+  else { moreWrap.classList.add('hidden'); }
+  document.getElementById('sessionCountNote').textContent = '共 '+full.length+' 筆場次紀錄';
+}
 
 function exportCsv(){ toast('已產生期程與課表 CSV（不會實際下載檔案）'); }
+
+/* ===== 分頁切換 ===== */
+var PROGRAM_TABS = ['contract','program','orgmgmt','sessions'];
+function setActiveTab(tab){
+  PROGRAM_TABS.forEach(function(t){
+    document.getElementById('tabBtn_'+t).classList.toggle('active', t===tab);
+    document.getElementById('tabPanel_'+t).hidden = (t!==tab);
+  });
+  if (tab==='contract') renderContractTab();
+  if (tab==='program') renderProgramTab();
+  if (tab==='orgmgmt'){ renderCollegeTable(); renderClassTable(); }
+  if (tab==='sessions'){ refreshSessionClassOptions(); renderSessionRecords(); }
+}
+function initTabFromHash(){
+  if (location.hash === '#orgmgmt') setActiveTab('orgmgmt');
+  else if (location.hash === '#sessions') setActiveTab('sessions');
+  else if (location.hash === '#contract') setActiveTab('contract');
+  else setActiveTab('program');
+}
+window.addEventListener('hashchange', initTabFromHash);
+initTabFromHash();
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }

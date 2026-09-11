@@ -103,7 +103,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <div class="wrap">
 <div class="topmark"><img src="../assets/tli-logo.svg" alt="TLI"><span>企業帳號開通</span></div>
-<div class="note">此頁情境：TLI 顧問於後台完成企業開通後，系統寄出開通信，HR 點擊信中連結進入本頁完成帳號啟用。</div>
+<div class="note" id="scenarioNote">歡迎使用 TLI Connect！請完成以下步驟啟用貴公司的企業帳號。</div>
 
 <div id="validScenario">
 <div class="steps" id="stepsBar"></div>
@@ -166,6 +166,13 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 
 <script>
+var isInternal = new URLSearchParams(location.search).get('internal')==='1';
+if(isInternal){
+  document.addEventListener('DOMContentLoaded', function(){
+    var el=document.getElementById('scenarioNote');
+    if(el) el.textContent='此頁情境：TLI 顧問於後台完成企業開通後，系統寄出開通信，HR 點擊信中連結進入本頁完成帳號啟用。';
+  });
+}
 /* ===== 情境切換：連結有效／已失效 ===== */
 function setScenario(kind){
   document.getElementById('scenBtnValid').classList.toggle('active', kind==='valid');

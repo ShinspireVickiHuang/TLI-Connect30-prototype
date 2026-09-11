@@ -89,6 +89,12 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .charthead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .charthead .ctitle{font-size:13.5px;font-weight:600;}
 .charthead .cval{font-size:12.5px;color:var(--g500);}
+/* ---- 系所／班級篩選 ---- */
+.filterrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;}
+.filterrow .ff{min-width:160px;flex:1;}
+.filterrow .ff label{display:block;font-size:11.5px;color:var(--g500);margin-bottom:4px;}
+.filterrow select{width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+.periodnote{font-size:12px;color:var(--g500);margin-top:8px;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -133,13 +139,18 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳。</div>
+<div class="note" style="margin-bottom:14px">授權費與人頭費依合約設定，實際請款與對帳由貴校與 TLI 另行處理。</div>
 
 <div class="card">
 <div class="pagehead">
-<div><h1>使用報表</h1><div class="desc">依資源類型統計近 30 天使用量，可匯出 CSV 供學校內部彙整。</div></div>
+<div><h1>使用報表</h1><div class="desc">依系所、班級與資源類型統計近 30 天使用量，可匯出 CSV 供學校內部彙整。</div></div>
 <button class="btn" onclick="exportCsv()">匯出 CSV</button>
 </div>
+<div class="filterrow">
+<div class="ff"><label>系所</label><select id="fCollege" onchange="onCollegeFilterChange()"><option value="">全部系所</option></select></div>
+<div class="ff"><label>班級</label><select id="fClass" onchange="onFilterChange()"><option value="">全部班級</option></select></div>
+</div>
+<div class="periodnote" id="filterNote"></div>
 <div class="statgrid6" id="usageKpiGrid"></div>
 </div>
 
@@ -157,23 +168,105 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 
 <script>
-var USAGE_ROWS = [
-  {type:'自學影片', users:132, total:'2,480 分鐘', avg:'18.8 分鐘／人', attend:'－', noshow:'－', late:'－'},
-  {type:'自學音檔', users:98, total:'1,140 分鐘', avg:'11.6 分鐘／人', attend:'－', noshow:'－', late:'－'},
-  {type:'自我測驗', users:110, total:'356 次', avg:'3.2 次／人', attend:'－', noshow:'－', late:'－'},
-  {type:'團體聊天室', users:76, total:'142 場次', avg:'1.9 場／人', attend:'87%', noshow:'13%', late:'－'}
-];
-document.getElementById('usageKpiGrid').innerHTML = [
-  {num:'124', lbl:'本學期已開通'},
-  {num:'132', lbl:'近 30 天曾使用影片'},
-  {num:'76', lbl:'近 30 天曾用聊天室'},
-  {num:'68%', lbl:'整體資源使用率'},
-  {num:'87%', lbl:'聊天室出席率（近 30 天）'},
-  {num:'13%', lbl:'聊天室未出席率（近 30 天）'}
-].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
-document.getElementById('usageTbody').innerHTML = USAGE_ROWS.map(function(r){
-  return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td><td>'+r.late+'</td></tr>';
-}).join('');
+function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
+
+/* ===== 系所／班級（讀取 u04「系所與班級管理」自助維護清單，同瀏覽器換頁後同步；本頁僅作篩選用。） ===== */
+var LS_COLLEGE_KEY = 'tliDemoOrgColleges';
+var LS_CLASS_KEY = 'tliDemoOrgClasses';
+function defaultOrgColleges(){
+  return [
+    {id:'c0', name:'商學院', status:'啟用'},
+    {id:'c1', name:'工學院', status:'啟用'},
+    {id:'c2', name:'外語學院', status:'啟用'},
+    {id:'c3', name:'人文學院', status:'啟用'},
+    {id:'c4', name:'理學院', status:'啟用'}
+  ];
+}
+function defaultOrgClasses(){
+  return [
+    {id:'cl0', collegeId:'c0', name:'企業管理系二年級 A 班', count:38, status:'啟用'},
+    {id:'cl1', collegeId:'c0', name:'企業管理系二年級 B 班', count:35, status:'啟用'},
+    {id:'cl2', collegeId:'c1', name:'資訊工程系三年級', count:42, status:'啟用'},
+    {id:'cl3', collegeId:'c1', name:'機械工程系二年級', count:33, status:'啟用'},
+    {id:'cl4', collegeId:'c2', name:'應用外語系三年級', count:29, status:'啟用'},
+    {id:'cl5', collegeId:'c3', name:'歷史系二年級', count:26, status:'啟用'},
+    {id:'cl6', collegeId:'c3', name:'中國文學系三年級', count:24, status:'啟用'},
+    {id:'cl7', collegeId:'c4', name:'應用數學系二年級', count:31, status:'啟用'}
+  ];
+}
+function loadOrgColleges(){
+  try{ var raw = localStorage.getItem(LS_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgColleges();
+}
+function loadOrgClasses(){
+  try{ var raw = localStorage.getItem(LS_CLASS_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgClasses();
+}
+var ORG_COLLEGES = loadOrgColleges();
+var ORG_CLASSES = loadOrgClasses();
+function activeColleges(){ return ORG_COLLEGES.filter(function(c){ return c.status==='啟用'; }); }
+function classesOfCollege(collegeId){ return ORG_CLASSES.filter(function(c){ return c.collegeId===collegeId; }); }
+(function initFilterOptions(){
+  var csel = document.getElementById('fCollege');
+  activeColleges().forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.name; csel.appendChild(o); });
+  refreshClassOptions();
+})();
+function refreshClassOptions(){
+  var collegeId = document.getElementById('fCollege').value;
+  var sel = document.getElementById('fClass');
+  var list = collegeId ? classesOfCollege(collegeId) : ORG_CLASSES;
+  sel.innerHTML = '<option value="">全部班級</option>' + list.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
+}
+function onCollegeFilterChange(){
+  refreshClassOptions();
+  document.getElementById('fClass').value = '';
+  onFilterChange();
+}
+
+/* ===== 使用量數字依篩選條件以種子亂數調整，示範篩選對統計結果的影響 ===== */
+function filterSeed(){
+  var c = document.getElementById('fCollege').value, k = document.getElementById('fClass').value;
+  var str = c+'|'+k;
+  var seed=0; for (var i=0;i<str.length;i++) seed += str.charCodeAt(i)*(i+1);
+  return seed;
+}
+function scaleBy(base, seed, spread){ return Math.max(1, Math.round(base * (1 + (seededRand(seed)-0.5)*spread))); }
+function renderUsage(){
+  var seed = filterSeed();
+  var scopeLabel = (function(){
+    var c = document.getElementById('fCollege'), k = document.getElementById('fClass');
+    var cTxt = c.value ? c.options[c.selectedIndex].text : '全部系所';
+    var kTxt = k.value ? k.options[k.selectedIndex].text : '全部班級';
+    return cTxt+'／'+kTxt;
+  })();
+  document.getElementById('filterNote').textContent = '統計範圍：'+scopeLabel+'（近 30 天）';
+  var opened = scaleBy(124, seed+1, 0.6);
+  var videoUsers = scaleBy(132, seed+2, 0.6);
+  var chatUsers = scaleBy(76, seed+3, 0.6);
+  var overallRate = 50 + Math.floor(seededRand(seed+4)*35);
+  var chatAttend = 75 + Math.floor(seededRand(seed+5)*20);
+  var chatNoshow = 100 - chatAttend;
+  document.getElementById('usageKpiGrid').innerHTML = [
+    {num:String(opened), lbl:'本學期已開通'},
+    {num:String(videoUsers), lbl:'近 30 天曾使用影片'},
+    {num:String(chatUsers), lbl:'近 30 天曾用聊天室'},
+    {num:overallRate+'%', lbl:'整體資源使用率'},
+    {num:chatAttend+'%', lbl:'聊天室出席率（近 30 天）'},
+    {num:chatNoshow+'%', lbl:'聊天室未出席率（近 30 天）'}
+  ].map(function(k){ return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>'; }).join('');
+
+  var USAGE_ROWS = [
+    {type:'自學影片', users: videoUsers, total: scaleBy(2480, seed+11, 0.5)+' 分鐘', avg: (scaleBy(2480, seed+11, 0.5)/Math.max(1,videoUsers)).toFixed(1)+' 分鐘／人', attend:'－', noshow:'－', late:'－'},
+    {type:'自學音檔', users: scaleBy(98, seed+12, 0.6), total: scaleBy(1140, seed+13, 0.5)+' 分鐘', avg: '11.6 分鐘／人', attend:'－', noshow:'－', late:'－'},
+    {type:'自我測驗', users: scaleBy(110, seed+14, 0.6), total: scaleBy(356, seed+15, 0.5)+' 次', avg: '3.2 次／人', attend:'－', noshow:'－', late:'－'},
+    {type:'團體聊天室', users: chatUsers, total: scaleBy(142, seed+16, 0.5)+' 場次', avg: '1.9 場／人', attend: chatAttend+'%', noshow: chatNoshow+'%', late:'－'}
+  ];
+  document.getElementById('usageTbody').innerHTML = USAGE_ROWS.map(function(r){
+    return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td><td>'+r.late+'</td></tr>';
+  }).join('');
+}
+function onFilterChange(){ renderUsage(); }
+renderUsage();
 function exportCsv(){ toast('已產生使用報表 CSV（不會實際下載檔案）'); }
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }

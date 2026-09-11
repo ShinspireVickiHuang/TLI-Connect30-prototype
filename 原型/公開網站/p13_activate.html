@@ -120,7 +120,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 
 <div class="wrap">
 <div class="topmark"><img src="../assets/tli-logo.svg" alt="TLI"><span>會員帳號開通</span></div>
-<div class="note" id="scenarioNote">此頁情境：TLI 顧問於顧問工作台完成學生建檔後，系統寄出開通信，會員點擊信中連結進入本頁完成帳號開通。</div>
+<div class="note" id="scenarioNote">歡迎加入 TLI Connect！請完成以下步驟啟用你的帳號。</div>
 
 <div id="wizardWrap">
 <div class="steps" id="stepsBar"></div>
@@ -261,6 +261,10 @@ function detectTimezoneValue(){
 
 /* ===== 讀取查詢參數 ===== */
 function qs(k){return new URLSearchParams(location.search).get(k);}
+var isInternal = qs('internal')==='1';
+if(isInternal){
+  document.getElementById('scenarioNote').textContent = '此頁情境：TLI 顧問於顧問工作台完成學生建檔後，系統寄出開通信，會員點擊信中連結進入本頁完成帳號開通。';
+}
 var token = qs('token') || 'demo';
 var mode = qs('mode')==='password' ? 'password' : 'link';
 var state = qs('state')==='expired' ? 'expired' : (qs('state')==='done' ? 'done' : 'ok');
