@@ -34,6 +34,9 @@
   .card .pointer{font-size:14px;color:var(--g500);margin:0 0 6px}
   .card .pointer a{color:var(--navy);border:none}
   .card.compact ol{columns:1}
+  .card .subgroup{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--teal);text-transform:uppercase;margin:12px 0 2px}
+  .card .subgroup:first-of-type{margin-top:0}
+  .card ol.sub{margin:0 0 2px}
 
   /* 第二階段（收在最底、灰底） */
   .stage2{background:var(--g100);border-radius:12px;padding:24px 26px;margin-top:8px}
@@ -73,79 +76,140 @@
     </div>
     <div class="card">
       <h2>學員會員區</h2>
-      <p class="who">已登入學生</p>
-      <ol>
+      <p class="who">已登入學生・側欄：首頁／預約與報名／課表／學習／我的方案／我的</p>
+      <div class="subgroup">首頁</div>
+      <ol class="sub">
         <li><a href="會員區/m01_home.html">首頁</a></li>
+      </ol>
+      <div class="subgroup">預約與報名</div>
+      <ol class="sub">
         <li><a href="會員區/m02_booking.html">預約</a></li>
+        <li><a href="會員區/m14_chat_booking.html">團體聊天室報名</a></li>
+        <li><a href="會員區/m10_events.html">活動／我的活動</a></li>
+      </ol>
+      <div class="subgroup">課表</div>
+      <ol class="sub">
         <li><a href="會員區/m03_schedule.html">課表</a></li>
-        <li><a href="會員區/m04_course_detail.html">我的方案詳情</a></li>
         <li><a href="會員區/m05_leave.html">請假／改期</a></li>
-        <li><a href="會員區/m06_renew.html">續費／加購</a></li>
-        <li><a href="會員區/m07_profile.html">我的</a></li>
+      </ol>
+      <div class="subgroup">學習</div>
+      <ol class="sub">
         <li><a href="會員區/m08_self_paced.html">自學課程</a></li>
         <li><a href="會員區/m09_assessment.html">評量（我的等級／課程評量）</a></li>
-        <li><a href="會員區/m17_feedback.html">課堂回饋</a></li>
-        <li><a href="會員區/m10_events.html">我的活動</a></li>
         <li><a href="會員區/m11_quiz.html">線上測驗</a></li>
+        <li><a href="會員區/m17_feedback.html">課堂回饋</a></li>
+      </ol>
+      <div class="subgroup">我的方案</div>
+      <ol class="sub">
+        <li><a href="會員區/m04_course_detail.html">我的方案詳情</a></li>
+        <li><a href="會員區/m06_renew.html">續費／加購</a></li>
         <li><a href="企業端/h01_dashboard.html">企業學習報告（併入 HR 儀表板）</a></li>
-        <li><a href="會員區/m13_checkout.html?plan=1on1">結帳</a><span class="small"> 流程頁，從課程頁「購買」、試聽選時段、活動付費報名、待辦「前往繳費」、方案「續購／加購」進入</span></li>
-        <li><a href="會員區/m15_payment_gateway.html?gw=newebpay&amp;order=DEMO&amp;amount=0">金流付款頁示意（藍新／Stripe 導轉）</a><span class="small"> 流程頁，由結帳頁「前往付款」導轉進入</span></li>
-        <li><a href="會員區/m14_chat_booking.html">團體聊天室報名</a></li>
-        <li><a href="會員區/m16_classroom.html?lesson=l1&amp;type=1on1&amp;state=open">進入線上教室</a><span class="small"> 流程頁，從課表、首頁待辦、方案、聊天室、活動的「進入教室」進入；開課前 15 分鐘開放</span></li>
+      </ol>
+      <div class="subgroup">我的</div>
+      <ol class="sub">
+        <li><a href="會員區/m07_profile.html">我的</a></li>
+      </ol>
+      <div class="subgroup">流程頁（依情境觸發進入，不在側欄）</div>
+      <ol class="sub">
+        <li><a href="會員區/m13_checkout.html?plan=1on1">結帳</a><span class="small"> 從課程頁「購買」、試聽選時段、活動付費報名、待辦「前往繳費」、方案「續購／加購」進入</span></li>
+        <li><a href="會員區/m15_payment_gateway.html?gw=newebpay&amp;order=DEMO&amp;amount=0">金流付款頁示意（藍新／Stripe 導轉）</a><span class="small"> 由結帳頁「前往付款」導轉進入</span></li>
+        <li><a href="會員區/m16_classroom.html?lesson=l1&amp;type=1on1&amp;state=open">進入線上教室</a><span class="small"> 從課表、首頁待辦、方案、側欄「預約與報名」的聊天室／活動的「進入教室」進入；開課前 15 分鐘開放</span></li>
       </ol>
     </div>
     <div class="card">
       <h2>老師</h2>
-      <p class="who">授課教師</p>
-      <ol>
+      <p class="who">授課教師・側欄：今天／課表／課後紀錄與回饋／學生／時段與薪資</p>
+      <div class="subgroup">今天</div>
+      <ol class="sub">
         <li><a href="教師端/t01_today.html">今日</a></li>
+      </ol>
+      <div class="subgroup">課表（含請假與代課籤）</div>
+      <ol class="sub">
         <li><a href="教師端/t02_schedule.html">課表</a></li>
-        <li><a href="教師端/t03_lesson_record.html">課後紀錄與回饋</a></li>
-        <li><a href="教師端/t04_availability.html">可授課時段</a></li>
         <li><a href="教師端/t05_leave_sub.html">請假／代課</a></li>
-        <li><a href="教師端/t06_hours_pay.html">時數與薪資</a></li>
+      </ol>
+      <div class="subgroup">課後紀錄與回饋</div>
+      <ol class="sub">
+        <li><a href="教師端/t03_lesson_record.html">課後紀錄與回饋</a></li>
+      </ol>
+      <div class="subgroup">學生</div>
+      <ol class="sub">
         <li><a href="教師端/t07_students.html">我的學生</a></li>
+      </ol>
+      <div class="subgroup">時段與薪資（含可授課時段、時數與薪資兩籤）</div>
+      <ol class="sub">
+        <li><a href="教師端/t04_availability.html">可授課時段</a></li>
+        <li><a href="教師端/t06_hours_pay.html">時數與薪資</a></li>
       </ol>
     </div>
     <div class="card">
       <h2>顧問工作台</h2>
-      <p class="who">業務／客服／教務顧問</p>
-      <ol>
+      <p class="who">業務／客服／教務顧問・側欄：今日待辦／學生／諮詢與試聽／排課／續費追蹤／申訴覆核</p>
+      <div class="subgroup">今日待辦</div>
+      <ol class="sub">
         <li><a href="顧問工作台/c01_today.html">今日待辦</a></li>
+      </ol>
+      <div class="subgroup">學生（含學生 360、建訂單、訂單詳情）</div>
+      <ol class="sub">
         <li><a href="顧問工作台/c02_students.html">學生</a></li>
         <li><a href="顧問工作台/c03_student_detail.html">學生 360</a></li>
-        <li><a href="顧問工作台/c04_new_order.html">建訂單</a></li>
+        <li><a href="顧問工作台/c04_new_order.html">建訂單</a><span class="small"> 從學生 360「建訂單」進入，不再是側欄項</span></li>
         <li><a href="顧問工作台/c05_order_detail.html">訂單詳情</a></li>
-        <li><a href="顧問工作台/c06_renewal.html">續費追蹤</a></li>
-        <li><a href="顧問工作台/c07_scheduling.html">排課</a></li>
+      </ol>
+      <div class="subgroup">諮詢與試聽</div>
+      <ol class="sub">
         <li><a href="顧問工作台/c08_inquiries.html">諮詢與試聽預約</a></li>
+      </ol>
+      <div class="subgroup">排課</div>
+      <ol class="sub">
+        <li><a href="顧問工作台/c07_scheduling.html">排課</a></li>
+      </ol>
+      <div class="subgroup">續費追蹤</div>
+      <ol class="sub">
+        <li><a href="顧問工作台/c06_renewal.html">續費追蹤</a></li>
+      </ol>
+      <div class="subgroup">申訴覆核</div>
+      <ol class="sub">
         <li><a href="顧問工作台/c09_appeals.html">申訴覆核</a></li>
       </ol>
     </div>
     <div class="card">
       <h2>TLI 後台</h2>
-      <p class="who">總公司管理者／校區主管／行政人員／財務</p>
-      <ol>
-        <li><a href="管理後台/a01_member_rules.html">會員管理</a></li>
+      <p class="who">總公司管理者／校區主管／行政人員／財務・側欄分五群：銷售／教學／客戶／財務／系統</p>
+      <div class="subgroup">銷售</div>
+      <ol class="sub">
         <li><a href="管理後台/a02_products.html">產品管理（三層）</a></li>
         <li><a href="管理後台/a03_product_detail.html">課程詳情</a></li>
         <li><a href="管理後台/a04_packages.html">銷售方案設定</a></li>
         <li><a href="管理後台/a05_orders.html">訂單</a></li>
-        <li><a href="管理後台/a06_invoice_setting.html">發票與開票主體</a></li>
-        <li><a href="管理後台/a07_reports.html">報表</a></li>
-        <li><a href="管理後台/a08_content_cms.html">內容管理（公開網站 CMS）</a></li>
-        <li><a href="管理後台/a09_permissions_notify.html">權限管理</a></li>
-        <li><a href="管理後台/a10_teachers.html">老師管理</a></li>
-        <li><a href="管理後台/a11_categories.html">會員分類</a></li>
-        <li><a href="管理後台/a12_contracts.html">合約管理</a></li>
-        <li><a href="管理後台/a13_receivables.html">應收與分期沖銷</a></li>
-        <li><a href="管理後台/a14_feedback.html">學員回饋</a></li>
-        <li><a href="管理後台/a15_notifications.html">通知範本與系統參數</a></li>
-        <li><a href="管理後台/a16_events.html">活動管理</a></li>
-        <li><a href="管理後台/a17_master_data.html">基礎資料設定</a></li>
-        <li><a href="管理後台/a18_resource_library.html">資源庫</a></li>
+        <li><a href="管理後台/a06_invoice_setting.html">發票設定（發票與開票主體）</a></li>
         <li><a href="管理後台/a19_b2b_enterprise.html">B2B 企業客戶</a></li>
         <li><a href="管理後台/a20_agents.html">代理商管理</a></li>
+      </ol>
+      <div class="subgroup">教學</div>
+      <ol class="sub">
+        <li><a href="管理後台/a10_teachers.html">老師管理</a></li>
+        <li><a href="管理後台/a08_content_cms.html">內容管理（公開網站 CMS）</a></li>
+        <li><a href="管理後台/a16_events.html">活動管理</a></li>
+        <li><a href="管理後台/a14_feedback.html">學員回饋</a></li>
+      </ol>
+      <div class="subgroup">客戶</div>
+      <ol class="sub">
+        <li><a href="管理後台/a01_member_rules.html">會員管理</a></li>
+        <li><a href="管理後台/a11_categories.html">會員分類</a></li>
+        <li><a href="管理後台/a12_contracts.html">合約管理</a></li>
+      </ol>
+      <div class="subgroup">財務</div>
+      <ol class="sub">
+        <li><a href="管理後台/a13_receivables.html">應收與分期沖銷</a></li>
+        <li><a href="管理後台/a07_reports.html">報表</a></li>
+      </ol>
+      <div class="subgroup">系統</div>
+      <ol class="sub">
+        <li><a href="管理後台/a17_master_data.html">基礎資料設定</a></li>
+        <li><a href="管理後台/a18_resource_library.html">資源庫</a></li>
+        <li><a href="管理後台/a09_permissions_notify.html">權限管理</a></li>
+        <li><a href="管理後台/a15_notifications.html">通知範本與系統參數</a></li>
       </ol>
     </div>
   </div>
@@ -161,16 +225,16 @@
     </div>
     <div class="card">
       <h2>企業 HR 端</h2>
-      <p class="who">企業管理者（HR），獨立登入，只看自己公司</p>
+      <p class="who">企業管理者（HR），獨立登入，只看自己公司・側欄：儀表板／員工管理／合約與時數池／學習報告／老師評語／請假與申訴審核／資料串接</p>
       <ol>
         <li><a href="企業端/h00_activate.html">企業帳號開通</a></li>
-        <li><a href="企業端/h01_dashboard.html">Dashboard</a></li>
+        <li><a href="企業端/h01_dashboard.html">儀表板</a></li>
         <li><a href="企業端/h02_employees.html">員工管理</a></li>
+        <li><a href="企業端/h05_contract.html">合約與時數池</a></li>
         <li><a href="企業端/h03_reports.html">學習報告</a></li>
         <li><a href="企業端/h07_teacher_comments.html">老師評語（HR 可見層）</a></li>
+        <li><a href="企業端/h06_appeals.html">請假與申訴審核</a></li>
         <li><a href="企業端/h04_api.html">資料串接</a></li>
-        <li><a href="企業端/h05_contract.html">合約與時數池</a></li>
-        <li><a href="企業端/h06_appeals.html">申訴覆核</a></li>
       </ol>
     </div>
     <div class="card compact">
@@ -186,7 +250,7 @@
     <div class="card compact">
       <h2>顧問承接</h2>
       <p class="who">顧問工作台中涉及企業業務的頁面</p>
-      <p class="pointer">→ 顧問工作台：<a href="顧問工作台/c08_inquiries.html">諮詢與試聽預約</a>、<a href="顧問工作台/c04_new_order.html">建訂單</a>、<a href="顧問工作台/c09_appeals.html">申訴覆核</a>、<a href="顧問工作台/c06_renewal.html">續費追蹤</a></p>
+      <p class="pointer">→ 顧問工作台：<a href="顧問工作台/c08_inquiries.html">諮詢與試聽預約</a>、<a href="顧問工作台/c04_new_order.html">建訂單</a>（於側欄「學生」→學生 360 內建立，非側欄項）、<a href="顧問工作台/c09_appeals.html">申訴覆核</a>、<a href="顧問工作台/c06_renewal.html">續費追蹤</a></p>
     </div>
   </div>
 
