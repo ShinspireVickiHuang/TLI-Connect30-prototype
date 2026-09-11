@@ -662,7 +662,7 @@ function newEventFormHtml(){
     '<div class="formrow"><label>適用對象</label>'+audBoxes+'</div>' +
     '<div class="formrow" style="max-width:220px"><label>報名截止日</label><input type="date" id="ne_deadline"></div>' +
     '<div style="font-weight:600;font-size:13.5px;margin:18px 0 8px">報名與取消規則</div>' +
-    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為情境示範用途填入之示範值。</div>' +
+    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為填入之參考值。</div>' +
     '<div class="grid2">' +
     '<div class="formrow"><label>報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ne_regCloseHours" min="0" placeholder="待定" style="width:100px"><span class="small">小時</span></div></div>' +
     '<div class="formrow"><label>取消報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ne_cancelCloseHours" min="0" placeholder="待定" style="width:100px"><span class="small">小時</span></div></div>' +
@@ -884,7 +884,7 @@ function renderContentPanel(){
     '<div class="formrow"><label>適用對象</label>'+audBoxes+'</div>' +
     '<div class="formrow" style="max-width:220px"><label>報名截止日</label><input type="date" id="ec_deadline" value="'+(ev.regDeadline||'')+'"></div>' +
     '<div style="font-weight:600;font-size:13.5px;margin:18px 0 8px">報名與取消規則</div>' +
-    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為情境示範用途填入之示範值。</div>' +
+    '<div class="hint" style="margin-bottom:10px">小時數留白代表沿用「基礎資料設定 → 參數設定」的全域預設值（待定）；以下為填入之參考值。</div>' +
     '<div class="grid2">' +
     '<div class="formrow"><label>報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ec_regCloseHours" min="0" placeholder="待定" style="width:100px" value="'+(ev.regCloseHours===''||ev.regCloseHours==null?'':ev.regCloseHours)+'"><span class="small">小時</span></div></div>' +
     '<div class="formrow"><label>取消報名截止（活動開始前）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="ec_cancelCloseHours" min="0" placeholder="待定" style="width:100px" value="'+(ev.cancelCloseHours===''||ev.cancelCloseHours==null?'':ev.cancelCloseHours)+'"><span class="small">小時</span></div></div>' +

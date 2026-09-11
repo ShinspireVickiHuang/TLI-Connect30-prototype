@@ -304,7 +304,7 @@ html,body{overflow-x:hidden;}
     <main>
       <div class="kicker">管理後台・顧問作業</div>
       <h1 class="page-title">申訴覆核</h1>
-      <p class="page-sub">承接員工超額請假申訴（員工直送或 HR 轉來），覆核後改記請假或維持缺席，結果同步至員工端與企業端。<span class="demo-tag">示範畫面，資料為模擬數字</span></p>
+      <p class="page-sub">承接員工超額請假申訴（員工直送或 HR 轉來），覆核後改記請假或維持缺席，結果同步至員工端與企業端。</p>
 
       <div class="kpi-row" id="kpiRow"></div>
 
@@ -383,7 +383,7 @@ function pad(n,len){n=''+n;while(n.length<len)n='0'+n;return n;}
 function fmtDT(d){return d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2)+' '+pad(d.getHours(),2)+':'+pad(d.getMinutes(),2);}
 
 /* ================= 申訴覆核：資料（示範畫面，資料為模擬數字） ================= */
-var COMPANIES=['範例半導體股份有限公司','示範科技股份有限公司','假設國際貿易股份有限公司','範例生醫股份有限公司','示範金融股份有限公司'];
+var COMPANIES=['範例半導體股份有限公司','北辰精密工業股份有限公司','假設國際貿易股份有限公司','範例生醫股份有限公司','安泰保經股份有限公司'];
 var REASON_OPTS=[
   {v:'produce',label:'產線突發狀況'},
   {v:'uncontrollable',label:'其他不可歸責事由'},
@@ -404,11 +404,11 @@ function sourceLabel(s){return s==='employee'?'員工直送':'HR 轉來';}
 var RAW=[
   {company:'範例半導體股份有限公司',employee:'王小明',lessonDate:'2026-09-02（二）14:00',reason:'produce',note:'當日臨時被排入產線緊急停機處理，來不及於時限內請假',source:'employee',status:'pending',exemptUsed:'3 / 3 次（本月免扣次數已用完）',daysAgo:5},
   {company:'範例半導體股份有限公司',employee:'李小華',lessonDate:'2026-08-25（二）09:00',reason:'uncontrollable',note:'臨時發燒送急診，附診斷證明由 HR 代為提出',source:'hr',status:'approved',exemptUsed:'2 / 2 次（本月免扣次數已用完）',daysAgo:12,reviewNote:'已收到診斷證明，屬不可歸責事由，同意改記請假',reviewedBy:'王大明',reviewDaysAgo:10},
-  {company:'示範科技股份有限公司',employee:'佐藤健一',lessonDate:'2026-09-01（一）19:00',reason:'produce',note:'廠區夜間急件出貨，主管指派加班',source:'employee',status:'pending',exemptUsed:'1 / 1 次（本月免扣次數已用完）',daysAgo:6},
+  {company:'北辰精密工業股份有限公司',employee:'佐藤健一',lessonDate:'2026-09-01（一）19:00',reason:'produce',note:'廠區夜間急件出貨，主管指派加班',source:'employee',status:'pending',exemptUsed:'1 / 1 次（本月免扣次數已用完）',daysAgo:6},
   {company:'假設國際貿易股份有限公司',employee:'陳志偉',lessonDate:'2026-08-20（四）14:00',reason:'system',note:'請假時系統誤判為超額，實際本月僅請假 1 次',source:'hr',status:'rejected',exemptUsed:'2 / 2 次（本月免扣次數已用完）',daysAgo:15,reviewNote:'覆核後確認系統判定無誤，本月已達免扣上限，維持缺席並扣時數',reviewedBy:'林顧問',reviewDaysAgo:13},
   {company:'假設國際貿易股份有限公司',employee:'黃美玲',lessonDate:'2026-09-03（三）10:00',reason:'uncontrollable',note:'家中長輩臨時住院，需請假照顧',source:'employee',status:'pending',exemptUsed:'3 / 3 次（本月免扣次數已用完）',daysAgo:4},
   {company:'範例生醫股份有限公司',employee:'田中葵',lessonDate:'2026-08-28（五）19:00',reason:'other',note:'公司臨時安排出差，出發前無法即時請假',source:'employee',status:'approved',exemptUsed:'2 / 2 次（本月免扣次數已用完）',daysAgo:9,reviewNote:'已提供出差證明，同意改記請假',reviewedBy:'陳顧問',reviewDaysAgo:7},
-  {company:'示範金融股份有限公司',employee:'李佳玲',lessonDate:'2026-09-04（四）14:00',reason:'produce',note:'分行臨時稽核任務，主管要求全員留守',source:'hr',status:'pending',exemptUsed:'1 / 1 次（本月免扣次數已用完）',daysAgo:3}
+  {company:'安泰保經股份有限公司',employee:'李佳玲',lessonDate:'2026-09-04（四）14:00',reason:'produce',note:'分行臨時稽核任務，主管要求全員留守',source:'hr',status:'pending',exemptUsed:'1 / 1 次（本月免扣次數已用完）',daysAgo:3}
 ];
 var RECORDS=[];
 (function buildRecords(){

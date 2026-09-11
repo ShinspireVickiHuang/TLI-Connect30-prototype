@@ -256,7 +256,7 @@ html,body{overflow-x:hidden;}
 
 <div class="card">
 <h2>開票主體路由規則</h2>
-<div class="desc" style="margin-bottom:10px">20260909e 新增：日本、大陸分校為獨立法人，依客戶所在地自動帶出對應開票主體；建訂單頁沿用此規則預設帶入，顧問仍可視實際情況更換。示範畫面，資料為模擬數字。</div>
+<div class="desc" style="margin-bottom:10px">20260909e 新增：日本、大陸分校為獨立法人，依客戶所在地自動帶出對應開票主體；建訂單頁沿用此規則預設帶入，顧問仍可視實際情況更換。</div>
 <div class="tablewrap"><table>
 <tr><th>客戶所在地</th><th>對應開票主體</th></tr>
 <tr><td>台灣</td><td>TLI 台灣主體（依校區對應，見上表）</td></tr>
@@ -352,7 +352,7 @@ html,body{overflow-x:hidden;}
 <div class="formrow"><label>負責人</label><input type="text" id="ef_owner"></div>
 <div class="formrow"><label><input type="checkbox" id="ef_default"> 設為該校區預設主體</label></div>
 </div>
-<div class="sectiontitle">主體參數（示範畫面，資料為模擬數字）</div>
+<div class="sectiontitle">主體參數</div>
 <div class="grid2">
 <div class="formrow"><label>主體類型</label><select id="ef_entitytype" onchange="onEfEntityTypeChange(this.value)"></select></div>
 <div class="formrow"><label>收款渠道</label><select id="ef_paymentchannel" onchange="onEfPaymentChannelChange()"></select></div>
@@ -369,7 +369,6 @@ html,body{overflow-x:hidden;}
 <!-- 單據範本預覽 modal -->
 <div class="modal-mask" id="templatePreviewModal"><div class="modal">
 <h3 id="templatePreviewTitle">單據範本預覽</h3>
-<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。</div>
 <div id="templatePreviewBody"></div>
 <div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="closeModal('templatePreviewModal')">關閉</button></div>
 </div></div>
@@ -585,7 +584,7 @@ function renderSettleSettings(){
   var el = document.getElementById('settleSettingsBody');
   if (!el) return;
   el.innerHTML =
-    '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。設定海外開票主體每月應付台灣開票主體的服務費計算基礎，供對帳報表產生時套用。</div>' +
+    '<div class="note" style="margin-bottom:10px">設定海外開票主體每月應付台灣開票主體的服務費計算基礎，供對帳報表產生時套用。</div>' +
     '<div class="formrow"><label>計算基礎</label><select id="settle_basis" onchange="onSettleBasisChange(this.value)">' +
       '<option value="hours"'+(SETTLE_SETTINGS.basis==='hours'?' selected':'')+'>依實際授課時數</option>' +
       '<option value="revenue"'+(SETTLE_SETTINGS.basis==='revenue'?' selected':'')+'>依營收比例</option>' +

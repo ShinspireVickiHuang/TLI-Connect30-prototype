@@ -427,7 +427,7 @@ html,body{overflow-x:hidden;}
 <div class="tabpanel" id="artoppanel-entstate">
 <div class="card">
 <h2>企業月結應收</h2>
-<div class="desc" style="margin-bottom:12px">企業母帳號每月一張月結單，彙總子帳號扣時數與應收金額；示範畫面，資料為模擬數字。</div>
+<div class="desc" style="margin-bottom:12px">企業母帳號每月一張月結單，彙總子帳號扣時數與應收金額。</div>
 <div class="filterbar">
 <select id="es_period"><option value="">全部期間</option><option>2026-08</option><option>2026-09</option></select>
 <select id="es_entity"><option value="">全部企業</option></select>
@@ -439,7 +439,7 @@ html,body{overflow-x:hidden;}
 
 <div class="card">
 <h2>機構授權帳單應收</h2>
-<div class="desc" style="margin-bottom:12px">機構授權（大學付費）採授權費＋人頭費計費，依「B2B 企業客戶」（<a href="a19_b2b_enterprise.html">a19</a>）機構授權分頁「產生本期機構帳單」動作產生本期應收列；金額待參數設定拍板後帶入。示範畫面，資料為模擬數字。</div>
+<div class="desc" style="margin-bottom:12px">機構授權（大學付費）採授權費＋人頭費計費，依「B2B 企業客戶」（<a href="a19_b2b_enterprise.html">a19</a>）機構授權分頁「產生本期機構帳單」動作產生本期應收列；金額待參數設定拍板後帶入。</div>
 <div class="tablewrap"><table id="instBillTable"></table></div>
 </div>
 </div>
@@ -493,7 +493,7 @@ html,body{overflow-x:hidden;}
 <label>匯差（結清時，自動計算，與帳上金額比較）</label>
 <div class="formrow static" id="fx_diff">－</div>
 </div>
-<div class="formrow" id="fxNoteRow" style="display:none"><label>備註</label><input type="text" id="fx_note" placeholder="例如：依 8 月月結匯率入帳，示範畫面"></div>
+<div class="formrow" id="fxNoteRow" style="display:none"><label>備註</label><input type="text" id="fx_note" placeholder="例如：依 8 月月結匯率入帳"></div>
 <div class="formrow"><label>憑證上傳</label><input type="file" id="rc_file"></div>
 <div class="hint" style="margin-bottom:10px" id="rc_hint"></div>
 <div style="text-align:right">
@@ -510,7 +510,6 @@ html,body{overflow-x:hidden;}
 <div id="pp_warning" style="display:none;margin-bottom:12px"></div>
 <div style="text-align:right;margin-bottom:10px"><button class="btn teal" onclick="openTopup()">加值入帳</button></div>
 <div class="tablewrap"><table id="pp_ledger"></table></div>
-<div class="note" style="margin-top:10px">示範畫面，資料為模擬數字。</div>
 </div>
 
 <div class="card">
@@ -535,7 +534,6 @@ html,body{overflow-x:hidden;}
 <h3 id="es_title">月結單明細</h3>
 <div id="es_sub" class="small" style="margin-bottom:10px"></div>
 <div class="tablewrap"><table id="es_children"></table></div>
-<div class="note" style="margin-top:10px">示範畫面，資料為模擬數字。</div>
 <div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="document.getElementById('esDetailModal').classList.remove('open')">關閉</button></div>
 </div></div>
 
@@ -544,7 +542,6 @@ html,body{overflow-x:hidden;}
 <div class="formrow"><label>企業／會員</label><div class="small" id="topup_member"></div></div>
 <div class="formrow"><label>加值金額</label><input type="number" id="topup_amount" placeholder="請輸入加值金額"></div>
 <div class="formrow"><label>入帳日期</label><input type="date" id="topup_date" value="2026-09-09"></div>
-<div class="hint">示範畫面，資料為模擬數字。</div>
 <div style="text-align:right;margin-top:10px">
 <button class="btn ghost" onclick="closeTopup()">取消</button>
 <button class="btn teal" onclick="saveTopup()">確認加值</button>
@@ -1069,7 +1066,7 @@ function toggleFxBlock(r, nu){
   document.getElementById('rc_amountRow').style.display = show ? 'none' : '';
   if (!show) return;
   document.getElementById('fx_currency').value = r.currency;
-  /* 示範畫面：fxAmount 對應「下一期未收」金額的原幣示範值，不做總額比例換算，避免示範數字失真 */
+  /* 示範畫面：fxAmount 對應「下一期未收」金額的原幣暫定值，不做總額比例換算，避免示範數字失真 */
   document.getElementById('fx_amount').value = r.fxAmount || '';
   document.getElementById('fx_rate').value = '';
   document.getElementById('fx_note').value = '';

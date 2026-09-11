@@ -302,7 +302,7 @@ html,body{overflow-x:hidden;}
 
 <div id="viewEvents" style="display:none">
 <div class="card">
-<h2>事件通知設定<span class="demo-tag">示範畫面，資料為模擬數字</span></h2>
+<h2>事件通知設定</h2>
 <div class="trigger-note">觸發方式：N8N 自動化，事件發生後數秒內送出。收件人／管道可複選，點擊即可切換啟用狀態。</div>
 <div class="tablewrap"><table id="eventTable"></table></div>
 </div>
@@ -530,7 +530,7 @@ function saveTmpl(){
   hint.classList.add('show');
   setTimeout(function(){ hint.classList.remove('show'); }, 2000);
 }
-/* 範本預覽（20260910b 新增）：以示範值替換變數，顯示三語內容 */
+/* 範本預覽（20260910b 新增）：以暫定值替換變數，顯示三語內容 */
 var PREVIEW_SAMPLE_VALUES = {'{學生姓名}':'王小明','{課程}':'中級會話班','{時間}':'2026-09-15 19:00',
   '{員工}':'林佳蓉','{課堂}':'企業英文小組班','{規則判定}':'距上課 18 小時，符合企業合約取消時限，不計入免扣次數',
   '{收件人姓名}':'王小明'};

@@ -130,6 +130,21 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .demoswitch button{padding:4px 10px;border:1px solid var(--g200);background:#fff;border-radius:14px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--g900);}
 .demoswitch button.active{background:var(--navy);border-color:var(--navy);color:#fff;}
 .extend-status{display:inline-block;margin-left:8px;}
+/* ---- 計價示範切換（頁首右上角低調下拉，讀寫網址參數 billing） ---- */
+.demoselect{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g500);flex-shrink:0;}
+.demoselect select{padding:5px 8px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--g900);}
+/* ---- 分頁（合約／部門管理／廠區與時區） ---- */
+.tabbar{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
+.tabbar button{background:none;border:none;padding:10px 16px;font-size:13.5px;color:var(--g500);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tabbar button.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy);}
+.tabbar button:hover{color:var(--navy);}
+.selfnote{font-size:12px;color:var(--g500);background:var(--g50);border:1px solid var(--g200);padding:9px 11px;border-radius:6px;margin-bottom:14px;}
+.errtext{color:#C0392B;font-size:12px;margin-top:8px;}
+.sumtext{font-size:12px;color:var(--g500);margin-top:8px;}
+.loglist{font-size:12px;color:var(--g500);margin-top:12px;border-top:1px dashed var(--g200);padding-top:8px;}
+.loglist .logrow{padding:3px 0;}
+.mgmttable input.quotainput{width:100%;}
+.mgmttable td{white-space:normal;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -152,6 +167,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <a data-nav="h01" href="h01_dashboard.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg><span>儀表板</span></a>
 <a data-nav="h02" href="h02_employees.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span>員工管理</span></a>
 <a data-nav="h03" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
+<a data-nav="h07" href="h07_teacher_comments.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5a1.5 1.5 0 0 1 1.5-1.5h11A1.5 1.5 0 0 1 17 5.5v6A1.5 1.5 0 0 1 15.5 13H9l-3.5 3v-3H4.5A1.5 1.5 0 0 1 3 11.5z"/><line x1="6.5" y1="7" x2="13.5" y2="7"/><line x1="6.5" y1="9.5" x2="11" y2="9.5"/></svg><span>老師評語</span></a>
 <a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
 <a data-nav="h05" class="active" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
 <a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>請假與申訴審核</span></a>
@@ -177,11 +193,20 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">示範畫面，資料為模擬數字，非實際企業資料。</div>
-
 <div class="pagehead">
-<div><h1>合約與時數池</h1><div class="desc">查看合約層規則、企業共用時數池與各部門配額。合約內容如需調整，請透過顧問窗口申請。</div></div>
+<div><h1>合約與時數池</h1><div class="desc">查看合約層規則、企業共用時數池；部門與廠區資料由貴公司自行維護。合約內容如需調整，請透過顧問窗口申請。</div></div>
+<div class="demoselect" id="billingDemoWrap"><label for="billingDemoSel">情境切換</label><select id="billingDemoSel" onchange="onBillingDemoChange(this.value)"><option value="hours">時數制</option><option value="prepaid">預付款倒扣制</option></select></div>
 </div>
+
+<div class="tabbar">
+<button id="tabBtn_contract" onclick="setActiveTab('contract')">合約（唯讀）</button>
+<button id="tabBtn_deptmgmt" onclick="setActiveTab('deptmgmt')">部門管理</button>
+<button id="tabBtn_sitemgmt" onclick="setActiveTab('sitemgmt')">廠區與時區</button>
+<button id="tabBtn_alerts" onclick="setActiveTab('alerts')">關注規則</button>
+</div>
+
+<!-- ===== 分頁一：合約（唯讀） ===== -->
+<div id="tabPanel_contract">
 
 <div class="card">
 <h2>合約期間<span class="extend-status" id="extendStatusBadge"></span></h2>
@@ -193,7 +218,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <button class="btn orange" onclick="openExtendModal()">申請展延</button>
 </div>
 <div class="demoswitch">
-<span>示範畫面：切換到期倒數情境</span>
+<span>情境切換：到期倒數情境</span>
 <button id="demoBtn90" onclick="setDemoDaysLeft(90)">距到期 90 天</button>
 <button id="demoBtn60" onclick="setDemoDaysLeft(60)">距到期 60 天</button>
 <button id="demoBtn30" onclick="setDemoDaysLeft(30)">距到期 30 天</button>
@@ -203,52 +228,30 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="card">
 <h2>合約參數</h2>
 <div class="cardesc">以下規則僅適用本企業員工學員，不影響個人學員（C2C）既有規則。</div>
-<div class="kv"><span>取消時限</span><span>逾 12 小時可取消並退回堂數，不足 12 小時不退（依合約可客製）；時限判定以下方「企業慣用時區（取消時限與扣時數的判定基準）」為準</span></div>
+<div class="kv"><span>取消時限</span><span>逾 12 小時可取消並退回堂數，不足 12 小時不退（依合約可客製）；時限判定以下方「判定基準」為準</span></div>
 <div class="kv"><span>每月免扣次數</span><span>每位員工每月 2 次，範圍內請假不計入缺席、不扣時數</span></div>
 <div class="kv"><span>超額請假處理規則</span><span>超過每月免扣次數的請假記為缺席並扣時數；員工可提出申訴，經 HR 或顧問覆核通過後改記為請假、不扣時數</span></div>
 <div class="kv"><span>改期規則</span><span>比照個人學員改期流程，本合約上限每堂課改期 2 次</span></div>
 <div class="kv"><span>取消時限與扣時數的判定基準</span><span id="tzBasisTxt">—</span></div>
 <div class="kv"><span>階梯計價規則</span><span>依帳號數與總時數階梯計價，由顧問報價</span></div>
-<div class="kv"><span>付款方式</span><span id="paymentMethodTxt">預付款倒扣</span></div>
+<div class="kv"><span>付款方式</span><span id="paymentMethodTxt">—</span></div>
 </div>
 
-<div class="card">
-<h2>廠區／據點</h2>
-<div class="cardesc">廠區由 TLI 顧問於後台建立與調整；員工邀請時選擇所屬廠區後，課表雙時區顯示與取消時限判定即依廠區時區計算。</div>
-<div class="tablewrap"><table id="campusTable"></table></div>
-</div>
-
-<div class="card">
-<h2>計價單位示範切換</h2>
-<div class="cardesc">正式環境依合約設定固定顯示一種計價方式，企業窗口無法自行切換；此處僅供 vicki 檢視兩種畫面。</div>
-<div class="demoswitch" style="border-top:none;padding-top:0;margin-top:0;">
-<span>示範：切換計價單位檢視</span>
-<button id="demoBtnHours" onclick="setBillingUnit('hours')">時數制</button>
-<button id="demoBtnPrepay" onclick="setBillingUnit('prepay')">預付款倒扣制</button>
-</div>
-</div>
-
-<div class="card" id="pool" hidden>
-<h2>時數池消耗</h2>
+<div class="card" id="poolCardHours">
+<h2>企業共用時數池</h2>
 <div class="poolgrid" id="poolGrid"></div>
 <div class="poolbar"><i id="poolBarFill"></i></div>
 <div class="small" id="poolExpiry"></div>
+<div class="hint" style="margin:10px 0 6px">各部門已領用</div>
+<div class="tablewrap"><table id="deptUsageTable"></table></div>
 </div>
 
-<div class="card" id="prepayCard">
+<div class="card" id="poolCardPrepay">
 <h2>預付餘額</h2>
-<div class="cardesc">預付款依實際使用金額倒扣，餘額不足時系統將提醒您儘速加值。</div>
-<div class="kv"><span>餘額</span><span id="prepayBalanceTxt">—</span></div>
+<div class="note">貴公司合約採預付款倒扣：每堂課依合約單價從預付金額扣除，餘額低於門檻時系統會通知 HR 加值（門檻依設定）。</div>
+<div class="kv" style="margin-top:8px"><span>餘額</span><span id="prepayBalanceTxt">—</span></div>
 <div class="kv"><span>本月倒扣</span><span id="prepayMonthTxt">—</span></div>
-<div class="kv"><span>預估可用堂數</span><span>待定</span></div>
-<div class="note" style="margin-top:10px">示範畫面，資料為模擬數字。</div>
-</div>
-
-<div class="card">
-<h2>部門配額</h2>
-<div class="cardesc">配額為各部門可領用的時數上限，領用累計超過配額時，該部門員工預約課程會先提示，仍可由 HR 調整配額後放行。</div>
-<div class="tablewrap"><table id="quotaTable"></table></div>
-<div class="actionrow"><button class="btn" onclick="saveQuota()">儲存配額</button></div>
+<div class="kv"><span>預估可用堂數</span><span>餘額 ÷ 合約單價（單價依合約，待定）</span></div>
 </div>
 
 <div class="card">
@@ -256,6 +259,53 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="actionrow">
 <button class="btn ghost" onclick="openRequestModal('renew')">申請續約／加購時數</button>
 <button class="btn ghost" onclick="openRequestModal('expand')">申請試辦擴大</button>
+</div>
+</div>
+
+</div>
+
+<!-- ===== 分頁二：部門管理 ===== -->
+<div id="tabPanel_deptmgmt" hidden>
+<div class="selfnote">此設定由貴公司自行維護，TLI 後台僅檢視。</div>
+<div class="card">
+<h2>部門管理</h2>
+<div class="cardesc">配額為各部門可領用的時數上限，領用累計超過配額時，該部門員工預約課程會先提示，仍可由 HR 調整配額後放行；部門配額合計不得超過合約時數池總量。</div>
+<div class="tablewrap"><table id="deptMgmtTable" class="mgmttable"></table></div>
+<div id="deptMsg"></div>
+<div class="sumtext" id="deptQuotaSumTxt"></div>
+<div class="actionrow">
+<button class="btn ghost" onclick="addDept()">＋ 新增部門</button>
+<button class="btn" id="saveDeptBtn" onclick="saveDeptSettings()">儲存部門設定</button>
+</div>
+<div class="loglist" id="orgLogListDept"></div>
+</div>
+</div>
+
+<!-- ===== 分頁三：廠區與時區 ===== -->
+<div id="tabPanel_sitemgmt" hidden>
+<div class="selfnote">此設定由貴公司自行維護，TLI 後台僅檢視。</div>
+<div class="card">
+<h2>廠區與時區</h2>
+<div class="cardesc">員工依所屬廠區顯示課表時區；被設為「判定基準」的廠區，其時區即為取消時限與扣時數的計算基準。</div>
+<div class="tablewrap"><table id="siteMgmtTable" class="mgmttable"></table></div>
+<div id="siteMsg"></div>
+<div class="actionrow">
+<button class="btn ghost" onclick="addSite()">＋ 新增廠區</button>
+<button class="btn" onclick="saveSiteSettings()">儲存廠區設定</button>
+</div>
+<div class="loglist" id="orgLogListSite"></div>
+</div>
+</div>
+
+<!-- ===== 分頁四：關注規則 ===== -->
+<div id="tabPanel_alerts" hidden>
+<div class="selfnote">此設定由貴公司自行維護，TLI 後台僅檢視。</div>
+<div class="card">
+<h2>關注規則</h2>
+<div class="cardesc">命中任一開啟的規則，員工會出現在學習報告的「需關注」清單，並標示命中原因。參數欄留白時採 TLI 預設值（待定）；貴公司填寫後以貴公司設定的數值為準。</div>
+<div class="tablewrap"><table id="alertRuleTable" class="mgmttable"></table></div>
+<div class="actionrow"><button class="btn" onclick="saveAlertRules()">儲存關注規則</button></div>
+<div class="loglist" id="orgLogListAlerts"></div>
 </div>
 </div>
 
@@ -284,39 +334,95 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <script>
 function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
 function fmtNum(n){ return n.toLocaleString('zh-Hant'); }
+function nowStr(){ var d=new Date(); return d.toISOString().slice(0,16).replace('T',' '); }
 
-/* ===== 廠區／據點與取消判定基準（2026-09-10 新增：與 h02 員工管理共用同一組廠區清單，確保跨頁資料一致） ===== */
-var SITE_LIST = [
-  {id:'us', name:'美國廠區', country:'美國', tz:'America/Los_Angeles', tzLabel:'美國太平洋時間（UTC-7，夏令）'},
-  {id:'jp', name:'日本廠區', country:'日本', tz:'Asia/Tokyo', tzLabel:'日本標準時間（UTC+9）'}
+/* ===== 共用示範清單：部門與廠區（與 h02 員工管理共用同一組常數對齊，確保跨頁預設一致。
+   本頁可新增／改名／停用，變更會寫入瀏覽器 localStorage，同瀏覽器開啟 h02 時會讀到最新清單；
+   正式環境應改為讀寫後端企業組織主檔，而非瀏覽器端儲存。） ===== */
+var LS_DEPT_KEY = 'tliDemoOrgDepts';
+var LS_SITE_KEY = 'tliDemoOrgSites';
+var LS_LOG_KEY = 'tliDemoOrgLog';
+function defaultOrgDepts(){
+  return [
+    {id:'d0', name:'業務部', quotaLimit:1200, used:860, status:'啟用'},
+    {id:'d1', name:'研發部', quotaLimit:1400, used:1055, status:'啟用'},
+    {id:'d2', name:'廠務部', quotaLimit:900, used:410, status:'啟用'},
+    {id:'d3', name:'人資部', quotaLimit:600, used:198, status:'啟用'},
+    {id:'d4', name:'製造部', quotaLimit:1900, used:1717, status:'啟用'}
+  ];
+}
+function defaultOrgSites(){
+  return [
+    {id:'s0', name:'台灣總部', tz:'Asia/Taipei', tzLabel:'台灣時間（UTC+8）', status:'啟用', isBasis:true},
+    {id:'s1', name:'美國廠區', tz:'America/Los_Angeles', tzLabel:'美國太平洋時間（UTC-7，夏令）', status:'啟用', isBasis:false},
+    {id:'s2', name:'日本廠區', tz:'Asia/Tokyo', tzLabel:'日本標準時間（UTC+9）', status:'啟用', isBasis:false}
+  ];
+}
+var TZ_OPTIONS = [
+  {tz:'Asia/Taipei', label:'台灣時間（UTC+8）'},
+  {tz:'America/Los_Angeles', label:'美國太平洋時間（UTC-7，夏令）'},
+  {tz:'America/New_York', label:'美國東岸時間（UTC-4，夏令）'},
+  {tz:'Asia/Tokyo', label:'日本標準時間（UTC+9）'},
+  {tz:'Asia/Singapore', label:'新加坡時間（UTC+8）'},
+  {tz:'Europe/London', label:'英國時間（UTC+1，夏令）'}
 ];
-var EMP_COUNT_FOR_SITE = 26; /* 與 h02 EMPLOYEES 示範筆數一致，員工依序輪流分派廠區 */
-function siteEmpCount(siteIdx){
-  var c = 0;
-  for (var i=0;i<EMP_COUNT_FOR_SITE;i++){ if (i%2===siteIdx) c++; }
-  return c;
+function tzLabelOf(tz){ var f=TZ_OPTIONS.find(function(t){return t.tz===tz;}); return f?f.label:tz; }
+function loadOrgDepts(){
+  try{ var raw = localStorage.getItem(LS_DEPT_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgDepts();
 }
-var CONTRACT_TZ_BASIS = 'campus'; /* 'campus'＝依員工所屬廠區時區（預設）；'contract'＝統一用合約指定時區，兩者皆由 TLI 顧問於 a19 後台設定 */
-var CONTRACT_TZ_OVERRIDE = 'Asia/Taipei';
-function renderTzBasis(){
-  var el = document.getElementById('tzBasisTxt');
-  if (CONTRACT_TZ_BASIS === 'campus'){
-    el.textContent = '依員工所屬廠區時區：' + SITE_LIST.map(function(s){ return s.tzLabel+'（'+s.name+'）'; }).join('／') +
-      '；為取消時限與扣時數計算的判定基準，報表口徑亦依此計算，學員個人課表仍依瀏覽器時區顯示。';
-  } else {
-    el.textContent = '統一用合約指定時區：'+CONTRACT_TZ_OVERRIDE+'；不分廠區，為取消時限與扣時數計算的唯一判定基準。';
-  }
+function loadOrgSites(){
+  try{ var raw = localStorage.getItem(LS_SITE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgSites();
 }
-function renderCampusTable(){
-  var t = document.getElementById('campusTable');
-  t.innerHTML = '<tr><th>名稱</th><th>時區</th><th>員工數</th></tr>' + SITE_LIST.map(function(s, idx){
-    return '<tr><td>'+s.name+'</td><td>'+s.tzLabel+'</td><td>'+siteEmpCount(idx)+'</td></tr>';
-  }).join('');
+function saveOrgDepts(){ try{ localStorage.setItem(LS_DEPT_KEY, JSON.stringify(DEPTS)); }catch(err){} }
+function saveOrgSites(){ try{ localStorage.setItem(LS_SITE_KEY, JSON.stringify(SITES)); }catch(err){} }
+function loadOrgLog(){
+  try{ var raw = localStorage.getItem(LS_LOG_KEY); if (raw){ var arr = JSON.parse(raw); if (arr) return arr; } }catch(err){}
+  return [
+    {time:'2026-09-08 10:20', who:'陳雅婷（企業管理者）', what:'新增部門「製造部」'},
+    {time:'2026-09-09 15:05', who:'陳雅婷（企業管理者）', what:'將判定基準切換為「台灣總部」'}
+  ];
 }
+function saveOrgLogState(){ try{ localStorage.setItem(LS_LOG_KEY, JSON.stringify(ORG_LOG)); }catch(err){} }
+function pushOrgLog(what){
+  ORG_LOG.unshift({time: nowStr(), who:'陳雅婷（企業管理者）', what: what});
+  if (ORG_LOG.length > 20) ORG_LOG.length = 20;
+  saveOrgLogState();
+  renderOrgLog();
+}
+function renderOrgLog(){
+  var html = ORG_LOG.slice(0,6).map(function(l){ return '<div class="logrow">'+l.time+'　'+l.who+'　'+l.what+'</div>'; }).join('');
+  ['orgLogListDept','orgLogListSite','orgLogListAlerts'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.innerHTML = '<div class="hint" style="margin-bottom:4px">修改紀錄</div>'+html;
+  });
+}
+var DEPTS = loadOrgDepts();
+var SITES = loadOrgSites();
+var ORG_LOG = loadOrgLog();
 
-/* ===== 時數池與部門配額示範資料 ===== */
-var DEPTS = ['廠務部','設備工程部','品保部','資訊部','人資部'];
-var POOL_TOTAL = 6000, POOL_USED = 4240, POOL_RESERVED = 320;
+/* ===== 員工彙總（用於計算各部門／廠區在職人數，明細請至「員工管理」） ===== */
+var EMP_COUNT_FOR_ORG = 26;
+function empStatusFor(i){ return seededRand(i*7+11) < 0.92 ? '在學' : '停用'; }
+function makeOrgEmployees(){
+  var arr = [];
+  for (var i=0;i<EMP_COUNT_FOR_ORG;i++){
+    arr.push({
+      id:'emp'+i,
+      deptId: DEPTS[i % DEPTS.length].id,
+      siteId: SITES[i % SITES.length].id,
+      status: empStatusFor(i)
+    });
+  }
+  return arr;
+}
+var EMPLOYEES_ORG = makeOrgEmployees();
+function deptActiveCount(d){ return EMPLOYEES_ORG.filter(function(em){ return em.deptId===d.id && em.status==='在學'; }).length; }
+function siteActiveCount(s){ return EMPLOYEES_ORG.filter(function(em){ return em.siteId===s.id && em.status==='在學'; }).length; }
+
+/* ===== 時數池參考數值 ===== */
+var POOL_TOTAL = 6000, POOL_RESERVED = 320;
+var POOL_USED = DEPTS.reduce(function(a,d){ return a+(Number(d.used)||0); }, 0);
 var POOL_LEFT = POOL_TOTAL - POOL_USED - POOL_RESERVED;
 var POOL_EXPIRY = '2026-12-31';
 var CONTRACT_START = '2026-01-01', CONTRACT_END = '2026-12-31';
@@ -342,7 +448,7 @@ function renderExpiry(){
   });
   renderExtendBadge();
 }
-function setDemoDaysLeft(n){ demoDaysLeft = n; renderExpiry(); toast('示範：切換為距到期 '+n+' 天情境'); }
+function setDemoDaysLeft(n){ demoDaysLeft = n; renderExpiry(); toast('已切換為距到期 '+n+' 天情境'); }
 function renderExtendBadge(){
   var el = document.getElementById('extendStatusBadge');
   el.innerHTML = extensionStatus==='pending' ? '<span class="badge orange">展延申請中</span>' : '';
@@ -359,28 +465,39 @@ function submitExtend(){
   toast('已送出展延申請，顧問將聯繫您確認方案');
 }
 
-/* ===== 計價單位切換（時數池／預付款倒扣二選一顯示，示範用） ===== */
-var BILLING_UNIT = 'prepay'; /* 'hours'｜'prepay'，先以預付款倒扣示範 */
-var PAYMENT_METHOD_MAP = {hours:'月結', prepay:'預付款倒扣'};
-var PREPAY_BALANCE = 182000, PREPAY_MONTH_DEDUCT = 36400;
-function renderBillingUnit(){
-  var isPrepay = BILLING_UNIT === 'prepay';
-  document.getElementById('pool').hidden = isPrepay;
-  document.getElementById('prepayCard').hidden = !isPrepay;
-  document.getElementById('paymentMethodTxt').textContent = PAYMENT_METHOD_MAP[BILLING_UNIT];
-  document.getElementById('demoBtnHours').classList.toggle('active', BILLING_UNIT==='hours');
-  document.getElementById('demoBtnPrepay').classList.toggle('active', BILLING_UNIT==='prepay');
+/* ===== 取消時限與扣時數判定基準：依「廠區與時區」分頁設定的判定基準廠區顯示 ===== */
+function renderTzBasis(){
+  var el = document.getElementById('tzBasisTxt');
+  var basis = SITES.find(function(s){ return s.isBasis; }) || SITES[0];
+  el.textContent = basis ? ('依「'+basis.name+'」時區：'+basis.tzLabel+'；可至「廠區與時區」分頁調整判定基準。') : '尚未設定，請至「廠區與時區」分頁設定。';
 }
-function setBillingUnit(u){
-  BILLING_UNIT = u;
+
+/* ===== 計價單位（讀寫網址參數 billing，預設 hours；正式環境依合約設定固定顯示一種） ===== */
+var PAYMENT_METHOD_MAP = {hours:'月結', prepaid:'預付款倒扣'};
+var PREPAY_BALANCE = 182000, PREPAY_MONTH_DEDUCT = 36400;
+function getBillingFromUrl(){
+  var p = new URLSearchParams(location.search).get('billing');
+  return (p==='prepaid') ? 'prepaid' : 'hours';
+}
+var BILLING_UNIT = getBillingFromUrl();
+function onBillingDemoChange(v){
+  BILLING_UNIT = v;
+  var url = new URL(location.href);
+  url.searchParams.set('billing', v);
+  history.replaceState(null, '', url);
   renderBillingUnit();
-  toast('示範：切換為「'+PAYMENT_METHOD_MAP[u]+'」計價單位情境');
+}
+function renderBillingUnit(){
+  var isPrepay = BILLING_UNIT === 'prepaid';
+  document.getElementById('poolCardHours').hidden = isPrepay;
+  document.getElementById('poolCardPrepay').hidden = !isPrepay;
+  document.getElementById('paymentMethodTxt').textContent = PAYMENT_METHOD_MAP[BILLING_UNIT];
+  document.getElementById('billingDemoSel').value = BILLING_UNIT;
 }
 function renderPrepay(){
   document.getElementById('prepayBalanceTxt').textContent = fmtNum(PREPAY_BALANCE)+' 元';
   document.getElementById('prepayMonthTxt').textContent = fmtNum(PREPAY_MONTH_DEDUCT)+' 元';
 }
-
 function renderPool(){
   var items = [
     {num: fmtNum(POOL_TOTAL), lbl:'總量（小時）'},
@@ -394,20 +511,208 @@ function renderPool(){
   var pct = Math.round((POOL_USED+POOL_RESERVED)/POOL_TOTAL*100);
   document.getElementById('poolBarFill').style.width = pct+'%';
   document.getElementById('poolExpiry').textContent = '已用＋保留占總量 '+pct+'%，效期至 '+POOL_EXPIRY+'。';
-}
-var QUOTA = {};
-DEPTS.forEach(function(d,i){ QUOTA[d] = 900 + i*180; });
-function renderQuotaTable(){
-  var t = document.getElementById('quotaTable');
-  t.innerHTML = '<tr><th>部門</th><th>可編輯配額（小時）</th></tr>' + DEPTS.map(function(d){
-    return '<tr><td>'+d+'</td><td><input type="number" class="quotainput" data-dept="'+d+'" value="'+QUOTA[d]+'" min="0"></td></tr>';
+  var t = document.getElementById('deptUsageTable');
+  t.innerHTML = '<tr><th>部門</th><th>已領用（小時）</th></tr>' + DEPTS.map(function(d){
+    return '<tr><td>'+d.name+'</td><td>'+fmtNum(d.used)+'</td></tr>';
   }).join('');
 }
-function saveQuota(){
-  document.querySelectorAll('.quotainput').forEach(function(inp){
-    QUOTA[inp.dataset.dept] = Number(inp.value) || 0;
+
+/* ===== 分頁切換 ===== */
+function setActiveTab(tab){
+  ['contract','deptmgmt','sitemgmt','alerts'].forEach(function(t){
+    document.getElementById('tabBtn_'+t).classList.toggle('active', t===tab);
+    document.getElementById('tabPanel_'+t).hidden = (t!==tab);
   });
-  toast('已儲存部門配額');
+  if (tab === 'deptmgmt') renderDeptTable();
+  if (tab === 'sitemgmt') renderSiteTable();
+  if (tab === 'alerts') renderAlertRuleTable();
+}
+function initTabFromHash(){
+  if (location.hash === '#org') setActiveTab('deptmgmt');
+  else if (location.hash === '#alerts') setActiveTab('alerts');
+  else setActiveTab('contract');
+}
+window.addEventListener('hashchange', initTabFromHash);
+
+/* ===== 關注規則（2026-09-11 新增：各企業可自行設定學習報告「需關注」清單的命中門檻，
+   參數留白時採 TLI 預設值（待定）；企業填寫後以企業值為準） ===== */
+var LS_ALERT_KEY = 'tliDemoAlertRules';
+function defaultAlertRules(){
+  return [
+    {id:'attendance', enabled:false, label:'期間出勤率低於', unit:'%', param:'', desc:'依報表選定期間計算出勤率，低於門檻即命中，可及早發現出勤異常。'},
+    {id:'consecabsent', enabled:false, label:'連續缺席達', unit:'堂', param:'', desc:'連續缺席累計達門檻堂數即命中，避免長期缺席未被留意。'},
+    {id:'leavecount', enabled:false, label:'期間請假達', unit:'次', param:'', desc:'依報表選定期間累計請假次數達門檻即命中，供 HR 掌握請假頻率。'},
+    {id:'progress', enabled:false, label:'學習進度落後達', unit:'%', param:'', desc:'相對於部門平均或課程進度基準，落後幅度達門檻即命中。'},
+    {id:'failscore', enabled:false, label:'課程評量未及格達', unit:'次', param:'', desc:'累計評量未及格次數達門檻即命中，提醒及早安排補強。'}
+  ];
+}
+function loadAlertRules(){
+  try{ var raw = localStorage.getItem(LS_ALERT_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultAlertRules();
+}
+function saveAlertRulesState(){ try{ localStorage.setItem(LS_ALERT_KEY, JSON.stringify(ALERT_RULES)); }catch(err){} }
+var ALERT_RULES = loadAlertRules();
+function renderAlertRuleTable(){
+  var t = document.getElementById('alertRuleTable');
+  t.innerHTML = '<tr><th>開關</th><th>規則</th><th>門檻</th><th>說明</th></tr>' + ALERT_RULES.map(function(r){
+    return '<tr><td><input type="checkbox" '+(r.enabled?'checked':'')+' onchange="onAlertRuleToggle(\''+r.id+'\',this.checked)"></td>'+
+      '<td>'+r.label+'</td>'+
+      '<td><input type="number" min="0" class="quotainput" style="width:80px" value="'+r.param+'" placeholder="TLI 預設值待定" onchange="onAlertRuleParam(\''+r.id+'\',this.value)">'+r.unit+'</td>'+
+      '<td class="small">'+r.desc+'</td></tr>';
+  }).join('');
+  renderOrgLog();
+}
+function onAlertRuleToggle(id, checked){
+  var r = ALERT_RULES.find(function(x){ return x.id===id; });
+  if (r) r.enabled = checked;
+}
+function onAlertRuleParam(id, val){
+  var r = ALERT_RULES.find(function(x){ return x.id===id; });
+  if (r) r.param = val;
+}
+function saveAlertRules(){
+  saveAlertRulesState();
+  pushOrgLog('更新關注規則設定');
+  toast('已儲存關注規則');
+}
+
+/* ===== 部門管理 ===== */
+function showOrgMsg(elId, text, kind){
+  var el = document.getElementById(elId);
+  el.innerHTML = '<div class="'+(kind==='err'?'errtext':'sumtext')+'">'+text+'</div>';
+}
+function deptQuotaSumCheck(){
+  var sum = DEPTS.reduce(function(a,d){ return a+(Number(d.quotaLimit)||0); }, 0);
+  var over = sum > POOL_TOTAL;
+  var el = document.getElementById('deptQuotaSumTxt');
+  el.innerHTML = over
+    ? '<span class="errtext">各部門配額合計 '+fmtNum(sum)+' 小時超過合約總量 '+fmtNum(POOL_TOTAL)+' 小時，請調整後再儲存</span>'
+    : '部門配額合計 '+fmtNum(sum)+' 小時／時數池總量 '+fmtNum(POOL_TOTAL)+' 小時';
+  return over;
+}
+function renderDeptTable(){
+  var t = document.getElementById('deptMgmtTable');
+  t.innerHTML = '<tr><th>部門名稱</th><th>配額上限（小時）</th><th>已領用（小時）</th><th>在職員工數</th><th>狀態</th><th></th></tr>' +
+    DEPTS.map(function(d){
+      var actCount = deptActiveCount(d);
+      var actionBtn = '<button class="btn ghost" onclick="toggleDeptStatus(\''+d.id+'\')">'+(d.status==='啟用'?'停用':'啟用')+'</button>';
+      return '<tr><td><input type="text" class="quotainput" value="'+d.name+'" onchange="onDeptNameChange(\''+d.id+'\',this.value)"></td>'+
+        '<td><input type="number" min="0" class="quotainput" value="'+d.quotaLimit+'" oninput="onDeptQuotaInput(\''+d.id+'\',this.value)"></td>'+
+        '<td>'+fmtNum(d.used)+'</td>'+
+        '<td>'+actCount+'</td>'+
+        '<td>'+(d.status==='啟用' ? '<span class="badge green">啟用</span>' : '<span class="badge grey">停用</span>')+'</td>'+
+        '<td>'+actionBtn+'</td></tr>';
+    }).join('');
+  document.getElementById('deptMsg').innerHTML = '';
+  deptQuotaSumCheck();
+  renderOrgLog();
+}
+function onDeptNameChange(id, val){
+  var d = DEPTS.find(function(x){ return x.id===id; });
+  var name = val.trim();
+  if (!d || !name) { renderDeptTable(); return; }
+  d.name = name;
+}
+function onDeptQuotaInput(id, val){
+  var d = DEPTS.find(function(x){ return x.id===id; });
+  if (!d) return;
+  d.quotaLimit = Number(val)||0;
+  deptQuotaSumCheck();
+}
+function toggleDeptStatus(id){
+  var d = DEPTS.find(function(x){ return x.id===id; });
+  if (!d) return;
+  if (d.status==='啟用'){
+    var cnt = deptActiveCount(d);
+    if (cnt>0){
+      showOrgMsg('deptMsg', '「'+d.name+'」目前仍有 '+cnt+' 位在職員工，請先將員工轉調其他部門後才能停用。', 'err');
+      return;
+    }
+    d.status = '停用';
+  } else {
+    d.status = '啟用';
+  }
+  renderDeptTable();
+}
+function addDept(){
+  var idx = DEPTS.length;
+  DEPTS.push({id:'dnew'+Date.now(), name:'新部門'+(idx+1), quotaLimit:0, used:0, status:'啟用'});
+  renderDeptTable();
+}
+function saveDeptSettings(){
+  if (deptQuotaSumCheck()){ toast('部門配額合計超過時數池總量，請先調整'); return; }
+  saveOrgDepts();
+  pushOrgLog('更新部門設定');
+  toast('已儲存部門設定');
+}
+
+/* ===== 廠區與時區 ===== */
+function renderSiteTable(){
+  var t = document.getElementById('siteMgmtTable');
+  t.innerHTML = '<tr><th>廠區名稱</th><th>時區</th><th>員工數</th><th>判定基準</th><th>狀態</th><th></th></tr>' +
+    SITES.map(function(s){
+      var cnt = siteActiveCount(s);
+      var tzSelect = '<select class="quotainput" onchange="onSiteTzChange(\''+s.id+'\',this.value)">' + TZ_OPTIONS.map(function(t){
+        return '<option value="'+t.tz+'"'+(s.tz===t.tz?' selected':'')+'>'+t.label+'</option>';
+      }).join('') + '</select>';
+      var basisRadio = '<input type="radio" name="siteBasis" '+(s.isBasis?'checked':'')+' onchange="onSiteBasisChange(\''+s.id+'\')">';
+      var actionBtn = '<button class="btn ghost" onclick="toggleSiteStatus(\''+s.id+'\')">'+(s.status==='啟用'?'停用':'啟用')+'</button>';
+      return '<tr><td><input type="text" class="quotainput" value="'+s.name+'" onchange="onSiteNameChange(\''+s.id+'\',this.value)"></td>'+
+        '<td>'+tzSelect+'</td><td>'+cnt+'</td><td style="text-align:center">'+basisRadio+'</td>'+
+        '<td>'+(s.status==='啟用'?'<span class="badge green">啟用</span>':'<span class="badge grey">停用</span>')+'</td>'+
+        '<td>'+actionBtn+'</td></tr>';
+    }).join('');
+  document.getElementById('siteMsg').innerHTML = '';
+  renderOrgLog();
+}
+function onSiteNameChange(id, val){
+  var s = SITES.find(function(x){ return x.id===id; });
+  var name = val.trim();
+  if (!s || !name){ renderSiteTable(); return; }
+  s.name = name;
+}
+function onSiteTzChange(id, tz){
+  var s = SITES.find(function(x){ return x.id===id; });
+  if (!s) return;
+  s.tz = tz;
+  s.tzLabel = tzLabelOf(tz);
+}
+function onSiteBasisChange(id){
+  SITES.forEach(function(s){ s.isBasis = (s.id===id); });
+  var s = SITES.find(function(x){ return x.id===id; });
+  renderTzBasis();
+  toast('已切換判定基準為「'+s.name+'」，請假時限與逾時判定將依此時區計算。');
+  renderSiteTable();
+}
+function toggleSiteStatus(id){
+  var s = SITES.find(function(x){ return x.id===id; });
+  if (!s) return;
+  if (s.status==='啟用'){
+    var cnt = siteActiveCount(s);
+    if (s.isBasis){
+      showOrgMsg('siteMsg', '「'+s.name+'」為目前判定基準，請先切換判定基準至其他廠區後才能停用。', 'err');
+      return;
+    }
+    if (cnt>0){
+      showOrgMsg('siteMsg', '「'+s.name+'」目前仍有 '+cnt+' 位在職員工，請先將員工轉調其他廠區後才能停用。', 'err');
+      return;
+    }
+    s.status = '停用';
+  } else {
+    s.status = '啟用';
+  }
+  renderSiteTable();
+}
+function addSite(){
+  var idx = SITES.length;
+  var def = TZ_OPTIONS[0];
+  SITES.push({id:'snew'+Date.now(), name:'新廠區'+(idx+1), tz:def.tz, tzLabel:def.label, status:'啟用', isBasis:false});
+  renderSiteTable();
+}
+function saveSiteSettings(){
+  saveOrgSites();
+  pushOrgLog('更新廠區與時區設定');
+  toast('已儲存廠區設定');
 }
 
 /* ===== 申請 modal ===== */
@@ -430,9 +735,8 @@ renderExpiry();
 renderPool();
 renderPrepay();
 renderBillingUnit();
-renderQuotaTable();
 renderTzBasis();
-renderCampusTable();
+initTabFromHash();
 
 /* ===== 共用：側欄／頂欄／通知／登出／toast ===== */
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }

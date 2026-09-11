@@ -309,7 +309,7 @@ html,body{overflow-x:hidden;}
     <main>
       <div class="kicker">管理後台・顧問作業</div>
       <h1 class="page-title">諮詢與試聽預約</h1>
-      <p class="page-sub">彙整官網表單、AI 諮詢助手、線上諮詢面板、活動報名送進來的諮詢與試聽單，以及學員在官網自助選老師與時段完成付款的試聽預約；前者由顧問聯繫並安排試聽，後者已由學員自行約定，顧問僅需於試聽後跟進與轉建訂單。</p>
+      <p class="page-sub">彙整官網表單、AI 諮詢助手、線上諮詢面板、活動報名送進來的諮詢與試聽單，以及學員在官網自助選時段偏好並完成付款的試聽預約（老師由顧問安排）；前者由顧問聯繫並安排試聽，後者已由學員自行約定，顧問僅需於試聽後跟進與轉建訂單。</p>
 
       <div class="kpi-row" id="kpiRow"></div>
 
@@ -407,7 +407,7 @@ html,body{overflow-x:hidden;}
   <div class="modal">
     <div id="seedStep1">
       <h3>開通試辦種子帳號</h3>
-      <p class="modal-sub" id="seedModalSub">示範畫面，資料為模擬數字</p>
+      <p class="modal-sub" id="seedModalSub"></p>
       <div class="field">
         <label>選擇 2–3 位種子學員 Email</label>
         <div class="seed-list" id="seedEmailList"></div>
@@ -425,7 +425,7 @@ html,body{overflow-x:hidden;}
     </div>
     <div id="seedStep2" style="display:none;">
       <h3>寄送 HR 開通信</h3>
-      <p class="modal-sub" id="seedStep2Sub">示範畫面，資料為模擬數字</p>
+      <p class="modal-sub" id="seedStep2Sub"></p>
       <div class="field">
         <label>收件 Email（企業 HR 窗口）</label>
         <div style="font-size:13.5px;font-weight:700;color:var(--gray-900);padding:7px 0;" id="seedHrEmail">—</div>
@@ -468,7 +468,7 @@ var NAME_POOL=['林思妤','黃冠霖','張雅婷','陳建宏','王大同','Emma
 var SLA_ACTIVE=['新進','已聯繫'];
 function isSlaActive(o){return SLA_ACTIVE.indexOf(o.status)>-1;}
 
-/* ================= 來源分流：區分「自助預約（官網 p06 自助選老師時段並付款）」與「舊制顧問安排」 ================= */
+/* ================= 來源分流：區分「自助預約（官網 p06 自助選時段偏好並付款）」與「舊制顧問安排」 ================= */
 var SOURCE_SELF='自助預約（網站）';
 var ORIGIN_ALL=['自助預約（網站）','顧問安排','活動報名','轉介','企業試辦'];
 var ORIGIN_BADGE_CLASS={'自助預約（網站）':'origin-self','顧問安排':'origin-advisor','活動報名':'origin-event','轉介':'origin-referral','企業試辦':'b2b'};
@@ -507,7 +507,7 @@ function buildTrialFeedback(o){
 function buildTimeline(o){
   var tl=[];
   if(o.isSelfBooked){
-    tl.push({t:o.submittedAt,label:'學員於官網自助選擇老師與時段並完成付款（試聽費 NT$390，示範金額，同官網 p06 頁）'});
+    tl.push({t:o.submittedAt,label:'學員於官網自助選擇老師與時段並完成付款（試聽費 NT$390，同官網 p06 頁）'});
     tl.push({t:o.submittedAt,label:'系統自動指派顧問（用於試聽後跟進）：'+(o.advisor||'待指派')});
     tl.push({t:o.submittedAt,label:'已加入顧問「試聽後跟進」待辦清單'});
     if(['已上試聽','已購買','未購買待跟進'].indexOf(o.status)>-1){
@@ -598,10 +598,10 @@ var STATUSES_ALL=['新進','已聯繫','已安排試聽','已轉訂單','結案'
 var ENT_LANGS=['英文','日文'];
 var ENTERPRISE_SEED_DATA=[
   {id:'INQ-2026-B01',daysAgo:2,status:'新進',company:'範例半導體股份有限公司',industry:'半導體',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'12',nativeLang:'英文',contactName:'王小姐',contactInfo:'wang.hr@example-semi.example',note:'廠區工程師需加強跨部門會議英文，希望先安排 2–3 位種子學員試上',advisor:null},
-  {id:'INQ-2026-B02',daysAgo:6,status:'已聯繫',company:'示範科技股份有限公司',industry:'電子零組件',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'8',nativeLang:'日文',contactName:'佐藤先生',contactInfo:'sato.hr@example-tech.example',note:'派駐日本廠區儲備幹部，需商用日文溝通訓練',advisor:'王大明'},
+  {id:'INQ-2026-B02',daysAgo:6,status:'已聯繫',company:'北辰精密工業股份有限公司',industry:'電子零組件',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'8',nativeLang:'日文',contactName:'佐藤先生',contactInfo:'sato.hr@example-tech.example',note:'派駐日本廠區儲備幹部，需商用日文溝通訓練',advisor:'王大明'},
   {id:'INQ-2026-B03',daysAgo:12,status:'試辦中',company:'假設國際貿易股份有限公司',industry:'國際貿易',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'20',nativeLang:'英文',contactName:'陳先生',contactInfo:'chen.hr@example-trade.example',note:'業務團隊需提升國際客戶溝通能力，希望先小規模試辦驗證成效',advisor:'林顧問',seedEmails:['seed1@example-trade.example','seed2@example-trade.example','seed3@example-trade.example']},
   {id:'INQ-2026-B04',daysAgo:20,status:'試辦報告已送',company:'範例生醫股份有限公司',industry:'生技醫療',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'15',nativeLang:'日文',contactName:'田中小姐',contactInfo:'tanaka.hr@example-bio.example',note:'研發人員赴日交流頻繁，需日文商務書信與會議能力',advisor:'陳顧問',seedEmails:['seed1@example-bio.example','seed2@example-bio.example']},
-  {id:'INQ-2026-B05',daysAgo:35,status:'已轉正式',company:'示範金融股份有限公司',industry:'金融服務',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'30',nativeLang:'英文',contactName:'李小姐',contactInfo:'li.hr@example-fin.example',note:'海外分行人員需標準商用英文訓練，試辦成效良好已轉正式合約',advisor:'王大明',seedEmails:['seed1@example-fin.example','seed2@example-fin.example','seed3@example-fin.example']},
+  {id:'INQ-2026-B05',daysAgo:35,status:'已轉正式',company:'安泰保經股份有限公司',industry:'金融服務',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'30',nativeLang:'英文',contactName:'李小姐',contactInfo:'li.hr@example-fin.example',note:'海外分行人員需標準商用英文訓練，試辦成效良好已轉正式合約',advisor:'王大明',seedEmails:['seed1@example-fin.example','seed2@example-fin.example','seed3@example-fin.example']},
   {id:'INQ-2026-B06',daysAgo:28,status:'未成交',company:'假設物流股份有限公司',industry:'物流運輸',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'6',nativeLang:'日文',contactName:'鈴木先生',contactInfo:'suzuki.hr@example-logi.example',note:'試辦期間內部組織調整，暫緩導入計畫',advisor:'林顧問',seedEmails:['seed1@example-logi.example','seed2@example-logi.example'],lostReason:'預算不符'}
 ];
 ENTERPRISE_SEED_DATA.forEach(function(e,ei){
@@ -636,9 +636,9 @@ ENTERPRISE_SEED_DATA.forEach(function(e,ei){
   RECORDS.push(o);
 });
 
-/* ================= 自助試聽預約（承接 p06 自助選老師與時段＋付款流程，無需顧問安排試聽） ================= */
+/* ================= 自助試聽預約（承接 p06 自助選時段偏好＋付款流程，顧問只需安排老師） ================= */
 var SELF_TEACHERS=['王老師','李老師','陳老師','系統配對'];
-var SELF_PURCHASE_PLANS=['體驗方案（10 堂，NT$12,000，示範價，同官網 p03 銷售方案）','標準方案（NT$33,000，示範價，同官網 p03 銷售方案）','彈性團體直播體驗（NT$3,600，示範價，同官網 p03 銷售方案）','彈性團體直播標準（NT$9,600，示範價，同官網 p03 銷售方案）'];
+var SELF_PURCHASE_PLANS=['體驗方案（10 堂，NT$12,000，同官網 p03 銷售方案）','標準方案（NT$33,000，同官網 p03 銷售方案）','彈性團體直播體驗（NT$3,600，同官網 p03 銷售方案）','彈性團體直播標準（NT$9,600，同官網 p03 銷售方案）'];
 var SELF_FOLLOWUP_REASONS=['試聽後表示需與家人討論，尚未決定','考慮中，正在比較其他方案','詢問是否有分期付款，待顧問回覆後再決定','近期較忙，希望之後再決定'];
 var SELF_STATUS_GROUPS=[
   {status:'已預約試聽', daysAgo:[0,0,1,2]},
@@ -924,8 +924,8 @@ function tliOpenDrawer(id){
   }
   if(o.isSelfBooked){
     html+='<div class="dsection"><h3>自助預約資訊</h3>'+
-      '<div class="dfield"><span class="dl">預約方式</span><span class="dv">學員於官網自助選老師與時段並完成付款，無需顧問安排</span></div>'+
-      '<div class="dfield"><span class="dl">試聽費用</span><span class="dv">NT$390（示範金額，同官網 p06 自助試聽預約頁）</span></div>'+
+      '<div class="dfield"><span class="dl">預約方式</span><span class="dv">學員於官網自助選時段偏好並完成付款，由顧問安排老師</span></div>'+
+      '<div class="dfield"><span class="dl">試聽費用</span><span class="dv">NT$390（同官網 p06 自助試聽預約頁）</span></div>'+
       (o.status==='已購買'?'<div class="dfield"><span class="dl">後續購買</span><span class="dv">'+o.purchasedPlan+'</span></div>':'')+
       (o.status==='未購買待跟進'?'<div class="dfield"><span class="dl">未購買原因</span><span class="dv">'+o.followupReason+'</span></div>':'')+
     '</div>';
@@ -1044,7 +1044,7 @@ var __seedTargetId=null;
 function tliOpenSeedModal(id){
   __seedTargetId=id;
   var o=recordById(id);
-  document.getElementById('seedModalSub').textContent=o.company+'・示範畫面，資料為模擬數字';
+  document.getElementById('seedModalSub').textContent=o.company;
   var emails=o.seedEmails&&o.seedEmails.length?o.seedEmails:['seed1@'+(o.company?'example':'example')+'.example','seed2@example.example','seed3@example.example'];
   document.getElementById('seedEmailList').innerHTML=emails.map(function(e,i){
     return '<label><input type="checkbox" class="seedchk" value="'+e+'" '+(i<2?'checked':'')+'> '+e+'</label>';
@@ -1069,7 +1069,7 @@ function tliSubmitSeedAccounts(){
   renderTable();
   document.getElementById('seedStep1').style.display='none';
   document.getElementById('seedStep2').style.display='block';
-  document.getElementById('seedStep2Sub').textContent=o.company+'・示範畫面，資料為模擬數字';
+  document.getElementById('seedStep2Sub').textContent=o.company;
   document.getElementById('seedHrEmail').textContent=o.contactInfo||'—';
   tliToast('已開通 '+checked.length+' 位種子學員試辦帳號，已產生零元試辦訂單（試辦天數門檻由 TLI 拍板），開通信已寄出');
 }

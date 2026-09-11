@@ -131,8 +131,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="topbar-left"><a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a><div class="topbar-title">進入教室</div></div>
     <div class="topbar-actions">
       <div class="demo-switch">
-        <span class="small muted" style="white-space:nowrap;">示範狀態</span>
-        <select id="demoStateSelect" onchange="onDemoStateChange(this.value)" aria-label="示範開課狀態切換">
+        <span class="small muted" style="white-space:nowrap;">情境切換</span>
+        <select id="demoStateSelect" onchange="onDemoStateChange(this.value)" aria-label="情境切換">
           <option value="before">開課前</option>
           <option value="open">可進入</option>
           <option value="ended">已結束</option>
@@ -160,7 +160,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <h4 style="margin:0 0 2px;font-size:13.5px;">課程教材</h4>
           <p class="small muted" style="margin:0;" id="materialLink">－</p>
         </div>
-        <button type="button" class="btn btn-outline btn-sm" style="min-height:36px;padding:7px 12px;font-size:12.5px;" onclick="showToast('示範連結，開啟教材（僅供展示）')">開啟教材</button>
+        <button type="button" class="btn btn-outline btn-sm" style="min-height:36px;padding:7px 12px;font-size:12.5px;" onclick="showToast('開啟教材')">開啟教材</button>
       </div>
     </div>
 
@@ -214,9 +214,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <p class="small muted" id="zoomStatusText">正在以 Zoom 登入…</p>
     </div>
     <div class="meeting-field"><span>會議 ID</span><strong id="zoomMeetingId">－</strong></div>
-    <div class="meeting-field"><span>密碼</span><strong>依系統產生（示範）</strong></div>
+    <div class="meeting-field"><span>密碼</span><strong>依系統產生</strong></div>
     <div class="stack" style="margin-top:14px;">
-      <button type="button" class="btn btn-outline btn-block" onclick="showToast('示範連結，不會另外開啟外部視窗')">若未自動開啟請點此</button>
+      <button type="button" class="btn btn-outline btn-block" onclick="showToast('不會另外開啟外部視窗')">若未自動開啟請點此</button>
       <button type="button" class="btn btn-outline btn-block" onclick="closeZoomModal()">關閉</button>
     </div>
   </div>
@@ -310,7 +310,7 @@ function renderStatus(){
     html += '<div class="stack">';
     html += '<button type="button" class="btn btn-outline btn-block" onclick="location.href=\'m17_feedback.html?lesson='+LESSON.id+'\'">填寫課後回饋</button>';
     if (LESSON.type==='group' && LESSON.replayEligible){
-      html += '<button type="button" class="btn btn-outline btn-block" onclick="showToast(\'示範連結：回放影片將於此開啟（僅供展示）\')">觀看回放（開放天數依設定）</button>';
+      html += '<button type="button" class="btn btn-outline btn-block" onclick="showToast(\'回放影片將於此開啟\')">觀看回放（開放天數依設定）</button>';
     }
     html += '</div>';
   }

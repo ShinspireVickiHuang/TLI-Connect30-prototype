@@ -346,7 +346,7 @@ body.self-serve-mode .purpose-toggle{display:none;}
           <div class="selfserve-price" id="selfservePriceNote">
             <span data-i18n="p06_selfserve_price_label">體驗課費用</span>
             <strong data-i18n="p06_selfserve_price_value">NT$390</strong>
-            <span class="tag" data-i18n="p06_selfserve_price_tag">（模擬金額）</span>
+            <span class="tag" data-i18n="p06_selfserve_price_tag"></span>
           </div>
           <button type="button" class="btn btn-accent btn-block" id="goPaymentBtn" disabled onclick="goToPayment()" data-i18n="p06_go_payment_btn">前往付款</button>
         </div>
@@ -932,7 +932,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
   if(typeof onLangApplied === 'function') onLangApplied(lang);
 }
@@ -1065,7 +1065,7 @@ var I18N_PAGE = {
   p06_label_teacher_showcase: '師資介紹', p06_teacher_showcase_hint: '體驗課由顧問依你的時段與目標安排合適老師，無法在此指定老師',
   p06_teacher_wang: '王老師', p06_teacher_li: '李老師', p06_teacher_chen: '陳老師',
   p06_advisor_assign_note: '顧問將依你的時段為你安排老師並通知，完成付款即送出。',
-  p06_selfserve_price_label: '體驗課費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（模擬金額）',
+  p06_selfserve_price_label: '體驗課費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '',
   p06_go_payment_btn: '前往付款',
   p06_label_contact_time: '方便聯繫時段', p06_submit_btn: '送出預約',
   p06_missing_campus: '校區', p06_missing_phone: '手機或 LINE ID', p06_missing_slot: '試聽時段',
@@ -1142,7 +1142,7 @@ en: {
   p06_label_teacher_showcase: 'Our Teachers', p06_teacher_showcase_hint: 'Your advisor will match you with a suitable teacher based on your time and goals — you cannot pick a teacher here',
   p06_teacher_wang: 'Teacher Wang', p06_teacher_li: 'Teacher Li', p06_teacher_chen: 'Teacher Chen',
   p06_advisor_assign_note: 'Your advisor will assign a teacher based on your selected times and notify you — submitting payment completes your booking.',
-  p06_selfserve_price_label: 'Trial class fee', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '(demo amount)',
+  p06_selfserve_price_label: 'Trial class fee', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '',
   p06_go_payment_btn: 'Proceed to Payment',
   p06_label_contact_time: 'Best time to reach you', p06_submit_btn: 'Submit Booking',
   p06_missing_campus: 'Campus', p06_missing_phone: 'Mobile or LINE ID', p06_missing_slot: 'Trial time slot',
@@ -1219,7 +1219,7 @@ ja: {
   p06_label_teacher_showcase: '講師紹介', p06_teacher_showcase_hint: '体験レッスンはアドバイザーがご希望の時間帯と目標に応じて講師を手配します。こちらでは講師を指定できません',
   p06_teacher_wang: '王先生', p06_teacher_li: '李先生', p06_teacher_chen: '陳先生',
   p06_advisor_assign_note: 'アドバイザーがご希望の時間帯に応じて講師を手配しご連絡します。お支払い完了で送信されます。',
-  p06_selfserve_price_label: '体験レッスン費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '（デモ金額）',
+  p06_selfserve_price_label: '体験レッスン費用', p06_selfserve_price_value: 'NT$390', p06_selfserve_price_tag: '',
   p06_go_payment_btn: 'お支払いへ進む',
   p06_label_contact_time: 'ご連絡可能な時間帯', p06_submit_btn: '予約を送信',
   p06_missing_campus: '校舎', p06_missing_phone: '携帯電話番号またはLINE ID', p06_missing_slot: '体験レッスンの時間帯',

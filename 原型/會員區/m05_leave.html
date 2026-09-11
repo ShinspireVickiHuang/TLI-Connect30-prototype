@@ -215,7 +215,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     </div>
     <div class="topbar-actions">
       <div class="role-switch-wrap" id="roleSwitchWrap">
-        <button type="button" class="mini-select demo-switch" id="roleSwitchBtn" aria-haspopup="listbox" aria-expanded="false" title="示範：切換學員資料（正式版依課堂實際所屬方案自動判斷規則）" onclick="toggleRoleMenu()">示範：切換學員資料</button>
+        <button type="button" class="mini-select demo-switch" id="roleSwitchBtn" aria-haspopup="listbox" aria-expanded="false" title="情境切換（正式版依課堂實際所屬方案自動判斷規則）" onclick="toggleRoleMenu()">情境切換</button>
         <div class="role-menu role-menu-wrap" id="roleMenu" role="listbox">
           <button type="button" role="option" onclick="switchDemoPlan('')">重新選擇要請假的課</button>
           <button type="button" role="option" onclick="switchDemoPlan('plan-a')">看自費一對一方案的課</button>
@@ -224,10 +224,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <button type="button" role="option" onclick="switchDemoPlan('plan-d')">看機構授權方案的課</button>
         </div>
       </div>
-      <select class="mini-select demo-switch" id="approvalSwitch" aria-label="示範：企業合約審核模式" title="示範：企業合約審核模式（依合約設定三選一）" onchange="switchApprovalMode(this.value)">
-        <option value="self">示範：自主取消</option>
-        <option value="hr">示範：需 HR 核准</option>
-        <option value="reschedule">示範：只能改期</option>
+      <select class="mini-select demo-switch" id="approvalSwitch" aria-label="情境切換" title="情境切換（依合約設定三選一）" onchange="switchApprovalMode(this.value)">
+        <option value="self">自主取消</option>
+        <option value="hr">需 HR 核准</option>
+        <option value="reschedule">只能改期</option>
       </select>
       <a class="explore-link" href="../公開網站/p02_courses.html" aria-label="探索課程" title="探索課程">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
@@ -250,8 +250,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card" id="classPickerCard" style="margin-bottom:14px;">
       <div class="flex-between" style="margin-bottom:2px;">
         <h3 style="margin:0;font-size:15px;">選擇要請假的課</h3>
-        <span class="demo-tag">示範資料</span>
-      </div>
+              </div>
       <p class="small muted" style="margin:4px 0 12px;">每筆堂次都標示所屬方案與付費方，規則依所屬方案套用。</p>
       <div id="classPickerList"></div>
     </div>
@@ -273,8 +272,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card" style="margin-top:14px;">
       <div class="flex-between">
         <h3 style="margin:0;font-size:15px;">請假紀錄</h3>
-        <span class="demo-tag">示範畫面，資料為模擬數字</span>
-      </div>
+              </div>
       <p class="records-summary" id="recordsSummary"></p>
       <div class="filter-row">
         <select class="filter-select" id="filterPeriod" onchange="onRecordFilterChange()" aria-label="篩選期間">
@@ -704,7 +702,7 @@ function renderRuleCard(planId){
       ];
     }
     el.innerHTML=
-      '<div class="flex-between" style="margin-bottom:8px;"><h3 style="margin:0;font-size:15px;color:#075A45;">你的請假規則（企業合約覆寫・'+approvalTitle+'）</h3><span class="demo-tag">示範畫面，資料為模擬數字</span></div>'+
+      '<div class="flex-between" style="margin-bottom:8px;"><h3 style="margin:0;font-size:15px;color:#075A45;">你的請假規則（企業合約覆寫・'+approvalTitle+'）</h3></div>'+
       '<ul class="rule-list" style="color:#0B6B52;">'+approvalLines.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>';
   }else if(plan.ruleGroup==='institution'){
     el.className='card';
@@ -715,7 +713,7 @@ function renderRuleCard(planId){
         '<li>12 小時內無法取消場次報名，未到場將記為 no-show。</li>'+
         '<li>no-show 將記入學習成效紀錄。</li>'+
       '</ul>'+
-      '<div class="inst-stat">本週剩餘次數：<b>'+INST_WEEKLY_REMAIN+'</b><span class="demo-tag">示範畫面，資料為模擬數字</span></div>';
+      '<div class="inst-stat">本週剩餘次數：<b>'+INST_WEEKLY_REMAIN+'</b></div>';
   }
 }
 

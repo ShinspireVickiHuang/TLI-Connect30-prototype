@@ -975,7 +975,7 @@ function saveLicense(type, id){
   renderList(type);
   toast('已儲存授權標記');
 }
-function revertVersion(type, id){ toast('已還原為 v1.0 版本（示範）'); }
+function revertVersion(type, id){ toast('已還原為 v1.0 版本'); }
 
 /* ================= 教材詳情抽屜（v2：加入內容分層／血緣／審查紀錄） ================= */
 function arrowUpSvg(){ return '<svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lineage-arrow"><line x1="10" y1="16" x2="10" y2="4"/><polyline points="5 9 10 4 15 9"/></svg>'; }
@@ -1007,7 +1007,7 @@ function reviewResultBadge(s){
 function renderReviewLog(r){
   if (!r.reviewLog || !r.reviewLog.length) return '<div class="small">尚無審查紀錄。</div>';
   var rows = r.reviewLog.map(function(log){
-    var actionCell = log.result==='審查中' ? '<button class="btn ghost" onclick="approveReview(\''+r.id+'\')">審查通過（示範）</button>' : '';
+    var actionCell = log.result==='審查中' ? '<button class="btn ghost" onclick="approveReview(\''+r.id+'\')">審查通過</button>' : '';
     return '<tr><td>'+log.date+'</td><td>'+(log.reviewer||'—')+'</td><td>'+(log.opinion||'—')+'</td><td>'+reviewResultBadge(log.result)+'</td><td>'+actionCell+'</td></tr>';
   }).join('');
   return '<table class="versiontable"><tr><th>日期</th><th>審查人</th><th>意見</th><th>結果</th><th></th></tr>'+rows+'</table>';
@@ -1027,8 +1027,7 @@ function openMaterialDrawer(id){
   document.getElementById('drw_title').textContent = r.name;
   document.getElementById('drw_sub').textContent = '教材庫｜'+r.level+'｜'+r.status;
   var body =
-    '<div class="note" style="margin-bottom:10px">內容分層與防火牆：示範畫面，資料為模擬數字。</div>' +
-    '<div class="kv"><span>授權層級</span><span>'+licenseLevelBadge(r)+'</span></div>' +
+        '<div class="kv"><span>授權層級</span><span>'+licenseLevelBadge(r)+'</span></div>' +
     (r.boundEnterprise ? '<div class="kv"><span>綁定企業</span><span>'+r.boundEnterprise+'</span></div>' : '') +
     '<div class="kv"><span>產業別</span><span>'+r.industry+'</span></div>' +
     '<div class="kv"><span>來源</span><span>'+r.source+'</span></div>' +
@@ -1086,7 +1085,7 @@ function renderReviewModal(){
   var m = MATERIALS.find(function(x){return x.id===currentReviewMatId;});
   var body = document.getElementById('reviewBody');
   body.innerHTML =
-    '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字，實際審查流程與人員由 TLI 教研團隊執行。</div>' +
+    '<div class="note" style="margin-bottom:10px">實際審查流程與人員由 TLI 教研團隊執行。</div>' +
     '<div class="desc" style="margin-bottom:10px">教材「'+m.name+'」目前為「'+m.licenseLevel+'」，申請轉為公開通用前請逐項確認去識別化審查勾稽項目，全部勾選後才可送出：</div>' +
     REVIEW_CHECKLIST_ITEMS.map(function(item, idx){
       return '<label class="small" style="display:block;margin:8px 0"><input type="checkbox" class="reviewChk" data-idx="'+idx+'" onchange="onReviewCheckChange()"> '+item+'</label>';
@@ -1118,7 +1117,7 @@ function approveReview(matId){
   if (m.reviewLog && m.reviewLog.length){
     var last = m.reviewLog[m.reviewLog.length-1];
     last.result = '通過';
-    if (!last.reviewer) last.reviewer = '（示範）教研主管';
+    if (!last.reviewer) last.reviewer = '教研主管';
   }
   renderList('materials');
   openMaterialDrawer(matId);

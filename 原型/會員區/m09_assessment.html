@@ -176,7 +176,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
-      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
+      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="情境切換" title="情境切換" onchange="handleDemoStateChange(this)">
         <option value="default">有課程學員</option>
         <option value="new">新學員</option>
       </select>
@@ -202,7 +202,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="empty-state" style="padding:22px 16px 10px;">
           <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L17 22l-5-3-5 3 1.5-8.5"/></svg>
           <h4>尚未定級</h4>
-          <p>完成分級測驗即可開始追蹤你的等級與升等進度<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+          <p>完成分級測驗即可開始追蹤你的等級與升等進度</p>
         </div>
         <button class="btn btn-primary btn-block" onclick="location.href='m11_quiz.html?type=level'">前往分級測驗</button>
       </div>
@@ -309,7 +309,7 @@ function handleLangCurrency(sel){
   });
   if(lang==='zh-CN'||lang==='de'){
     var names={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+names[lang]);
   } else {
     showToast('顯示語言／幣別已切換為 '+langText);
   }

@@ -618,7 +618,7 @@ ENT_ORDER_SEEDS.slice().reverse().forEach(function(s, idx){
 
 /* ================= 20260909e 新增：機構授權帳單訂單（授權費 1 筆＋人頭費 × N，示範畫面，資料為模擬數字） =================
    對應 a19 機構授權分頁「產生本期機構帳單」動作：帳單品項單價未拍板，一律留白（amount:null）並於明細頁標「參數設定 #待定」；
-   大學為海外機構（美國大學示範），開票主體對應 a06 開票主體路由規則「其他地區」，示範標為「待定（海外主體）」。 */
+   大學為海外機構（範例州立大學），開票主體對應 a06 開票主體路由規則「其他地區」，示範標為「待定（海外主體）」。 */
 var INST_BILL_HEADCOUNT_DEMO = 183; /* 示範人數，非實際拍板數字 */
 function makeInstitutionBillOrder(seq){
   var name = '範例州立大學';
@@ -629,7 +629,7 @@ function makeInstitutionBillOrder(seq){
   ];
   return {
     id:'ORD-2026-I'+padNum(100+seq,3),
-    student: name, studentId:'', campus:'海外（美國大學示範）', tier:'ENT',
+    student: name, studentId:'', campus:'海外（範例州立大學）', tier:'ENT',
     status:'待收款', amount:0, payMode:'月結', entChannel:'匯款', source:'顧問建訂單', builder:'顧問 A',
     created: baseDate, items: items,
     payments: [],
@@ -859,7 +859,7 @@ function openOrderDrawer(id){
   document.getElementById('od_statusrow').innerHTML = statusBadgeOrd(o.status)+' '+sourceBadge(o.source)+' '+orderTypeBadge(o);
   var trialBox = document.getElementById('od_trialnote');
   if (o.trial){
-    trialBox.innerHTML = '<div class="note" style="margin-bottom:12px">試辦期間訂單：種子帳號數 <b>'+o.trial.seatCount+'</b> 個，試辦到期日 <b>'+o.trial.trialEnd+'</b>，到期前系統將提醒顧問追蹤轉正式合約。示範畫面，資料為模擬數字。</div>';
+    trialBox.innerHTML = '<div class="note" style="margin-bottom:12px">試辦期間訂單：種子帳號數 <b>'+o.trial.seatCount+'</b> 個，試辦到期日 <b>'+o.trial.trialEnd+'</b>，到期前系統將提醒顧問追蹤轉正式合約。</div>';
   } else {
     trialBox.innerHTML = '';
   }
@@ -904,7 +904,7 @@ function renderOdEntHours(o){
     o.subAccountDeductions.map(function(r){
       return '<tr><td>'+r.employee+'</td><td>'+r.lesson+'</td><td>'+r.hours+' 小時</td><td>'+r.remaining+' 小時</td><td>'+r.time+'</td></tr>';
     }).join('') + '</table></div>' +
-    '<div class="hint" style="margin-top:8px">子帳號扣時數從企業母帳號時數池統一扣抵，非各自獨立計算；示範畫面，資料為模擬數字。</div>';
+    '<div class="hint" style="margin-top:8px">子帳號扣時數從企業母帳號時數池統一扣抵，非各自獨立計算。</div>';
   el.innerHTML = html;
 }
 
@@ -1251,7 +1251,7 @@ function renderNeoWizard(){
   } else if (neoStep===2){
     var ent = entById2(neoDraft.entId);
     var tierRows = ent.contract.tiers.map(function(t){ return '<tr><td>'+t.from+'</td><td>'+(t.to===''?'不限':t.to)+'</td><td class="small">由 TLI 拍板</td></tr>'; }).join('');
-    body.innerHTML = '<div class="note" style="margin-bottom:12px">已帶出「'+ent.name+'」的合約參數，供本次建訂單參考。示範畫面，資料為模擬數字。</div>' +
+    body.innerHTML = '<div class="note" style="margin-bottom:12px">已帶出「'+ent.name+'」的合約參數，供本次建訂單參考。</div>' +
       '<div class="grid2" style="margin-bottom:14px">' +
       '<div class="statcard"><div class="lbl">階梯計價規則類型</div><div class="val" style="font-size:15px">'+ent.contract.tieredType+'</div></div>' +
       '<div class="statcard"><div class="lbl">時數池總量</div><div class="val">'+ent.contract.poolTotal+' 小時</div></div>' +
@@ -1279,8 +1279,8 @@ function renderNeoWizard(){
       '<div class="formrow"><label>付款方式（合約層，限分期／月結／預付款倒扣）</label><select id="neo_paymode" onchange="onNeoPaymodeChange(this.value)">'+payOptions+'</select></div>' +
       '<div class="formrow"><label>收款渠道</label><select id="neo_channel" onchange="neoDraft.channel=this.value">'+chanOptions+'</select></div>' +
       (neoDraft.payMode==='預付款倒扣' ?
-        '<div class="formrow"><label>預付金額（示範，NT$）</label><input type="number" id="neo_prepaid" value="'+(neoDraft.prepaidAmount||neoDraft.amount)+'" onchange="neoDraft.prepaidAmount=Number(this.value)||0"></div>' +
-        '<div class="note">入帳後轉 a13 預付款頁面，由財務登記每堂扣抵明細，示範畫面，資料為模擬數字。</div>'
+        '<div class="formrow"><label>預付金額（NT$）</label><input type="number" id="neo_prepaid" value="'+(neoDraft.prepaidAmount||neoDraft.amount)+'" onchange="neoDraft.prepaidAmount=Number(this.value)||0"></div>' +
+        '<div class="note">入帳後轉 a13 預付款頁面，由財務登記每堂扣抵明細。</div>'
         : '') +
       neoWizFoot(true, '下一步', 'neoGoStep4()');
   } else if (neoStep===4){

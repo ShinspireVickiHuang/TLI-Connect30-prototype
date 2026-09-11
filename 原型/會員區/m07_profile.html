@@ -465,12 +465,12 @@ function savePassword(){
   if(!cur||!nw){ showToast('請輸入目前密碼與新密碼'); return; }
   if(nw!==confirm){ showToast('兩次輸入的新密碼不一致'); return; }
   document.getElementById('passwordOverlay').classList.add('hidden');
-  showToast('密碼已更新（示範）');
+  showToast('密碼已更新');
 }
 
 /* ===== 付款方式：不在 TLI 系統內維護卡片資料（資安考量），只提供前往金流平台的入口 ===== */
 function openPaymentGateway(){
-  showToast('將導轉至藍新／Stripe 金流平台管理付款方式（示範，正式串接後為外部頁面）');
+  showToast('將導轉至藍新／Stripe 金流平台管理付款方式（正式串接後為外部頁面）');
 }
 
 /* ===== 收據載具預設 ===== */
@@ -574,7 +574,7 @@ function handleLangChange(sel){
   });
   if(lang==='zh-CN'||lang==='de'){
     var names={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+names[lang]);
   } else {
     showToast('顯示語言／幣別已切換為 '+txt);
   }

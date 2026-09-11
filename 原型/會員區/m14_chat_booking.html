@@ -190,8 +190,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="topbar-left"><a class="topbar-logo-wrap" href="../公開網站/p01_home.html" aria-label="TLI 官網"><img src="../assets/tli-logo.svg" alt="TLI"></a><div class="topbar-title">團體聊天室</div></div>
     <div class="topbar-actions">
       <div class="demo-switch">
-        <span class="small muted" style="white-space:nowrap;">示範</span>
-        <select id="demoStateSelect" onchange="onDemoStateChange(this.value)" aria-label="示範身分與權益狀態切換">
+        <span class="small muted" style="white-space:nowrap;">情境切換</span>
+        <select id="demoStateSelect" onchange="onDemoStateChange(this.value)" aria-label="情境切換">
           <option value="b2c|entitled">B2C・有權益</option>
           <option value="b2c|none">B2C・方案未含聊天室</option>
           <option value="b2b|entitled">企業員工・有權益</option>
@@ -227,7 +227,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
     <div class="noshow-banner hidden" id="noshowBanner">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <div>你有 <b id="noshowCountText">1</b> 次未出席紀錄<span class="small" style="margin-left:6px;">示範畫面，資料為模擬數字</span></div>
+      <div>你有 <b id="noshowCountText">1</b> 次未出席紀錄</div>
     </div>
 
     <div class="legend-row">
@@ -272,8 +272,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card">
       <button type="button" class="btn btn-outline btn-sm" id="myRecordToggleBtn" onclick="toggleMyRecord()">展開我的紀錄（已完成／已取消）</button>
       <div id="myRecordBody" class="hidden" style="margin-top:14px;">
-        <div class="small muted" style="margin-bottom:10px;">示範畫面，資料為模擬數字</div>
-        <div class="mytab-row" id="myTabRow"></div>
+                <div class="mytab-row" id="myTabRow"></div>
         <div id="myBookingList"></div>
         <div style="text-align:center;margin-top:10px;">
           <button type="button" class="btn btn-outline btn-sm hidden" id="loadMoreBtn" onclick="loadMoreMyBookings()">載入更多</button>
@@ -418,7 +417,7 @@ function mondayOf(d){
 }
 var WEEK0_MONDAY = mondayOf(TODAY);
 
-/* ---------- 老師與主題介紹（vicki 回饋：每場聊天室都要有介紹）----------
+/* ---------- 老師與主題介紹（每場聊天室都要有介紹）----------
    每個主題含：適合等級、主題簡介（2-3 句）、討論題綱 3 條、事前準備（可選）、語言。
    帶領老師依主題分工，各附一句簡介；主題與老師資料延續既有兩題（日常對話練習／時事話題討論），並擴充 4 個主題與 2 位老師以呈現真實的每週場次多樣性。 */
 var TEACHERS = [
@@ -754,7 +753,7 @@ function sessionActionsHTML(s){
     return '<div class="small muted">場次已結束</div>';
   }
   if (s.full){
-    return '<div class="small muted">已額滿（示範）</div>';
+    return '<div class="small muted">已額滿</div>';
   }
   if (WEEKLY_LIMIT_DEMO - usedInWeekOf(s.date) <= 0){
     return '<div class="small muted">已達本週上限</div>';

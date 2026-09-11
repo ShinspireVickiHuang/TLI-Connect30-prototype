@@ -428,7 +428,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
 }
 function setLang(lang){
@@ -568,7 +568,7 @@ var I18N_PAGE = {
   p03_plan_price_advisor: '顧問報價',
   p03_plan_price_note1: '線上課程，價格依堂數與方案而定',
   p03_plan_price_note2: '線上課程，價格依合約規模而定',
-  p03_plan_price_demo_note: '示範價，實際依參數設定',
+  p03_plan_price_demo_note: '實際依參數設定',
   p03_plan_sales_mode_direct: '銷售模式：線上直購', p03_plan_sales_mode_advisor: '銷售模式：顧問報價',
   p03_btn_buy_trial_slot: '選時段購買體驗課', p03_btn_book_consult: '預約諮詢',
   p03_plan_custom_h: '客製方案（企業／長期規劃）',
@@ -650,7 +650,7 @@ en: {
   p03_plan_price_advisor: 'Advisor Quote',
   p03_plan_price_note1: 'Online course; price depends on lesson count and plan',
   p03_plan_price_note2: 'Online course; price depends on contract scale',
-  p03_plan_price_demo_note: 'Demo price — actual price depends on configured parameters',
+  p03_plan_price_demo_note: 'Actual price depends on configured parameters',
   p03_plan_sales_mode_direct: 'Sales Mode: Direct Online Purchase', p03_plan_sales_mode_advisor: 'Sales Mode: Advisor Quote',
   p03_btn_buy_trial_slot: 'Pick a Slot & Buy Trial', p03_btn_book_consult: 'Book a Consultation',
   p03_plan_custom_h: 'Custom Plan (Corporate / Long-Term)',
@@ -732,7 +732,7 @@ ja: {
   p03_plan_price_advisor: 'アドバイザー見積り',
   p03_plan_price_note1: 'オンラインコース、料金はレッスン回数・プランにより異なります',
   p03_plan_price_note2: 'オンラインコース、料金は契約規模により異なります',
-  p03_plan_price_demo_note: 'デモ価格・実際の料金は設定条件により異なります',
+  p03_plan_price_demo_note: '実際の料金は設定条件により異なります',
   p03_plan_sales_mode_direct: '販売方式：オンライン直接購入', p03_plan_sales_mode_advisor: '販売方式：アドバイザー見積り',
   p03_btn_buy_trial_slot: '時間帯を選んで体験を購入', p03_btn_book_consult: '相談を予約する',
   p03_plan_custom_h: 'カスタムプラン（法人・長期プラン）',

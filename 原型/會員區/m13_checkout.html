@@ -168,8 +168,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px;color:var(--c-primary);"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>
         <div class="page-h" style="margin-bottom:8px;">本方案由機構支付</div>
         <p class="muted" style="font-size:13.5px;max-width:420px;margin:0 auto 4px;">在學期間資源方案（範例州立大學）由合作大學支付授權費用予 TLI，你的學費已含此費用，TLI 不另向你收費，也無法在此頁面購買。請由大學入口驗證在學身分後直接開通。</p>
-        <div class="demo-note" style="margin:16px auto 0;max-width:420px;">示範畫面，資料為模擬數字。</div>
-        <div style="margin-top:22px;">
+                <div style="margin-top:22px;">
           <a class="btn btn-primary" href="../公開網站/p11_university.html">前往大學入口開通</a>
         </div>
       </div>
@@ -179,7 +178,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="page-h">結帳</div>
       <p class="page-sub">確認方案內容，填寫付款與發票資訊後送出訂單。</p>
       <div class="banner banner-info hidden" id="existingOrderBanner"></div>
-      <div class="demo-note">示範畫面，資料為模擬數字，實際金額與付款結果請以正式系統為準。</div>
+      <div class="demo-note">實際金額與付款結果請以正式系統為準。</div>
       <div class="field-required-note"><span class="req-mark">*</span> 為必填欄位</div>
 
       <div id="buyerInfoBlock" class="hidden">
@@ -205,8 +204,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="card" id="eventCard" style="display:none;">
         <div class="order-row"><span>活動名稱</span><span id="eventNameDisplay">－</span></div>
         <div class="order-row"><span>時間</span><span id="eventTimeDisplay">－</span></div>
-        <div class="small muted">示範畫面，活動名稱與時間為模擬資料。</div>
-      </div>
+              </div>
 
       <div class="section-title" id="trialSlotSectionTitle" style="display:none;">已提交的時段偏好</div>
       <div class="card" id="trialSlotCard" style="display:none;">
@@ -231,8 +229,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <div class="field" style="margin-bottom:0;">
           <label for="refCode">折扣碼或轉介碼（選填）</label>
           <input type="text" id="refCode" placeholder="例如：AGENT2026" oninput="checkRefCode()">
-          <div class="hint">示範碼：輸入「AGENT2026」可看到轉介歸屬示範效果</div>
-          <div class="hint" id="refAutoHint" style="display:none;color:var(--c-primary);font-weight:700;">代碼由推薦連結自動帶入（示範畫面，資料為模擬數字）</div>
+          <div class="hint">測試代碼：輸入「AGENT2026」可看到轉介歸屬示範效果</div>
+          <div class="hint" id="refAutoHint" style="display:none;color:var(--c-primary);font-weight:700;">代碼由推薦連結自動帶入</div>
         </div>
         <div class="ref-tag" id="refTag">歸屬代理商：範例教育顧問（東南亞地區）</div>
       </div>
@@ -248,10 +246,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
             <option value="0">不分期</option>
             <option value="3">3 期零利率</option>
             <option value="6">6 期零利率</option>
-            <option value="12">12 期（示範年利率 5.88%）</option>
+            <option value="12">12 期（年利率 5.88%）</option>
           </select>
         </div>
-        <div id="transferHint" class="hint hidden" style="margin-top:10px;">送出訂單後將顯示匯款帳號與繳款期限，示範畫面不產生實際帳號。</div>
+        <div id="transferHint" class="hint hidden" style="margin-top:10px;">送出訂單後將顯示匯款帳號與繳款期限，本頁不產生實際帳號。</div>
       </div>
 
       <div class="section-title">發票資訊<span class="req-mark">*</span></div>
@@ -310,13 +308,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div id="transferPendingPanel" class="hidden">
       <div class="card transfer-card">
         <div class="page-h" style="margin-bottom:4px;">訂單已成立，請完成匯款</div>
-        <p class="muted small">請於期限內完成匯款，系統確認入帳後將自動開通方案；示範畫面不產生實際帳號。</p>
+        <p class="muted small">請於期限內完成匯款，系統確認入帳後將自動開通方案；本頁不產生實際帳號。</p>
         <div class="order-no" id="transferOrderNoDisplay">訂單編號：－</div>
         <div class="field" style="margin-bottom:6px;">
-          <label>匯款虛擬帳號（示範）</label>
+          <label>匯款虛擬帳號</label>
           <div class="transfer-account" id="transferAccountDisplay">－</div>
         </div>
-        <div class="small muted" id="transferDeadlineDisplay">繳款期限：示範 3 天（天數待定）</div>
+        <div class="small muted" id="transferDeadlineDisplay">繳款期限：3 天（天數待定）</div>
         <div style="margin-top:18px;">
           <button type="button" class="btn btn-accent btn-block" onclick="confirmTransferDone()">已完成匯款</button>
         </div>
@@ -347,7 +345,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="modal-overlay" id="termsModalOverlay" onclick="if(event.target===this) closeTermsModal()">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>服務條款（示範內容）</h3>
+      <h3>服務條款</h3>
       <button class="modal-close-btn" onclick="closeTermsModal()" aria-label="關閉"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body" id="termsModalBody"></div>
@@ -360,7 +358,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="modal-overlay" id="refundModalOverlay" onclick="if(event.target===this) closeRefundModal()">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>退費規則（示範內容）</h3>
+      <h3>退費規則</h3>
       <button class="modal-close-btn" onclick="closeRefundModal()" aria-label="關閉"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body" id="refundModalBody"></div>
@@ -400,30 +398,30 @@ var PLANS = {
   'trial': {
     key:'trial', name:'體驗課（單堂）', desc:'30 分鐘線上一對一體驗課，你提出有空的時段，顧問依此安排老師，付款完成即確認時段。',
     unitLabel:'堂數', options:[
-      {value:'1', label:'1 堂（示範 NT$390）', price:390}
+      {value:'1', label:'1 堂（NT$390）', price:390}
     ]
   },
   '1on1': {
     key:'1on1', name:'一對一課程包', desc:'華語一對一線上課程，購買後於會員區「課表」提出有空時間，由顧問安排老師與時段。',
     unitLabel:'課程堂數', options:[
-      {value:'10', label:'10 堂（示範 NT$12,000）', price:12000},
-      {value:'30', label:'30 堂（示範 NT$33,000）', price:33000},
-      {value:'60', label:'60 堂（示範 NT$60,000）', price:60000}
+      {value:'10', label:'10 堂（NT$12,000）', price:12000},
+      {value:'30', label:'30 堂（NT$33,000）', price:33000},
+      {value:'60', label:'60 堂（NT$60,000）', price:60000}
     ]
   },
   'selfpaced': {
     key:'selfpaced', name:'自學影音方案', desc:'自學影片、音檔與測驗，不限時段自行安排進度。',
     unitLabel:'訂閱期間', options:[
-      {value:'1m', label:'1 個月（示範 NT$490）', price:490},
-      {value:'6m', label:'6 個月（示範 NT$2,400）', price:2400},
-      {value:'12m', label:'12 個月（示範 NT$4,200）', price:4200}
+      {value:'1m', label:'1 個月（NT$490）', price:490},
+      {value:'6m', label:'6 個月（NT$2,400）', price:2400},
+      {value:'12m', label:'12 個月（NT$4,200）', price:4200}
     ]
   },
   'flex_group': {
     key:'flex_group', name:'彈性團體直播課程包', desc:'固定時段團體直播課程，報名即可入班。',
     unitLabel:'課程期數', options:[
-      {value:'1term', label:'1 期 12 堂（示範 NT$9,600）', price:9600},
-      {value:'2term', label:'2 期 24 堂（示範 NT$18,000）', price:18000}
+      {value:'1term', label:'1 期 12 堂（NT$9,600）', price:9600},
+      {value:'2term', label:'2 期 24 堂（NT$18,000）', price:18000}
     ]
   }
 };
@@ -431,8 +429,8 @@ var PLAN_ORDER = ['trial','1on1','selfpaced','flex_group'];
 
 /* ============ 付費活動報名（示範資料，非實際定價） ============ */
 var EVENTS = {
-  'ev01': {id:'ev01', name:'中文文化直播－茶道與詩詞', time:'2026-10-12 19:30（示範時間）', price:680},
-  'ev02': {id:'ev02', name:'華語討論沙龍－職場溝通實戰', time:'2026-10-19 20:00（示範時間）', price:580}
+  'ev01': {id:'ev01', name:'中文文化直播－茶道與詩詞', time:'2026-10-12 19:30', price:680},
+  'ev02': {id:'ev02', name:'華語討論沙龍－職場溝通實戰', time:'2026-10-19 20:00', price:580}
 };
 
 function getParam(name){
@@ -472,7 +470,7 @@ function resolveEventInfo(){
   return {
     id: currentEventId,
     name: nameParam || (dictMatch ? dictMatch.name : '活動報名'),
-    time: timeParam || (dictMatch ? dictMatch.time : '時間待定（示範）'),
+    time: timeParam || (dictMatch ? dictMatch.time : '時間待定'),
     price: !isNaN(priceNum) ? priceNum : (dictMatch ? dictMatch.price : null)
   };
 }
@@ -520,7 +518,7 @@ function renderTrialSlotCard(){
   }
 }
 function addToCalendar(){
-  showToast('已加入行事曆（示範功能，正式版將產生 .ics 檔）');
+  showToast('已加入行事曆（正式版將產生 .ics 檔）');
 }
 
 function renderPlanPickList(){
@@ -750,11 +748,11 @@ function renderOrder(){
     var basePrice = hasPrice ? ev.price : 0;
     var evDiscount = (referrerApplied && hasPrice) ? Math.round(basePrice*0.05) : 0;
     var evTotal = basePrice - evDiscount;
-    var evRows = [{label: ev.name+'（示範價）', value: hasPrice ? ('NT$'+basePrice.toLocaleString('zh-Hant')) : '示範價'}];
+    var evRows = [{label: ev.name, value: hasPrice ? ('NT$'+basePrice.toLocaleString('zh-Hant')) : '價格未定'}];
     if(evDiscount>0) evRows.push({label:'轉介折扣（5%）', value:'－NT$'+evDiscount.toLocaleString('zh-Hant')});
     var evHtml = evRows.map(function(r){ return '<div class="order-row"><span>'+r.label+'</span><span>'+r.value+'</span></div>'; }).join('');
-    evHtml += '<div class="order-row total"><span>應付金額</span><span>'+(hasPrice ? ('NT$'+evTotal.toLocaleString('zh-Hant')) : '示範價')+'</span></div>';
-    evHtml += '<div class="small muted" style="margin-top:6px;">示範畫面，資料為模擬數字，不代表實際應付金額。</div>';
+    evHtml += '<div class="order-row total"><span>應付金額</span><span>'+(hasPrice ? ('NT$'+evTotal.toLocaleString('zh-Hant')) : '價格未定')+'</span></div>';
+    evHtml += '<div class="small muted" style="margin-top:6px;">此金額僅供試算，不代表實際應付金額。</div>';
     document.getElementById('orderSummary').innerHTML = evHtml;
     window._orderTotal = hasPrice ? evTotal : 0;
     window._orderHasAmount = hasPrice;
@@ -772,7 +770,7 @@ function renderOrder(){
   if(discount>0) rows.push({label:'轉介折扣（5%）', value:'－NT$'+discount.toLocaleString('zh-Hant')});
   var html = rows.map(function(r){ return '<div class="order-row"><span>'+r.label+'</span><span>'+r.value+'</span></div>'; }).join('');
   html += '<div class="order-row total"><span>應付金額</span><span>'+(price ? ('NT$'+total.toLocaleString('zh-Hant')) : '待定') + '</span></div>';
-  html += '<div class="small muted" style="margin-top:6px;">示範畫面，資料為模擬數字，不代表實際應付金額。</div>';
+  html += '<div class="small muted" style="margin-top:6px;">此金額僅供試算，不代表實際應付金額。</div>';
   document.getElementById('orderSummary').innerHTML = html;
   window._orderTotal = total;
   window._orderHasAmount = true;
@@ -928,7 +926,7 @@ function showTransferPending(orderData){
   window._pendingTransferOrder = orderData;
 }
 function confirmTransferDone(){
-  showToast('已收到您的匯款通知，確認入帳後將自動開通方案（示範）');
+  showToast('已收到您的匯款通知，確認入帳後將自動開通方案');
   var orderData = window._pendingTransferOrder;
   setTimeout(function(){
     document.getElementById('transferPendingPanel').classList.add('hidden');
@@ -973,8 +971,8 @@ function showSuccessPanel(orderData){
     viewEventBtn.style.display = 'none';
   }
   var amountText = (orderData.hasAmount !== false && typeof orderData.total === 'number')
-    ? ('NT$'+orderData.total.toLocaleString('zh-Hant')+'（示範）')
-    : '示範價（示範）';
+    ? ('NT$'+orderData.total.toLocaleString('zh-Hant'))
+    : '價格未定';
   document.getElementById('successAmount').textContent = '應付金額：'+amountText;
   document.getElementById('successPayMethod').textContent = '付款方式：'+payMethodLabel(orderData.payMethod);
   document.getElementById('successInvoiceSummary').textContent = orderData.invoiceSummary;

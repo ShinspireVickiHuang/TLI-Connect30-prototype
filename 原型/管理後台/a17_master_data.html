@@ -335,7 +335,7 @@ html,body{overflow-x:hidden;}
 <div class="tablewrap"><table id="groupRuleTable"></table></div>
 </div>
 </div>
-<div class="hint" id="paramHint">「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。</div>
+<div class="hint" id="paramHint">「已拍板」表示數字已定案不可編輯；「示範」為展示用暫定值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。</div>
 <div class="modlog-wrap">
 <h3>修改紀錄（唯讀）</h3>
 <div class="tablewrap"><table id="modLogTable"></table></div>
@@ -345,7 +345,7 @@ html,body{overflow-x:hidden;}
 <h2>上課型態設定</h2>
 <div class="paramintro">四種上課型態各自的名額上限、時長、排法等規則從這裡設定；各班或場次可在型態上限內另設名額，不得超過型態上限。團體聊天室每週使用上限請至 <a href="javascript:void(0)" onclick="selectTab('params');selectParamCat('institution');">參數設定 → 機構授權</a> 調整；請假與取消規則請至 <a href="javascript:void(0)" onclick="selectTab('params');selectParamCat('leaverules');">參數設定 → 請假與取消規則組</a> 設定。</div>
 <div class="tablewrap"><table id="classFormatTable"></table></div>
-<div class="hint">名額上限留白代表待定，可先行輸入示範值；示範值會標示「示範」，正式數字待業務與教研拍板後回填。灰底鎖定欄位為型態本質固定值，不開放調整。</div>
+<div class="hint">名額上限留白代表待定，可先行輸入暫定值；暫定值會標示「示範」，正式數字待業務與教研拍板後回填。灰底鎖定欄位為型態本質固定值，不開放調整。</div>
 <div class="modlog-wrap">
 <h3>修改紀錄（唯讀）</h3>
 <div class="tablewrap"><table id="classFormatModLogTable"></table></div>
@@ -687,7 +687,7 @@ var PARAMS = [
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'},{c:'a13',h:'a13_receivables.html'}]},
  {cat:'contract', name:'每堂倒扣單價預設', desc:'預付金額池合約每堂課完成後依此單價從餘額倒扣，扣抵明細寫入 a13「預付款沖銷」分頁。', value:'', unit:'元／堂', level:'合約可覆寫',
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'},{c:'a13',h:'a13_receivables.html'}]},
- {cat:'contract', name:'到期提醒天數', desc:'h05 於合約到期前分三階段顯示倒數提醒。', value:'90／60／30', unit:'天', level:'全域預設', demo:true, demoLabel:'示範值 90／60／30，未拍板，可調整',
+ {cat:'contract', name:'到期提醒天數', desc:'h05 於合約到期前分三階段顯示倒數提醒。', value:'90／60／30', unit:'天', level:'全域預設', demo:true, demoLabel:'暫定值 90／60／30，未拍板，可調整',
   pages:[{c:'h05',h:'../企業端/h05_contract.html'},{c:'a19',h:'a19_b2b_enterprise.html'}]},
  {cat:'contract', name:'合約展延預設天數', desc:'HR 於 h05 申請展延核准後預設展延天數，實際展延次數與條件由 TLI 定。', value:'', unit:'天', level:'合約可覆寫',
   pages:[{c:'a19',h:'a19_b2b_enterprise.html'},{c:'h05',h:'../企業端/h05_contract.html'}]},
@@ -893,13 +893,13 @@ function renderParamTable(){
     if (wrapEl) wrapEl.style.display = 'none';
     if (leaveWrapEl) leaveWrapEl.style.display = '';
     if (hintEl) hintEl.textContent = '除「一般會員」取消時限 12 小時為既有規則外，其餘欄位留白代表待定，可先行輸入預估值；儲存後會寫入下方修改紀錄。';
-    if (summaryEl0) summaryEl0.innerHTML = '四層繼承：全域預設 → 客戶類型預設 → 企業合約覆寫（a19）→ 個人例外。<span class="demo-tag">示範畫面，資料為模擬數字</span>';
+    if (summaryEl0) summaryEl0.innerHTML = '四層繼承：全域預設 → 客戶類型預設 → 企業合約覆寫（a19）→ 個人例外。';
     renderLeaveRuleGroup();
     return;
   }
   if (wrapEl) wrapEl.style.display = '';
   if (leaveWrapEl) leaveWrapEl.style.display = 'none';
-  if (hintEl) hintEl.textContent = '「已拍板」表示數字已定案不可編輯；「示範」為展示用示範值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。';
+  if (hintEl) hintEl.textContent = '「已拍板」表示數字已定案不可編輯；「示範」為展示用暫定值，可依實際拍板結果調整；其餘欄位留白代表待定，可先行輸入預估值。';
   var rows = PARAMS.filter(function(p){ return p.cat === currentParamCat; });
   var tbl = document.getElementById('paramTable');
   var head = '<tr><th>參數名稱</th><th>說明</th><th style="min-width:150px">目前值</th><th>單位</th><th>適用層級</th><th>使用頁面</th><th>生效日</th><th>最後修改人與時間</th><th></th></tr>';

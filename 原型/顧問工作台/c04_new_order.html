@@ -489,7 +489,7 @@ html,body{overflow-x:hidden;}
       <div class="layout" id="enterpriseFlow" style="display:none;">
         <div>
           <div class="card section-card open">
-            <div class="card-head-l" style="margin-bottom:14px;"><span class="step-badge">1</span><h2>選企業客戶<span class="demo-tag">示範畫面，資料為模擬數字</span></h2></div>
+            <div class="card-head-l" style="margin-bottom:14px;"><span class="step-badge">1</span><h2>選企業客戶</h2></div>
             <div class="field">
               <label>企業客戶</label>
               <select id="entClientSelect" onchange="tliOnEntClientChange()"></select>
@@ -509,7 +509,7 @@ html,body{overflow-x:hidden;}
                 <label class="radio-card"><input type="radio" name="entPricingMode" value="project" onchange="tliOnPricingModeChange()"><span><span class="t">選用專案型方案</span><span class="d">適用長期客製企業客戶，帶入既有專案合約的課程項目摘要（見 a04）</span></span></label>
               </div>
               <div class="ladder-box" id="entLadderBox">
-                <div class="hint">階梯計價規則試算<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+                <div class="hint">階梯計價規則試算</div>
                 <div class="ladder-grid">
                   <div class="field"><label>規則類型</label><div class="v" id="entLadderRuleType">—</div></div>
                   <div class="field"><label>目前帳號數</label><input type="number" id="entLadderAccounts" min="1" step="1" placeholder="輸入帳號數" oninput="tliRecalcLadder()"></div>
@@ -519,7 +519,7 @@ html,body{overflow-x:hidden;}
               </div>
               <!-- 20260909 新增：專案型方案分頁——列出 a04 該客戶的專案型方案與版本，選定後帶入課程項目摘要，合約價欄仍留白由顧問另議 -->
               <div class="ladder-box" id="entProjectBox" style="display:none;">
-                <div class="hint">專案型方案（來自 a04 企業客戶已建立之專案合約）<span class="demo-tag">示範畫面，資料為模擬數字</span></div>
+                <div class="hint">專案型方案（來自 a04 企業客戶已建立之專案合約）</div>
                 <div class="field">
                   <label>專案型方案版本</label>
                   <select id="entProjectPlanSelect" onchange="tliOnProjectPlanChange()"></select>
@@ -550,9 +550,9 @@ html,body{overflow-x:hidden;}
               <label class="radio-card"><input type="radio" name="entPayment" value="prepaid" onchange="tliOnEntPaymentChange()"><span><span class="t">預付款倒扣</span><span class="d">企業先付一筆預付款，之後每上一堂課從餘額扣抵，比照 a13 預付款倒扣情境</span></span></label>
             </div>
             <div class="field" id="entPrepaidBox" style="display:none;margin-top:10px;">
-              <label>預付金額（NT$，示範）</label>
+              <label>預付金額（NT$）</label>
               <input type="number" id="entPrepaidAmount" min="0" step="1000" placeholder="輸入本次預付總金額" oninput="tliRecalcEnt()">
-              <div class="ent-blank-hint">入帳後轉 a13 預付款頁面，由財務登記每堂扣抵明細；本原型不預先帶入數字，示範畫面，資料為模擬數字</div>
+              <div class="ent-blank-hint">入帳後轉 a13 預付款頁面，由財務登記每堂扣抵明細；本原型不預先帶入數字</div>
             </div>
           </div>
 
@@ -596,7 +596,7 @@ html,body{overflow-x:hidden;}
               <div class="summary-row"><span>收款渠道</span><span id="entResChannel">—</span></div>
               <div class="summary-row" id="entResPrepaidRow" style="display:none;"><span>預付金額</span><span id="entResPrepaidAmount">—</span></div>
               <div class="summary-row"><span>開票主體</span><span id="entResEntity">—</span></div>
-              <div class="note" id="entResPrepaidNote" style="display:none;">已轉入 a13 預付款餘額（示範）</div>
+              <div class="note" id="entResPrepaidNote" style="display:none;">已轉入 a13 預付款餘額</div>
             </div>
           </div>
         </div>
@@ -1006,10 +1006,10 @@ function fmt(n){return 'NT$'+n.toLocaleString();}
 /* ================= v2 新增：企業訂單分支（不影響下方既有個人訂單流程） ================= */
 var ENTERPRISE_CLIENTS=[
   {id:'ent_semi',name:'範例半導體股份有限公司',ruleType:'accounts',pricingType:'依帳號數分級（級距由 TLI 拍板）',hourPoolTotal:'500 小時（企業共用時數池）',currency:'TWD',invoiceEntity:'中華語文（企業合作）'},
-  {id:'ent_tech',name:'示範科技股份有限公司',ruleType:'hours',pricingType:'依總時數分級（級距由 TLI 拍板）',hourPoolTotal:'300 小時（企業共用時數池）',currency:'JPY',invoiceEntity:'中華語文（企業合作）'},
+  {id:'ent_tech',name:'北辰精密工業股份有限公司',ruleType:'hours',pricingType:'依總時數分級（級距由 TLI 拍板）',hourPoolTotal:'300 小時（企業共用時數池）',currency:'JPY',invoiceEntity:'中華語文（企業合作）'},
   {id:'ent_trade',name:'假設國際貿易股份有限公司',ruleType:'accounts',pricingType:'依帳號數分級（級距由 TLI 拍板）',hourPoolTotal:'400 小時（企業共用時數池）',currency:'USD',invoiceEntity:'中華語文（企業合作）'},
   {id:'ent_bio',name:'範例生醫股份有限公司',ruleType:'hours',pricingType:'依總時數分級（級距由 TLI 拍板）',hourPoolTotal:'350 小時（企業共用時數池）',currency:'JPY',invoiceEntity:'中華語文（企業合作）'},
-  {id:'ent_fin',name:'示範金融股份有限公司',ruleType:'accounts',pricingType:'依帳號數分級（級距由 TLI 拍板）',hourPoolTotal:'600 小時（企業共用時數池）',currency:'USD',invoiceEntity:'中華語文（企業合作）'}
+  {id:'ent_fin',name:'安泰保經股份有限公司',ruleType:'accounts',pricingType:'依帳號數分級（級距由 TLI 拍板）',hourPoolTotal:'600 小時（企業共用時數池）',currency:'USD',invoiceEntity:'中華語文（企業合作）'}
 ];
 /* 20260909 新增：專案型方案示範資料——列出各企業客戶已建立的專案型方案與版本（比照 a04 的合約歷史紀錄結構）
    S19：長期客戶專案型方案複製上次合約，c04 建訂單時需能直接選用既有版本 */

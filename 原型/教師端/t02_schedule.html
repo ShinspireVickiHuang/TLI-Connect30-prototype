@@ -190,7 +190,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <span><i class="personal"></i>一對一（預約制）</span>
         <span><i class="flexlive"></i>彈性團體直播班（團體）</span>
         <span><i class="chatroom"></i>團體聊天室（30 分鐘，TLI 老師帶）</span>
-        <span><i class="enterprise"></i>企業學員（雙時區顯示）<span class="demo-tag">示範畫面，資料為模擬數字</span></span>
+        <span><i class="enterprise"></i>企業學員（雙時區顯示）</span>
       </div>
       <p class="small muted" style="margin:6px 0 0;">取消時限以學員所屬廠區時區（合約設定之判定基準）計算；課表以台北時間為主、廠區當地時間為輔並列顯示。</p>
       <div class="fchip-bar" id="scheduleFilterBar">
@@ -242,7 +242,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <div class="lesson-block chatroom" onclick="openSheet('C1')">
             <div class="lb-time">15:30–16:00</div>
             <div class="lb-title">日常對話練習</div>
-            <div class="lb-sub">團體聊天室（30 分鐘，TLI 老師帶）・機構學生・範例州立大學<span class="demo-tag">・示範畫面，資料為模擬數字</span></div>
+            <div class="lb-sub">團體聊天室（30 分鐘，TLI 老師帶）・機構學生・範例州立大學</div>
             <div class="lb-badges"><span class="lb-badge-chat">已報名 4／名額待定</span></div>
           </div>
         </div>
@@ -270,7 +270,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <div class="lesson-block chatroom" onclick="openSheet('C2')">
             <div class="lb-time">09:00–09:30</div>
             <div class="lb-title">時事話題討論</div>
-            <div class="lb-sub">團體聊天室（30 分鐘，TLI 老師帶）・全部（全平台開放）<span class="demo-tag">・示範畫面，資料為模擬數字</span></div>
+            <div class="lb-sub">團體聊天室（30 分鐘，TLI 老師帶）・全部（全平台開放）</div>
             <div class="lb-badges"><span class="lb-badge-chat">已報名 2／名額待定</span></div>
           </div>
         </div>
@@ -553,7 +553,7 @@ function openChatSheet(id){
   document.getElementById('sheetLastNoteSec').classList.add('hidden');
   document.getElementById('sheetAttendSec').classList.add('hidden');
   document.getElementById('sheetRuleBanner').classList.add('hidden');
-  document.getElementById('sheetRosterLabel').textContent = '報名學生（化名，資料為模擬數字）';
+  document.getElementById('sheetRosterLabel').textContent = '報名學生（化名）';
 
   var rosterEl = document.getElementById('sheetRoster');
   rosterEl.innerHTML = '';
@@ -572,7 +572,7 @@ function openChatSheet(id){
   var startBtn = document.createElement('button');
   startBtn.className = 'btn btn-primary btn-block';
   startBtn.textContent = '開始';
-  startBtn.onclick = function(){ showToast('已進入教室（示範）・團體聊天室由 TLI 老師帶領，出席請於名單勾選'); };
+  startBtn.onclick = function(){ showToast('已進入教室・團體聊天室由 TLI 老師帶領，出席請於名單勾選'); };
   actionsEl.appendChild(startBtn);
   document.getElementById('sheetOverlay').classList.remove('hidden');
 }

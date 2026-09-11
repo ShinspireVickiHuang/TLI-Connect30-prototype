@@ -111,9 +111,20 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 .enthead .entname{font-size:17px;font-weight:700;}
 .enthead .entperiod{font-size:12.5px;color:var(--g500);margin-top:3px;}
 .statgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 4px;}
-.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;}
+.statgrid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.statbox{border:1px solid var(--g200);border-radius:8px;padding:14px;position:relative;}
 .statbox .num{font-size:22px;font-weight:700;color:var(--navy);}
 .statbox .lbl{font-size:11.5px;color:var(--g500);margin-top:4px;}
+.statbox .sub-note{font-size:11px;color:var(--g500);margin-top:3px;}
+.statbox .static-tag{display:inline-block;margin-left:6px;font-size:10px;color:#98A2B3;font-weight:400;}
+.info-btn{position:absolute;top:8px;right:8px;background:none;border:none;padding:2px;cursor:pointer;color:var(--g500);line-height:0;}
+.info-btn svg{width:13px;height:13px;display:block;}
+.info-pop{display:none;position:absolute;top:26px;right:0;width:220px;background:#fff;border:1px solid var(--g200);
+border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.16);padding:10px 12px;font-size:11.5px;color:var(--g900);
+line-height:1.6;z-index:35;text-align:left;font-weight:400;}
+.info-pop.open{display:block;}
+.pool-breakdown{margin-top:8px;font-size:11.5px;color:var(--g500);line-height:1.8;}
+.pool-breakdown b{color:var(--g900);font-weight:600;}
 .filterrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;}
 .filterrow .ff{min-width:160px;flex:1;}
 .filterrow .ff label{display:block;font-size:11.5px;color:var(--g500);margin-bottom:4px;}
@@ -142,6 +153,21 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 .fbsum-meta{display:flex;justify-content:space-between;gap:10px;font-weight:600;margin-bottom:3px;}
 .fbsum-meta .fbsum-date{font-weight:400;color:var(--g500);font-size:12px;flex-shrink:0;}
 .fbsum-text{color:var(--g900);line-height:1.6;}
+/* ---- 期間篩選 chip（併入 m12 企業學習報告內容）---- */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.chip{border:1px solid var(--g200);background:#fff;color:var(--g500);font-size:12.5px;font-weight:700;
+padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;}
+.chip.selected{border-color:var(--navy);background:#E6EEF8;color:var(--navy);}
+.periodnote{font-size:12px;color:var(--g500);margin-top:8px;}
+.statbox .delta{font-size:11px;font-weight:700;margin-top:4px;display:inline-flex;align-items:center;gap:2px;}
+.statbox .delta svg{width:11px;height:11px;}
+.statbox .delta.up{color:var(--teal);}
+.statbox .delta.down{color:#C0392B;}
+/* ---- 企業時數池卡（併入 m12）---- */
+.statbox.poolbox{background:#EAF6F2;border-color:#BEE6D9;}
+.statbox.poolbox .num{color:#075A45;}
+.statbox.poolbox .lbl{color:#0B6B52;}
+.orglink{font-size:12px;white-space:nowrap;}
 @media (max-width:1023px){
 .hamburger{display:inline-flex;}
 .sidebar{position:fixed;left:-260px;top:0;height:100vh;width:260px;z-index:120;}
@@ -152,6 +178,7 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 .topbar{padding:0 16px;margin:-16px -16px 18px;}
 .tb-search{display:none;}
 .statgrid4{grid-template-columns:1fr 1fr;}
+.statgrid2{grid-template-columns:1fr;}
 .chartgrid{grid-template-columns:1fr;}
 }
 </style>
@@ -165,6 +192,7 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 <a data-nav="h01" class="active" href="h01_dashboard.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg><span>儀表板</span></a>
 <a data-nav="h02" href="h02_employees.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><path d="M2.5 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="14" cy="7.5" r="2"/><path d="M13 12.2c1.8.2 3.2 1.6 3.5 3.8"/></svg><span>員工管理</span></a>
 <a data-nav="h03" href="h03_reports.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="17" x2="4" y2="10"/><line x1="10" y1="17" x2="10" y2="5"/><line x1="16" y1="17" x2="16" y2="12"/></svg><span>學習報告</span></a>
+<a data-nav="h07" href="h07_teacher_comments.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5a1.5 1.5 0 0 1 1.5-1.5h11A1.5 1.5 0 0 1 17 5.5v6A1.5 1.5 0 0 1 15.5 13H9l-3.5 3v-3H4.5A1.5 1.5 0 0 1 3 11.5z"/><line x1="6.5" y1="7" x2="13.5" y2="7"/><line x1="6.5" y1="9.5" x2="11" y2="9.5"/></svg><span>老師評語</span></a>
 <a data-nav="h04" href="h04_api.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 6 3 10 7 14"/><polyline points="13 6 17 10 13 14"/></svg><span>資料串接</span></a>
 <a data-nav="h05" href="h05_contract.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h5l3 3v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v3h3"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><line x1="7.5" y1="13" x2="12.5" y2="13"/></svg><span>合約與時數池</span></a>
 <a data-nav="h06" href="h06_appeals.html"><svg class="navicon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.3 16 4.5v4.3c0 4-2.4 6.8-6 8.2-3.6-1.4-6-4.2-6-8.2V4.5z"/><polyline points="7.2 9.8 9.2 11.8 13 7.8"/></svg><span>請假與申訴審核</span></a>
@@ -190,28 +218,33 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">示範畫面，資料為模擬數字，非實際企業資料。</div>
 
 <div class="card">
 <div class="enthead">
 <div><div class="entname" id="entName">—</div><div class="entperiod" id="entPeriod">—</div></div>
 </div>
-<div class="statgrid4" id="kpiGrid"></div>
+<div class="chip-row" id="periodChips">
+<button class="chip selected" data-period="thisMonth" onclick="setPeriod('thisMonth',this)">本月</button>
+<button class="chip" data-period="lastMonth" onclick="setPeriod('lastMonth',this)">上月</button>
+<button class="chip" data-period="custom" onclick="setPeriod('custom',this)">自訂區間</button>
+</div>
+<div class="periodnote" id="periodNote">統計區間：2026/08/01－2026/08/28</div>
+<div class="statgrid4" id="kpiGrid" style="margin-top:14px"></div>
+<div class="statgrid2" id="kpiGrid2" style="margin-top:12px"></div>
+<div style="margin-top:12px"><a class="btn ghost" href="h03_reports.html#employees">查看員工明細</a></div>
 </div>
 
 <div class="card">
 <div class="filterrow">
-<div class="ff"><label>期間</label><select id="fPeriod" onchange="onFilterChange()">
-<option value="thismonth">本月</option><option value="8w">近 8 週</option><option value="3m">近 3 個月</option><option value="term">本學期（2026 下半年）</option>
-</select></div>
 <div class="ff"><label>部門</label><select id="fDept" onchange="onFilterChange()"><option value="">全部部門</option></select></div>
 <div class="ff"><label>廠區時區</label><select id="fSite" onchange="onFilterChange()"><option value="">全部廠區</option></select></div>
+<a class="orglink" href="h05_contract.html#org">管理部門與廠區</a>
 </div>
 </div>
 
 <div class="chartgrid">
 <div class="card">
-<div class="charthead"><span class="ctitle">出勤率趨勢（近 8 週）</span><span class="cval" id="attTrendVal"></span></div>
+<div class="charthead"><span class="ctitle">出席率趨勢</span><span class="cval" id="attTrendVal"></span></div>
 <div id="attChart"></div>
 </div>
 <div class="card">
@@ -226,7 +259,7 @@ border-bottom:1px dashed var(--g200);text-decoration:none;color:inherit;}
 </div>
 
 <div class="card">
-<div class="fbsum-head"><h2>本期老師評語摘要（HR 可見層）</h2><a href="h03_reports.html">查看全部 ›</a></div>
+<div class="fbsum-head"><h2>本期老師評語摘要（HR 可見層）</h2><a href="h07_teacher_comments.html">查看全部 ›</a></div>
 <div class="small" style="margin:-4px 0 10px">僅呈現老師評語中的 HR 可見層；學員可見層另存於會員區，不在此顯示。</div>
 <div id="feedbackSumList"></div>
 </div>
@@ -242,13 +275,17 @@ function fmtNum(n){ return n.toLocaleString('zh-Hant'); }
 /* ===== 企業與員工示範資料（與 h02、h03 共用同一組產生邏輯，確保跨頁資料一致） ===== */
 var ENTERPRISE_NAME = '範例半導體股份有限公司';
 var CONTRACT_START = '2026-01-01', CONTRACT_END = '2026-12-31';
-var SITE_LIST = [
+/* 部門／廠區改由企業自行維護（見 h05 合約頁「部門與廠區」分頁），此處為該設定的示範資料 */
+var ORG_SITES = [
+  {id:'tw', name:'台灣總部', tz:'UTC+8（台灣標準時間）'},
   {id:'us', name:'美國廠區', tz:'UTC-7（美國西部時間）'},
   {id:'jp', name:'日本廠區', tz:'UTC+9（日本標準時間）'}
 ];
-var DEPTS = ['廠務部','設備工程部','品保部','資訊部','人資部'];
+var ORG_DEPTS = ['業務部','研發部','廠務部','人資部','製造部'];
+var TW_NAMES = ['王建宏','林佳蓉','陳志明','張淑芬','李俊傑','黃詩涵','吳承翰','劉美玲','蔡文彬','許雅婷','郭柏翰','楊佩珊'];
 var US_NAMES = ['John Miller','Emily Tran','David Park','Rachel Kim','Michael Brown','Sophia Garcia','Kevin Lee','Laura Chen','Daniel Wright','Olivia Martinez','Brian Wu','Natalie Scott'];
 var JP_NAMES = ['田中 涼子','佐藤 健一','鈴木 美咲','高橋 大輔','伊藤 由美','渡辺 翔太','中村 直樹','小林 愛','加藤 拓也','山本 麻衣','斉藤 亮','松本 恵'];
+var NAME_POOLS = [TW_NAMES, US_NAMES, JP_NAMES];
 var FEEDBACK_POOL = [
   '口語表達進步明顯，能主動用中文提問。',
   '聽力理解穩定，建議加強生產線相關詞彙的口說練習。',
@@ -258,17 +295,17 @@ var FEEDBACK_POOL = [
   '課堂互動積極，建議加強書面表達的用詞精準度。'
 ];
 function makeEmployee(i){
-  var siteIdx = i % 2;
-  var site = SITE_LIST[siteIdx];
-  var pool = siteIdx===0 ? US_NAMES : JP_NAMES;
-  var name = pool[Math.floor(i/2) % pool.length];
+  var siteIdx = i % ORG_SITES.length;
+  var site = ORG_SITES[siteIdx];
+  var pool = NAME_POOLS[siteIdx];
+  var name = pool[Math.floor(i/ORG_SITES.length) % pool.length];
   var r1=seededRand(i*7+11), r2=seededRand(i*11+13), r3=seededRand(i*13+17), r4=seededRand(i*17+19);
-  var dept = DEPTS[i % DEPTS.length];
+  var dept = ORG_DEPTS[i % ORG_DEPTS.length];
   var status = r1 < 0.92 ? '在學' : '停用';
   var attendance = 55 + Math.floor(r2*45);
   var hours = 20 + Math.floor(r3*140);
   var emailName = name.toLowerCase().replace(/[^a-z]/g,'').slice(0,10);
-  var email = (siteIdx===0 && emailName ? emailName : 'emp'+i) + '@example-semi.com';
+  var email = (emailName ? emailName : 'emp'+i) + '@example-semi.com';
   return {
     id:'emp'+i, name:name, email:email, dept:dept, site:site.name, tz:site.tz,
     status:status, hours:hours, attendance:attendance,
@@ -287,42 +324,118 @@ var EMPLOYEES = []; for (var ii=0; ii<EMP_COUNT; ii++) EMPLOYEES.push(makeEmploy
 document.getElementById('entName').textContent = ENTERPRISE_NAME;
 document.getElementById('entPeriod').textContent = '合約期間：'+CONTRACT_START+' ～ '+CONTRACT_END;
 
-/* ===== 篩選下拉：部門／廠區 ===== */
+/* ===== 篩選下拉：部門／廠區（選項讀取 ORG_DEPTS／ORG_SITES，企業可於合約頁自行維護） ===== */
 (function initFilterOptions(){
   var dsel = document.getElementById('fDept');
-  DEPTS.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d; dsel.appendChild(o); });
+  ORG_DEPTS.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d; dsel.appendChild(o); });
   var ssel = document.getElementById('fSite');
-  SITE_LIST.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; ssel.appendChild(o); });
+  ORG_SITES.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.name; ssel.appendChild(o); });
 })();
 
-/* ===== KPI 卡：依篩選條件重新計算（用篩選值當種子，模擬篩選後的不同數字） ===== */
-function filterSeed(){
-  var p=document.getElementById('fPeriod').value, d=document.getElementById('fDept').value, s=document.getElementById('fSite').value;
-  var str = p+'|'+d+'|'+s;
-  var seed=0; for (var i=0;i<str.length;i++) seed += str.charCodeAt(i)*(i+1);
-  return seed;
+/* ===== 期間篩選（併入 m12 企業學習報告：本月／上月／自訂區間，控制關鍵指標與出席率趨勢）===== */
+var ICON_UP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+var ICON_DOWN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
+var ICON_INFO='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="9.2" x2="10" y2="14"/><circle cx="10" cy="6.3" r="1" fill="currentColor" stroke="none"/></svg>';
+/* 期間關鍵指標：出勤率／期間學習時數／在學人數／平均學習進度／評量平均分（含較上期增減），隨期間篩選變動；
+   時數池（合約累計）不在此表內，見 POOL_DATA，不隨期間篩選變動 */
+var PERIOD_DATA = {
+  thisMonth:{
+    label:'統計區間：2026/08/01－2026/08/28',
+    learners:34, learnersDelta:3, attendance:91, attendanceDelta:2,
+    hours:612, hoursDelta:48,
+    progress:68, progressDelta:5, avgScore:82, avgScoreDelta:1,
+    trend:[70,75,82,88,91,86], trendLabels:['第1週','第2週','第3週','第4週','第5週','第6週']
+  },
+  lastMonth:{
+    label:'統計區間：2026/07/01－2026/07/31',
+    learners:31, learnersDelta:-2, attendance:89, attendanceDelta:-3,
+    hours:564, hoursDelta:-36,
+    progress:63, progressDelta:2, avgScore:81, avgScoreDelta:-2,
+    trend:[65,70,74,80,85,89], trendLabels:['第1週','第2週','第3週','第4週','第5週']
+  },
+  custom:{
+    label:'統計區間：2026/06/01－2026/06/30（自訂）',
+    learners:29, learnersDelta:4, attendance:85, attendanceDelta:1,
+    hours:522, hoursDelta:54,
+    progress:58, progressDelta:6, avgScore:79, avgScoreDelta:3,
+    trend:[60,64,70,75,80,85], trendLabels:['第1週','第2週','第3週','第4週','第5週']
+  }
+};
+/* 企業時數池：依合約全期累計，不隨期間篩選變動；已用＝上課時數＋超額請假扣抵＋逾時取消／缺席扣抵 */
+var POOL_DATA = (function(){
+  var total=6000, classHours=3760, leaveDeduct=240, absentDeduct=96;
+  var used = classHours+leaveDeduct+absentDeduct;
+  var left = total-used;
+  return {total:total, classHours:classHours, leaveDeduct:leaveDeduct, absentDeduct:absentDeduct, used:used, left:left};
+})();
+var curPeriod='thisMonth';
+function setPeriod(key,btn){
+  curPeriod=key;
+  document.querySelectorAll('#periodChips .chip').forEach(function(c){c.classList.remove('selected');});
+  btn.classList.add('selected');
+  document.getElementById('periodNote').textContent = PERIOD_DATA[key].label;
+  renderKPI();
+  renderAttChart();
+}
+function toggleInfo(ev,id){
+  ev.stopPropagation();
+  document.querySelectorAll('.info-pop.open').forEach(function(p){ if (p.id!==id) p.classList.remove('open'); });
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+document.addEventListener('click', function(){ document.querySelectorAll('.info-pop.open').forEach(function(p){ p.classList.remove('open'); }); });
+function infoBtnHtml(id, label, ruleText){
+  return '<button class="info-btn" onclick="toggleInfo(event,\''+id+'\')" aria-label="'+label+'計算規則說明">'+ICON_INFO+'</button>'+
+    '<div class="info-pop" id="'+id+'">'+ruleText+'</div>';
+}
+function statCardHtml(id, label, value, delta, ruleText, subNote, goodIsUp){
+  goodIsUp = goodIsUp!==false;
+  var up = delta>=0;
+  var good = up===goodIsUp;
+  return '<div class="statbox">'+
+    infoBtnHtml(id, label, ruleText)+
+    '<div class="num">'+value+'</div><div class="lbl">'+label+'</div>'+
+    '<div class="delta '+(good?'up':'down')+'">'+(up?ICON_UP:ICON_DOWN)+' 較上期 '+(up?'+':'')+delta+'</div>'+
+    (subNote ? '<div class="sub-note">'+subNote+'</div>' : '') +
+  '</div>';
+}
+function poolCardHtml(){
+  var p = POOL_DATA;
+  var ruleText = '依合約全期累計計算，不隨期間篩選變動。已用＝上課時數＋超額請假扣抵＋逾時取消／缺席扣抵。';
+  return '<div class="statbox poolbox" data-pool-total="'+p.total+'" data-pool-left="'+p.left+'" data-pool-used="'+p.used+'" data-pool-class="'+p.classHours+'" data-pool-leave="'+p.leaveDeduct+'" data-pool-absent="'+p.absentDeduct+'">'+
+    infoBtnHtml('info-pool','時數池餘額／總量',ruleText)+
+    '<div class="num">'+fmtNum(p.left)+' ／ '+fmtNum(p.total)+' 小時</div>'+
+    '<div class="lbl">時數池餘額／總量<span class="static-tag">合約累計，不隨期間變</span></div>'+
+    '<div class="pool-breakdown">'+
+      '<div>上課時數 <b data-k="class">'+fmtNum(p.classHours)+'</b></div>'+
+      '<div>超額請假扣抵 <b data-k="leave">'+fmtNum(p.leaveDeduct)+'</b></div>'+
+      '<div>逾時取消／缺席扣抵 <b data-k="absent">'+fmtNum(p.absentDeduct)+'</b></div>'+
+    '</div>'+
+  '</div>';
 }
 function renderKPI(){
-  var seed = filterSeed();
-  var r1=seededRand(seed+1), r2=seededRand(seed+2), r3=seededRand(seed+3);
-  var subset = EMPLOYEES;
-  var d = document.getElementById('fDept').value, s = document.getElementById('fSite').value;
-  if (d) subset = subset.filter(function(e){return e.dept===d;});
-  if (s) subset = subset.filter(function(e){return e.site===(SITE_LIST.find(function(x){return x.id===s;})||{}).name;});
-  var active = subset.filter(function(e){return e.status==='在學';});
-  var avgAtt = active.length ? Math.round(active.reduce(function(a,e){return a+e.attendance;},0)/active.length) : 0;
-  var totalHours = subset.reduce(function(a,e){return a+e.hours;},0) + Math.floor(r1*400);
-  var poolTotal = 6000, poolUsed = 4240 - Math.floor(r2*300), poolLeft = poolTotal - poolUsed;
-  var kpis = [
-    {num: avgAtt+'%', lbl:'本月出勤率'},
-    {num: fmtNum(totalHours)+' 小時', lbl:'累計學習時數'},
-    {num: fmtNum(poolLeft)+' / '+fmtNum(poolTotal)+' 小時', lbl:'時數池餘額／總量'},
-    {num: fmtNum(active.length || Math.max(1,Math.floor(148*(0.4+r3*0.6)))), lbl:'在學人數'}
-  ];
-  document.getElementById('kpiGrid').innerHTML = kpis.map(function(k){
-    return '<div class="statbox"><div class="num">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>';
-  }).join('');
-  return {avgAtt:avgAtt, poolLeft:poolLeft, poolTotal:poolTotal};
+  var d = PERIOD_DATA[curPeriod];
+  var activeAccountCount = EMPLOYEES.filter(function(e){ return e.status==='在學'; }).length;
+  document.getElementById('kpiGrid').innerHTML =
+    statCardHtml('info-attendance','出勤率', d.attendance+'%', d.attendanceDelta+'%',
+      '出勤率＝出席堂數 ÷（出席＋缺席＋逾時取消堂次），不含核准請假的堂次。') +
+    statCardHtml('info-hours','期間學習時數', fmtNum(d.hours)+' 小時', d.hoursDelta,
+      '期間學習時數＝期間內實際上完的堂次時長加總。') +
+    poolCardHtml() +
+    statCardHtml('info-learners','在學人數', d.learners+' 人', d.learnersDelta+' 人',
+      '在學人數＝期間內至少有一堂排定或已上課的員工數。', '啟用帳號 '+activeAccountCount);
+  document.getElementById('kpiGrid2').innerHTML =
+    statCardHtml('info-progress','平均學習進度', d.progress+'%', d.progressDelta+'%',
+      '平均學習進度＝已完成課程單元 ÷ 應完成單元。') +
+    statCardHtml('info-avgscore','評量平均分', d.avgScore+' 分', d.avgScoreDelta+' 分',
+      '評量平均分＝期間內完成的課程評量平均分，依課程設定的滿分計算。');
+}
+
+function filterSeed(){
+  var d=document.getElementById('fDept').value, s=document.getElementById('fSite').value;
+  var str = d+'|'+s;
+  var seed=0; for (var i=0;i<str.length;i++) seed += str.charCodeAt(i)*(i+1);
+  return seed;
 }
 
 /* ===== 簡易 SVG 折線圖／柱狀圖（不依賴外部圖表庫） ===== */
@@ -355,23 +468,25 @@ function buildBarChart(values, opts){
   return '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+opts.label+'">'+
     '<line x1="'+pad+'" y1="'+(h-pad)+'" x2="'+(w-pad)+'" y2="'+(h-pad)+'" stroke="#E4E7EC" stroke-width="1"/>'+bars+'</svg>';
 }
-function renderCharts(kpi){
+function renderAttChart(){
+  var d = PERIOD_DATA[curPeriod];
+  document.getElementById('attChart').innerHTML = buildLineChart(d.trend, {color:'#1B4E8C', label:'出席率趨勢折線圖'});
+  document.getElementById('attTrendVal').textContent = '本期 '+d.trend[d.trend.length-1]+'%';
+}
+function renderHoursChart(){
   var seed = filterSeed();
-  var att = [], hrs=[];
+  var hrs=[];
   for (var w=0; w<8; w++){
-    att.push(Math.max(50, Math.min(100, kpi.avgAtt + Math.round((seededRand(seed+w*3)-0.5)*20))));
     hrs.push(60 + Math.floor(seededRand(seed+w*5+1)*180));
   }
-  document.getElementById('attChart').innerHTML = buildLineChart(att, {color:'#1B4E8C', label:'出勤率趨勢折線圖'});
   document.getElementById('hoursChart').innerHTML = buildBarChart(hrs, {color:'#0F9B79', label:'每週時數消耗柱狀圖'});
-  document.getElementById('attTrendVal').textContent = '本週 '+att[att.length-1]+'%';
   document.getElementById('hoursTrendVal').textContent = '本週 '+fmtNum(hrs[hrs.length-1])+' 小時';
 }
 
 /* ===== 近期需關注 ===== */
 var PENDING_APPEALS_COUNT = 3;
 var PENDING_LEAVE_COUNT = 2; /* 與 h06「請假核准」分頁待核准件數對應（示範資料） */
-function renderConcernList(kpi){
+function renderConcernList(pool){
   var low = EMPLOYEES.filter(function(e){ return e.status==='在學' && e.attendance < 70; })
     .sort(function(a,b){ return a.attendance-b.attendance; }).slice(0,3);
   var items = [];
@@ -394,7 +509,7 @@ function renderConcernList(kpi){
       '<span class="ci-arrow"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span></a>';
   }));
   var daysLeft = 8 + Math.floor(seededRand(filterSeed()+9)*30);
-  if (kpi.poolLeft / kpi.poolTotal < 0.4){
+  if (pool.left / pool.total < 0.4){
     items.push('<a class="concernitem" href="h05_contract.html#pool">'+
       '<span class="ci-main"><span class="ci-name">企業時數池即將用完</span><span class="ci-sub">依目前消耗速度估算</span></span>'+
       '<span class="ci-val" style="color:var(--orange)">約 '+daysLeft+' 天後用完</span>'+
@@ -417,16 +532,16 @@ function renderFeedbackSummary(){
 }
 
 function onFilterChange(){
-  var kpi = renderKPI();
-  renderCharts(kpi);
-  renderConcernList(kpi);
-  var p = document.getElementById('fPeriod'), d = document.getElementById('fDept'), s = document.getElementById('fSite');
-  toast('已套用篩選：'+p.options[p.selectedIndex].text+' · '+(d.value||'全部部門')+' · '+(s.value?s.options[s.selectedIndex].text:'全部廠區'));
+  renderHoursChart();
+  renderConcernList(POOL_DATA);
+  var d = document.getElementById('fDept'), s = document.getElementById('fSite');
+  toast('已套用篩選：'+(d.value||'全部部門')+' · '+(s.value?s.options[s.selectedIndex].text:'全部廠區'));
 }
 (function initDashboard(){
-  var kpi = renderKPI();
-  renderCharts(kpi);
-  renderConcernList(kpi);
+  renderKPI();
+  renderAttChart();
+  renderHoursChart();
+  renderConcernList(POOL_DATA);
   renderFeedbackSummary();
 })();
 

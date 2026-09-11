@@ -288,7 +288,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
-      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
+      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="情境切換" title="情境切換" onchange="handleDemoStateChange(this)">
         <option value="default">有課程學員</option>
         <option value="new">新學員</option>
       </select>
@@ -309,7 +309,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card" id="request" style="margin-bottom:16px;">
       <button type="button" class="req-toggle-btn" onclick="toggleRequestSection()">
         <div class="flex-between">
-          <h3 style="margin:0;font-size:15px;">一對一排課<span class="demo-tag">示範資料</span></h3>
+          <h3 style="margin:0;font-size:15px;">一對一排課</h3>
           <svg class="req-toggle-icon open" id="reqToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </div>
       </button>
@@ -439,7 +439,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="empty-state" style="padding:28px 16px 8px;">
         <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         <h4>你還沒有任何課程</h4>
-        <p>預約一堂免費試聽，或先看看適合你的課程方案<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+        <p>預約一堂免費試聽，或先看看適合你的課程方案</p>
       </div>
       <div class="flex-between" style="gap:10px;padding:0 4px 20px;">
         <button class="btn btn-primary btn-block" onclick="location.href='../公開網站/p06_trial.html'">預約免費試聽</button>
@@ -537,7 +537,7 @@ function handleLangCurrency(sel){
   });
   if(lang==='zh-CN'||lang==='de'){
     var names={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+names[lang]);
   } else {
     showToast('顯示語言／幣別已切換為 '+langText);
   }
@@ -1101,7 +1101,7 @@ function actionCellHtml(s){
   if(s.status==='canceled'){ return '<span class="badge badge-muted">已取消</span>'; }
   if(s.status==='done'){
     return s.replay
-      ? '<button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation();showToast(\'回放播放中（示範資料）\')">查看回放</button>'
+      ? '<button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation();showToast(\'回放播放中\')">查看回放</button>'
       : '<span class="badge badge-ok">已完成</span>';
   }
   var hoursUntil=(s.start-NOW)/3600000;
@@ -1169,7 +1169,7 @@ function renderActions(c,id){
   }
   if(c.status==='done'){
     area.innerHTML = c.replay
-      ? '<button class="btn btn-outline btn-block" onclick="showToast(\'回放播放中（示範資料）\')">查看回放</button>'
+      ? '<button class="btn btn-outline btn-block" onclick="showToast(\'回放播放中\')">查看回放</button>'
       : '<p class="status-text">已完成，本堂無回放紀錄。</p>';
     return;
   }

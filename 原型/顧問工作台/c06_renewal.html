@@ -426,7 +426,7 @@ html,body{overflow-x:hidden;}
 
       <div id="tabEnterprise" style="display:none;">
       <div class="card">
-        <h2>企業申請 <span class="cnt" id="entApCnt">0 筆</span><span class="demo-tag">示範畫面，資料為模擬數字</span></h2>
+        <h2>企業申請 <span class="cnt" id="entApCnt">0 筆</span></h2>
         <p class="page-sub" style="margin:-6px 0 12px;">承接企業端 h05「合約與時數池」頁送出的續約、加購時數、展延申請。</p>
         <div class="fchip-bar" id="entApFilterBar">
           <button type="button" class="fchip active" data-status="open" onclick="setEntApFilter('open')">進行中</button>
@@ -446,7 +446,7 @@ html,body{overflow-x:hidden;}
 <div class="modal-mask" id="declineModal">
   <div class="modal">
     <h3>婉拒申請</h3>
-    <p class="modal-sub" id="declineModalSub">示範畫面，資料為模擬數字</p>
+    <p class="modal-sub" id="declineModalSub"></p>
     <div class="field">
       <label>婉拒原因</label>
       <textarea id="declineReasonInput" placeholder="請填寫婉拒原因，將通知企業 HR 窗口"></textarea>
@@ -547,10 +547,10 @@ function tliSwitchRenewalTab(tab){
 /* ================= v2 新增：企業續約／加購／展延申請承接（來自企業端 h05） ================= */
 var ENT_APPLICATIONS=[
   {id:'EAP-2026-01',company:'範例半導體股份有限公司',type:'renewal',typeLabel:'續約',detail:'原合約續約 1 年，時數池沿用現行設定',submittedAt:'2026-09-05 10:20',hrContact:'王小姐（wang.hr@example-semi.example）',status:'新進'},
-  {id:'EAP-2026-02',company:'示範科技股份有限公司',type:'addon',typeLabel:'加購時數',detail:'加購時數池 100 小時',submittedAt:'2026-09-04 15:40',hrContact:'佐藤先生（sato.hr@example-tech.example）',status:'處理中'},
+  {id:'EAP-2026-02',company:'北辰精密工業股份有限公司',type:'addon',typeLabel:'加購時數',detail:'加購時數池 100 小時',submittedAt:'2026-09-04 15:40',hrContact:'佐藤先生（sato.hr@example-tech.example）',status:'處理中'},
   {id:'EAP-2026-03',company:'假設國際貿易股份有限公司',type:'extend',typeLabel:'展延',detail:'合約展延至 2027-03',submittedAt:'2026-09-02 09:15',hrContact:'陳先生（chen.hr@example-trade.example）',status:'新進'},
   {id:'EAP-2026-04',company:'範例生醫股份有限公司',type:'renewal',typeLabel:'續約',detail:'原合約續約 1 年，擬加購時數池 50 小時',submittedAt:'2026-08-28 11:00',hrContact:'田中小姐（tanaka.hr@example-bio.example）',status:'已建訂單',orderNo:'TLI-2026-B214'},
-  {id:'EAP-2026-05',company:'示範金融股份有限公司',type:'addon',typeLabel:'加購時數',detail:'加購時數池 200 小時',submittedAt:'2026-08-20 14:30',hrContact:'李小姐（li.hr@example-fin.example）',status:'已完成',orderNo:'TLI-2026-B198'},
+  {id:'EAP-2026-05',company:'安泰保經股份有限公司',type:'addon',typeLabel:'加購時數',detail:'加購時數池 200 小時',submittedAt:'2026-08-20 14:30',hrContact:'李小姐（li.hr@example-fin.example）',status:'已完成',orderNo:'TLI-2026-B198'},
   {id:'EAP-2026-06',company:'假設物流股份有限公司',type:'extend',typeLabel:'展延',detail:'合約展延至 2026-12',submittedAt:'2026-08-15 09:50',hrContact:'鈴木先生（suzuki.hr@example-logi.example）',status:'已婉拒',declineReason:'企業已決定終止合作'}
 ];
 function entApById(id){return ENT_APPLICATIONS.find(function(o){return o.id===id;});}
@@ -607,14 +607,14 @@ function tliApplyExtend(id){
   var o=entApById(id);
   if(!o)return;
   o.status='已完成';
-  tliToast('已套用展延：「'+o.company+'」'+o.detail+'，合約參數已同步更新於 a19 企業合約參數分頁（示範，未實際回寫）');
+  tliToast('已套用展延：「'+o.company+'」'+o.detail+'，合約參數已同步更新於 a19 企業合約參數分頁（未實際回寫）');
   renderEntApplications();
 }
 var __declineTargetId=null;
 function tliOpenDeclineModal(id){
   __declineTargetId=id;
   var o=entApById(id);
-  document.getElementById('declineModalSub').textContent=o.company+'・'+o.typeLabel+'申請・示範畫面，資料為模擬數字';
+  document.getElementById('declineModalSub').textContent=o.company+'・'+o.typeLabel+'申請';
   document.getElementById('declineReasonInput').value='';
   document.getElementById('declineModal').classList.add('open');
 }

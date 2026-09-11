@@ -314,7 +314,7 @@ cursor:pointer;color:var(--g500);font-family:inherit;}
 <div class="hint" style="margin-bottom:10px">出勤率＝實到堂數／應到堂數；應到堂數以合約層免扣次數設定為準，免扣範圍內的請假不列入應到分母，超出免扣次數的請假是否計入分母待確認（依 B2B 企業產品線功能設計 v2 第 5 章）。</div>
 <div class="grid4" id="entKpiRow"></div>
 <div class="trendwrap">
-<div class="tw-head"><span>出勤率趨勢（近 6 個月）</span><span>示範畫面，資料為模擬數字</span></div>
+<div class="tw-head"><span>出勤率趨勢（近 6 個月）</span></div>
 <div id="entTrendSvg"></div>
 </div>
 <div class="tablewrap"><table id="entTable"></table></div>
@@ -334,7 +334,7 @@ cursor:pointer;color:var(--g500);font-family:inherit;}
 <button class="btn ghost" onclick="renderInstitutionReport()">重新取數</button>
 <button class="btn ghost" onclick="exportInstCsv()">匯出 CSV</button>
 </div>
-<div class="hint" style="margin-bottom:10px">機構授權採包班／機構整批開通模式，依「機構」與「學期」拆分資源使用量與開通學生數；示範畫面，資料為模擬數字。</div>
+<div class="hint" style="margin-bottom:10px">機構授權採包班／機構整批開通模式，依「機構」與「學期」拆分資源使用量與開通學生數。</div>
 <div class="grid5" id="instKpiRow"></div>
 <div class="tablewrap"><table id="instTable"></table></div>
 </div>
@@ -343,7 +343,7 @@ cursor:pointer;color:var(--g500);font-family:inherit;}
 <!-- ==== v2 新增：依開票主體 ==== -->
 <div class="tabpanel" id="rptoppanel-entity">
 <div class="card">
-<div class="desc" style="margin-bottom:12px">依開票主體拆分營收與訂單數；海外主體以原幣別呈現，換算金額待月結匯率結算後產出，示範畫面資料為模擬數字。</div>
+<div class="desc" style="margin-bottom:12px">依開票主體拆分營收與訂單數；海外主體以原幣別呈現，換算金額待月結匯率結算後產出。</div>
 <div class="chiprow">
 <button class="active" onclick="billTab(this,'tw')">台灣主體</button>
 <button onclick="billTab(this,'os')">海外公司（登記國待定）</button>
@@ -355,7 +355,7 @@ cursor:pointer;color:var(--g500);font-family:inherit;}
 <div class="tabpanel" id="rptoppanel-recon">
 <div class="card">
 <h2>主體間服務費對帳</h2>
-<div class="desc" style="margin-bottom:12px">海外公司（登記國待定）向 TLI 台灣總部支付授課服務費，每月一列；本表供會計師進行移轉訂價文件比對之用。計算基礎與比例尚未拍板，示範畫面資料為模擬數字。</div>
+<div class="desc" style="margin-bottom:12px">海外公司（登記國待定）向 TLI 台灣總部支付授課服務費，每月一列；本表供會計師進行移轉訂價文件比對之用。計算基礎與比例尚未拍板。</div>
 <div class="filterbar">
 <input type="date" id="settle_from" value="2026-06-01"> <span class="small">～</span> <input type="date" id="settle_to" value="2026-08-31">
 <button class="btn ghost" onclick="renderSettleRecon()">查詢</button>
@@ -681,7 +681,7 @@ function renderEntTrend(entIdx){
 function openCsvModal(){ document.getElementById('csvModal').classList.add('open'); }
 function confirmCsvExport(){
   document.getElementById('csvModal').classList.remove('open');
-  toast('已匯出 CSV（固定欄位），示範畫面資料為模擬數字');
+  toast('已匯出 CSV（固定欄位）');
 }
 
 /* ================= 企業報表：機構授權維度 ================= */
@@ -742,7 +742,7 @@ function exportInstCsv(){
   var semSel = document.getElementById('inst_semester');
   var instName = RPT_INSTITUTIONS.find(function(i){return i.id===instSel.value;}).name;
   var semName = RPT_SEMESTERS.find(function(s){return s.id===semSel.value;}).name;
-  toast('已匯出「'+instName+'／'+semName+'」機構授權報表 CSV，示範畫面資料為模擬數字');
+  toast('已匯出「'+instName+'／'+semName+'」機構授權報表 CSV');
 }
 
 /* ================= 依開票主體 ================= */
@@ -768,7 +768,7 @@ function billTab(btn, key){
           '<td><span class="linklike" onclick=\'openEntityDetail("TLI 台灣總部","'+c.name+'","NT$ '+c.revenue.toLocaleString()+'","TWD")\'>看明細</span></td></tr>';
       }).join('') +
       '<tr><td><b>合計</b></td><td><b>'+totalOrders+'</b></td><td><b>NT$ '+total.toLocaleString()+'</b></td><td></td></tr></table></div>' +
-      '<div class="hint">開票主體：TLI 台灣總部，幣別：新台幣（TWD）。示範畫面，資料為模擬數字。</div>';
+      '<div class="hint">開票主體：TLI 台灣總部，幣別：新台幣（TWD）。</div>';
   } else {
     area.innerHTML = '<div class="tablewrap"><table><tr><th>幣別</th><th>企業客戶（示例）</th><th>訂單數</th><th>原幣金額</th><th>換算金額（NT$）</th><th>匯率</th><th></th></tr>' +
       BILLING_OS.map(function(o){
@@ -777,7 +777,7 @@ function billTab(btn, key){
           '<td><span class="linklike" onclick=\'openEntityDetail("海外公司（登記國待定）","'+o.entity+'","'+o.currency+' '+o.amount.toLocaleString()+'","'+o.currency+'")\'>看明細</span></td></tr>';
       }).join('') +
       '</table></div>' +
-      '<div class="hint">開票主體：海外公司（登記國待定）。換算金額待月結匯率結算後產出；本區塊資料為示範畫面，模擬數字。</div>';
+      '<div class="hint">開票主體：海外公司（登記國待定）。換算金額待月結匯率結算後產出。</div>';
   }
 }
 function openEntityDetail(entity, name, amount, currency){
@@ -786,7 +786,7 @@ function openEntityDetail(entity, name, amount, currency){
     '<div class="kv"><span>開票主體</span><span>'+entity+'</span></div>' +
     '<div class="kv"><span>幣別</span><span>'+currency+'</span></div>' +
     '<div class="kv"><span>金額</span><span>'+amount+'</span></div>' +
-    '<div class="note" style="margin-top:10px">示範畫面，資料為模擬數字。</div>';
+    '<div class="note" style="margin-top:10px"></div>';
   document.getElementById('entityDetailModal').classList.add('open');
 }
 

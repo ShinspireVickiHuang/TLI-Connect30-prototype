@@ -270,7 +270,7 @@ html,body{overflow-x:hidden;}
 
 <div class="card" id="trialPlanCard">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-    <div><h2 style="margin-bottom:2px">企業試辦方案（零元）</h2><div class="small">供 PoC 試辦期間顧問開通種子帳號，零元訂單。示範畫面，資料為模擬數字。</div></div>
+    <div><h2 style="margin-bottom:2px">企業試辦方案（零元）</h2><div class="small">供 PoC 試辦期間顧問開通種子帳號，零元訂單。</div></div>
     <span class="badge orange">預設方案</span>
   </div>
   <div class="grid2" style="margin-top:10px">
@@ -431,7 +431,7 @@ var PACKAGES = [
   schedule:null,
   creditRule:{type:'once', totalQty:32},
   status:'上架'},
- {id:'pk7', name:'客製化企業華語專案方案（示範）', type:'pkg', nameEn:'', nameJa:'', desc:'依企業客戶需求由顧問自組課程項目之專案型方案，價格另議。示範畫面，資料為模擬數字。',
+ {id:'pk7', name:'客製化企業華語專案方案', type:'pkg', nameEn:'', nameJa:'', desc:'依企業客戶需求由顧問自組課程項目之專案型方案，價格另議。',
   salesMode:'advisor', requireLogin:false,
   courseTypes:['團體直播'],
   items:[],
@@ -838,7 +838,7 @@ function renderPkgPriceAudPanel(p){
     '<label style="margin-right:20px;font-size:13px"><input type="radio" name="planType-'+p.id+'" value="standard" '+(p.planType==='standard'?'checked':'')+' onchange="onPlanTypeChange(\''+p.id+'\',this.value)"> 標準方案</label>' +
     '<label style="margin-right:20px;font-size:13px"><input type="radio" name="planType-'+p.id+'" value="enterprise_pool" '+(p.planType==='enterprise_pool'?'checked':'')+' onchange="onPlanTypeChange(\''+p.id+'\',this.value)"> 企業共用時數池</label>' +
     '<label style="font-size:13px"><input type="radio" name="planType-'+p.id+'" value="project" '+(p.planType==='project'?'checked':'')+' onchange="onPlanTypeChange(\''+p.id+'\',this.value)"> 專案型方案</label>' +
-    '<div class="hint" style="margin-top:6px">企業共用時數池：企業母帳號購買一個總時數池，子帳號依部門配額領用，扣時數時從企業母帳號的池子扣，不是各自獨立計算。<br>專案型方案：適用長期客製的企業客戶，每次合約內容不同，由顧問自組課程項目、價格另議，不會出現在公開網站的方案清單。示範畫面，資料為模擬數字。</div></div>';
+    '<div class="hint" style="margin-top:6px">企業共用時數池：企業母帳號購買一個總時數池，子帳號依部門配額領用，扣時數時從企業母帳號的池子扣，不是各自獨立計算。<br>專案型方案：適用長期客製的企業客戶，每次合約內容不同，由顧問自組課程項目、價格另議，不會出現在公開網站的方案清單。</div></div>';
 
   var poolHtml = '';
   if (p.planType === 'enterprise_pool'){
@@ -923,7 +923,7 @@ function renderProjectCard(p){
     '</table></div>';
   return '<div class="card">' +
     '<h3 style="margin-top:0">專案型方案設定</h3>' +
-    '<div class="note" style="margin-bottom:12px">專案型方案僅供綁定的企業客戶使用，不會出現在公開網站的方案清單；單價一律由顧問另行報價，此處不列具體金額。示範畫面，資料為模擬數字。</div>' +
+    '<div class="note" style="margin-bottom:12px">專案型方案僅供綁定的企業客戶使用，不會出現在公開網站的方案清單；單價一律由顧問另行報價，此處不列具體金額。</div>' +
     '<div class="formrow" style="max-width:340px"><label>綁定客戶（企業）</label><select onchange="onProjectClientChange(\''+p.id+'\',this.value)">'+clientOptions+'</select></div>' +
     '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:16px 0 8px"><h4 style="margin:0;font-size:13.5px">顧問自組課程項目</h4><button class="btn ghost" onclick="openProjectContractPicker(\''+p.id+'\')">從上次合約複製</button></div>' +
     renderProjectItemsTable(p) +
@@ -1005,7 +1005,7 @@ function openProjectContractPicker(pid){
       '<div class="small" style="margin-top:4px;color:var(--g500)">'+itemsSummary+'</div></div>';
   }).join('');
   var body = '<h3>從上次合約複製－'+p.projectClient+'</h3>' +
-    '<div class="hint" style="margin-bottom:10px">點選一筆合約，將其課程項目與付款方式帶入目前編輯中的方案。示範畫面，資料為模擬數字。</div>' +
+    '<div class="hint" style="margin-bottom:10px">點選一筆合約，將其課程項目與付款方式帶入目前編輯中的方案。</div>' +
     (rows || '<div class="small" style="padding:14px 0">查無此客戶的歷史合約紀錄</div>') +
     '<div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn ghost" onclick="closeDrawer()">取消</button></div>';
   document.getElementById('drawerModal').innerHTML = body;
@@ -1118,8 +1118,7 @@ function renderPkgDiscountPanel(p){
       '<td><button class="clearlink" onclick="removePkgTierRow(\''+p.id+'\','+idx+')">移除</button></td></tr>';
   }).join('');
   var tieredHtml = '<div class="card"><h3 style="margin-top:0">階梯計價</h3>' +
-    '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。</div>' +
-    '<div class="formrow" style="max-width:220px"><label>規則類型</label><select onchange="onPkgTieredTypeChange(\''+p.id+'\',this.value)">' +
+        '<div class="formrow" style="max-width:220px"><label>規則類型</label><select onchange="onPkgTieredTypeChange(\''+p.id+'\',this.value)">' +
     '<option value="accounts"'+(tp.type==='accounts'?' selected':'')+'>依帳號數</option>' +
     '<option value="hours"'+(tp.type==='hours'?' selected':'')+'>依總時數</option>' +
     '</select></div>' +

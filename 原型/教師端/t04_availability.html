@@ -191,8 +191,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
       <div class="banner banner-info" style="margin-top:12px;">
         <b>雙時區與海外學員可約區間</b>
-        <span class="demo-tag" style="margin-left:6px;">示範畫面，資料為模擬數字</span>
-        <ul>
+                <ul>
           <li>時段格左側刻度同步顯示台北時間與所選海外廠區當地時間，跨日以「（前一天）」「（隔天）」標示</li>
           <li>取消時限以企業慣用時區（合約設定）計算；本頁時段格以台北時間為主、海外廠區當地時間為輔並列顯示</li>
           <li>海外對照時間以台北當週對應星期換算，實際跨星期對應以正式排課邏輯為準</li>
@@ -234,7 +233,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <span><i class="locked"></i>已被預約（鎖定）</span>
         <span><i class="flexmark"></i>可帶直播班</span>
         <span><i class="chatmark"></i>團體聊天室場次</span>
-        <span><i class="overseas-swatch"></i>海外學員下班後可約區間（示範）</span>
+        <span><i class="overseas-swatch"></i>海外學員下班後可約區間</span>
       </div>
 
       <div class="grid-wrap">
@@ -246,8 +245,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="card">
       <div class="flex-between" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px;">
         <div class="section-title" style="font-size:15px;font-weight:700;margin:0;">團體聊天室場次列表</div>
-        <span class="demo-tag">示範畫面，資料為模擬數字</span>
-      </div>
+              </div>
       <p class="small muted" style="margin:4px 0 12px;">團體聊天室（30 分鐘，TLI 老師帶）；名額上限由「基礎資料設定 → 上課型態設定」決定，開場次時可在上限內下修，不可上修。</p>
       <div id="sessionList"></div>
     </div>
@@ -373,15 +371,15 @@ var openState = {
 var flexMarked = {'1-4':1,'2-5':1};
 /* ---------- 團體聊天室場次（v2 改版：老師開場次、看名單、出席勾選，資料為模擬數字） ---------- */
 // key（日-時段索引）對應已建立的團體聊天室場次；chatMarked 由此物件的 key 集合推導，維持與既有格子渲染邏輯相容
-/* 名額上限與可加入身分取自 a17 基礎資料設定→上課型態設定→團體聊天室（示範值 30，尚未拍板） */
+/* 名額上限與可加入身分取自 a17 基礎資料設定→上課型態設定→團體聊天室（暫定值 30，尚未拍板） */
 var CHAT_TYPE_CAP = 30;
 /* 面向＝權益群組（20260910f 改版）：全部有權益者／指定企業／指定學校，取代舊版 general/enterprise/institution/all 四選一。
    企業名單與 a04_packages.html、a19_b2b_enterprise.html 的示範企業名一致，不自創名稱；學校僅一個示範對象。 */
 var CHAT_ENT_NAMES = ['和霖科技股份有限公司','裕發國際貿易有限公司','瑞新金融顧問股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司'];
-var CHAT_INST_NAMES = ['合作大學（示範）'];
+var CHAT_INST_NAMES = ['範例州立大學'];
 /* ---------- 場次介紹欄位（20260910j 新增）：主題簡介、適合等級、老師一句簡介、討論題綱、事前準備、語言 ----------
    此表單只能存草稿；介紹須由教研在「內容管理」後台發布後才會顯示於學員端。 */
-var CURRENT_TEACHER_NAME = '林俊傑'; // 示範登入教師，名單與「老師管理」在職老師示範資料一致
+var CURRENT_TEACHER_NAME = '林俊傑'; // 目前登入教師，名單與「老師管理」在職老師示範資料一致
 var CURRENT_TEACHER_INTRO_DEFAULT = '資深中文教師，擅長生活會話與文化融入教學。';
 function chatAudienceLabel(session){
   if (session.audienceGroup === 'enterprise') return '指定企業：'+(session.audienceTarget||'（未指定）');

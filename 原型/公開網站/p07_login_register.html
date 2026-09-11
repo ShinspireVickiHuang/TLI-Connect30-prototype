@@ -335,7 +335,6 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
               <input type="text" id="refCodeDisplay" class="refcode-input" readonly>
               <button type="button" class="btn btn-outline btn-sm" onclick="clearRefCode()" data-i18n="p07_refcode_clear">清除</button>
             </div>
-            <div class="refcode-note" data-i18n="p07_refcode_note">示範畫面，資料為模擬數字</div>
           </div>
           <div class="field field-checkbox">
             <label class="checkbox-label">
@@ -424,7 +423,7 @@ main{max-width:1120px;margin:0 auto;padding:44px 20px 60px;display:flex;justify-
 <div class="modal-overlay" id="termsModalOverlay" onclick="if(event.target===this) closeTermsModal()">
   <div class="modal-box">
     <div class="modal-head">
-      <h3 data-i18n="p07_terms_modal_title">服務條款與個資蒐集告知（示範內容）</h3>
+      <h3 data-i18n="p07_terms_modal_title">服務條款與個資蒐集告知</h3>
       <button class="modal-close-btn" onclick="closeTermsModal()" aria-label="關閉" data-i18n="p07_close_aria" data-i18n-attr="aria-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body" id="termsModalBody"></div>
@@ -974,7 +973,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
   if(typeof onLangApplied === 'function') onLangApplied(lang);
 }
@@ -1108,7 +1107,7 @@ var I18N_PAGE = {
   p07_goal_daily: '生活會話', p07_goal_business: '商用／職場溝通',
   p07_goal_exam: '檢定考試準備（如 TOCFL／HSK／TOEIC）',
   p07_goal_visa: '簽證所需上課證明', p07_goal_other: '其他',
-  p07_label_refcode: '推薦代碼', p07_refcode_clear: '清除', p07_refcode_note: '示範畫面，資料為模擬數字',
+  p07_label_refcode: '推薦代碼', p07_refcode_clear: '清除', p07_refcode_note: '',
   p07_forgot_password: '忘記密碼？',
   p07_toast_forgot_password: '已送出，請至信箱查收密碼重設信',
   p07_btn_submit_login: '登入', p07_btn_submit_register: '完成註冊',
@@ -1136,12 +1135,12 @@ var I18N_PAGE = {
   p07_close_aria: '關閉',
   p07_terms_pre: '我已閱讀並同意',
   p07_terms_link: '服務條款與個資蒐集告知',
-  p07_terms_modal_title: '服務條款與個資蒐集告知（示範內容）',
+  p07_terms_modal_title: '服務條款與個資蒐集告知',
   p07_terms_h1: '服務條款',
   p07_terms_p1: '本平台提供語言課程預約、學習紀錄與繳費服務，會員應提供正確且最新的個人資料，並妥善保管帳號密碼。',
   p07_terms_h2: '個人資料蒐集與利用告知',
   p07_terms_p2: '我們蒐集之姓名、Email、手機、時區等資料，僅用於課程安排、帳號驗證與必要通知，不會提供第三方行銷使用。',
-  p07_terms_p3: '本頁為原型示範內容，正式條款以 TLI 官方公告版本為準。',
+  p07_terms_p3: '正式條款以 TLI 官方公告版本為準。',
   p07_terms_close_btn: '我已閱讀',
   p07_social_step_title: '補齊必要資訊',
   p07_social_step_sub: '已從社群帳號取得姓名與 Email，請完成以下必填資訊即可完成註冊。',
@@ -1169,7 +1168,7 @@ en: {
   p07_goal_daily: 'Everyday Conversation', p07_goal_business: 'Business / Workplace Communication',
   p07_goal_exam: 'Test Prep (e.g. TOCFL / HSK / TOEIC)',
   p07_goal_visa: 'Attendance Proof for Visa', p07_goal_other: 'Other',
-  p07_label_refcode: 'Referral Code', p07_refcode_clear: 'Clear', p07_refcode_note: 'Demo screen, sample data',
+  p07_label_refcode: 'Referral Code', p07_refcode_clear: 'Clear', p07_refcode_note: '',
   p07_forgot_password: 'Forgot your password?',
   p07_toast_forgot_password: 'Sent — please check your inbox for the password reset email',
   p07_btn_submit_login: 'Log In', p07_btn_submit_register: 'Complete Sign Up',
@@ -1197,12 +1196,12 @@ en: {
   p07_close_aria: 'Close',
   p07_terms_pre: 'I have read and agree to the',
   p07_terms_link: 'Terms of Service and Privacy Notice',
-  p07_terms_modal_title: 'Terms of Service and Privacy Notice (Sample Content)',
+  p07_terms_modal_title: 'Terms of Service and Privacy Notice',
   p07_terms_h1: 'Terms of Service',
   p07_terms_p1: 'This platform provides course booking, learning records, and payment services. Members must provide accurate, up-to-date personal information and keep their account credentials secure.',
   p07_terms_h2: 'Personal Data Collection and Use Notice',
   p07_terms_p2: 'The name, email, phone number, and time zone we collect are used only for course scheduling, account verification, and essential notifications — never for third-party marketing.',
-  p07_terms_p3: 'This page is prototype sample content; the official terms are those published by TLI.',
+  p07_terms_p3: 'The official terms are those published by TLI.',
   p07_terms_close_btn: 'Got it',
   p07_social_step_title: 'Complete Your Information',
   p07_social_step_sub: 'We’ve pulled your name and email from your social account. Complete the required fields below to finish signing up.',
@@ -1230,7 +1229,7 @@ ja: {
   p07_goal_daily: '日常会話', p07_goal_business: 'ビジネス／職場でのコミュニケーション',
   p07_goal_exam: '検定試験対策（TOCFL／HSK／TOEICなど）',
   p07_goal_visa: 'ビザ申請に必要な出席証明', p07_goal_other: 'その他',
-  p07_label_refcode: '紹介コード', p07_refcode_clear: 'クリア', p07_refcode_note: 'デモ画面、サンプルデータです',
+  p07_label_refcode: '紹介コード', p07_refcode_clear: 'クリア', p07_refcode_note: '',
   p07_forgot_password: 'パスワードをお忘れですか？',
   p07_toast_forgot_password: '送信しました。メールでパスワード再設定のご案内をご確認ください',
   p07_btn_submit_login: 'ログイン', p07_btn_submit_register: '登録を完了する',
@@ -1258,12 +1257,12 @@ ja: {
   p07_close_aria: '閉じる',
   p07_terms_pre: '以下の内容を読み、同意します：',
   p07_terms_link: '利用規約とプライバシー告知',
-  p07_terms_modal_title: '利用規約とプライバシー告知（サンプル内容）',
+  p07_terms_modal_title: '利用規約とプライバシー告知',
   p07_terms_h1: '利用規約',
   p07_terms_p1: '本プラットフォームは語学コースの予約、学習記録、お支払いサービスを提供します。会員は正確かつ最新の個人情報をご提供いただき、アカウント情報を適切に管理してください。',
   p07_terms_h2: '個人情報の収集・利用に関する告知',
   p07_terms_p2: '収集した氏名・メール・電話番号・タイムゾーンなどの情報は、授業手配、本人確認、必要な通知にのみ使用し、第三者のマーケティングには使用しません。',
-  p07_terms_p3: '本ページはプロトタイプのサンプル内容です。正式な規約はTLI公式発表版をご確認ください。',
+  p07_terms_p3: '正式な規約はTLI公式発表版をご確認ください。',
   p07_terms_close_btn: '確認しました',
   p07_social_step_title: '必須情報を入力してください',
   p07_social_step_sub: 'ソーシャルアカウントから氏名とメールアドレスを取得しました。以下の必須項目を入力すると登録が完了します。',

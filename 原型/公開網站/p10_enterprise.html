@@ -408,9 +408,8 @@ main{max-width:1080px;}
       <div class="dash-mock-head">
         <div>
           <div class="dash-mock-title">企業學習儀表板</div>
-          <div class="dash-mock-sub">示範畫面，資料為模擬數字</div>
         </div>
-        <button type="button" class="btn btn-outline btn-sm" onclick="showToast('已匯出報表（示範功能）')">匯出報表</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="showToast('已匯出報表')">匯出報表</button>
       </div>
       <div class="dash-stats">
         <div class="dash-stat"><span class="dash-stat-label">出勤率</span><span class="dash-stat-value">96%</span></div>
@@ -631,7 +630,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
 }
 function setLang(lang){

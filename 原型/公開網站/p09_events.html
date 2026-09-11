@@ -341,13 +341,13 @@ main{max-width:1160px;margin:0 auto;padding:0 0 60px;}
 <div class="modal-overlay" id="refundModalOverlay" onclick="if(event.target===this) closeEventRefundModal()">
   <div class="modal-box">
     <div class="modal-head">
-      <h3 data-i18n="p09_refund_modal_title">活動退費規則（示範內容）</h3>
+      <h3 data-i18n="p09_refund_modal_title">活動退費規則</h3>
       <button class="modal-close-btn" onclick="closeEventRefundModal()" aria-label="關閉" data-i18n="p09_close_aria" data-i18n-attr="aria-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body">
       <p data-i18n="p09_refund_rule1">活動開始前 N 小時申請，可全額退費。</p>
       <p data-i18n="p09_refund_rule2">逾前項時限申請，恕不受理退費。</p>
-      <p data-i18n="p09_refund_rule3">N 之實際時數由 TLI 另行公告，目前僅為示範參數。</p>
+      <p data-i18n="p09_refund_rule3">N 之實際時數由 TLI 另行公告。</p>
     </div>
     <div class="modal-foot">
       <button type="button" class="btn btn-primary btn-sm" onclick="closeEventRefundModal()" data-i18n="p09_refund_close_btn">我已了解</button>
@@ -473,7 +473,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
   if(typeof onLangApplied === 'function') onLangApplied(lang);
 }
@@ -635,16 +635,16 @@ var I18N_PAGE = {
   p09_reg_success_desc: '可至會員區「我的活動」查看報名紀錄與線上教室連結。',
   p09_reg_success_view_btn: '查看我的活動',
   p09_label_registered: '已報名',
-  p09_label_paid_demo: '示範價 {amount}（模擬）',
+  p09_label_paid_demo: '{amount}',
   p09_confirm_modal_title: '確認報名',
   p09_confirm_modal_body: '確定要報名「{title}」嗎？免費場次確認後立即完成報名。',
   p09_confirm_modal_btn: '確認報名',
   p09_confirm_modal_cancel: '取消',
   p09_refund_link: '退費規則',
-  p09_refund_modal_title: '活動退費規則（示範內容）',
+  p09_refund_modal_title: '活動退費規則',
   p09_refund_rule1: '活動開始前 N 小時申請，可全額退費。',
   p09_refund_rule2: '逾前項時限申請，恕不受理退費。',
-  p09_refund_rule3: 'N 之實際時數由 TLI 另行公告，目前僅為示範參數。',
+  p09_refund_rule3: 'N 之實際時數由 TLI 另行公告。',
   p09_refund_close_btn: '我已了解',
   p09_close_aria: '關閉'
 },
@@ -694,16 +694,16 @@ en: {
   p09_reg_success_desc: 'View your registration and classroom link anytime in "My Events" in the member area.',
   p09_reg_success_view_btn: 'View My Events',
   p09_label_registered: 'Registered',
-  p09_label_paid_demo: 'Demo price {amount} (sample)',
+  p09_label_paid_demo: '{amount}',
   p09_confirm_modal_title: 'Confirm Registration',
   p09_confirm_modal_body: 'Register for "{title}"? Free sessions are confirmed as soon as you confirm.',
   p09_confirm_modal_btn: 'Confirm Registration',
   p09_confirm_modal_cancel: 'Cancel',
   p09_refund_link: 'Refund Policy',
-  p09_refund_modal_title: 'Event Refund Policy (Sample Content)',
+  p09_refund_modal_title: 'Event Refund Policy',
   p09_refund_rule1: 'Requested at least N hours before the event starts: full refund.',
   p09_refund_rule2: 'Requested after that window: no refund.',
-  p09_refund_rule3: 'The actual value of N will be announced separately by TLI; this is a placeholder for demo purposes.',
+  p09_refund_rule3: 'The actual value of N will be announced separately by TLI.',
   p09_refund_close_btn: 'Got it',
   p09_close_aria: 'Close'
 },
@@ -753,16 +753,16 @@ ja: {
   p09_reg_success_desc: '会員エリアの「マイイベント」でお申込み内容とオンライン教室のリンクをご確認いただけます。',
   p09_reg_success_view_btn: 'マイイベントを見る',
   p09_label_registered: '申込み済み',
-  p09_label_paid_demo: 'デモ価格 {amount}（サンプル）',
+  p09_label_paid_demo: '{amount}',
   p09_confirm_modal_title: '申込みの確認',
   p09_confirm_modal_body: '「{title}」にお申込みしますか？無料イベントは確定と同時にお申込みが完了します。',
   p09_confirm_modal_btn: '申込みを確定する',
   p09_confirm_modal_cancel: 'キャンセル',
   p09_refund_link: '返金規定',
-  p09_refund_modal_title: 'イベント返金規定（サンプル内容）',
+  p09_refund_modal_title: 'イベント返金規定',
   p09_refund_rule1: '開催のN時間前までのお申し込みで全額返金いたします。',
   p09_refund_rule2: 'それ以降のお申し込みは返金いたしかねます。',
-  p09_refund_rule3: 'Nの具体的な時間数はTLIが別途公表します。現時点ではデモ用の仮パラメータです。',
+  p09_refund_rule3: 'Nの具体的な時間数はTLIが別途公表します。',
   p09_refund_close_btn: '確認しました',
   p09_close_aria: '閉じる'
 }

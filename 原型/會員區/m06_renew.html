@@ -162,7 +162,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span class="explore-link-text">探索課程</span>
       </a>
-      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="示範：切換會員狀態（僅供展示）" title="示範：切換會員狀態（僅供展示）" onchange="handleDemoStateChange(this)">
+      <select class="mini-select demo-switch" id="demoStateSwitch" aria-label="情境切換" title="情境切換" onchange="handleDemoStateChange(this)">
         <option value="default">有課程學員</option>
         <option value="new">新學員</option>
         <option value="expired">已到期學員</option>
@@ -297,7 +297,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
               <div class="va-num" id="vaValue">－</div>
               <div class="small muted">繳費期限 2026-08-28 23:59</div>
             </div>
-            <button class="btn btn-primary btn-block" onclick="confirmGatewayPayment()">確認付款（Demo 模擬已收款）</button>
+            <button class="btn btn-primary btn-block" onclick="confirmGatewayPayment()">確認付款</button>
           </div>
         </div>
       </div>
@@ -326,7 +326,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="empty-state" style="padding:28px 16px 8px;">
         <svg class="e-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.6 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
         <h4>還沒有可續費的方案</h4>
-        <p>先選一個方案開始上課，之後才會出現在這裡<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+        <p>先選一個方案開始上課，之後才會出現在這裡</p>
         <button class="btn btn-primary" onclick="location.href='../公開網站/p03_course_detail.html'">查看課程方案</button>
       </div>
     </div>
@@ -334,7 +334,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
   <!-- ===== 已到期學員（方案已到期，可重新購買）情境：網址帶 ?expired=1 顯示 ===== -->
   <div id="viewExpired" class="hidden">
-    <p class="page-sub" style="margin:0 0 14px;">你目前沒有進行中的方案，以下是已到期方案，可再次購買延續學習<span class="small demo-note">示範畫面，資料為模擬數字</span></p>
+    <p class="page-sub" style="margin:0 0 14px;">你目前沒有進行中的方案，以下是已到期方案，可再次購買延續學習</p>
     <div class="card">
       <div id="expiredList"></div>
       <div class="empty-state hidden" id="expiredEmpty" style="padding:12px 0;">
@@ -428,7 +428,7 @@ function setCurrency(lang){
   var sel=document.getElementById('currencySelect');
   if(lang==='zh-CN'||lang==='de'){
     var names={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+names[lang]);
   } else {
     showToast('顯示語言／幣別已切換為 '+sel.options[sel.selectedIndex].text);
   }

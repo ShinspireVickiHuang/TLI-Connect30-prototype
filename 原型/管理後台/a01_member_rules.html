@@ -499,7 +499,7 @@ var MEMBERS = [];
 for (var gi=0; gi<TOTAL_SEED; gi++){ MEMBERS.push(makeMember(gi)); }
 var nextNewId = TOTAL_SEED + 1;
 
-/* ================= 示範會員「有課程學員」（Emma）：同時有自費／企業／機構三種來源，跨頁（會員區 m01/m02/m03/m05/m07）示範資料一致 ================= */
+/* ================= 多重歸屬範例「有課程學員」（Emma）：同時有自費／企業／機構三種來源，跨頁（會員區 m01/m02/m03/m05/m07）示範資料一致 ================= */
 var EMMA_PLANS = [
   {planId:'plan-a', name:'中文一對一 20 堂課程包', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組', status:'生效中，到期 2026-12-31'},
   {planId:'plan-b', name:'彈性團體直播・中級會話 B1 班', payer:'自費', source:'自費訂單', ruleGroup:'一般會員規則組＋團體直播班規則', status:'第 4／12 週，到期 2026-10-15'},
@@ -520,8 +520,8 @@ var EMMA_MEMBER = {
   email:'emma.johnson@example.com',
   joined:'2024-08-20',
   activated:true, activationKey:'activated', activationSentAt:'2024-08-20 09:15',
-  tags:['跨方案示範'],
-  notes:['示範會員：同時持有自費／企業／機構三種來源的方案，用於驗證規則跟方案走、不跟身分走。'],
+  tags:['多重方案範例'],
+  notes:['多重歸屬範例：同時持有自費／企業／機構三種來源的方案，用於驗證規則跟方案走、不跟身分走。'],
   consultLog:[{t:'2024-08-23', who:'顧問 A', note:'完成分級測驗，安排入班；另同步企業合約與機構授權開通。'}],
   courses:['中文一對一 20 堂課程包（進行中）','彈性團體直播・中級會話 B1 班（進行中）'],
   ownership:['self','enterprise','institution'],
@@ -857,7 +857,7 @@ function drawerTab(name){
   var m = MEMBERS.find(function(x){return x.id===currentDrawerId;});
   renderDrawerBody(m);
 }
-/* 依會員的歸屬（ownership）合成方案清單：示範會員 Emma 有固定 5 筆完整資料，其餘會員依歸屬型態合成 1～2 筆概略資料 */
+/* 依會員的歸屬（ownership）合成方案清單：多重歸屬範例 Emma 有固定 5 筆完整資料，其餘會員依歸屬型態合成 1～2 筆概略資料 */
 function memberPlanRows(m){
   if (m.demoPlans) return m.demoPlans;
   var rows = [];

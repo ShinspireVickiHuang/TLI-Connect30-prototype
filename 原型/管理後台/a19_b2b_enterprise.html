@@ -140,6 +140,8 @@ display:flex;flex-direction:column;}
 .orgemp:last-child{border-bottom:none;}
 .orgemp .oe-actions{display:flex;gap:8px;}
 .orgemp .oe-actions button{background:none;border:none;color:var(--navy);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;font-family:inherit;}
+.loglist{font-size:12px;color:var(--g500);margin-top:8px;border-top:1px dashed var(--g200);padding-top:6px;}
+.loglist .logrow{padding:2px 0;}
 /* ---- 開關 ---- */
 .switchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;}
 .switch{position:relative;display:inline-block;width:38px;height:21px;flex-shrink:0;}
@@ -352,14 +354,28 @@ html,body{overflow-x:hidden;}
 <div style="text-align:right"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployees()">送出邀請</button></div>
 </div></div>
 
-<!-- 新增／編輯廠區 modal（2026-09-10 新增：示範畫面，資料為模擬數字） -->
+<!-- 代為修改廠區 modal（2026-09-10 新增，2026-09-11 修改：廠區改由企業自行維護，
+     後台僅保留「代為修改」單一入口，儲存時於修改紀錄標記由 TLI 代操作） -->
 <div class="modal-mask" id="campusModal"><div class="modal">
-<h3 id="campusModalTitle">新增廠區</h3>
+<h3>代為修改廠區</h3>
+<div class="formrow"><label>選擇廠區</label><select id="campusPicker" onchange="onCampusPickerChange(this.value)"></select></div>
 <div class="formrow"><label>名稱</label><input type="text" id="campusName" placeholder="例：美國廠區"></div>
 <div class="formrow"><label>國家地區</label><select id="campusCountry"></select></div>
 <div class="formrow"><label>時區</label><select id="campusTz"></select></div>
-<div class="hint">員工數依「所屬廠區」自動計算，不需手動輸入。</div>
+<div class="formrow"><label>狀態</label><select id="campusStatusSel"><option value="啟用">啟用</option><option value="停用">停用</option></select></div>
+<div class="hint">員工數依「所屬廠區」自動計算，不需手動輸入；本操作將標記為「由 TLI 代操作」。</div>
 <div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('campusModal')">取消</button> <button class="btn" onclick="saveCampus()">儲存廠區</button></div>
+</div></div>
+
+<!-- 代為修改部門配額 modal（2026-09-11 新增：部門配額改由企業自行維護，
+     後台僅保留「代為修改」單一入口，儲存時於修改紀錄標記由 TLI 代操作） -->
+<div class="modal-mask" id="deptQuotaEditModal"><div class="modal">
+<h3>代為修改部門配額</h3>
+<div class="formrow"><label>部門</label><select id="dqSelect" onchange="onDqSelectChange(this.value)"></select></div>
+<div class="formrow" id="dqNewNameRow"><label>新部門名稱</label><input type="text" id="dqNewName" placeholder="例：物流部"></div>
+<div class="formrow"><label>配額上限（小時）</label><input type="number" min="0" id="dqQuotaInput"></div>
+<div class="hint">本操作將標記為「由 TLI 代操作」，正式環境應提示企業 HR 復核。</div>
+<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('deptQuotaEditModal')">取消</button> <button class="btn" onclick="saveDeptQuotaEdit()">儲存</button></div>
 </div></div>
 
 <!-- 產生本月請款單 modal -->
@@ -409,6 +425,21 @@ function addDays(baseStr, days){
   return d.toISOString().slice(0,10);
 }
 function padNum(n, len){ var s=String(n); while(s.length<len) s='0'+s; return s; }
+function nowStr(){ var d=new Date(); return d.toISOString().slice(0,16).replace('T',' '); }
+/* 部門／廠區改由企業自行維護（2026-09-11 修改）：後台僅檢視，如需協助由 TLI 顧問「代為修改」，
+   異動一律寫入修改紀錄並標記操作者，供企業事後追溯 */
+function pushEntOrgLog(e, what){
+  e.orgChangeLog = e.orgChangeLog || [];
+  e.orgChangeLog.unshift({time: nowStr(), who:'TLI（'+e.advisor+'）代操作', what: what});
+  if (e.orgChangeLog.length > 20) e.orgChangeLog.length = 20;
+}
+function renderOrgLogMini(e){
+  var log = e.orgChangeLog || [];
+  if (!log.length) return '';
+  return '<div class="loglist"><div class="hint" style="margin-bottom:4px">修改紀錄</div>' + log.slice(0,4).map(function(l){
+    return '<div class="logrow">'+l.time+'　'+l.who+'　'+l.what+'</div>';
+  }).join('') + '</div>';
+}
 
 /* ================= 示範資料：企業客戶 ================= */
 var ENT_NAMES = ['和霖科技股份有限公司','北辰精密工業股份有限公司','裕發國際貿易有限公司','安泰保經股份有限公司',
@@ -713,7 +744,12 @@ function makeEnterprise(i){
     connectionRequests: connectionRequests, renewalRequests: makeRenewalRequests(i, end),
     contractHistory: makeContractHistory(i, planName, discountRate, start),
     institutionInfo: institutionInfo,
-    agentInfo: agentInfo
+    agentInfo: agentInfo,
+    /* 部門與廠區改由企業自行維護後台僅檢視（2026-09-11 修改）：修改紀錄種一筆企業端異動示範，
+       後台之後只會透過「代為修改」寫入標記「由 TLI 代操作」的紀錄 */
+    orgChangeLog: [
+      {time: addDays(start, 40)+' 10:15', who: mgr.name+'（'+mgr.title+'）', what:'更新部門與廠區設定'}
+    ]
   };
 }
 var ENTERPRISES = []; for (var ei=0; ei<12; ei++) ENTERPRISES.push(makeEnterprise(ei));
@@ -865,7 +901,7 @@ function renderEntTable(){
   var startIdx = (entState.page-1)*entState.pageSize;
   var pageRows = filtered.slice(startIdx, startIdx+entState.pageSize);
   var t = document.getElementById('entTable');
-  t.innerHTML = '<tr><th>企業名稱</th><th>客戶類型</th><th>會員分類</th><th>合約價方案</th><th>員工學員數</th><th>合約期間</th><th>合約到期<span class="demo-tag">示範畫面，資料為模擬數字</span></th><th>主管理者</th><th>本月出席率</th><th>請款狀態</th><th>合約參數狀態</th><th>串接狀態</th><th>合作階段</th></tr>';
+  t.innerHTML = '<tr><th>企業名稱</th><th>客戶類型</th><th>會員分類</th><th>合約價方案</th><th>員工學員數</th><th>合約期間</th><th>合約到期</th><th>主管理者</th><th>本月出席率</th><th>請款狀態</th><th>合約參數狀態</th><th>串接狀態</th><th>合作階段</th></tr>';
   pageRows.forEach(function(e){
     var tr = document.createElement('tr');
     tr.className = 'rowlink';
@@ -968,6 +1004,8 @@ function renderOrgTab(e){
     '<div class="kv"><span>統一編號</span><span>'+e.taxId+'</span></div>' +
     '<div class="kv"><span>對應顧問</span><span>'+e.advisor+'</span></div>' +
     (e.campuses.length ? renderCampusSection(e) : '') +
+    '<div class="sectiontitle">關注規則<span class="demo-tag">由企業自行維護</span></div>' +
+    '<div class="small" style="margin-bottom:10px">學習報告「需關注」清單之命中規則與門檻，由企業於企業端「合約與時數池 → 關注規則」自行設定，後台僅檢視；如需協助請洽企業窗口。</div>' +
     '<div style="text-align:right;margin:10px 0"><button class="btn ghost" onclick="openInviteModal()">邀請員工</button></div>' +
     '<div class="orgtree">';
   e.depts.forEach(function(d){
@@ -993,50 +1031,60 @@ function campusEmpCount(e, campusId){
 function campusStatusBadge(s){ return s==='啟用' ? '<span class="badge green">啟用</span>' : '<span class="badge grey">停用</span>'; }
 function renderCampusSection(e){
   var rows = e.campuses.map(function(c){
-    return '<tr><td>'+c.name+'</td><td>'+c.country+'</td><td>'+campusTzLabel(c.tz)+'</td><td>'+campusEmpCount(e,c.id)+'</td><td>'+campusStatusBadge(c.status)+'</td>' +
-      '<td><button class="btn ghost" onclick="openCampusModal(\'edit\',\''+c.id+'\')">編輯</button> <button class="btn ghost" onclick="toggleCampusStatus(\''+c.id+'\')">'+(c.status==='啟用'?'停用':'啟用')+'</button></td></tr>';
+    return '<tr><td>'+c.name+'</td><td>'+c.country+'</td><td>'+campusTzLabel(c.tz)+'</td><td>'+campusEmpCount(e,c.id)+'</td><td>'+campusStatusBadge(c.status)+'</td></tr>';
   }).join('');
-  return '<div class="sectiontitle">廠區／據點<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
-    '<div class="tablewrap"><table><tr><th>名稱</th><th>國家地區</th><th>時區</th><th>員工數</th><th>狀態</th><th>動作</th></tr>'+rows+'</table></div>' +
-    '<div style="text-align:right;margin:8px 0 14px"><button class="btn ghost" onclick="openCampusModal(\'new\')">＋ 新增廠區</button></div>';
+  var lastUpd = (e.orgChangeLog && e.orgChangeLog.length) ? e.orgChangeLog[0].time.slice(0,10) : e.contractStart;
+  return '<div class="sectiontitle">廠區／據點<span class="demo-tag">由企業自行維護（最後更新：'+lastUpd+'）</span></div>' +
+    '<div class="tablewrap"><table><tr><th>名稱</th><th>國家地區</th><th>時區</th><th>員工數</th><th>狀態</th></tr>'+rows+'</table></div>' +
+    '<div style="text-align:right;margin:8px 0 4px"><button class="btn ghost" onclick="openCampusManageModal()">代為修改</button></div>' +
+    renderOrgLogMini(e);
 }
-var campusModalState = {mode:'new', id:null};
-function openCampusModal(mode, id){
-  campusModalState = {mode:mode, id:id||null};
+function openCampusManageModal(){
   var e = entById(currentEntId);
-  var c = mode==='edit' ? e.campuses.find(function(x){return x.id===id;}) : null;
-  document.getElementById('campusModalTitle').textContent = mode==='edit' ? '編輯廠區' : '新增廠區';
-  document.getElementById('campusName').value = c ? c.name : '';
-  document.getElementById('campusCountry').innerHTML = CAMPUS_COUNTRY_LIST.map(function(co){
-    return '<option'+(c&&c.country===co?' selected':'')+'>'+co+'</option>';
-  }).join('');
-  document.getElementById('campusTz').innerHTML = CAMPUS_TZ_LIST.map(function(t){
-    return '<option value="'+t.tz+'"'+(c&&c.tz===t.tz?' selected':'')+'>'+t.label+'</option>';
-  }).join('');
+  var picker = document.getElementById('campusPicker');
+  picker.innerHTML = (e.campuses||[]).map(function(c,idx){ return '<option value="'+idx+'">'+c.name+'</option>'; }).join('') +
+    '<option value="__new__">＋ 新增廠區</option>';
+  document.getElementById('campusCountry').innerHTML = CAMPUS_COUNTRY_LIST.map(function(co){ return '<option>'+co+'</option>'; }).join('');
+  document.getElementById('campusTz').innerHTML = CAMPUS_TZ_LIST.map(function(t){ return '<option value="'+t.tz+'">'+t.label+'</option>'; }).join('');
+  onCampusPickerChange(picker.value);
   document.getElementById('campusModal').classList.add('open');
+}
+function onCampusPickerChange(val){
+  var e = entById(currentEntId);
+  if (val==='__new__'){
+    document.getElementById('campusName').value = '';
+    document.getElementById('campusCountry').value = CAMPUS_COUNTRY_LIST[0];
+    document.getElementById('campusTz').value = CAMPUS_TZ_LIST[0].tz;
+    document.getElementById('campusStatusSel').value = '啟用';
+  } else {
+    var c = e.campuses[Number(val)];
+    document.getElementById('campusName').value = c.name;
+    document.getElementById('campusCountry').value = c.country;
+    document.getElementById('campusTz').value = c.tz;
+    document.getElementById('campusStatusSel').value = c.status;
+  }
 }
 function saveCampus(){
   var e = entById(currentEntId);
+  var picker = document.getElementById('campusPicker');
   var name = document.getElementById('campusName').value.trim();
   if (!name){ toast('請輸入廠區名稱'); return; }
   var country = document.getElementById('campusCountry').value;
   var tz = document.getElementById('campusTz').value;
-  if (campusModalState.mode==='edit'){
-    var c = e.campuses.find(function(x){return x.id===campusModalState.id;});
-    c.name = name; c.country = country; c.tz = tz;
+  var status = document.getElementById('campusStatusSel').value;
+  var label;
+  if (picker.value==='__new__'){
+    e.campuses.push({id:'camp'+currentEntId+'_'+Date.now(), name:name, country:country, tz:tz, status:status});
+    label = '新增廠區「'+name+'」';
   } else {
-    e.campuses.push({id:'camp'+currentEntId+'_'+Date.now(), name:name, country:country, tz:tz, status:'啟用'});
+    var c = e.campuses[Number(picker.value)];
+    label = '編輯廠區「'+c.name+'」';
+    c.name = name; c.country = country; c.tz = tz; c.status = status;
   }
+  pushEntOrgLog(e, label);
   closeModal('campusModal');
   renderEntDrawerBody(e);
-  toast('已儲存廠區「'+name+'」');
-}
-function toggleCampusStatus(id){
-  var e = entById(currentEntId);
-  var c = e.campuses.find(function(x){return x.id===id;});
-  c.status = c.status==='啟用' ? '停用' : '啟用';
-  renderEntDrawerBody(e);
-  toast('已將廠區「'+c.name+'」設為'+c.status);
+  toast('已儲存（由 TLI 代操作）：'+label);
 }
 function statusBadgeEnt(s){ return s==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>'; }
 function transferEmployee(empId){ toast('已開啟轉移流程（示範）：可將此員工學員轉移至同企業其他部門或子公司'); }
@@ -1140,7 +1188,7 @@ function renderContractTab(e){
     '<div class="note" style="margin-top:12px">套用到新訂單：於「建訂單」（c04）為此企業員工學員建單時，系統將自動帶入上述合約價方案與折扣率，顧問可視個案調整。</div>' +
     '<button class="btn ghost" style="margin-top:10px" onclick="toast(\'已套用合約價設定，將於下次建訂單自動帶入\')">套用到新訂單</button>' +
     '<div class="hint" style="margin-top:8px"><a href="a12_contracts.html">前往「合約管理」查看完整合約 →</a></div>' +
-    '<div class="sectiontitle">合約版本歷史<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+    '<div class="sectiontitle">合約版本歷史</div>' +
     '<div class="tablewrap"><table><tr><th>版本</th><th>生效日</th><th>方案摘要</th><th>狀態</th></tr>'+historyRows+'</table></div>' +
     '<div style="text-align:right;margin-top:12px"><button class="btn orange" onclick="openCopyContractModal()">複製上次合約</button></div>';
 }
@@ -1247,8 +1295,8 @@ function renderContractParamsTab(e){
   var tzOptions = CAMPUS_TZ_LIST.map(function(t){
     return '<option value="'+t.tz+'"'+(cp.timezone===t.tz?' selected':'')+'>'+t.label+'</option>';
   }).join('');
-  var deptRows = cp.deptQuota.map(function(dq, idx){
-    return '<div class="pickrow"><span class="pname">'+dq.dept+'</span><input type="number" min="0" value="'+dq.quota+'" style="width:100px" onchange="onDeptQuotaChange('+idx+',this.value)"><span class="small">小時</span></div>';
+  var deptRows = cp.deptQuota.map(function(dq){
+    return '<div class="pickrow"><span class="pname">'+dq.dept+'</span><span class="small">'+dq.quota+' 小時</span></div>';
   }).join('');
   var tierRows = cp.tieredPricing.tiers.map(function(t, idx){
     return '<tr><td><input type="number" value="'+t.from+'" style="width:80px" onchange="onEntTierField('+idx+',\'from\',this.value)"></td>' +
@@ -1267,7 +1315,7 @@ function renderContractParamsTab(e){
     '<label style="font-size:13px"><input type="radio" name="chatRegMode-'+e.id+'" value="whitelist" '+(cp.chatRegMode==='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 白名單</label>' +
     '<div class="hint" style="margin-top:4px">白名單模式由企業 HR／學校窗口在其後台維護名單；全員開放則所有在學員工／學生皆可自主報名，兩者皆受名額上限管控。</div></div>'
   ) : '';
-  return '<div class="note">示範畫面，資料為模擬數字，實際合約參數於正式合約簽署後由顧問設定。</div>' +
+  return '<div class="note">實際合約參數於正式合約簽署後由顧問設定。</div>' +
    '<div class="crosslink">請假與取消規則之類型預設值來自<a href="a17_master_data.html#params-leaverules">基礎資料設定 → 參數設定 → 請假與取消規則組</a>，此處僅供本合約覆寫；其餘參數預設值來自<a href="a17_master_data.html#params">參數設定</a>。</div>' +
    '<div class="sectiontitle">包含上課型態與聊天室報名</div>' +
    '<div class="formrow"><label>包含上課型態</label><div>'+courseTypeBoxes+'</div>' +
@@ -1301,7 +1349,7 @@ function renderContractParamsTab(e){
    '<option value="deduct"'+(cp.overageLeavePolicy==='deduct'?' selected':'')+'>直接扣，不可申訴</option>' +
    '<option value="noleave"'+(cp.overageLeavePolicy==='noleave'?' selected':'')+'>不可取消，只能改期</option>' +
    '</select><div class="hint" style="margin-top:4px">與 a17「請假與取消規則組」同一組枚舉；申訴由 HR 或顧問覆核，通過改記請假不扣。</div>'+cpBadgeHtml('overageLeavePolicy')+'</div>' +
-   '<div class="sectiontitle">取消／請假審核模式<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="sectiontitle">取消／請假審核模式</div>' +
    '<div class="formrow"><label>審核模式</label><select onchange="onCpBadgeField(\'reviewMode\',this.value)">' +
    '<option value="self"'+(cp.reviewMode==='self'?' selected':'')+'>自主（員工自行取消／請假，不需審核）</option>' +
    '<option value="hrApproval"'+(cp.reviewMode==='hrApproval'?' selected':'')+'>需 HR 核准</option>' +
@@ -1324,18 +1372,19 @@ function renderContractParamsTab(e){
    '<div class="formrow"><label>時數池總量（小時）</label><input type="number" min="0" value="'+cp.poolTotal+'" onchange="onCpField(\'poolTotal\',Number(this.value)||0)"></div>' +
    '<div class="formrow"><label>效期</label><input type="date" value="'+cp.poolExpiry+'" onchange="onCpField(\'poolExpiry\',this.value)"></div>' +
    '</div>' +
-   '<div class="hint" style="margin-bottom:6px">部門配額（子帳號依部門配額領用時數池）：</div>' +
+   '<div class="hint" style="margin-bottom:6px">部門配額（子帳號依部門配額領用時數池；由企業自行維護，最後更新：'+
+     ((e.orgChangeLog && e.orgChangeLog.length) ? e.orgChangeLog[0].time.slice(0,10) : e.contractStart) + '）：</div>' +
    '<div class="orgtree">'+deptRows+'</div>' +
-   '<button class="btn ghost" style="margin-top:8px" onclick="addDeptQuotaRow()">＋ 新增部門配額列</button>' +
+   '<div style="text-align:right;margin-top:8px"><button class="btn ghost" onclick="openDeptQuotaEditModal()">代為修改</button></div>' +
+   renderOrgLogMini(e) +
    '<div class="sectiontitle">到期展延</div>' +
-   '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字。</div>' +
    '<div class="grid2">' +
    '<div class="formrow"><label>展延天數</label><input type="number" min="0" value="'+cp.renewalExtension.days+'" placeholder="由 TLI 拍板" onchange="onRenewalField(\'days\',this.value)"></div>' +
    '<div class="formrow"><label>可申請次數</label><input type="number" min="0" value="'+cp.renewalExtension.maxTimes+'" placeholder="由 TLI 拍板" onchange="onRenewalField(\'maxTimes\',this.value)"></div>' +
    '</div>' +
    '<div class="switchrow"><span class="small">展延是否需 TLI 審核</span><label class="switch"><input type="checkbox" '+(cp.renewalExtension.requireApproval?'checked':'')+' onchange="onRenewalApprovalToggle(this)"><span class="slider"></span></label></div>' +
    '<div class="sectiontitle">展延申請</div>' +
-   '<div class="note" style="margin-bottom:10px">來自企業端提出的合約展延申請，示範畫面，資料為模擬數字。</div>' +
+   '<div class="note" style="margin-bottom:10px">來自企業端提出的合約展延申請。</div>' +
    renderRenewalRequests(e) +
    '<div class="sectiontitle">階梯計價規則</div>' +
    '<div class="formrow" style="max-width:220px"><label>規則類型</label><select onchange="onTieredTypeChange(this.value)">' +
@@ -1390,13 +1439,39 @@ function onTzBasisChange(val){
   e.contractParams.tzBasis = val;
   renderEntDrawerBody(e);
 }
-function addDeptQuotaRow(){
+function openDeptQuotaEditModal(){
   var e = entById(currentEntId);
-  e.contractParams.deptQuota.push({dept:'（新部門）', quota:0});
-  renderEntDrawerBody(e);
+  var sel = document.getElementById('dqSelect');
+  sel.innerHTML = e.contractParams.deptQuota.map(function(dq,idx){ return '<option value="'+idx+'">'+dq.dept+'</option>'; }).join('') +
+    '<option value="__new__">＋ 新增部門</option>';
+  onDqSelectChange(sel.value);
+  document.getElementById('deptQuotaEditModal').classList.add('open');
 }
-function onDeptQuotaChange(idx, val){
-  entById(currentEntId).contractParams.deptQuota[idx].quota = Number(val)||0;
+function onDqSelectChange(val){
+  var e = entById(currentEntId);
+  var isNew = val==='__new__';
+  document.getElementById('dqNewNameRow').hidden = !isNew;
+  document.getElementById('dqQuotaInput').value = isNew ? 0 : e.contractParams.deptQuota[Number(val)].quota;
+}
+function saveDeptQuotaEdit(){
+  var e = entById(currentEntId);
+  var sel = document.getElementById('dqSelect');
+  var quota = Number(document.getElementById('dqQuotaInput').value)||0;
+  var label;
+  if (sel.value==='__new__'){
+    var name = document.getElementById('dqNewName').value.trim();
+    if (!name){ toast('請輸入新部門名稱'); return; }
+    e.contractParams.deptQuota.push({dept:name, quota:quota});
+    label = '新增部門「'+name+'」配額 '+quota+' 小時';
+  } else {
+    var dq = e.contractParams.deptQuota[Number(sel.value)];
+    dq.quota = quota;
+    label = '調整「'+dq.dept+'」配額為 '+quota+' 小時';
+  }
+  pushEntOrgLog(e, label);
+  closeModal('deptQuotaEditModal');
+  renderEntDrawerBody(e);
+  toast('已儲存（由 TLI 代操作）：'+label);
 }
 function onRenewalField(field, val){
   entById(currentEntId).contractParams.renewalExtension[field] = val;
@@ -1468,7 +1543,7 @@ function renderConnReqTab(e){
       '<td><select style="width:auto" onchange="updateConnReqStatus(\''+c.id+'\',this.value)">'+statusOptions+'</select> ' +
       '<button class="btn ghost" onclick="openConnReqNote(\''+c.id+'\')">備註</button></td></tr>';
   }).join('');
-  return '<div class="note">系統對接屬導入服務，二階段由 TLI 專案團隊執行；一階段企業以標準 CSV 匯出為主。示範畫面，資料為模擬數字。</div>' +
+  return '<div class="note">系統對接屬導入服務，二階段由 TLI 專案團隊執行；一階段企業以標準 CSV 匯出為主。</div>' +
    '<div class="sectiontitle">串接需求單列表</div>' +
    '<div class="tablewrap"><table><tr><th>企業</th><th>IT 聯絡人</th><th>系統名稱</th><th>要同步的資料</th><th>期望上線</th><th>狀態</th><th>負責顧問</th><th>動作</th></tr>' +
    (reqRows || '<tr><td colspan="8" class="small" style="white-space:normal;padding:14px 12px">此企業尚未提出串接需求單。</td></tr>') +
@@ -1512,19 +1587,18 @@ function renderInstitutionTab(e){
   var semesterRows = semesters.map(function(s){
     return '<tr><td>'+s.name+'</td><td>'+s.start+' ～ '+s.end+'</td><td>'+semesterStatusBadge(s)+'</td></tr>';
   }).join('');
-  return '<div class="note">示範畫面，資料為模擬數字。</div>' +
-   '<div class="hint" style="margin:-2px 0 12px">資金流：學生 → 大學（學費）→ TLI（授權費＋人頭費）；Connect 不向學生收款。</div>' +
+  return '<div class="hint" style="margin:-2px 0 12px">資金流：學生 → 大學（學費）→ TLI（授權費＋人頭費）；Connect 不向學生收款。</div>' +
    '<div class="sectiontitle">合作期間</div>' +
    '<div class="kv"><span>合作起訖</span><span>'+info.periodStart+' ～ '+info.periodEnd+'</span></div>' +
-   '<div class="sectiontitle">計費模式<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="sectiontitle">計費模式</div>' +
    renderInstitutionBillingModel(e, info) +
-   '<div class="sectiontitle">學期設定<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="sectiontitle">學期設定</div>' +
    '<div class="tablewrap"><table><tr><th>學期名稱</th><th>起訖日期</th><th>狀態</th></tr>' +
    (semesterRows || '<tr><td colspan="3" class="small" style="white-space:normal;padding:14px 12px">此機構尚未建立學期紀錄。</td></tr>') +
    '</table></div>' +
    '<div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="openAddSemesterModal()">新增下學期</button></div>' +
    '<div class="sectiontitle">權益展延</div>' +
-   '<div class="note" style="margin-bottom:10px">機構學生逾期未使用課程權益之展延申請，示範畫面，資料為模擬數字。</div>' +
+   '<div class="note" style="margin-bottom:10px">機構學生逾期未使用課程權益之展延申請。</div>' +
    renderExtensionLog(info) +
    '<div style="text-align:right;margin-top:10px"><button class="btn orange" onclick="openInstitutionRenewalModal()">核准權益展延</button></div>' +
    '<div class="sectiontitle">專屬代碼與信箱網域</div>' +
@@ -1568,11 +1642,11 @@ function renderInstitutionBillingModel(e, info){
    '</div>' +
    '<div class="kv"><span>計費週期</span><span>3 個月／12 週（示範）</span></div>' +
    '<div class="crosslink">金額由<a href="a17_master_data.html#params">基礎資料設定 → 參數設定</a>拍板後帶入，機構可覆寫。</div>' +
-   '<div class="hint" style="margin:8px 0 4px">本期開通人頭數計數表（依學期，示範畫面，資料為模擬數字）：</div>' +
+   '<div class="hint" style="margin:8px 0 4px">本期開通人頭數計數表（依學期）：</div>' +
    '<div class="tablewrap"><table><tr><th>學期</th><th>開通人頭數</th><th>學期狀態</th><th>對帳狀態</th></tr>'+headcountRows+'</table></div>' +
    '<div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="doExportInstHeadcountList()">匯出開通名單給學校</button> ' +
    '<button class="btn ghost" onclick="doMarkInstReconcileConfirmed()">標記學校已確認</button></div>' +
-   '<div class="sectiontitle" style="margin-top:16px">人頭對帳・異議處理<span class="demo-tag">示範畫面，資料為模擬數字</span></div>' +
+   '<div class="sectiontitle" style="margin-top:16px">人頭對帳・異議處理</div>' +
    '<div class="hint" style="margin-bottom:6px">本期（'+(cur?cur.name:'－')+'）異議清單，顧問可逐筆接受（從人頭數扣除）或不接受：</div>' +
    renderInstDisputeTable(cur) +
    '<div class="sectiontitle" style="margin-top:16px">產生機構帳單</div>' +
@@ -1607,7 +1681,7 @@ function doExportInstHeadcountList(){
   var info = e.institutionInfo;
   var cur = currentInstSemester(info);
   if (!cur){ toast('此機構尚無進行中學期，無法匯出名單'); return; }
-  toast('已產生「'+cur.name+'」開通名單並通知機構窗口（'+info.contactName+'）。示範畫面，資料為模擬數字，未實際寄送。');
+  toast('已產生「'+cur.name+'」開通名單並通知機構窗口（'+info.contactName+'）。');
 }
 function doMarkInstReconcileConfirmed(){
   var e = entById(currentEntId);
@@ -1685,12 +1759,12 @@ function renderInstitutionRenewalModal(){
     return '<div class="orgemp"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;width:100%"><input type="checkbox" class="ext-stu-check" value="'+em.id+'">'+em.name+'　<span class="small">'+em.email+'</span></label></div>';
   }).join('');
   var body = document.getElementById('institutionRenewalBody');
-  body.innerHTML = '<div class="note" style="margin-bottom:10px">示範畫面，資料為模擬數字，核准後僅更新畫面顯示，不會實際延長系統權益。</div>' +
+  body.innerHTML = '<div class="note" style="margin-bottom:10px">核准後僅更新畫面顯示，不會實際延長系統權益。</div>' +
     '<div class="formrow"><label>核准範圍</label>' +
     '<label style="display:block;margin-bottom:6px"><input type="radio" name="ext_scope" value="batch" '+(mode==='batch'?'checked':'')+' onchange="onExtScopeChange(this.value)"> 整批核准（全部學生，共 '+students.length+' 人）</label>' +
     '<label style="display:block"><input type="radio" name="ext_scope" value="select" '+(mode==='select'?'checked':'')+' onchange="onExtScopeChange(this.value)"> 選擇學生</label>' +
     '</div>' +
-    (mode==='select' ? '<div class="orgtree">'+(studentRows || '<div class="small">此機構目前無可選學生示範資料。</div>')+'</div>' : '') +
+    (mode==='select' ? '<div class="orgtree">'+(studentRows || '<div class="small">此機構目前無可選學生。</div>')+'</div>' : '') +
     '<div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal(\'institutionRenewalModal\')">取消</button> <button class="btn orange" onclick="doApproveInstitutionRenewal()">核准展延</button></div>';
 }
 function onExtScopeChange(val){
@@ -1741,8 +1815,7 @@ function doApproveInstitutionRenewal(){
 /* ================= 代理商型詳情（v2 新增：摘要卡＋連結至代理商詳細管理，示範畫面，資料為模擬數字） ================= */
 function renderAgentInfoTab(e){
   var info = e.agentInfo;
-  return '<div class="note">示範畫面，資料為模擬數字。</div>' +
-   '<div class="card" style="margin-top:10px">' +
+  return '<div class="card" style="margin-top:10px">' +
    '<div class="kv"><span>轉介碼</span><span>'+info.referralCode+'</span></div>' +
    '<div class="kv"><span>名單歸屬規則</span><span>'+info.attributionRule+'</span></div>' +
    '<div class="kv"><span>佣金比例</span><span class="small">待定</span></div>' +

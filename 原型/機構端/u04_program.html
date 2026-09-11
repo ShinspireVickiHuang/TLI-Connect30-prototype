@@ -130,7 +130,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳；12 週期程為示範標模擬，實際期程長度與課表以合作合約為準。示範畫面，資料為模擬數字。</div>
+<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳；實際期程長度與課表以合作合約為準。</div>
 
 <div class="card">
 <div class="pagehead">
@@ -141,7 +141,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 
 <div class="card">
-<h2>12 週期程課表（示範畫面，資料為模擬數字）</h2>
+<h2>12 週期程課表</h2>
 <div class="tablewrap">
 <table>
 <thead><tr><th>週次</th><th>半導體技能課程（大學）</th><th>半導體相關中文（TLI）</th><th>Connect 資源任務</th><th>團體聊天室場次</th></tr></thead>
@@ -151,7 +151,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 
 <div class="card">
-<h2>聊天室場次與報名人數（示範畫面，資料為模擬數字）</h2>
+<h2>聊天室場次與報名人數</h2>
 <div class="tablewrap">
 <table>
 <thead><tr><th>週次</th><th>主題</th><th>帶領老師</th><th>時間（台北）</th><th>已報名人數</th><th>狀態</th></tr></thead>
@@ -176,7 +176,7 @@ var TEACHERS = ['林老師（TLI）'];
 function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
 
 document.getElementById('programKpiGrid').innerHTML = [
-  {num:CURRENT_WEEK+' ／ '+TOTAL_WEEKS, lbl:'目前週次（示範）'},
+  {num:CURRENT_WEEK+' ／ '+TOTAL_WEEKS, lbl:'目前週次'},
   {num:'186', lbl:'本期人頭數'},
   {num:'12', lbl:'本期聊天室場次數'},
   {num:'41%', lbl:'聊天室使用率（近 30 天）'}
@@ -207,7 +207,7 @@ for(var w2=1; w2<=TOTAL_WEEKS; w2++){
 }
 document.getElementById('sessionTbody').innerHTML = sessionRows;
 
-function exportCsv(){ toast('已產生期程與課表 CSV（示範畫面，不會實際下載檔案）'); }
+function exportCsv(){ toast('已產生期程與課表 CSV（不會實際下載檔案）'); }
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }

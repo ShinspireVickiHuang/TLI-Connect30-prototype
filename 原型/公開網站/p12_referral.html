@@ -197,7 +197,6 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
     <p class="ref-hero-lead" id="refLead">確認推薦來源後即可註冊帳號，自行付費購買課程，系統會自動將您的訂單歸屬給推薦您的代理商。</p>
 
     <div class="ref-card" id="refKnownCard" style="display:none">
-      <span class="ref-demo-tag">示範畫面，代理商名稱與轉介碼為模擬資料</span>
       <span class="ref-badge" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 10 8 14 16 5"/></svg>推薦來源已確認</span>
       <div class="ref-agent-name">由 <span id="refAgentName">範例教育顧問</span> 推薦</div>
       <div class="ref-agent-code">轉介碼：<strong id="refAgentCode">—</strong></div>
@@ -206,7 +205,6 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
     </div>
 
     <div class="ref-input-card" id="refInputCard" style="display:none">
-      <span class="ref-demo-tag">示範畫面，代理商名稱與轉介碼為模擬資料</span>
       <label for="refCodeInput">輸入代理商提供的轉介碼</label>
       <div class="ref-input-row">
         <input type="text" id="refCodeInput" placeholder="如：REF-SEA07" autocomplete="off">
@@ -309,7 +307,7 @@ function showToast(msg){
 </script>
 
 <script>
-function setLang(){ showToast('示範版僅呈現介面語系切換'); }
+function setLang(){ showToast('僅呈現介面語系切換'); }
 
 /* ===================== 代理商轉介：示範資料與顯示邏輯 ===================== */
 var AGENT_DIRECTORY = {

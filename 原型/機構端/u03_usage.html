@@ -133,7 +133,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 </div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳；示範畫面，資料為模擬數字。</div>
+<div class="note" style="margin-bottom:14px">本入口僅呈現使用狀況，不涉及金流；授權費與人頭費由貴校與 TLI 另行對帳。</div>
 
 <div class="card">
 <div class="pagehead">
@@ -174,7 +174,7 @@ document.getElementById('usageKpiGrid').innerHTML = [
 document.getElementById('usageTbody').innerHTML = USAGE_ROWS.map(function(r){
   return '<tr><td>'+r.type+'</td><td>'+r.users+'</td><td>'+r.total+'</td><td>'+r.avg+'</td><td>'+r.attend+'</td><td>'+r.noshow+'</td><td>'+r.late+'</td></tr>';
 }).join('');
-function exportCsv(){ toast('已產生使用報表 CSV（示範畫面，不會實際下載檔案）'); }
+function exportCsv(){ toast('已產生使用報表 CSV（不會實際下載檔案）'); }
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }

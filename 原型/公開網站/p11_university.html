@@ -197,7 +197,6 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
     <div><span class="uni-name-tag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>範例州立大學</span></div>
     <h1>範例州立大學合作方案：在學期間，半導體技能與華語一起學</h1>
     <p class="uni-hero-lead">TLI 與範例州立大學合作，為期 3 個月的產學合作期程由大學支付授權費用，在學學生的學費已含此費用，不需另外支付。期程內由大學開設半導體技能課程，TLI 同步開設半導體相關中文課程，並透過 Connect 提供自學影片、音檔、測驗與每週團體聊天室，強化實作與口說應用。</p>
-    <div class="demo-note">示範畫面，校名與合作內容為模擬情境，非實際合作條件。</div>
   </div>
 </section>
 
@@ -229,7 +228,7 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
     </div>
     <div class="period-strip">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span>期程長度：3 個月（示範畫面，實際起訖日期以學校公告為準）</span>
+      <span>期程長度：3 個月（實際起訖日期以學校公告為準）</span>
     </div>
   </section>
 
@@ -288,7 +287,7 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
         <div class="field-error" id="err_uniTerms"></div>
       </div>
       <button class="btn btn-primary" id="verifyBtn" onclick="verifyStudent()">驗證身分</button>
-      <div class="verify-hint">示範畫面：填寫全部必填欄位並通過驗證即視為身分驗證成功；未通過時會提示第一個錯誤欄位。</div>
+      <div class="verify-hint">填寫全部必填欄位並通過驗證即視為身分驗證成功；未通過時會提示第一個錯誤欄位。</div>
       <div class="verify-msg" id="verifyMsg"></div>
     </div>
   </section>
@@ -333,7 +332,7 @@ main{max-width:1040px;margin:0 auto;padding:0 24px;}
 <div class="modal-overlay" id="uniTermsModalOverlay" onclick="if(event.target===this) closeUniTermsModal()">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>服務條款與個資蒐集告知（示範內容）</h3>
+      <h3>服務條款與個資蒐集告知</h3>
       <button class="modal-close-btn" onclick="closeUniTermsModal()" aria-label="關閉"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body" id="uniTermsModalBody"></div>
@@ -657,7 +656,7 @@ function applyLang(lang){
   if(sel) sel.value = lang;
   if(lang!=='zh-TW' && lang!=='en' && lang!=='ja' && typeof showToast==='function'){
     var __langNames={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+(__langNames[lang]||lang)+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+(__langNames[lang]||lang));
   }
 }
 function setLang(lang){

@@ -299,7 +299,7 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
     </div>
 
     <div id="flexSection">
-      <h3 class="section-title first">團體直播班<span class="demo-tag">名額為示範資料</span></h3>
+      <h3 class="section-title first">團體直播班</h3>
       <div id="flexFullBlock">
         <div id="flexCards" class="stack"></div>
         <button type="button" class="btn btn-outline btn-block hidden" id="flexMoreBtn" style="margin-top:10px;" onclick="toggleFlexMore()">看更多直播班</button>
@@ -308,7 +308,7 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
 
     <div class="card" style="margin-top:16px;" id="chatSection">
       <div class="flex-between">
-        <h3 style="margin:0;font-size:15px;">團體聊天室<span class="demo-tag">場次為示範資料</span></h3>
+        <h3 style="margin:0;font-size:15px;">團體聊天室</h3>
         <a class="btn btn-outline btn-sm" href="m14_chat_booking.html">看全部場次</a>
       </div>
       <p class="small muted" style="margin:8px 0 12px;">來源：商務華語企業培訓（公司提供・白名單場次）／華語會話學期方案（學校提供・全員開放）。實際可報名場次以聊天室頁面顯示為準。</p>
@@ -317,7 +317,7 @@ button.pick-card{width:100%;text-align:left;margin:0;font:inherit;}
 
     <div class="card" style="margin-top:16px;margin-bottom:16px;" id="eventSection">
       <div class="flex-between">
-        <h3 style="margin:0;font-size:15px;">線上活動<span class="demo-tag">示範資料</span></h3>
+        <h3 style="margin:0;font-size:15px;">線上活動</h3>
         <span class="small muted">活動為一次性付費</span>
       </div>
       <div id="eventList" class="stack" style="margin-top:10px;"></div>
@@ -350,7 +350,7 @@ function handleLangCurrency(sel){
   });
   if(lang==='zh-CN'||lang==='de'){
     var names={'zh-CN':'简体中文','de':'Deutsch'};
-    showToast('已切換為 '+names[lang]+'（示範版僅呈現介面語系切換）');
+    showToast('已切換為 '+names[lang]);
   } else {
     showToast('顯示語言／幣別已切換為 '+langText);
   }

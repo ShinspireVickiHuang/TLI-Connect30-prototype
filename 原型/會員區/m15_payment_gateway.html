@@ -65,7 +65,7 @@ svg{display:block;}
   <div class="gw-card">
     <div class="gw-store-row"><span>商店名稱</span><span>TLI 中華語文研習所</span></div>
     <div class="gw-store-row"><span>訂單編號</span><span id="gwOrderNo">－</span></div>
-    <div class="gw-store-row total"><span>應付金額</span><span style="text-align:right;"><span id="gwAmount">NT$0</span><span class="gw-amount-tag">示範金額</span></span></div>
+    <div class="gw-store-row total"><span>應付金額</span><span style="text-align:right;"><span id="gwAmount">NT$0</span></span></div>
   </div>
 
   <div class="gw-card">
@@ -208,7 +208,7 @@ function confirmPay(){
     return;
   }
   payInProgress = true;
-  showToast('付款成功，正在返回訂單頁面（示範）');
+  showToast('付款成功，正在返回訂單頁面');
   setTimeout(function(){
     window.location.href = 'm13_checkout.html?paid=1&order='+encodeURIComponent(orderNo);
   }, 700);
