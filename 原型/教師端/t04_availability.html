@@ -283,6 +283,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       </select>
       <select class="field-select hidden" id="chatFormAudienceTarget" style="margin-top:8px"></select>
       <div class="small muted" style="margin-top:4px;">全部有權益者：合約／方案含團體聊天室型態者皆可報名；指定企業／學校僅該企業員工或學校學生可報名。</div>
+      <div class="hidden" id="chatFormDeptWrap" style="margin-top:10px;">
+        <div class="lbl">適用科系（可複選，不選＝不限科系）</div>
+        <div class="stack" id="chatFormDeptList"></div>
+        <div class="small muted hidden" id="chatFormDeptEmptyHint">該校尚未設定科系，請洽學校窗口。</div>
+      </div>
     </div>
     <div class="sheet-sec">
       <div class="lbl">主題簡介</div>
@@ -377,6 +382,38 @@ var CHAT_TYPE_CAP = 30;
    企業名單與 a04_packages.html、a19_b2b_enterprise.html 的示範企業名一致，不自創名稱；學校僅一個示範對象。 */
 var CHAT_ENT_NAMES = ['和霖科技股份有限公司','裕發國際貿易有限公司','瑞新金融顧問股份有限公司','東岳生技股份有限公司','大西華國際物流股份有限公司'];
 var CHAT_INST_NAMES = ['範例州立大學'];
+/* ---------- 適用科系（2026-09-11 新增）：面向選「指定學校」時，可複選該校科系；一場聊天室可對應多個科系（一對多）。
+   讀取與機構端 u02／u04、管理後台 a19「學院與科系」共用的 localStorage，資料由 TLI 依合作合約建檔，教師端唯讀選用。
+   選定的適用科系會同步一份摘要到 tliDemoInstChatSessions，供機構端 u02「各科系可報名場次」總覽讀取。 ---------- */
+var LS_ORG_COLLEGE_KEY = 'tliDemoOrgColleges';
+var LS_ORG_DEPT_KEY = 'tliDemoOrgDepartments';
+var LS_INST_CHAT_KEY = 'tliDemoInstChatSessions';
+function defaultOrgColleges(){
+  return [
+    {id:'c0', name:'商學院', status:'啟用'}, {id:'c1', name:'工學院', status:'啟用'},
+    {id:'c2', name:'外語學院', status:'啟用'}, {id:'c3', name:'人文學院', status:'啟用'}, {id:'c4', name:'理學院', status:'啟用'}
+  ];
+}
+function defaultOrgDepartments(){
+  return [
+    {id:'d0', collegeId:'c0', name:'企業管理學系', status:'啟用'}, {id:'d1', collegeId:'c0', name:'國際貿易學系', status:'啟用'},
+    {id:'d2', collegeId:'c1', name:'資訊工程學系', status:'啟用'}, {id:'d3', collegeId:'c1', name:'機械工程學系', status:'啟用'},
+    {id:'d4', collegeId:'c2', name:'應用外語學系', status:'啟用'}, {id:'d5', collegeId:'c3', name:'歷史學系', status:'啟用'},
+    {id:'d6', collegeId:'c3', name:'中國文學系', status:'啟用'}, {id:'d7', collegeId:'c4', name:'應用數學學系', status:'啟用'}
+  ];
+}
+function loadOrgColleges(){
+  try{ var raw = localStorage.getItem(LS_ORG_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgColleges();
+}
+function loadOrgDepartments(){
+  try{ var raw = localStorage.getItem(LS_ORG_DEPT_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgDepartments();
+}
+var ORG_COLLEGES = loadOrgColleges();
+var ORG_DEPARTMENTS = loadOrgDepartments();
+function orgCollegeName(id){ var c = ORG_COLLEGES.find(function(x){return x.id===id;}); return c ? c.name : '－'; }
+function orgDeptName(id){ var d = ORG_DEPARTMENTS.find(function(x){return x.id===id;}); return d ? d.name : '－'; }
 /* ---------- 場次介紹欄位（20260910j 新增）：主題簡介、適合等級、老師一句簡介、討論題綱、事前準備、語言 ----------
    此表單只能存草稿；介紹須由教研在「內容管理」後台發布後才會顯示於學員端。 */
 var CURRENT_TEACHER_NAME = '林俊傑'; // 目前登入教師，名單與「老師管理」在職老師示範資料一致
@@ -391,13 +428,27 @@ function chatAudienceBadgeClass(session){
   if (session.audienceGroup === 'institution') return 'inst';
   return 'all';
 }
+/* 適用科系摘要：超過 2 個顯示前 2 個＋「等 N 系」 */
+function chatDeptSummary(session){
+  var ids = session.deptIds || [];
+  if (!ids.length) return '不限科系';
+  var names = ids.map(function(id){ return orgCollegeName(orgDeptCollegeId(id))+orgDeptName(id); });
+  if (names.length <= 2) return '限：'+names.join('、');
+  return '限：'+names.slice(0,2).join('、')+' 等 '+names.length+' 系';
+}
+function orgDeptCollegeId(id){ var d = ORG_DEPARTMENTS.find(function(x){return x.id===id;}); return d ? d.collegeId : ''; }
 var chatSessions = {
   '2-6':{topic:'日常對話練習', audienceGroup:'institution', audienceTarget:CHAT_INST_NAMES[0], registered:4, capacity:20,
     summary:'鎖定日常生活情境，透過簡單提問與情境模擬，讓學員練習開口說中文，適合累積基礎會話信心。', level:'初階',
-    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['分享今天做了哪些事','描述你最喜歡的一餐','練習問路與指路對話'], prep:'請先複習教材第 1–2 課常用句型。', lang:'中文', introStatus:'已發佈'},
+    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['分享今天做了哪些事','描述你最喜歡的一餐','練習問路與指路對話'], prep:'請先複習教材第 1–2 課常用句型。', lang:'中文', introStatus:'已發佈',
+    deptIds:['d2','d3']},
   '4-2':{topic:'職場情境會話', audienceGroup:'all', audienceTarget:null, registered:0, capacity:20,
     summary:'模擬會議、面試等職場情境，訓練學員使用得體的中文表達。', level:'中高階',
-    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['自我介紹與工作背景說明','模擬一段簡短的會議發言',''], prep:'', lang:'中文', introStatus:'草稿'}
+    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['自我介紹與工作背景說明','模擬一段簡短的會議發言',''], prep:'', lang:'中文', introStatus:'草稿'},
+  '5-3':{topic:'旅遊實用會話', audienceGroup:'institution', audienceTarget:CHAT_INST_NAMES[0], registered:3, capacity:20,
+    summary:'情境設定在機場、飯店、景點，練習旅行中最常用到的華語表達。', level:'初級',
+    teacherIntro:CURRENT_TEACHER_INTRO_DEFAULT, points:['詢問交通與方向','在飯店辦理入住的對話','推薦一個你想去的景點'], prep:'', lang:'中文', introStatus:'已發佈',
+    deptIds:['d4','d5']}
 };
 function chatMarkedKeys(){ return Object.keys(chatSessions); }
 
@@ -567,6 +618,36 @@ function populateChatAudienceTarget(group, selected){
 }
 function onChatAudienceGroupChange(val){
   populateChatAudienceTarget(val, null);
+  renderChatDeptCheckboxes(val==='institution' ? [] : null);
+}
+/* 適用科系複選（僅面向＝指定學校時顯示）：讀該校 ORG_DEPARTMENTS，若尚無科系資料則顯示提示文字，不擋創建 */
+var chatFormDeptIds = [];
+function renderChatDeptCheckboxes(selectedIds){
+  var wrap = document.getElementById('chatFormDeptWrap');
+  var group = document.getElementById('chatFormAudienceGroup').value;
+  if (group !== 'institution'){
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  if (selectedIds) chatFormDeptIds = selectedIds.slice();
+  var listEl = document.getElementById('chatFormDeptList');
+  var emptyHint = document.getElementById('chatFormDeptEmptyHint');
+  if (!ORG_DEPARTMENTS.length){
+    listEl.innerHTML = '';
+    emptyHint.classList.remove('hidden');
+    return;
+  }
+  emptyHint.classList.add('hidden');
+  listEl.innerHTML = ORG_DEPARTMENTS.map(function(d){
+    var checked = chatFormDeptIds.indexOf(d.id)>-1 ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;"><input type="checkbox" '+checked+' onchange="toggleChatFormDept(\''+d.id+'\',this.checked)">'+orgCollegeName(d.collegeId)+'・'+d.name+'</label>';
+  }).join('');
+}
+function toggleChatFormDept(id, checked){
+  var idx = chatFormDeptIds.indexOf(id);
+  if (checked && idx===-1) chatFormDeptIds.push(id);
+  if (!checked && idx>-1) chatFormDeptIds.splice(idx,1);
 }
 var chatFormKey = null;
 var chatFormPoints = [];
@@ -600,6 +681,7 @@ function openChatForm(key, cellEl){
   var group = session ? (session.audienceGroup || 'all') : 'all';
   document.getElementById('chatFormAudienceGroup').value = group;
   populateChatAudienceTarget(group, session ? session.audienceTarget : null);
+  renderChatDeptCheckboxes(group==='institution' ? ((session && session.deptIds) ? session.deptIds : []) : []);
   var capEl = document.getElementById('chatFormCapacity');
   capEl.max = CHAT_TYPE_CAP;
   capEl.value = session ? session.capacity : CHAT_TYPE_CAP;
@@ -650,8 +732,9 @@ function submitChatForm(){
   var lang = document.getElementById('chatFormLang').value;
   /* 教師端只能存草稿：已發佈的介紹內容不因教師編輯其他欄位而被打回草稿；尚未發佈者填了簡介即存為草稿 */
   var introStatus = (existing && existing.introStatus === '已發佈') ? '已發佈' : (summary ? '草稿' : (existing ? existing.introStatus : undefined));
+  var deptIds = (audienceGroup === 'institution') ? chatFormDeptIds.slice() : [];
   chatSessions[chatFormKey] = {topic:topic, audienceGroup:audienceGroup, audienceTarget:audienceTarget, capacity:capacity, registered: existing ? existing.registered : 0,
-    summary:summary, level:level, teacherIntro:teacherIntro, points:points, prep:prep, lang:lang, introStatus:introStatus};
+    summary:summary, level:level, teacherIntro:teacherIntro, points:points, prep:prep, lang:lang, introStatus:introStatus, deptIds:deptIds};
   var cell = grid.querySelector('.slot-cell[data-key="'+chatFormKey+'"]');
   if(cell){
     cell.classList.add('chatmark');
@@ -659,6 +742,7 @@ function submitChatForm(){
   }
   showToast(existing ? '已儲存場次變更' : '已建立團體聊天室場次');
   renderSessionList();
+  syncInstChatSessionsToLocalStorage();
   closeChatForm();
 }
 // 有報名者取消需二次確認；回傳 true 代表可以取消（無報名者或已確認）
@@ -682,7 +766,19 @@ function cancelChatSession(){
   }
   showToast('已取消團體聊天室場次');
   renderSessionList();
+  syncInstChatSessionsToLocalStorage();
   closeChatForm();
+}
+/* 將指定學校且已設定適用科系的場次摘要同步到 localStorage，供機構端 u02「各科系可報名場次」總覽讀取 */
+function syncInstChatSessionsToLocalStorage(){
+  var list = [];
+  Object.keys(chatSessions).forEach(function(key){
+    var s = chatSessions[key];
+    if (s.audienceGroup==='institution' && s.audienceTarget===CHAT_INST_NAMES[0] && s.deptIds && s.deptIds.length){
+      list.push({id:CURRENT_TEACHER_NAME+'|'+key, topic:s.topic, teacherName:CURRENT_TEACHER_NAME, slotLabel:slotLabel(key), capacity:s.capacity, registered:s.registered, deptIds:s.deptIds.slice()});
+    }
+  });
+  try{ localStorage.setItem(LS_INST_CHAT_KEY, JSON.stringify(list)); }catch(err){}
 }
 function renderSessionList(){
   var wrap = document.getElementById('sessionList');
@@ -702,9 +798,10 @@ function renderSessionList(){
     card.className = 'session-card';
     var audBadgeHtml = '<span class="aud-badge '+chatAudienceBadgeClass(s)+'">'+chatAudienceLabel(s)+'</span>';
     var introBadgeHtml = s.introStatus ? '<span class="status-chip '+(s.introStatus==='已發佈'?'published':'draft')+'">'+s.introStatus+'</span>' : '';
+    var deptLineHtml = s.audienceGroup==='institution' ? ('<br>適用科系：'+chatDeptSummary(s)) : '';
     card.innerHTML =
       '<div class="s-top"><div class="s-title">'+s.topic+introBadgeHtml+'</div></div>'+
-      '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額 '+s.capacity+'（型態上限 '+CHAT_TYPE_CAP+'，待定）<br>面向：'+audBadgeHtml+'</div>'+
+      '<div class="s-meta">'+slotLabel(key)+'<br>團體聊天室（30 分鐘，TLI 老師帶）<br>已報名 '+s.registered+' 人（模擬）／名額 '+s.capacity+'（型態上限 '+CHAT_TYPE_CAP+'，待定）<br>面向：'+audBadgeHtml+deptLineHtml+'</div>'+
       '<div class="s-actions"></div>';
     var actions = card.querySelector('.s-actions');
     var editBtn = document.createElement('button');
@@ -724,6 +821,7 @@ function renderSessionList(){
       if(cell){ cell.classList.remove('chatmark'); cell.removeAttribute('title'); }
       showToast('已取消團體聊天室場次');
       renderSessionList();
+      syncInstChatSessionsToLocalStorage();
     };
     actions.appendChild(editBtn);
     actions.appendChild(cancelBtn);
@@ -734,6 +832,7 @@ document.getElementById('chatFormOverlay').addEventListener('click', function(e)
   if(e.target.id === 'chatFormOverlay') closeChatForm();
 });
 renderSessionList();
+syncInstChatSessionsToLocalStorage();
 
 var toastTimer=null;
 function showToast(msg){

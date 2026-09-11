@@ -200,6 +200,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <option value="inst|entitled">機構學生・有權益</option>
           <option value="inst|none">機構學生・合約未含聊天室</option>
           <option value="inst|whitelist_out">機構學生・白名單未列入</option>
+          <option value="inst|entitled|deptA">機構學生・資訊工程學系（科系限定場次可報名）</option>
+          <option value="inst|entitled|deptB">機構學生・應用外語學系（科系限定場次不可報名）</option>
         </select>
       </div>
       <button class="bell-btn" onclick="toggleBell()" aria-label="通知">
@@ -325,9 +327,14 @@ function qs(name){
 }
 var DEMO_ROLE = qs('role') || 'b2c';
 var DEMO_CHAT = qs('chat') || 'entitled';
+/* 科系限定聊天室場次示範（2026-09-11 新增）：?stuDept=deptA|deptB 切換示範學生所屬科系，
+   僅機構學生（inst）情境有意義；場次「適用科系」比對此固定示範屬性，不做完整帳號科系綁定。 */
+var DEMO_STU_DEPT = qs('stuDept') || 'deptA';
+var DEMO_STUDENT_DEPT_NAME = DEMO_STU_DEPT==='deptB' ? '應用外語學系' : '資訊工程學系';
 function onDemoStateChange(val){
   var parts = val.split('|');
   var qp = 'role='+parts[0]+(parts[1]!=='entitled' ? '&chat='+parts[1] : '');
+  if (parts[2]) qp += '&stuDept='+parts[2];
   location.href = location.pathname + '?' + qp;
 }
 function entGateMessage(){
@@ -360,7 +367,11 @@ function applyEntitlementGate(){
   var gateCard = document.getElementById('entGateCard');
   var sections = document.getElementById('entitledSections');
   var sel = document.getElementById('demoStateSelect');
-  if (sel) sel.value = DEMO_ROLE + '|' + DEMO_CHAT;
+  if (sel){
+    var deptSuffix = (DEMO_ROLE==='inst' && qs('stuDept')) ? ('|'+DEMO_STU_DEPT) : '';
+    sel.value = DEMO_ROLE + '|' + DEMO_CHAT + deptSuffix;
+    if (sel.value === '') sel.value = DEMO_ROLE + '|' + DEMO_CHAT; // 找不到含科系的選項時退回不含科系版本
+  }
   if (!msg){
     gateCard.classList.add('hidden');
     sections.classList.remove('hidden');
@@ -487,6 +498,12 @@ function buildSessions(){
   list.push({id:'e5', topic:'商務情境會話', teacherId:'t2', teacherName:'陳老師（TLI）', date:new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()), time:'20:00', source:'open', myState:'registered', registered:5, full:false});
   list.push({id:'e6', topic:'影視片段討論', teacherId:'t3', teacherName:'王老師（TLI）', date:addDays(TODAY,5), time:'16:30', source:'invited', myState:'invited_accepted', registered:4, full:false});
   list.push({id:'e7', topic:'文化觀察分享', teacherId:'t3', teacherName:'王老師（TLI）', date:addDays(TODAY,10), time:'11:00', source:'open', myState:'registered', registered:5, full:false});
+  /* 科系限定聊天室場次示範（2026-09-11 新增，僅機構學生情境）：場次設定「適用科系」後，
+     示範學生所屬科系（見 DEMO_STUDENT_DEPT_NAME）不在名單內即不可報名，比照教師端 t04 適用科系設定的呈現方式。 */
+  if (DEMO_ROLE === 'inst'){
+    list.push({id:'instd1', topic:'商務情境會話', teacherId:'t2', teacherName:'陳老師（TLI）', date:addDays(TODAY,1), time:'10:00', source:'open', myState:null, registered:5, full:false, restrictedDepts:['資訊工程學系','機械工程學系']});
+    list.push({id:'instd2', topic:'旅遊實用會話', teacherId:'t1', teacherName:'林老師（TLI）', date:addDays(TODAY,4), time:'11:00', source:'open', myState:null, registered:3, full:false, restrictedDepts:['應用外語學系','歷史學系']});
+  }
   return list;
 }
 var SESSIONS = buildSessions();
@@ -726,8 +743,18 @@ function sessionDetailHTML(s){
     html += '<div class="small muted" style="margin-bottom:10px;"><b>事前準備：</b>'+info.prep+'</div>';
   }
   html += '<div class="small muted" style="margin-bottom:14px;">已報名 '+s.registered+' 人／名額（依型態設定）</div>';
+  if (s.restrictedDepts && s.restrictedDepts.length){
+    html += '<div class="small muted" style="margin-bottom:14px;">限定科系：'+s.restrictedDepts.join('、')+'</div>';
+  }
   html += '<div>'+sessionActionsHTML(s)+'</div>';
   return html;
+}
+/* 科系限定：場次設定「適用科系」時，示範學生所屬科系（DEMO_STUDENT_DEPT_NAME）不在名單內即不可報名，
+   顯示原因文字取代報名按鈕；不影響已報名／被指定／受邀等既有狀態的動作。 */
+function deptRestrictionReason(s){
+  if (!s.restrictedDepts || !s.restrictedDepts.length) return null;
+  if (s.restrictedDepts.indexOf(DEMO_STUDENT_DEPT_NAME) > -1) return null;
+  return '此場次限'+s.restrictedDepts.join('、')+'學生報名';
 }
 function sessionActionsHTML(s){
   if (canEnter(s) && (s.myState==='registered' || s.myState==='invited_accepted' || s.myState==='assigned')){
@@ -754,6 +781,10 @@ function sessionActionsHTML(s){
   }
   if (s.full){
     return '<div class="small muted">已額滿</div>';
+  }
+  var deptReason = deptRestrictionReason(s);
+  if (deptReason){
+    return '<div class="small muted">'+deptReason+'</div>';
   }
   if (WEEKLY_LIMIT_DEMO - usedInWeekOf(s.date) <= 0){
     return '<div class="small muted">已達本週上限</div>';
@@ -798,7 +829,7 @@ function recordDetailHTML(r){
 /* ---------- 動作：報名／取消／接受／婉拒（進教室已改連 m16 前置頁，見 sessionActionsHTML） ---------- */
 function registerSession(id){
   var s = SESSIONS.find(function(x){ return x.id===id; });
-  if (!s || s.myState || s.full || isPast(s)) return;
+  if (!s || s.myState || s.full || isPast(s) || deptRestrictionReason(s)) return;
   if (WEEKLY_LIMIT_DEMO - usedInWeekOf(s.date) <= 0){ showToast('本週已達可報名場次上限'); return; }
   s.myState = 'registered';
   s.registered++;

@@ -101,6 +101,13 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 .collegegroup.open .collegegroup-chevron{transform:rotate(90deg);}
 .collegegroup-body{display:none;padding:10px 14px 14px;}
 .collegegroup.open .collegegroup-body{display:block;}
+/* ---- 科系子分組（第二層，學院內依科系再分組） ---- */
+.deptgroup{border:1px solid var(--g200);border-radius:8px;margin:0 0 10px;overflow:hidden;}
+.deptgroup:last-child{margin-bottom:0;}
+.deptgroup-head{padding:8px 12px;background:#FAFBFC;border-bottom:1px solid var(--g200);}
+.deptgroup-head .dg-name{font-size:13px;font-weight:600;color:var(--g900);}
+.deptgroup-head .dg-count{font-size:11.5px;color:var(--g500);margin-left:6px;font-weight:400;}
+.deptgroup-body{padding:8px 10px 10px;}
 /* ---- 聊天室報名設定 ---- */
 .modewrap{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
 .modewrap label{font-size:13.5px;display:flex;align-items:center;gap:6px;cursor:pointer;}
@@ -162,7 +169,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 </div>
 <div class="filterbar">
 <input type="text" id="stuSearch" placeholder="搜尋學生姓名" oninput="onFilterChange()">
-<select id="fCollege" onchange="onCollegeFilterChange()"><option value="">全部系所</option></select>
+<select id="fCollege" onchange="onCollegeFilterChange()"><option value="">全部學院</option></select>
+<select id="fDept" onchange="onDeptFilterChange()"><option value="">全部科系</option></select>
 <select id="fClass" onchange="onFilterChange()"><option value="">全部班級</option></select>
 <select id="stuTerm" onchange="onFilterChange()"><option value="">全部學期</option></select>
 <button type="button" class="fchip active" data-status="" onclick="setStuStatusFilter(this,'')">全部狀態</button>
@@ -182,12 +190,12 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 </div>
 <div class="small" style="margin-bottom:12px;">本期開通人頭數（基準）：<b id="reconcileBaseNum">－</b> 人．目前預估人頭數：<b id="reconcileLiveNum">－</b> 人<span class="small">（同「期程與課表」頁匯出的本期開通名單，此處依系所／班級列出樣本供逐筆確認）</span></div>
 <div class="filterbar">
-<select id="fReconcileCollege" onchange="onReconcileCollegeChange()"><option value="">全部系所</option></select>
+<select id="fReconcileCollege" onchange="onReconcileCollegeChange()"><option value="">全部學院</option></select>
 <select id="fReconcileClass" onchange="renderReconcile()"><option value="">全部班級</option></select>
 </div>
 <div class="tablewrap">
 <table>
-<thead><tr><th>系所</th><th>班級</th><th>學生姓名</th><th>開通日</th><th>對帳狀態</th><th>異議原因</th><th>操作</th></tr></thead>
+<thead><tr><th>科系</th><th>班級</th><th>學生姓名</th><th>開通日</th><th>對帳狀態</th><th>異議原因</th><th>操作</th></tr></thead>
 <tbody id="reconcileTbody"></tbody>
 </table>
 </div>
@@ -210,9 +218,11 @@ td{padding:10px 12px;border-bottom:1px solid var(--g200);white-space:nowrap;}
 function seededRand(seed){ var x=Math.sin(seed*9301+49297)*233280; return x-Math.floor(x); }
 function addDays(baseStr, days){ var d=new Date(baseStr+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
 
-/* ===== 系所／班級（讀取 u04「系所與班級管理」自助維護清單，同瀏覽器換頁後同步；
-   本頁下拉選單與分組讀取此清單，管理請至「期程與課表」頁的「系所與班級管理」分頁。） ===== */
+/* ===== 學院／科系／班級（讀取 u04「系所與班級管理」自助維護清單，同瀏覽器換頁後同步；
+   本頁下拉選單與分組讀取此清單，管理請至「期程與課表」頁的「系所與班級管理」分頁。
+   三層結構：學院（ORG_COLLEGES）→ 科系（ORG_DEPARTMENTS）→ 班級（ORG_CLASSES，隸屬科系）。） ===== */
 var LS_COLLEGE_KEY = 'tliDemoOrgColleges';
+var LS_DEPT_KEY = 'tliDemoOrgDepartments';
 var LS_CLASS_KEY = 'tliDemoOrgClasses';
 function defaultOrgColleges(){
   return [
@@ -223,32 +233,59 @@ function defaultOrgColleges(){
     {id:'c4', name:'理學院', status:'啟用'}
   ];
 }
+function defaultOrgDepartments(){
+  return [
+    {id:'d0', collegeId:'c0', name:'企業管理學系', status:'啟用'},
+    {id:'d1', collegeId:'c0', name:'國際貿易學系', status:'啟用'},
+    {id:'d2', collegeId:'c1', name:'資訊工程學系', status:'啟用'},
+    {id:'d3', collegeId:'c1', name:'機械工程學系', status:'啟用'},
+    {id:'d4', collegeId:'c2', name:'應用外語學系', status:'啟用'},
+    {id:'d5', collegeId:'c3', name:'歷史學系', status:'啟用'},
+    {id:'d6', collegeId:'c3', name:'中國文學系', status:'啟用'},
+    {id:'d7', collegeId:'c4', name:'應用數學學系', status:'啟用'}
+  ];
+}
 function defaultOrgClasses(){
   return [
-    {id:'cl0', collegeId:'c0', name:'企業管理系二年級 A 班', count:38, status:'啟用'},
-    {id:'cl1', collegeId:'c0', name:'企業管理系二年級 B 班', count:35, status:'啟用'},
-    {id:'cl2', collegeId:'c1', name:'資訊工程系三年級', count:42, status:'啟用'},
-    {id:'cl3', collegeId:'c1', name:'機械工程系二年級', count:33, status:'啟用'},
-    {id:'cl4', collegeId:'c2', name:'應用外語系三年級', count:29, status:'啟用'},
-    {id:'cl5', collegeId:'c3', name:'歷史系二年級', count:26, status:'啟用'},
-    {id:'cl6', collegeId:'c3', name:'中國文學系三年級', count:24, status:'啟用'},
-    {id:'cl7', collegeId:'c4', name:'應用數學系二年級', count:31, status:'啟用'}
+    {id:'cl0', deptId:'d0', name:'企業管理學系二年級 A 班', count:38, status:'啟用'},
+    {id:'cl1', deptId:'d0', name:'企業管理學系二年級 B 班', count:35, status:'啟用'},
+    {id:'cl2', deptId:'d2', name:'資訊工程學系三年級', count:42, status:'啟用'},
+    {id:'cl3', deptId:'d3', name:'機械工程學系二年級', count:33, status:'啟用'},
+    {id:'cl4', deptId:'d4', name:'應用外語學系三年級', count:29, status:'啟用'},
+    {id:'cl5', deptId:'d5', name:'歷史學系二年級', count:26, status:'啟用'},
+    {id:'cl6', deptId:'d6', name:'中國文學系三年級', count:24, status:'啟用'},
+    {id:'cl7', deptId:'d7', name:'應用數學學系二年級', count:31, status:'啟用'}
   ];
 }
 function loadOrgColleges(){
   try{ var raw = localStorage.getItem(LS_COLLEGE_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
   return defaultOrgColleges();
 }
+function loadOrgDepartments(){
+  try{ var raw = localStorage.getItem(LS_DEPT_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultOrgDepartments();
+}
 function loadOrgClasses(){
   try{ var raw = localStorage.getItem(LS_CLASS_KEY); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
   return defaultOrgClasses();
 }
 var ORG_COLLEGES = loadOrgColleges();
+var ORG_DEPARTMENTS = loadOrgDepartments();
 var ORG_CLASSES = loadOrgClasses();
 function collegeById(id){ return ORG_COLLEGES.find(function(c){ return c.id===id; }); }
+function collegeName(id){ var c = collegeById(id); return c ? c.name : '－'; }
+function deptById(id){ return ORG_DEPARTMENTS.find(function(d){ return d.id===id; }); }
+function deptName(id){ var d = deptById(id); return d ? d.name : '－'; }
 function classById(id){ return ORG_CLASSES.find(function(c){ return c.id===id; }); }
-function classesOfCollege(collegeId){ return ORG_CLASSES.filter(function(c){ return c.collegeId===collegeId; }); }
+function deptsOfCollege(collegeId){ return ORG_DEPARTMENTS.filter(function(d){ return d.collegeId===collegeId; }); }
+function classesOfDept(deptId){ return ORG_CLASSES.filter(function(c){ return c.deptId===deptId; }); }
+function classCollegeId(cls){ var d = deptById(cls.deptId); return d ? d.collegeId : null; }
+function classesOfCollege(collegeId){
+  var deptIds = deptsOfCollege(collegeId).map(function(d){ return d.id; });
+  return ORG_CLASSES.filter(function(c){ return deptIds.indexOf(c.deptId)>-1; });
+}
 function activeColleges(){ return ORG_COLLEGES.filter(function(c){ return c.status==='啟用'; }); }
+function activeDeptsOfCollege(collegeId){ return deptsOfCollege(collegeId).filter(function(d){ return d.status==='啟用'; }); }
 
 /* ===== 學生示範資料：依班級輪流分派，確保每個系所／班級都有學生樣本 ===== */
 var NAMES = ['John Miller','Emily Tran','David Park','Rachel Kim','Michael Brown','Sophia Garcia','Kevin Lee','Laura Chen','Daniel Wright','Olivia Martinez','Brian Wu','Natalie Scott','Amanda Lopez','Chris Nguyen','Jason Kim','Grace Liu'];
@@ -264,7 +301,8 @@ function makeStudent(i){
   var completion = Math.floor(30+r4*65);
   var noshowCount = chatCount>0 ? Math.min(chatCount, Math.floor(seededRand(i*61+43)*3)) : 0;
   var attendCount = chatCount - noshowCount;
-  return {id:'stu'+i, name:name, collegeId: cls ? cls.collegeId : '', classId: cls ? cls.id : '', term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, attendCount:attendCount, noshowCount:noshowCount, completion:completion};
+  var deptId = cls ? cls.deptId : '';
+  return {id:'stu'+i, name:name, collegeId: classCollegeId(cls||{}), deptId: deptId, classId: cls ? cls.id : '', term:term, openDate:openDate, expiry:expiry, status:status, chatCount:chatCount, attendCount:attendCount, noshowCount:noshowCount, completion:completion};
 }
 var STUDENT_COUNT = 90;
 var STUDENTS = []; for (var i=0;i<STUDENT_COUNT;i++) STUDENTS.push(makeStudent(i));
@@ -283,18 +321,36 @@ function setStuStatusFilter(btn, v){
 (function initFilterOptions(){
   var csel = document.getElementById('fCollege');
   activeColleges().forEach(function(c){ var o=document.createElement('option'); o.value=c.id; o.textContent=c.name; csel.appendChild(o); });
+  refreshDeptOptions();
   refreshClassOptions();
   var terms = [];
   STUDENTS.forEach(function(s){ if (terms.indexOf(s.term)===-1) terms.push(s.term); });
   document.getElementById('stuTerm').innerHTML = '<option value="">全部學期</option>' + terms.map(function(t){ return '<option>'+t+'</option>'; }).join('');
 })();
+function refreshDeptOptions(){
+  var collegeId = document.getElementById('fCollege').value;
+  var sel = document.getElementById('fDept');
+  var list = collegeId ? deptsOfCollege(collegeId) : ORG_DEPARTMENTS;
+  sel.innerHTML = '<option value="">全部科系</option>' + list.map(function(d){ return '<option value="'+d.id+'">'+d.name+'</option>'; }).join('');
+}
 function refreshClassOptions(){
   var collegeId = document.getElementById('fCollege').value;
+  var deptId = document.getElementById('fDept').value;
   var sel = document.getElementById('fClass');
-  var list = collegeId ? classesOfCollege(collegeId) : ORG_CLASSES;
+  var list;
+  if (deptId) list = classesOfDept(deptId);
+  else if (collegeId) list = classesOfCollege(collegeId);
+  else list = ORG_CLASSES;
   sel.innerHTML = '<option value="">全部班級</option>' + list.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
 }
 function onCollegeFilterChange(){
+  refreshDeptOptions();
+  document.getElementById('fDept').value = '';
+  refreshClassOptions();
+  document.getElementById('fClass').value = '';
+  onFilterChange();
+}
+function onDeptFilterChange(){
   refreshClassOptions();
   document.getElementById('fClass').value = '';
   onFilterChange();
@@ -307,49 +363,59 @@ function toggleCollegeGroup(collegeId){
   openColleges[collegeId] = !openColleges[collegeId];
   renderStudentList();
 }
-function showMoreInCollege(collegeId){
-  groupShown[collegeId] = (groupShown[collegeId] || GROUP_PAGE_SIZE) + GROUP_PAGE_SIZE;
-  openColleges[collegeId] = true;
+function showMoreInDept(deptId){
+  groupShown[deptId] = (groupShown[deptId] || GROUP_PAGE_SIZE) + GROUP_PAGE_SIZE;
   renderStudentList();
 }
 function renderStudentList(){
   var term = document.getElementById('stuSearch').value.trim().toLowerCase();
   var termFilter = document.getElementById('stuTerm').value;
   var collegeFilter = document.getElementById('fCollege').value;
+  var deptFilter = document.getElementById('fDept').value;
   var classFilter = document.getElementById('fClass').value;
   var filtered = STUDENTS.filter(function(s){
     if (term && s.name.toLowerCase().indexOf(term)===-1) return false;
     if (termFilter && s.term!==termFilter) return false;
     if (stuStatusFilter && s.status!==stuStatusFilter) return false;
     if (collegeFilter && s.collegeId!==collegeFilter) return false;
+    if (deptFilter && s.deptId!==deptFilter) return false;
     if (classFilter && s.classId!==classFilter) return false;
     return true;
   });
-  var hasActiveFilter = !!(term || termFilter || stuStatusFilter || collegeFilter || classFilter);
+  var hasActiveFilter = !!(term || termFilter || stuStatusFilter || collegeFilter || deptFilter || classFilter);
   var html = '';
   var totalShown = 0;
+  /* 三層分組：學院 → 科系 → 班級（班級以表格欄位呈現於科系子區塊內） */
   activeColleges().forEach(function(c){
-    var list = filtered.filter(function(s){ return s.collegeId===c.id; });
-    if (!list.length) return;
-    totalShown += list.length;
+    var collegeList = filtered.filter(function(s){ return s.collegeId===c.id; });
+    if (!collegeList.length) return;
+    totalShown += collegeList.length;
     var isOpen = hasActiveFilter ? true : !!openColleges[c.id];
-    var shown = Math.min(list.length, groupShown[c.id] || GROUP_PAGE_SIZE);
-    var rows = list.slice(0, shown).map(function(s){
-      var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
-      var cls = classById(s.classId);
-      return '<tr><td>'+(cls?cls.name:'－')+'</td><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.attendCount+' 次</td><td>'+(s.noshowCount>0?'<span class="badge orange">'+s.noshowCount+' 次</span>':'0 次')+'</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
-    }).join('');
-    var moreRemain = list.length - shown;
+    var deptsHtml = '';
+    deptsOfCollege(c.id).forEach(function(d){
+      var list = collegeList.filter(function(s){ return s.deptId===d.id; });
+      if (!list.length) return;
+      var shown = Math.min(list.length, groupShown[d.id] || GROUP_PAGE_SIZE);
+      var rows = list.slice(0, shown).map(function(s){
+        var badge = s.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">已到期</span>';
+        var cls = classById(s.classId);
+        return '<tr><td>'+(cls?cls.name:'－')+'</td><td>'+s.name+'</td><td>'+s.term+'</td><td>'+s.openDate+'</td><td>'+s.expiry+'</td><td>'+s.chatCount+' 次</td><td>'+s.attendCount+' 次</td><td>'+(s.noshowCount>0?'<span class="badge orange">'+s.noshowCount+' 次</span>':'0 次')+'</td><td>'+s.completion+'%</td><td>'+badge+'</td></tr>';
+      }).join('');
+      var moreRemain = list.length - shown;
+      deptsHtml += '<div class="deptgroup" data-dept="'+d.id+'">'+
+        '<div class="deptgroup-head"><span class="dg-name">'+d.name+'<span class="dg-count">（'+list.length+' 人）</span></span></div>'+
+        '<div class="deptgroup-body"><div class="tablewrap"><table>'+
+        '<thead><tr><th>班級</th><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>出席次數</th><th>未出席（no-show）次數</th><th>資源完成率</th><th>狀態</th></tr></thead>'+
+        '<tbody>'+rows+'</tbody></table></div>'+
+        (moreRemain>0 ? '<div style="text-align:center;padding:8px 0"><button class="btn ghost" onclick="showMoreInDept(\''+d.id+'\')">載入更多（還有 '+moreRemain+' 位）</button></div>' : '')+
+        '</div></div>';
+    });
     html += '<div class="collegegroup'+(isOpen?' open':'')+'" data-college="'+c.id+'">'+
       '<div class="collegegroup-head" onclick="toggleCollegeGroup(\''+c.id+'\')">'+
-      '<span class="cg-name">'+c.name+'<span class="cg-count">（'+list.length+' 人）</span></span>'+
+      '<span class="cg-name">'+c.name+'<span class="cg-count">（'+collegeList.length+' 人）</span></span>'+
       '<span class="collegegroup-chevron"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 4 13 10 7 16"/></svg></span>'+
       '</div>'+
-      '<div class="collegegroup-body"><div class="tablewrap"><table>'+
-      '<thead><tr><th>班級</th><th>學生姓名</th><th>學期</th><th>開通日</th><th>權益到期</th><th>報名聊天室次數</th><th>出席次數</th><th>未出席（no-show）次數</th><th>資源完成率</th><th>狀態</th></tr></thead>'+
-      '<tbody>'+rows+'</tbody></table></div>'+
-      (moreRemain>0 ? '<div style="text-align:center;padding:10px 0"><button class="btn ghost" onclick="showMoreInCollege(\''+c.id+'\')">載入更多（還有 '+moreRemain+' 位）</button></div>' : '')+
-      '</div></div>';
+      '<div class="collegegroup-body">'+deptsHtml+'</div></div>';
   });
   document.getElementById('studentGroups').innerHTML = html;
   document.getElementById('stuEmpty').classList.toggle('hidden', totalShown>0);
@@ -363,7 +429,7 @@ renderStudentList();
 var RECONCILE_BASE = 186;
 var RECONCILE_ROWS = ORG_CLASSES.map(function(cls, idx){
   var s = STUDENTS.filter(function(st){ return st.classId===cls.id; })[0] || STUDENTS[idx % STUDENTS.length];
-  return {name:s.name, openDate:s.openDate, collegeId:cls.collegeId, classId:cls.id, status:'pending', reason:null};
+  return {name:s.name, openDate:s.openDate, collegeId:classCollegeId(cls), deptId:cls.deptId, classId:cls.id, status:'pending', reason:null};
 });
 var reconcileConfirmed = false;
 
@@ -415,7 +481,7 @@ function renderReconcile(){
         '<button class="btn ghost" style="padding:4px 9px;font-size:11.5px;margin:1px;" onclick="reconcileAction('+idx+',\'重複\')">異議：重複</button>';
     }
     var cls = classById(r.classId);
-    return '<tr><td>'+(collegeById(r.collegeId)?collegeById(r.collegeId).name:'－')+'</td><td>'+(cls?cls.name:'－')+'</td><td>'+r.name+'</td><td>'+r.openDate+'</td><td>'+statusCell+'</td><td>'+reasonCell+'</td><td>'+actionCell+'</td></tr>';
+    return '<tr><td>'+deptName(r.deptId)+'</td><td>'+(cls?cls.name:'－')+'</td><td>'+r.name+'</td><td>'+r.openDate+'</td><td>'+statusCell+'</td><td>'+reasonCell+'</td><td>'+actionCell+'</td></tr>';
   }).join('');
   updateReconcileSummary();
 }
@@ -444,45 +510,101 @@ function confirmHeadcount(){
 }
 renderReconcile();
 
-/* ===== 聊天室報名設定 =====
-   本校合約是否含「團體聊天室」上課型態，實際應由機構授權合約參數決定；
-   此處以常數示範「已含」的情境，若合約未含則顯示提示文字取代設定區。
+/* ===== 聊天室報名設定（2026-09-11 改版：從單一整校開關拆成兩塊） =====
+   (a) 各科系目前可報名的場次：唯讀總覽，資料讀自教師端 t04「適用科系」設定（透過共用 localStorage 同步，
+       若尚未有任何教師在本瀏覽器建立過場次則採預設示範資料，兩者格式一致）。
+   (b) 白名單／全員開放：既有整校層級的補充限制，貴校僅能疊加白名單，無法變更 TLI／老師端設定的適用科系。
+   本校合約是否含「團體聊天室」上課型態，實際應由機構授權合約參數決定；此處以常數示範「已含」的情境，若合約未含則顯示提示文字取代設定區。
    資金流：學生付學費給學校，學校付授權費與人頭費給 TLI；聊天室報名設定不涉及金流，僅決定誰能報名。
-   模式：open＝全員開放（預設，在學學生皆可自主報名，受名額上限管控）；whitelist＝白名單（僅白名單內學生可報名）。 */
+   模式：open＝全員開放（預設，在學學生皆可自主報名，受名額上限管控）；whitelist＝白名單（僅白名單內學生可報名，可選依科系或依個別學生兩種顆粒度）。 */
 var SCHOOL_HAS_CHATROOM = true;
 var chatRegMode = 'open';
+var chatWlGranularity = 'student'; // student＝依個別學生（既有）；dept＝依科系（新增）
 var chatWhitelist = {}; // { studentId: true }
+var chatDeptWhitelist = {}; // { deptId: true }
 var chatWlSearch = '';
+function defaultInstChatSessions(){
+  /* 需與教師端 t04 預設示範場次一致（主題／時段／老師／適用科系），供本頁未讀到 t04 同步資料時的預設顯示 */
+  return [
+    {id:'林俊傑|2-6', topic:'日常對話練習', teacherName:'林俊傑（TLI）', slotLabel:'週三・16:00（台北時間）', capacity:20, registered:4, deptIds:['d2','d3']},
+    {id:'林俊傑|5-3', topic:'旅遊實用會話', teacherName:'林俊傑（TLI）', slotLabel:'週六・13:00（台北時間）', capacity:20, registered:3, deptIds:['d4','d5']}
+  ];
+}
+function loadInstChatSessions(){
+  try{ var raw = localStorage.getItem('tliDemoInstChatSessions'); if (raw){ var arr = JSON.parse(raw); if (arr && arr.length) return arr; } }catch(err){}
+  return defaultInstChatSessions();
+}
+function renderChatOverviewHtml(){
+  var sessions = loadInstChatSessions();
+  var byDept = {};
+  sessions.forEach(function(s){
+    (s.deptIds||[]).forEach(function(did){
+      byDept[did] = byDept[did] || [];
+      byDept[did].push(s);
+    });
+  });
+  var deptIds = Object.keys(byDept);
+  if (!deptIds.length){
+    return '<div class="small muted" style="margin-bottom:14px">目前尚無限定科系的場次；未限定科系的場次則依下方報名模式管控。</div>';
+  }
+  var rows = deptIds.map(function(did){
+    var d = deptById(did);
+    var name = d ? (collegeName(d.collegeId)+'・'+d.name) : '－';
+    var list = byDept[did].map(function(s){ return s.topic+'（'+s.slotLabel+'・'+s.teacherName+'・名額 '+s.capacity+'）'; }).join('；');
+    return '<tr><td>'+name+'</td><td>'+list+'</td></tr>';
+  }).join('');
+  return '<div class="tablewrap"><table><tr><th>科系</th><th>可報名場次</th></tr>'+rows+'</table></div>';
+}
 function renderChatSettingCard(){
   var body = document.getElementById('chatSettingBody');
   if (!SCHOOL_HAS_CHATROOM){
     body.innerHTML = '<div class="small">目前合約未含團體聊天室，如需開通請聯繫顧問。</div>';
     return;
   }
-  var html = '<div class="small" style="margin-bottom:10px">團體聊天室（30 分鐘、TLI 老師帶）之報名方式，名額上限依 TLI 型態設定（待定），兩種模式皆受此上限管控；學生付學費給學校，學校付授權費與人頭費給 TLI，此設定不涉及金流。</div>' +
+  var html = '<div class="small" style="margin-bottom:10px">聊天室場次適用哪些科系由 TLI 與授課老師設定；貴校僅能設定額外的白名單限制。</div>' +
+    '<div class="sectiontitle" style="font-size:13px;font-weight:600;margin:0 0 8px">各科系目前可報名的場次</div>' +
+    renderChatOverviewHtml() +
+    '<div class="sectiontitle" style="font-size:13px;font-weight:600;margin:18px 0 8px">白名單／全員開放（貴校補充限制）</div>' +
+    '<div class="small" style="margin-bottom:10px">團體聊天室（30 分鐘、TLI 老師帶）之報名方式，名額上限依 TLI 型態設定（待定），兩種模式皆受此上限管控；學生付學費給學校，學校付授權費與人頭費給 TLI，此設定不涉及金流。</div>' +
     '<div class="modewrap">' +
     '<label><input type="radio" name="chatRegMode" value="open" '+(chatRegMode==='open'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 全員開放（預設）</label>' +
     '<label><input type="radio" name="chatRegMode" value="whitelist" '+(chatRegMode==='whitelist'?'checked':'')+' onchange="onChatRegModeChange(this.value)"> 白名單</label>' +
     '</div>';
   if (chatRegMode === 'whitelist'){
-    var checkedCount = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
-    var list = STUDENTS.filter(function(s){
-      if (!chatWlSearch) return true;
-      return s.name.toLowerCase().indexOf(chatWlSearch.toLowerCase())>-1;
-    });
-    html += '<div class="wl-toolrow">' +
-      '<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="chatWlSearchInput" placeholder="搜尋學生姓名" oninput="onChatWlSearch(this.value)"></div>' +
-      '<div class="small">已勾選 <b id="chatWlCount">'+checkedCount+'</b> 人</div>' +
-      '<div style="display:flex;gap:8px">' +
-      '<button class="btn ghost" onclick="chatWlBatch(true)">全選（本頁篩選結果）</button>' +
-      '<button class="btn ghost" onclick="chatWlBatch(false)">全部取消</button>' +
-      '</div></div>' +
-      '<div class="wl-list" id="chatWlList">' +
-      (list.length ? list.slice(0,40).map(function(s){
-        var checked = chatWhitelist[s.id] ? 'checked' : '';
-        return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatWlToggle(\''+s.id+'\',this.checked)"><span class="wl-name">'+s.name+'</span><span class="small">'+s.term+'</span></div>';
-      }).join('') : '<div class="emptylist">找不到符合條件的學生。</div>') +
+    html += '<div class="modewrap" style="margin:4px 0 10px">' +
+      '<label><input type="radio" name="chatWlGranularity" value="student" '+(chatWlGranularity==='student'?'checked':'')+' onchange="onChatWlGranularityChange(this.value)"> 依個別學生</label>' +
+      '<label><input type="radio" name="chatWlGranularity" value="dept" '+(chatWlGranularity==='dept'?'checked':'')+' onchange="onChatWlGranularityChange(this.value)"> 依科系</label>' +
       '</div>';
+    if (chatWlGranularity === 'dept'){
+      var deptCheckedCount = Object.keys(chatDeptWhitelist).filter(function(id){return chatDeptWhitelist[id];}).length;
+      html += '<div class="small" style="margin-bottom:8px">已勾選 <b>'+deptCheckedCount+'</b> 個科系，該科系內學生皆可報名，不需逐一勾選學生。</div>' +
+        '<div class="wl-list" id="chatDeptWlList">' +
+        ORG_DEPARTMENTS.map(function(d){
+          var checked = chatDeptWhitelist[d.id] ? 'checked' : '';
+          var n = STUDENTS.filter(function(s){ return s.deptId===d.id; }).length;
+          return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatDeptWlToggle(\''+d.id+'\',this.checked)"><span class="wl-name">'+collegeName(d.collegeId)+'・'+d.name+'</span><span class="small">'+n+' 人</span></div>';
+        }).join('') +
+        '</div>';
+    } else {
+      var checkedCount = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+      var list = STUDENTS.filter(function(s){
+        if (!chatWlSearch) return true;
+        return s.name.toLowerCase().indexOf(chatWlSearch.toLowerCase())>-1;
+      });
+      html += '<div class="wl-toolrow">' +
+        '<div class="searchbox"><span class="sicon"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="16.5" y1="16.5" x2="12.6" y2="12.6"/></svg></span><input type="text" id="chatWlSearchInput" placeholder="搜尋學生姓名" oninput="onChatWlSearch(this.value)"></div>' +
+        '<div class="small">已勾選 <b id="chatWlCount">'+checkedCount+'</b> 人</div>' +
+        '<div style="display:flex;gap:8px">' +
+        '<button class="btn ghost" onclick="chatWlBatch(true)">全選（本頁篩選結果）</button>' +
+        '<button class="btn ghost" onclick="chatWlBatch(false)">全部取消</button>' +
+        '</div></div>' +
+        '<div class="wl-list" id="chatWlList">' +
+        (list.length ? list.slice(0,40).map(function(s){
+          var checked = chatWhitelist[s.id] ? 'checked' : '';
+          return '<div class="wl-row"><input type="checkbox" class="chk" '+checked+' onchange="onChatWlToggle(\''+s.id+'\',this.checked)"><span class="wl-name">'+s.name+'</span><span class="small">'+s.term+'</span></div>';
+        }).join('') : '<div class="emptylist">找不到符合條件的學生。</div>') +
+        '</div>';
+    }
   }
   html += '<div style="text-align:right;margin-top:12px"><button class="btn" onclick="saveChatSetting()">儲存</button></div>';
   body.innerHTML = html;
@@ -491,11 +613,19 @@ function onChatRegModeChange(val){
   chatRegMode = val;
   renderChatSettingCard();
 }
+function onChatWlGranularityChange(val){
+  chatWlGranularity = val;
+  renderChatSettingCard();
+}
 function onChatWlSearch(val){ chatWlSearch = val; renderChatSettingCard(); }
 function onChatWlToggle(studentId, checked){
   chatWhitelist[studentId] = checked;
   var countEl = document.getElementById('chatWlCount');
   if (countEl) countEl.textContent = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+}
+function onChatDeptWlToggle(deptId, checked){
+  chatDeptWhitelist[deptId] = checked;
+  renderChatSettingCard();
 }
 function chatWlBatch(checkAll){
   var term = chatWlSearch.toLowerCase();
@@ -507,8 +637,14 @@ function chatWlBatch(checkAll){
 }
 function saveChatSetting(){
   if (chatRegMode === 'whitelist'){
-    var n = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
-    toast('已儲存聊天室報名設定：白名單模式，共 '+n+' 人可報名');
+    if (chatWlGranularity === 'dept'){
+      var deptIds = Object.keys(chatDeptWhitelist).filter(function(id){return chatDeptWhitelist[id];});
+      var n = STUDENTS.filter(function(s){ return deptIds.indexOf(s.deptId)>-1; }).length;
+      toast('已儲存聊天室報名設定：白名單模式（依科系），共 '+deptIds.length+' 個科系、'+n+' 人可報名');
+    } else {
+      var n2 = Object.keys(chatWhitelist).filter(function(id){return chatWhitelist[id];}).length;
+      toast('已儲存聊天室報名設定：白名單模式（依個別學生），共 '+n2+' 人可報名');
+    }
   } else {
     toast('已儲存聊天室報名設定：全員開放報名');
   }
