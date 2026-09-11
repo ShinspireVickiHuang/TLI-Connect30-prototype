@@ -505,6 +505,30 @@ function clearRefCode(){
   showToast('已清除推薦代碼，將以一般會員身分註冊');
 }
 
+/* ===================== 轉介歸屬橋接（承接代理商轉介連結帶入的 ?ref= 參數，比照 p10→c08 的 localStorage 橋接做法）=====================
+   示範用：本頁沒有真正後端，註冊成功且當下帶有推薦碼時，把這筆歸屬寫入 localStorage，
+   讓「管理後台 → 代理商管理 → 名單歸屬檢視」(a20_agents.html) 能讀到同一筆歸屬並示範串接。
+   本頁只存轉介碼本身，不需要知道代理商全名，由 a20 端依轉介碼查表轉換成代理商名稱。
+   直接開啟本頁（無 ?ref=）不寫入任何歸屬資料。正式版改由後端 API 寫入中台資料庫，本段橋接邏輯屆時移除。 */
+var TLI_REF_ATTR_KEY = 'tliDemoReferralAttributions';
+function pushReferralAttribution(name, email, refCode){
+  try{
+    var list = [];
+    try{ list = JSON.parse(localStorage.getItem(TLI_REF_ATTR_KEY)) || []; }catch(e){ list = []; }
+    list.push({
+      id: 'refattr-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
+      name: name || email || '未提供姓名',
+      email: email || '',
+      refCode: refCode,
+      registeredAt: new Date().toISOString(),
+      status: '已註冊'
+    });
+    localStorage.setItem(TLI_REF_ATTR_KEY, JSON.stringify(list));
+  }catch(e){ /* 示範用途，localStorage 不可用時不中斷註冊流程 */ }
+}
+/* 送出註冊表單時先記下姓名／Email，待驗證通過、實際完成註冊後再寫入歸屬，避免驗證失敗也誤寫 */
+var pendingRegistrant = null;
+
 /* ===================== next 導向：登入／註冊成功後回到來源頁（如活動報名） ===================== */
 /* 從網址 ?next= 讀取登入成功後要導向的目標頁（例如活動詳情頁的報名接續），優先於 ref／new 規則 */
 var nextParam = null;
@@ -605,6 +629,11 @@ function showAuthSuccess(e, isRegisterFlow){
   /* 學生（非老師）登入／註冊成功即視為已登入會員，寫入 sessionStorage 供其他公開頁（如 p09 活動）判斷登入狀態 */
   if(!isTeacher){
     try{ sessionStorage.setItem('tliLoggedIn', '1'); }catch(err){}
+  }
+  /* 註冊流程且當下帶有推薦碼時，寫入轉介歸屬橋接資料（見 pushReferralAttribution 說明） */
+  if(isRegisterFlow && referralCode && pendingRegistrant){
+    pushReferralAttribution(pendingRegistrant.name, pendingRegistrant.email, referralCode);
+    pendingRegistrant = null;
   }
   if(isTeacher){
     successLink.href = '../教師端/t01_today.html';
@@ -793,6 +822,10 @@ function runChecksAndSubmit(checks, e, isRegisterFlow){
 }
 function submitRegister(e){
   e.preventDefault();
+  pendingRegistrant = {
+    name: document.getElementById('regName').value.trim(),
+    email: document.getElementById('regEmail').value.trim()
+  };
   return runChecksAndSubmit([
     {input:'regName', fn:validateName},
     {input:'regEmail', fn:validateEmail},
@@ -805,6 +838,10 @@ function submitRegister(e){
 }
 function submitSocialRegister(e){
   e.preventDefault();
+  pendingRegistrant = {
+    name: document.getElementById('socialName').value.trim(),
+    email: document.getElementById('socialEmail').value.trim()
+  };
   return runChecksAndSubmit([
     {input:'regPhoneSocial', fn:validatePhoneSocial},
     {input:'regTimezoneSocial', fn:validateTimezoneSocial},

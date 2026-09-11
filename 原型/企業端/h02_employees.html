@@ -231,7 +231,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div class="formrow"><label>部門</label><select id="inviteDept"></select></div>
 <div class="formrow"><label>所屬廠區</label><select id="inviteSite" onchange="onInviteSiteChange(this)"></select><div class="hint" id="inviteSiteTz" style="margin-top:4px"></div></div>
 <div class="hint"><a href="h05_contract.html#org" target="_blank" rel="noopener">管理部門與廠區</a></div>
-<div class="hint">邀請送出後，系統會寄送設定密碼連結至員工 Email，員工完成設定後即可登入預約課程。</div>
+<div class="hint">邀請送出後，系統會寄送開通連結至員工 Email，員工完成密碼設定後即可登入預約課程；送出後該員工狀態會先顯示「待開通」。</div>
 <div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="closeModal('inviteModal')">取消</button> <button class="btn" onclick="doInviteEmployee()">送出邀請</button></div>
 </div></div>
 
@@ -310,7 +310,7 @@ function makeEmployee(i){
   var email = (emailName ? emailName : 'emp'+i) + '@example-semi.com';
   return {
     id:'emp'+i, name:name, email:email, dept:dept, site:site.name, tz:site.tz,
-    status:status, hours:hours, attendance:attendance,
+    status:status, activation:'active', hours:hours, attendance:attendance,
     joined: addDays('2026-01-01', Math.floor(r4*200)),
     skills:{ listen:30+Math.floor(seededRand(i*3+2)*65), speak:30+Math.floor(seededRand(i*5+4)*65),
              read:30+Math.floor(seededRand(i*9+6)*65), write:30+Math.floor(seededRand(i*15+8)*65) },
@@ -363,7 +363,10 @@ function empFiltered(){
 function empMaxPage(){ return Math.max(1, Math.ceil(empFiltered().length/empState.pageSize)); }
 function empGotoPage(p){ var max=empMaxPage(); if (p<1) p=1; if (p>max) p=max; empState.page=p; renderEmpTable(); }
 function empGotoPageRel(delta){ empGotoPage(empState.page+delta); }
-function statusBadge(s){ return s==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>'; }
+function statusBadge(e){
+  if (e.activation==='pending') return '<span class="badge orange">待開通</span>';
+  return e.status==='在學' ? '<span class="badge green">在學</span>' : '<span class="badge grey">停用</span>';
+}
 function renderEmpTable(){
   var filtered = empFiltered();
   var total = filtered.length;
@@ -375,11 +378,16 @@ function renderEmpTable(){
   t.innerHTML = '<tr><th>姓名</th><th>Email</th><th>部門</th><th>所屬廠區（時區）</th><th>狀態</th><th>累計時數</th><th>出勤率</th><th></th></tr>';
   pageRows.forEach(function(e){
     var tr = document.createElement('tr');
-    var actionBtn = e.status==='在學'
-      ? '<button class="btn ghost" onclick="openDisableModal(\''+e.id+'\')">停用</button>'
-      : '<span class="small">已停用</span>';
+    var actionBtn;
+    if (e.activation==='pending'){
+      actionBtn = '<button class="btn ghost" onclick="resendActivation(\''+e.id+'\')">重寄開通信</button>';
+    } else if (e.status==='在學'){
+      actionBtn = '<button class="btn ghost" onclick="openDisableModal(\''+e.id+'\')">停用</button>';
+    } else {
+      actionBtn = '<span class="small">已停用</span>';
+    }
     tr.innerHTML = '<td>'+e.name+'</td><td>'+e.email+'</td><td>'+e.dept+'</td><td>'+e.site+'（'+e.tz+'）</td>'+
-      '<td>'+statusBadge(e.status)+'</td><td>'+e.hours+' 小時</td><td>'+e.attendance+'%</td><td>'+actionBtn+'</td>';
+      '<td>'+statusBadge(e)+'</td><td>'+e.hours+' 小時</td><td>'+e.attendance+'%</td><td>'+actionBtn+'</td>';
     t.appendChild(tr);
   });
   if (total===0){
@@ -396,6 +404,18 @@ function renderEmpTable(){
   document.getElementById('empBtnNext').disabled = empState.page>=maxPage;
   document.getElementById('empBtnLast').disabled = empState.page>=maxPage;
   document.getElementById('empPageSizeSel').value = String(empState.pageSize);
+}
+
+/* ===== 邀請紀錄橋接（比照 p10→c08 做法，寫入 localStorage 供其他頁面/未來情境讀取，此原型內部未串接讀取端）===== */
+var LS_INVITE_KEY = 'tliDemoEmployeeInvites';
+function pushEmployeeInviteRecord(emp, sentAt){
+  try{
+    var raw = localStorage.getItem(LS_INVITE_KEY);
+    var arr = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(arr)) arr = [];
+    arr.unshift({ name:emp.name, email:emp.email, dept:emp.dept, sentAt:sentAt, status:'待開通' });
+    localStorage.setItem(LS_INVITE_KEY, JSON.stringify(arr));
+  }catch(err){}
 }
 
 /* ===== 邀請員工 ===== */
@@ -422,14 +442,22 @@ function doInviteEmployee(){
   var site = SITE_LIST.find(function(s){ return s.id===siteId; });
   var newEmp = {
     id:'emp'+(nextEmpSeq++), name:name, email:email, dept:dept, site:site.name, tz:site.tz,
-    status:'在學', hours:0, attendance:0, joined:new Date().toISOString().slice(0,10),
+    status:'在學', activation:'pending', hours:0, attendance:0, joined:new Date().toISOString().slice(0,10),
     skills:{listen:0,speak:0,read:0,write:0}, score:0, feedback:''
   };
   EMPLOYEES.unshift(newEmp);
+  pushEmployeeInviteRecord(newEmp, new Date().toISOString());
   empState.page = 1;
   renderEmpTable();
   closeModal('inviteModal');
-  toast('已邀請「'+name+'」，設定密碼連結已寄至 '+email);
+  toast('已邀請「'+name+'」，開通連結已寄至 '+email);
+}
+
+/* ===== 重寄開通信（純示意，不做完整 token 機制）===== */
+function resendActivation(id){
+  var e = EMPLOYEES.find(function(x){ return x.id===id; });
+  if (!e) return;
+  toast('已重新寄出開通信至 '+e.email+'（示意連結：../公開網站/p13_activate.html?token=demo&source=hr&mode=link&state=ok）');
 }
 
 /* ===== 停用員工 ===== */

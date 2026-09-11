@@ -129,7 +129,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
 <div id="stepPane1">
   <div id="noticeSection">
     <h1 class="sth">步驟 1／3　設定密碼</h1>
-    <div class="stdesc">你的顧問已為你建立帳號，請先設定登入密碼。</div>
+    <div class="stdesc" id="noticeDesc">你的顧問已為你建立帳號，請先設定登入密碼。</div>
   </div>
   <div id="loginSection" style="display:none;">
     <h1 class="sth">步驟 1／3　登入並設定新密碼</h1>
@@ -179,7 +179,7 @@ opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:80vw;text-ali
     <div class="doneicon"><svg width="26" height="26" viewBox="0 0 20 20" fill="none" stroke="#0F9B79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 10.5 8 14.5 16 5.5"/></svg></div>
     <div class="donetitle">帳號已開通</div>
     <div class="donedesc">歡迎使用 TLI Connect 3.0，你的帳號已可登入會員區。</div>
-    <div class="donenote">你的顧問會依你的有空時間安排課程，開課前會另行通知確認上課時間。</div>
+    <div class="donenote" id="doneNote">你的顧問會依你的有空時間安排課程，開課前會另行通知確認上課時間。</div>
     <a class="btn" href="../會員區/m01_home.html?new=1" style="display:block">進入我的首頁</a>
   </div>
 </div>
@@ -269,6 +269,27 @@ var token = qs('token') || 'demo';
 var mode = qs('mode')==='password' ? 'password' : 'link';
 var state = qs('state')==='expired' ? 'expired' : (qs('state')==='done' ? 'done' : 'ok');
 var pwPhase = 'login'; /* mode=password 專用：login -> setpw */
+
+/* ===== 帳號建立來源（決定文案措辭，不影響流程邏輯）===== */
+/* source：advisor＝顧問建檔（預設，向下相容舊連結）／hr＝企業 HR 邀請／school＝學校合作窗口建檔 */
+var source = (function(){
+  var v = qs('source');
+  return (v==='hr' || v==='school') ? v : 'advisor';
+})();
+var SOURCE_NOTICE={
+  advisor:'你的顧問已為你建立帳號，請先設定登入密碼。',
+  hr:'你所屬的企業已為你建立帳號，請先設定登入密碼。',
+  school:'你的學校已為你建立帳號，請先設定登入密碼。'
+};
+var SOURCE_DONENOTE_EXTRA={
+  hr:'開始使用前，請確認你所屬的部門與廠區時區（可於「帳號與設定」調整）。'
+};
+function renderSourceCopy(){
+  document.getElementById('noticeDesc').textContent = SOURCE_NOTICE[source];
+  var extra = SOURCE_DONENOTE_EXTRA[source];
+  var baseNote = '你的顧問會依你的有空時間安排課程，開課前會另行通知確認上課時間。';
+  document.getElementById('doneNote').textContent = extra ? (baseNote+' '+extra) : baseNote;
+}
 
 /* ===== 頂層畫面切換 ===== */
 function renderTop(){
@@ -423,6 +444,7 @@ function toast(msg){
 renderTop();
 renderSteps();
 renderStep1();
+renderSourceCopy();
 document.getElementById('fName').value=ACCOUNT_NAME;
 document.getElementById('fZoom').value=ACCOUNT_EMAIL;
 buildSelectOptions(document.getElementById('fPhoneCc'),TLI_COUNTRY_CODES,'+886');

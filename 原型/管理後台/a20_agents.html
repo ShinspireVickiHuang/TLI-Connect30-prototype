@@ -465,6 +465,38 @@ function makeAttribution(i){
 var ATTRIBUTIONS = []; for (var si = 0; si < STUDENT_ALIASES.length; si++) ATTRIBUTIONS.push(makeAttribution(si));
 var DISPUTE_LOG = [];
 
+/* ================= 代理商轉介歸屬橋接（承接公開網站 p07 自助註冊帶 ?ref= 參數，比照 p10→c08 的 localStorage 橋接做法）=================
+   示範用：本頁沒有真正後端，改讀 p07_login_register.html 註冊成功時寫入的 localStorage，
+   把尚未存在於上方示範資料的轉介歸屬轉成一筆歸屬記錄，插入清單最上方並標記「剛送出」。
+   p07 端只存轉介碼本身，代理商名稱在此依轉介碼查表轉換；查無對應代理商時仍列出，代理商欄位提示查無代理商。
+   正式版由後端 API 推播新歸屬並寫入中台資料庫，本段橋接邏輯屆時移除。 */
+var TLI_REF_ATTR_KEY = 'tliDemoReferralAttributions';
+function tliReadReferralAttributions(){
+  try{ return JSON.parse(localStorage.getItem(TLI_REF_ATTR_KEY)) || []; }catch(e){ return []; }
+}
+(function importReferralAttributionsFromP07(){
+  var records = tliReadReferralAttributions();
+  records.forEach(function(rec){
+    if (ATTRIBUTIONS.some(function(a){ return a.id === rec.id; })) return;
+    var agent = AGENTS.find(function(a){ return a.code === rec.refCode; });
+    var regDate = (rec.registeredAt || '').slice(0, 10) || TODAY_STR;
+    ATTRIBUTIONS.unshift({
+      id: rec.id,
+      student: rec.name || rec.email || '未提供姓名',
+      agentId: agent ? agent.id : null,
+      agentName: agent ? agent.name : '查無對應代理商（轉介碼：' + (rec.refCode || '未知') + '）',
+      registered: regDate,
+      status: rec.status || '已註冊',
+      disputed: false,
+      disputeStatus: null,
+      disputedAt: null,
+      disputeResolvedAt: null,
+      disputeResolution: null,
+      justSubmitted: true
+    });
+  });
+})();
+
 function attrStatusBadge(s){
   if (s === '已付費') return '<span class="badge green">已付費</span>';
   if (s === '已到期') return '<span class="badge grey">已到期</span>';
@@ -723,7 +755,7 @@ function renderAttributionTable(){
     } else {
       disputeCell = '<button class="btn ghost" onclick="markDispute(\'' + r.id + '\')">標記爭議</button>';
     }
-    tr.innerHTML = '<td>' + escHtml(r.student) + '</td><td>' + escHtml(r.agentName) + '</td><td>' + r.registered + '</td>' +
+    tr.innerHTML = '<td>' + escHtml(r.student) + (r.justSubmitted ? ' <span class="badge orange">剛送出</span>' : '') + '</td><td>' + escHtml(r.agentName) + '</td><td>' + r.registered + '</td>' +
       '<td>' + attrStatusBadge(r.status) + '</td><td>' + vuCell + '</td>' +
       '<td>' + disputeCell + '</td>';
     t.appendChild(tr);
