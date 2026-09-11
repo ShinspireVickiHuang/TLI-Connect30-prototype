@@ -126,6 +126,16 @@ input.rowchk{width:15px;height:15px;cursor:pointer;}
 .seed-list label{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:400;margin:0;}
 .badge.b2b{background:#f3e8fd;color:#7a3ed9;}
 .badge.trial{background:#fff4e5;color:#b54708;}
+.badge.new{background:var(--accent-light);color:var(--accent);}
+/* 由 p10 企業試辦申請表單剛送出的詢問單：淡橘底色提示 */
+tr.row-flash{background:#fffaf3;}
+tr.row-flash:hover{background:#fff3e2;}
+/* 從 a19「試辦申請」總覽點「前往顧問工作台處理」定位過來的那一筆：短暫反白提示 */
+tr.row-highlight{animation:tliRowHighlight 2.6s ease-out;}
+@keyframes tliRowHighlight{
+  0%{background:#fdeecb;}
+  100%{background:transparent;}
+}
 
 .ai-panel{width:340px;flex:0 0 340px;border-left:1px solid var(--gray-200);display:flex;flex-direction:column;background:#fbfbfd;transition:flex-basis .15s,width .15s;}
 .ai-panel.collapsed{width:44px;flex:0 0 44px;}
@@ -602,7 +612,13 @@ var ENTERPRISE_SEED_DATA=[
   {id:'INQ-2026-B03',daysAgo:12,status:'試辦中',company:'假設國際貿易股份有限公司',industry:'國際貿易',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'20',nativeLang:'英文',contactName:'陳先生',contactInfo:'chen.hr@example-trade.example',note:'業務團隊需提升國際客戶溝通能力，希望先小規模試辦驗證成效',advisor:'林顧問',seedEmails:['seed1@example-trade.example','seed2@example-trade.example','seed3@example-trade.example']},
   {id:'INQ-2026-B04',daysAgo:20,status:'試辦報告已送',company:'範例生醫股份有限公司',industry:'生技醫療',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'15',nativeLang:'日文',contactName:'田中小姐',contactInfo:'tanaka.hr@example-bio.example',note:'研發人員赴日交流頻繁，需日文商務書信與會議能力',advisor:'陳顧問',seedEmails:['seed1@example-bio.example','seed2@example-bio.example']},
   {id:'INQ-2026-B05',daysAgo:35,status:'已轉正式',company:'安泰保經股份有限公司',industry:'金融服務',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'30',nativeLang:'英文',contactName:'李小姐',contactInfo:'li.hr@example-fin.example',note:'海外分行人員需標準商用英文訓練，試辦成效良好已轉正式合約',advisor:'王大明',seedEmails:['seed1@example-fin.example','seed2@example-fin.example','seed3@example-fin.example']},
-  {id:'INQ-2026-B06',daysAgo:28,status:'未成交',company:'假設物流股份有限公司',industry:'物流運輸',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'6',nativeLang:'日文',contactName:'鈴木先生',contactInfo:'suzuki.hr@example-logi.example',note:'試辦期間內部組織調整，暫緩導入計畫',advisor:'林顧問',seedEmails:['seed1@example-logi.example','seed2@example-logi.example'],lostReason:'預算不符'}
+  {id:'INQ-2026-B06',daysAgo:28,status:'未成交',company:'假設物流股份有限公司',industry:'物流運輸',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'6',nativeLang:'日文',contactName:'鈴木先生',contactInfo:'suzuki.hr@example-logi.example',note:'試辦期間內部組織調整，暫緩導入計畫',advisor:'林顧問',seedEmails:['seed1@example-logi.example','seed2@example-logi.example'],lostReason:'預算不符'},
+  {id:'INQ-2026-B07',daysAgo:1,status:'新進',company:'恆昌半導體材料股份有限公司',industry:'半導體材料',location:'美國廠區',tz:'美國中部時間（UTC-6）',headcount:'10',nativeLang:'英文',contactName:'林小姐',contactInfo:'lin.hr@example-mat.example',note:'新設美國廠區，儲備幹部需加強跨部門會議英文',advisor:null},
+  {id:'INQ-2026-B08',daysAgo:9,status:'已聯繫',company:'譽陽電子股份有限公司',industry:'消費性電子',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'18',nativeLang:'日文',contactName:'中村先生',contactInfo:'nakamura.hr@example-elec.example',note:'產線幹部需具備日文跨部門溝通能力',advisor:'陳顧問'},
+  {id:'INQ-2026-B09',daysAgo:15,status:'試辦中',company:'承運國際物流股份有限公司',industry:'物流運輸',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'14',nativeLang:'英文',contactName:'黃先生',contactInfo:'huang.hr@example-ship.example',note:'海外倉儲主管需提升跨國協調英文能力',advisor:'王大明',seedEmails:['seed1@example-ship.example','seed2@example-ship.example']},
+  {id:'INQ-2026-B10',daysAgo:24,status:'試辦報告已送',company:'昱誠光電股份有限公司',industry:'光電產業',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'9',nativeLang:'日文',contactName:'小林小姐',contactInfo:'kobayashi.hr@example-opt.example',note:'研發人員需與日本技術夥伴以日文討論規格',advisor:'林顧問',seedEmails:['seed1@example-opt.example','seed2@example-opt.example']},
+  {id:'INQ-2026-B11',daysAgo:40,status:'已轉正式',company:'大成生技製藥股份有限公司',industry:'生技醫療',location:'美國廠區',tz:'美國西部時間（UTC-7）',headcount:'22',nativeLang:'英文',contactName:'張小姐',contactInfo:'chang.hr@example-pharma.example',note:'海外藥證申請團隊需標準商用英文，試辦成效良好已轉正式合約',advisor:'陳顧問',seedEmails:['seed1@example-pharma.example','seed2@example-pharma.example','seed3@example-pharma.example']},
+  {id:'INQ-2026-B12',daysAgo:32,status:'未成交',company:'東亞精密機械股份有限公司',industry:'精密機械',location:'日本廠區',tz:'日本時間（UTC+9）',headcount:'7',nativeLang:'日文',contactName:'伊藤先生',contactInfo:'ito.hr@example-mech.example',note:'試辦期間與現有時段無法配合，暫緩導入',advisor:'王大明',seedEmails:['seed1@example-mech.example','seed2@example-mech.example'],lostReason:'時段無法配合'}
 ];
 ENTERPRISE_SEED_DATA.forEach(function(e,ei){
   var submittedDate=mkDate(e.daysAgo,900+ei);
@@ -635,6 +651,59 @@ ENTERPRISE_SEED_DATA.forEach(function(e,ei){
   o.timeline=buildTimeline(o);
   RECORDS.push(o);
 });
+
+/* ================= v2 新增：企業試辦申請 localStorage 橋接（承接 p10 企業試辦申請表單） =================
+   示範用：本頁沒有真正後端，改讀公開網站 p10 送出表單時寫入的 localStorage，
+   把尚未存在於上方示範資料的申請轉成一筆「企業試辦」詢問單，插入清單最上方並標記「剛送出」。
+   正式版由後端 API 推播新申請並寫入中台資料庫，本段橋接邏輯屆時移除。 */
+var TLI_ENT_APP_KEY='tliDemoEnterpriseApplications';
+var TLI_ENT_STATUS_KEY='tliDemoEnterpriseStatusOverrides';
+function tliReadEnterpriseApplications(){
+  try{ return JSON.parse(localStorage.getItem(TLI_ENT_APP_KEY))||[]; }catch(e){ return []; }
+}
+function tliReadEnterpriseStatusOverrides(){
+  try{ return JSON.parse(localStorage.getItem(TLI_ENT_STATUS_KEY))||{}; }catch(e){ return {}; }
+}
+function tliWriteEnterpriseStatusOverride(id,status){
+  try{
+    var m=tliReadEnterpriseStatusOverrides();
+    m[id]=status;
+    localStorage.setItem(TLI_ENT_STATUS_KEY,JSON.stringify(m));
+  }catch(e){}
+}
+(function importEnterpriseApplicationsFromP10(){
+  var apps=tliReadEnterpriseApplications();
+  apps.forEach(function(a,ai){
+    var isEmail=(a.contactInfo||'').indexOf('@')>-1;
+    var submittedDate=a.submittedAt?parseDT(a.submittedAt):NOW;
+    var o={
+      id:a.id,
+      submittedAt:a.submittedAt||fmtDT(NOW),
+      name:(a.contactName||'－')+'（'+(a.company||'－')+'）',
+      phone:isEmail?'－':(a.contactInfo||'－'),
+      email:isEmail?a.contactInfo:'－',
+      type:'企業試辦',
+      source:ENTERPRISE_SOURCE,
+      status:'新進',
+      lang:a.language||'－',
+      level:'－',
+      campus:a.location||'－',
+      slotText:'－',
+      advisor:null,
+      note:a.note||'',
+      isEnterprise:true,
+      company:a.company,industry:a.industry,location:a.location,tz:'',headcount:a.headcount,
+      nativeLang:a.language,contactName:a.contactName,contactInfo:a.contactInfo,
+      justSubmitted:true
+    };
+    o.submittedDateObj=submittedDate;
+    o.sla=addBusinessDays(submittedDate,1);
+    o.isAiSource=false;
+    o.originCat=mapOriginCat(o);
+    o.timeline=buildTimeline(o);
+    RECORDS.unshift(o);
+  });
+})();
 
 /* ================= 自助試聽預約（承接 p06 自助選時段偏好＋付款流程，顧問只需安排老師） ================= */
 var SELF_TEACHERS=['王老師','李老師','陳老師','系統配對'];
@@ -772,6 +841,9 @@ function filteredSorted(){
     return true;
   });
   list.sort(function(a,b){
+    /* 剛從 p10 送出的企業試辦申請固定排在最上方，不受排序條件影響，方便顧問第一時間看到 */
+    if(a.justSubmitted&&!b.justSubmitted)return -1;
+    if(b.justSubmitted&&!a.justSubmitted)return 1;
     if(sortBy==='sla'){
       var sa=isSlaActive(a)?a.sla.getTime():Infinity;
       var sb=isSlaActive(b)?b.sla.getTime():Infinity;
@@ -814,10 +886,10 @@ function renderTable(){
   document.getElementById('inqEmpty').style.display=total?'none':'block';
   document.getElementById('inqBody').innerHTML=pageList.map(function(o){
     var checked=selectedIds.indexOf(o.id)>-1?'checked':'';
-    return '<tr class="clickable" data-id="'+o.id+'">'+
+    return '<tr class="clickable'+(o.justSubmitted?' row-flash':'')+'" data-id="'+o.id+'">'+
       '<td onclick="event.stopPropagation()"><input type="checkbox" class="rowchk" '+checked+' onchange="tliToggleRow(\''+o.id+'\',this)"></td>'+
       '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+o.submittedAt+'</td>'+
-      '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+o.name+'</td>'+
+      '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+o.name+(o.justSubmitted?' <span class="badge new">剛送出</span>':'')+'</td>'+
       '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+o.phone+'<br><span style="color:var(--gray-500);font-size:11px;">'+o.email+'</span></td>'+
       '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+typeBadge(o.type)+'</td>'+
       '<td onclick="tliOpenDrawer(\''+o.id+'\')">'+o.lang+'・'+o.level+'</td>'+
@@ -1036,9 +1108,32 @@ function tliSubmitSelfFollowup(id){
   tliOpenDrawer(id);
   renderTable();
 }
+/* 建檔免重打：把這筆詢問單已有的公司基本資料存進 localStorage 橋接，
+   帶著 ?draft=<id> 導到 a19，讓「新增企業客戶」表單自動帶入，顧問只需補合約層資訊。
+   示範用：正式版由後端 API 直接帶著同一筆資料開啟新增表單。 */
+var TLI_ENT_DRAFT_KEY='tliDemoEnterpriseDraft';
+function tliSaveEnterpriseDraft(draft){
+  try{ localStorage.setItem(TLI_ENT_DRAFT_KEY,JSON.stringify(draft)); }catch(e){}
+}
 function tliCreateEnterpriseProfile(id){
   var o=recordById(id);
-  tliToast('已登記建檔需求：'+o.company+' 將於管理後台「B2B 企業客戶」（a19）建立企業客戶檔案，請至該頁完成合約參數設定');
+  if(!o.isEnterprise){
+    tliToast('已登記建檔需求：'+o.company+' 將於管理後台「B2B 企業客戶」（a19）建立企業客戶檔案，請至該頁完成合約參數設定');
+    return;
+  }
+  /* 同步狀態給 a19「試辦申請」總覽：已登記建檔即視為此筆試辦申請完成建檔追蹤 */
+  tliWriteEnterpriseStatusOverride(id,'已建檔');
+  tliSaveEnterpriseDraft({
+    id:id,
+    company:o.company,
+    industry:o.industry,
+    location:o.location,
+    headcount:o.headcount,
+    language:o.nativeLang,
+    contactName:o.contactName,
+    contactInfo:o.contactInfo
+  });
+  location.href='../管理後台/a19_b2b_enterprise.html?draft='+encodeURIComponent(id);
 }
 var __seedTargetId=null;
 function tliOpenSeedModal(id){
@@ -1095,6 +1190,8 @@ function tliSubmitLost(id){
   o.status='未成交';
   o.lostReason=document.getElementById('lostReasonSel').value;
   o.timeline=buildTimeline(o);
+  /* 同步狀態給 a19「試辦申請」總覽 */
+  if(o.isEnterprise) tliWriteEnterpriseStatusOverride(id,'未成交');
   tliToast('已標記為未成交：'+o.lostReason);
   tliOpenDrawer(id);
   renderTable();
@@ -1115,6 +1212,8 @@ function tliSubmitContact(id){
   var note=document.getElementById('contactNote').value.trim();
   if(note)o.note=note;
   o.timeline=buildTimeline(o);
+  /* 同步狀態給 a19「試辦申請」總覽 */
+  if(o.isEnterprise) tliWriteEnterpriseStatusOverride(id,'已聯繫');
   tliToast('已標記為已聯繫（'+o.contactMethod+'）');
   tliOpenDrawer(id);
   renderTable();
@@ -1313,6 +1412,25 @@ initSelects();
 initChips();
 document.getElementById('fPageSize').value=String(pageSize);
 renderTable();
+
+/* 從 a19「試辦申請」總覽點「前往顧問工作台處理」帶 ?inquiry=<id> 過來：翻到所在頁並捲動反白該筆 */
+(function tliLocateFromQuery(){
+  var targetId=qs('inquiry');
+  if(!targetId) return;
+  var list=filteredSorted();
+  var idx=-1;
+  for(var i=0;i<list.length;i++){ if(list[i].id===targetId){ idx=i; break; } }
+  if(idx===-1) return;
+  var targetPage=Math.floor(idx/pageSize)+1;
+  if(targetPage!==page){ page=targetPage; renderTable(); }
+  setTimeout(function(){
+    var row=document.querySelector('tr[data-id="'+targetId+'"]');
+    if(row){
+      row.scrollIntoView({behavior:'smooth',block:'center'});
+      row.classList.add('row-highlight');
+    }
+  },60);
+})();
 </script>
 <script>
 function toggleNavGroup(ev, gid){

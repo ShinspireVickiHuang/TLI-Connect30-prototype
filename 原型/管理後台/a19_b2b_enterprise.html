@@ -54,6 +54,9 @@ tr.rowlink:hover{background:#F8FAFD;}
 .badge.grey{background:var(--g200);color:var(--g500);}
 .badge.red{background:#FBE7E7;color:#C0392B;}
 .badge.teal{background:#E1F3EE;color:var(--teal);}
+.empty{color:var(--g500);font-size:12.5px;padding:24px 0;text-align:center;}
+tr.row-highlight{animation:tliRowHighlight 2.6s ease-out;}
+@keyframes tliRowHighlight{0%{background:#fdeecb;}100%{background:transparent;}}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--g200);margin-bottom:16px;flex-wrap:wrap;}
 .tabs button{background:none;border:none;padding:10px 12px;font-size:13px;color:var(--g500);
 cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;}
@@ -325,10 +328,14 @@ html,body{overflow-x:hidden;}
 </div>
 </div>
 
-<div class="tabpanel" id="panel-inquiry">
+<div class="tabpanel" id="panel-trial">
 <div class="card">
-<div class="desc" style="margin-bottom:12px">來自公開網站「企業詢課」表單的待處理清單，確認需求後可轉建訂單：</div>
-<div class="tablewrap"><table id="inquiryTable"></table></div>
+<div class="desc" style="margin-bottom:12px">試辦申請由顧問在工作台跟進與建檔，此處僅供總覽。</div>
+<div class="tablewrap"><table id="trialTable"></table></div>
+<div id="trialEmpty" class="empty" style="display:none">目前沒有待處理的試辦申請。</div>
+<div style="text-align:center;margin-top:14px" id="trialLoadMoreWrap">
+<button class="btn ghost" id="trialLoadMoreBtn" onclick="tliTrialLoadMore()">載入更多</button>
+</div>
 </div>
 </div>
 
@@ -426,6 +433,7 @@ function addDays(baseStr, days){
 }
 function padNum(n, len){ var s=String(n); while(s.length<len) s='0'+s; return s; }
 function nowStr(){ var d=new Date(); return d.toISOString().slice(0,16).replace('T',' '); }
+function qs(k){ return new URLSearchParams(location.search).get(k); }
 /* 部門／廠區改由企業自行維護（2026-09-11 修改）：後台僅檢視，如需協助由 TLI 顧問「代為修改」，
    異動一律寫入修改紀錄並標記操作者，供企業事後追溯 */
 function pushEntOrgLog(e, what){
@@ -756,20 +764,75 @@ var ENTERPRISES = []; for (var ei=0; ei<12; ei++) ENTERPRISES.push(makeEnterpris
 
 function entById(id){ return ENTERPRISES.find(function(e){return e.id===id;}); }
 
-/* ================= 示範資料：企業詢課 ================= */
-var INQUIRY_STATUS = ['待處理','已聯繫','已轉建訂單'];
-function makeInquiry(i){
-  var r = seededRand(i*3+61), r2 = seededRand(i*7+63);
-  var companies = ['勤宇科技股份有限公司','昌益電子股份有限公司','恆信物流股份有限公司','聯泰生醫股份有限公司','鑫達營造股份有限公司'];
-  return {
-    id:'inq'+i, company: companies[i % companies.length], contact: EMP_SURNAMES[i%10]+EMP_GIVENS[i%10],
-    phone: '02-'+padNum(2700+Math.floor(r*900),4)+'-'+padNum(1000+Math.floor(r2*8999),4),
-    empCountNeed: 10 + Math.floor(r*90), note: '希望安排企業內訓體驗課，評估合作方案',
-    submitted: addDays('2026-08-01', Math.floor(r2*26)),
-    status: i<2 ? '待處理' : (i<4 ? '已聯繫' : '已轉建訂單')
-  };
+/* ================= v2 新增：試辦申請總覽（承接 p10 企業試辦申請表單，整合但不重複）=================
+   實際聯繫與建檔仍在顧問工作台 c08 處理；本頁只讀取同一批示範資料＋c08 寫回的狀態，做管理者唯讀總覽，
+   避免 a19 與 c08 各自維護一套試辦申請邏輯。
+   示範用：本頁沒有真正後端，改讀 localStorage；正式版由後端 API 提供同一份資料。 */
+var TLI_ENT_APP_KEY='tliDemoEnterpriseApplications';
+var TLI_ENT_STATUS_KEY='tliDemoEnterpriseStatusOverrides';
+/* 基準示範資料：與顧問工作台 c08「諮詢與試聽」頁 ENTERPRISE_SEED_DATA 為同一組公司／聯絡人／id
+   （INQ-2026-B01～B12），確保跨頁對照一致，「前往顧問工作台處理」才能正確定位到同一筆 */
+var TRIAL_APP_SEED=[
+  {id:'INQ-2026-B01',company:'範例半導體股份有限公司',industry:'半導體',location:'美國廠區',headcount:'12',contactName:'王小姐',contactInfo:'wang.hr@example-semi.example',submittedAt:'2026-08-23 10:00',status:'待聯繫'},
+  {id:'INQ-2026-B02',company:'北辰精密工業股份有限公司',industry:'電子零組件',location:'日本廠區',headcount:'8',contactName:'佐藤先生',contactInfo:'sato.hr@example-tech.example',submittedAt:'2026-08-19 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B03',company:'假設國際貿易股份有限公司',industry:'國際貿易',location:'美國廠區',headcount:'20',contactName:'陳先生',contactInfo:'chen.hr@example-trade.example',submittedAt:'2026-08-13 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B04',company:'範例生醫股份有限公司',industry:'生技醫療',location:'日本廠區',headcount:'15',contactName:'田中小姐',contactInfo:'tanaka.hr@example-bio.example',submittedAt:'2026-08-05 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B05',company:'安泰保經股份有限公司',industry:'金融服務',location:'美國廠區',headcount:'30',contactName:'李小姐',contactInfo:'li.hr@example-fin.example',submittedAt:'2026-07-21 10:00',status:'已建檔'},
+  {id:'INQ-2026-B06',company:'假設物流股份有限公司',industry:'物流運輸',location:'日本廠區',headcount:'6',contactName:'鈴木先生',contactInfo:'suzuki.hr@example-logi.example',submittedAt:'2026-07-28 10:00',status:'未成交'},
+  {id:'INQ-2026-B07',company:'恆昌半導體材料股份有限公司',industry:'半導體材料',location:'美國廠區',headcount:'10',contactName:'林小姐',contactInfo:'lin.hr@example-mat.example',submittedAt:'2026-08-24 10:00',status:'待聯繫'},
+  {id:'INQ-2026-B08',company:'譽陽電子股份有限公司',industry:'消費性電子',location:'日本廠區',headcount:'18',contactName:'中村先生',contactInfo:'nakamura.hr@example-elec.example',submittedAt:'2026-08-16 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B09',company:'承運國際物流股份有限公司',industry:'物流運輸',location:'美國廠區',headcount:'14',contactName:'黃先生',contactInfo:'huang.hr@example-ship.example',submittedAt:'2026-08-10 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B10',company:'昱誠光電股份有限公司',industry:'光電產業',location:'日本廠區',headcount:'9',contactName:'小林小姐',contactInfo:'kobayashi.hr@example-opt.example',submittedAt:'2026-08-01 10:00',status:'已聯繫'},
+  {id:'INQ-2026-B11',company:'大成生技製藥股份有限公司',industry:'生技醫療',location:'美國廠區',headcount:'22',contactName:'張小姐',contactInfo:'chang.hr@example-pharma.example',submittedAt:'2026-07-16 10:00',status:'已建檔'},
+  {id:'INQ-2026-B12',company:'東亞精密機械股份有限公司',industry:'精密機械',location:'日本廠區',headcount:'7',contactName:'伊藤先生',contactInfo:'ito.hr@example-mech.example',submittedAt:'2026-07-24 10:00',status:'未成交'}
+];
+function tliReadJSON(key,fallback){
+  try{ var v=JSON.parse(localStorage.getItem(key)); return (v===null||v===undefined)?fallback:v; }catch(e){ return fallback; }
 }
-var INQUIRIES = []; for (var qi=0; qi<6; qi++) INQUIRIES.push(makeInquiry(qi));
+/* 合併基準示範資料＋公開網站 p10 送出的新申請，並套用 c08 顧問處理後寫回的狀態
+  （示範簡化：只同步「待聯繫／已聯繫／已建檔」三段狀態，c08 內部更細的狀態不逐一對應） */
+function tliTrialAllRows(){
+  var overrides=tliReadJSON(TLI_ENT_STATUS_KEY,{});
+  var apps=tliReadJSON(TLI_ENT_APP_KEY,[]);
+  var appRows=apps.map(function(a){
+    return {id:a.id,company:a.company,industry:a.industry,location:a.location,headcount:a.headcount,
+      contactName:a.contactName,contactInfo:a.contactInfo,submittedAt:a.submittedAt,
+      status:overrides[a.id]||a.status||'待聯繫'};
+  });
+  var seedRows=TRIAL_APP_SEED.map(function(s){
+    return {id:s.id,company:s.company,industry:s.industry,location:s.location,headcount:s.headcount,
+      contactName:s.contactName,contactInfo:s.contactInfo,submittedAt:s.submittedAt,
+      status:overrides[s.id]||s.status};
+  });
+  var all=appRows.concat(seedRows);
+  all.sort(function(a,b){ return (b.submittedAt||'').localeCompare(a.submittedAt||''); });
+  return all;
+}
+function trialStatusBadge(s){
+  if(s==='已建檔') return '<span class="badge green">已建檔</span>';
+  if(s==='已聯繫') return '<span class="badge blue">已聯繫</span>';
+  if(s==='未成交') return '<span class="badge red">未成交</span>';
+  return '<span class="badge orange">待聯繫</span>';
+}
+var trialVisibleCount=10;
+function renderTrialTable(){
+  var rows=tliTrialAllRows();
+  document.getElementById('trialEmpty').style.display=rows.length?'none':'block';
+  var t=document.getElementById('trialTable');
+  var visible=rows.slice(0,trialVisibleCount);
+  t.innerHTML='<tr><th>公司</th><th>產業</th><th>地點</th><th>規模</th><th>聯絡人</th><th>送出時間</th><th>狀態</th><th></th></tr>'+
+    visible.map(function(r){
+      return '<tr data-trial-id="'+r.id+'"><td>'+r.company+'</td><td>'+r.industry+'</td><td>'+r.location+'</td>'+
+        '<td>'+(r.headcount||'－')+'</td><td>'+(r.contactName||'－')+'</td><td>'+(r.submittedAt||'－')+'</td>'+
+        '<td>'+trialStatusBadge(r.status)+'</td>'+
+        '<td><a class="btn ghost" href="../顧問工作台/c08_inquiries.html?inquiry='+encodeURIComponent(r.id)+'">前往顧問工作台處理</a></td></tr>';
+    }).join('');
+  document.getElementById('trialLoadMoreWrap').style.display=(rows.length>trialVisibleCount)?'block':'none';
+}
+function tliTrialLoadMore(){
+  trialVisibleCount+=10;
+  renderTrialTable();
+}
 
 /* ================= 徽章 ================= */
 function entTypeBadge(t){
@@ -783,11 +846,6 @@ function invoiceBadge(s){
   if (s==='已收款') return '<span class="badge green">已收款</span>';
   if (s==='已開立') return '<span class="badge blue">已開立</span>';
   return '<span class="badge orange">待開立</span>';
-}
-function inquiryBadge(s){
-  if (s==='已轉建訂單') return '<span class="badge green">已轉建訂單</span>';
-  if (s==='已聯繫') return '<span class="badge blue">已聯繫</span>';
-  return '<span class="badge orange">待處理</span>';
 }
 function contractParamsBadge(e){ return e.contractParamsSet ? '<span class="badge green">已設定</span>' : '<span class="badge grey">未設定</span>'; }
 /* 學期狀態徽章：依今天日期與學期起訖判斷進行中／已結束／未開始（v2 新增） */
@@ -825,11 +883,11 @@ function connReqSummary(e){
 }
 
 /* ================= 主頁籤 ================= */
-var MAIN_TABS = [{key:'list', label:'企業客戶列表'}, {key:'inquiry', label:'企業詢課'}];
+var MAIN_TABS = [{key:'trial', label:'試辦申請'}, {key:'list', label:'企業客戶列表'}];
 var currentMainTab = 'list';
 function renderMainTabs(){
   document.getElementById('mainTabs').innerHTML = MAIN_TABS.map(function(t){
-    var extra = t.key==='inquiry' ? '（'+INQUIRIES.filter(function(q){return q.status==='待處理';}).length+'）' : '';
+    var extra = t.key==='trial' ? '（'+tliTrialAllRows().filter(function(q){return q.status!=='已建檔';}).length+'）' : '';
     return '<button class="'+(t.key===currentMainTab?'active':'')+'" onclick="switchMainTab(\''+t.key+'\')">'+t.label+extra+'</button>';
   }).join('');
 }
@@ -837,7 +895,7 @@ function switchMainTab(key){
   currentMainTab = key;
   renderMainTabs();
   document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-'+key); });
-  if (key==='inquiry') renderInquiryTable();
+  if (key==='trial') renderTrialTable();
 }
 
 /* ================= 企業列表 ================= */
@@ -922,29 +980,6 @@ function renderEntTable(){
   document.getElementById('entBtnNext').disabled = entState.page>=maxPage;
   document.getElementById('entBtnLast').disabled = entState.page>=maxPage;
   document.getElementById('entPageSizeSel').value = String(entState.pageSize);
-}
-
-/* ================= 企業詢課 ================= */
-function renderInquiryTable(){
-  var t = document.getElementById('inquiryTable');
-  t.innerHTML = '<tr><th>企業名稱</th><th>聯絡人</th><th>電話</th><th>預估人數</th><th>需求備註</th><th>提交日期</th><th>狀態</th><th></th></tr>';
-  INQUIRIES.forEach(function(q){
-    var tr = document.createElement('tr');
-    var actionCell = q.status==='已轉建訂單' ?
-      '<span class="small">已於 '+q.submitted+' 轉建</span>' :
-      '<button class="btn ghost" onclick="convertInquiry(\''+q.id+'\',event)">轉建訂單</button>';
-    tr.innerHTML = '<td>'+q.company+'</td><td>'+q.contact+'</td><td>'+q.phone+'</td><td>'+q.empCountNeed+'</td>' +
-      '<td>'+q.note+'</td><td>'+q.submitted+'</td><td>'+inquiryBadge(q.status)+'</td><td>'+actionCell+'</td>';
-    t.appendChild(tr);
-  });
-}
-function convertInquiry(id, ev){
-  if (ev) ev.stopPropagation();
-  var q = INQUIRIES.find(function(x){return x.id===id;});
-  q.status = '已轉建訂單';
-  renderInquiryTable();
-  renderMainTabs();
-  toast('已將「'+q.company+'」的詢課需求轉為新訂單，請至「建訂單」（c04）完成後續設定');
 }
 
 /* ================= 企業詳情抽屜 ================= */
@@ -1835,12 +1870,31 @@ function onAgentSettlementChange(val){
 /* ================= 新增企業客戶 ================= */
 var newEntTab = 'basic';
 var newEntDraft = null;
-function openNewEnterpriseDrawer(){
+/* 建檔免重打：帶著 ?draft=<id> 從 c08 顧問工作台導入時，讀同一份 localStorage 橋接，
+   把詢問單已有的公司基本資料自動帶入，顧問只需補合約層資訊（合約期間、時數池總量、審核模式、規則組、計價方式等）。
+   示範用：正式版由後端 API 直接帶著同一筆資料開啟本表單。 */
+var TLI_ENT_DRAFT_KEY='tliDemoEnterpriseDraft';
+function tliReadEnterpriseDraft(){
+  try{ return JSON.parse(localStorage.getItem(TLI_ENT_DRAFT_KEY)); }catch(e){ return null; }
+}
+function openNewEnterpriseDrawer(sourceDraft){
   currentEntId = null;
   newEntTab = 'basic';
-  newEntDraft = {name:'', entType:'general', tier:'B', planName:SALES_PLAN_NAMES[0], managerName:'', managerTitle:'', payMethod:'月結'};
+  newEntDraft = {name:'', entType:'general', tier:'B', planName:SALES_PLAN_NAMES[0], managerName:'', managerTitle:'', payMethod:'月結',
+    industry:'', location:'', headcount:'', language:'', contactName:'', contactInfo:''};
+  if(sourceDraft){
+    newEntDraft.name = sourceDraft.company||'';
+    newEntDraft.industry = sourceDraft.industry||'';
+    newEntDraft.location = sourceDraft.location||'';
+    newEntDraft.headcount = sourceDraft.headcount||'';
+    newEntDraft.language = sourceDraft.language||'';
+    newEntDraft.contactName = sourceDraft.contactName||'';
+    newEntDraft.contactInfo = sourceDraft.contactInfo||'';
+  }
   document.getElementById('drw_title').textContent = '新增企業客戶';
-  document.getElementById('drw_sub').textContent = '依序填寫基本資料、合約與分類、主管理者、付款方式';
+  document.getElementById('drw_sub').textContent = sourceDraft ?
+    '已從「試辦申請」帶入公司基本資料，請補齊合約期間、時數池總量、審核模式、規則組、計價方式等合約層設定' :
+    '依序填寫基本資料、合約與分類、主管理者、付款方式';
   renderNewEntForm();
   document.getElementById('drawerMask').classList.add('open');
   document.getElementById('drawer').classList.add('open');
@@ -1859,6 +1913,12 @@ function renderNewEntForm(){
       '<option value="agent"'+(newEntDraft.entType==='agent'?' selected':'')+'>代理商</option>' +
       '</select></div>' +
       '<div class="formrow"><label>企業名稱</label><input type="text" id="ne_name" value="'+newEntDraft.name+'" placeholder="請輸入完整公司名稱"></div>' +
+      '<div class="formrow"><label>產業別</label><input type="text" id="ne_industry" value="'+newEntDraft.industry+'" placeholder="如：半導體、AI 硬體"></div>' +
+      '<div class="formrow"><label>廠區地點</label><input type="text" id="ne_location" value="'+newEntDraft.location+'" placeholder="如：美國廠區"></div>' +
+      '<div class="formrow"><label>預計參加人數</label><input type="text" id="ne_headcount" value="'+newEntDraft.headcount+'" placeholder="請輸入預計人數"></div>' +
+      '<div class="formrow"><label>語言需求</label><input type="text" id="ne_language" value="'+newEntDraft.language+'" placeholder="如：英文、日文"></div>' +
+      '<div class="formrow"><label>聯絡人姓名</label><input type="text" id="ne_contactname" value="'+newEntDraft.contactName+'" placeholder="請輸入聯絡人姓名"></div>' +
+      '<div class="formrow"><label>聯絡方式</label><input type="text" id="ne_contactinfo" value="'+newEntDraft.contactInfo+'" placeholder="Email 或電話"></div>' +
       '<div class="formrow"><label>統一編號</label><input type="text" id="ne_taxid" placeholder="8 碼統一編號"></div>' +
       '<div class="formrow"><label>對應顧問</label><select id="ne_advisor">'+ENT_ADVISORS.map(function(a){return '<option>'+a+'</option>';}).join('')+'</select></div>';
   } else if (newEntTab==='contract'){
@@ -1888,19 +1948,28 @@ function captureNewEntDraft(){
   var typeEl = document.getElementById('ne_enttype'); if (typeEl) newEntDraft.entType = typeEl.value;
   var tierEl = document.getElementById('ne_tier'); if (tierEl) newEntDraft.tier = tierEl.value;
   var planEl = document.getElementById('ne_plan'); if (planEl) newEntDraft.planName = planEl.value;
+  var industryEl = document.getElementById('ne_industry'); if (industryEl) newEntDraft.industry = industryEl.value;
+  var locationEl = document.getElementById('ne_location'); if (locationEl) newEntDraft.location = locationEl.value;
+  var headcountEl = document.getElementById('ne_headcount'); if (headcountEl) newEntDraft.headcount = headcountEl.value;
+  var languageEl = document.getElementById('ne_language'); if (languageEl) newEntDraft.language = languageEl.value;
+  var contactNameEl = document.getElementById('ne_contactname'); if (contactNameEl) newEntDraft.contactName = contactNameEl.value;
+  var contactInfoEl = document.getElementById('ne_contactinfo'); if (contactInfoEl) newEntDraft.contactInfo = contactInfoEl.value;
 }
 function saveNewEnterprise(){
   captureNewEntDraft();
   var name = newEntDraft.name.trim();
   if (!name){ toast('請先於「基本資料」分頁輸入企業名稱'); newEntTab='basic'; renderNewEntForm(); return; }
-  var mgrName = (document.getElementById('ne_mgrname') && document.getElementById('ne_mgrname').value.trim()) || '（未指定）';
+  var mgrName = (document.getElementById('ne_mgrname') && document.getElementById('ne_mgrname').value.trim()) || newEntDraft.contactName || '（未指定）';
   var mgrTitle = (document.getElementById('ne_mgrtitle') && document.getElementById('ne_mgrtitle').value.trim()) || '窗口';
+  var mgrEmail = (document.getElementById('ne_mgremail') && document.getElementById('ne_mgremail').value.trim()) || newEntDraft.contactInfo || '';
   var payMethod = document.getElementById('ne_pay').value;
   var newId = 'entnew'+Date.now();
   var todayStr = new Date().toISOString().slice(0,10);
   ENTERPRISES.unshift({
-    id:newId, name:name, entType:newEntDraft.entType, tier:newEntDraft.tier, planName:newEntDraft.planName, empCount:0,
-    contractStart:todayStr, contractEnd:addDays(todayStr,365), manager:{name:mgrName, title:mgrTitle},
+    id:newId, name:name, entType:newEntDraft.entType, tier:newEntDraft.tier, planName:newEntDraft.planName,
+    empCount:parseInt(newEntDraft.headcount,10)||0,
+    industry:newEntDraft.industry, sourceLocation:newEntDraft.location, language:newEntDraft.language,
+    contractStart:todayStr, contractEnd:addDays(todayStr,365), manager:{name:mgrName, title:mgrTitle, email:mgrEmail},
     advisor:ENT_ADVISORS[0], attendance:0, invoiceStatus:'待開立', payMethod:payMethod, taxId:'',
     depts:DEPTS.slice(0,3), employees:[], discountRate:10, scheduleMonthly:false, invoices:[],
     contractParamsSet:false, contractParams:{followC2CDefault:true, cancelWindowHours:12, monthlyFreeCancel:1, rescheduleMaxTimes:2, rescheduleWindowHours:12,
@@ -2042,7 +2111,15 @@ renderNotifPanel();
 renderMainTabs();
 renderEntChips();
 renderEntTable();
-renderInquiryTable();
+renderTrialTable();
+
+/* 從 c08「建立企業客戶檔案」帶 ?draft=<id> 過來：自動開啟「新增企業客戶」表單並帶入公司基本資料 */
+(function tliAutoOpenDraft(){
+  var draftId=qs('draft');
+  if(!draftId) return;
+  var draft=tliReadEnterpriseDraft();
+  if(draft&&draft.id===draftId){ openNewEnterpriseDrawer(draft); }
+})();
 
 </script>
 <script>

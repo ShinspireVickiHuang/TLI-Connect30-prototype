@@ -503,6 +503,7 @@ main{max-width:1080px;}
       <div class="ent-success-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h3>已收到您的申請</h3>
       <p>顧問將於 1 個工作日內主動聯繫，安排種子學員試上時間。</p>
+      <p style="margin-top:6px;font-size:13px;">顧問將於 1 個工作天內與您聯繫（依設定）。</p>
     </div>
   </section>
 </main>
@@ -754,6 +755,23 @@ var I18N_PAGE = {
 };
 
 /* ===================== p10 專屬邏輯：企業試辦申請表單 ===================== */
+/* 示範用 localStorage 橋接：本頁沒有真正後端，送出後把申請寫進 localStorage，
+   讓「顧問工作台」（c08）與「管理後台 B2B 企業客戶」（a19）能讀到同一筆申請並示範串接。
+   正式版改由後端 API 寫入中台資料庫，三頁改為讀同一組後端資料。 */
+var TLI_ENT_APP_KEY = 'tliDemoEnterpriseApplications';
+function tliSaveEnterpriseApplication(app){
+  try{
+    var list = [];
+    try{ list = JSON.parse(localStorage.getItem(TLI_ENT_APP_KEY)) || []; }catch(e){ list = []; }
+    list.push(app);
+    localStorage.setItem(TLI_ENT_APP_KEY, JSON.stringify(list));
+  }catch(e){ /* 示範用途，localStorage 不可用時不中斷送出流程 */ }
+}
+function tliFmtNow(){
+  var d = new Date();
+  function p(n){ return (n<10?'0':'')+n; }
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
 function submitEnterpriseForm(e){
   if(e && e.preventDefault) e.preventDefault();
   var required = ['entCompany','entIndustry','entLocation','entHeadcount','entLang','entContactName','entContactInfo'];
@@ -765,6 +783,19 @@ function submitEnterpriseForm(e){
       return false;
     }
   }
+  tliSaveEnterpriseApplication({
+    id: 'ENT-' + Date.now(),
+    company: document.getElementById('entCompany').value.trim(),
+    industry: document.getElementById('entIndustry').value.trim(),
+    location: document.getElementById('entLocation').value.trim(),
+    headcount: document.getElementById('entHeadcount').value.trim(),
+    language: document.getElementById('entLang').value.trim(),
+    contactName: document.getElementById('entContactName').value.trim(),
+    contactInfo: document.getElementById('entContactInfo').value.trim(),
+    note: document.getElementById('entNote').value.trim(),
+    submittedAt: tliFmtNow(),
+    status: '待聯繫'
+  });
   var formView = document.getElementById('entFormView');
   var successView = document.getElementById('entSuccessView');
   if(formView) formView.style.display = 'none';
